@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+###Http Client to test controller locally###
+src/main/java/at/jku/dke/etutor/grading//rest/TestApp.java 

@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.grading.service;
 
+import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.dto.evaluation.Analysis;
 import at.jku.dke.etutor.grading.rest.dto.evaluation.Evaluator;
 import at.jku.dke.etutor.grading.rest.dto.evaluation.Grading;
@@ -13,14 +14,15 @@ import java.util.HashMap;
  */
 
 
-public class ModuleManager {
-    private HashMap<String, Evaluator> evaluatorList;
-    private HashMap<String, Analysis> analysisList;
-    private HashMap<String, Report> reportList;
-    private HashMap<String, Grading> gradingList;
+public class ModuleManager{
+    public static HashMap<String, Evaluator> evaluatorList;
 
+    public HashMap<String, Evaluator> getEvaluatorList() {
+        return evaluatorList;
+    }
 
-
-
+    public void setEvaluatorList(HashMap<String, Evaluator> evaluatorList) {
+        this.evaluatorList = evaluatorList;
+    }
 
 }
