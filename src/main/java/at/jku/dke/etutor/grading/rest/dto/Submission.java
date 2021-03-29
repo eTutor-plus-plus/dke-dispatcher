@@ -7,7 +7,8 @@ import java.util.Map;
 
 /**
  * Represents the students submission which hast to be distributed to and evaluated by the corresponding module,
- * depending on the tasktype.
+ *  depending on the tasktype.
+ *  Parameters according to the modules implementation of the interfaces (see package evaluation).
  *
  */
 
