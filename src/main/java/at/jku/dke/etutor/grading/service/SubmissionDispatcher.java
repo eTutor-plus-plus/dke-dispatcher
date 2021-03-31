@@ -30,7 +30,7 @@ public class SubmissionDispatcher implements Runnable{
     @Override
     public void run() {
         try {
-            Evaluator evaluator = ModuleManager.evaluatorList.get(submission.getTaskType());
+            Evaluator evaluator = ModuleManager.getEvaluatorMap().get(submission.getTaskType());
             Analysis analysis = evaluator
                     .analyze(submission.getExerciseId(),
                     submission.getUserId(), submission.getPassedAttributes(), submission.getPassedParameters());

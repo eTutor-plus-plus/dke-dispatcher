@@ -2,29 +2,49 @@ package at.jku.dke.etutor.grading.rest;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpClient;
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.rmi.NotBoundException;
+import java.util.HashMap;
 
 import at.jku.dke.etutor.grading.rest.dto.Submission;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import at.jku.dke.etutor.grading.rest.dto.evaluation.Evaluator;
+import at.jku.dke.etutor.grading.service.ModuleManager;
+import rmi.RMIClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpHeaders;
 
-import javax.servlet.http.HttpServletResponse;
-
 public class TestApp {
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, NotBoundException {
         HttpClient client = HttpClient.newHttpClient();
+        RMIClient rmiClient = new RMIClient();
+        rmiClient.startClient();
+
+        //adding sqlEvaluator to ModuleManager
+        HashMap<String, Evaluator> evaluatorMap = new HashMap<>();
+        Evaluator sqlEvaluator = rmiClient.getSQLEvaluator();
+        evaluatorMap.put("sql", sqlEvaluator);
+        ModuleManager.setEvaluatorMap(evaluatorMap);
+
+        // creating submission for sql module
         Submission submission = new Submission();
-        String s = new ObjectMapper().writeValueAsString(submission);
+        submission.setExerciseId(1);
+        submission.setTaskType("sql");
+        submission.setUserId(290792);
+        submission.setMaxPoints(100);
+        HashMap<String, String> passedAttributes = new HashMap<>();
+        passedAttributes.put("action", "diagnose");
+        passedAttributes.put("submission", "SELECT * FROM KONTO");
+        passedAttributes.put("diagnoseLevel", "1");
+        submission.setPassedAttributes(passedAttributes);
+
+        String submissionJson = new ObjectMapper().writeValueAsString(submission);
 
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/submission"))
-                .POST(HttpRequest.BodyPublishers.ofString(s))
+                .POST(HttpRequest.BodyPublishers.ofString(submissionJson))
                 .setHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                 .build();
 

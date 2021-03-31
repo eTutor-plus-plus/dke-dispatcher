@@ -11,14 +11,14 @@ import java.util.HashMap;
 
 
 public class ModuleManager{
-    public static HashMap<String, Evaluator> evaluatorList;
+    public static HashMap<String, Evaluator> evaluatorMap;
 
-    public HashMap<String, Evaluator> getEvaluatorList() {
-        return evaluatorList;
+    public static HashMap<String, Evaluator> getEvaluatorMap() {
+        return evaluatorMap;
     }
 
-    public void setEvaluatorList(HashMap<String, Evaluator> evaluatorList) {
-        this.evaluatorList = evaluatorList;
+    public static void setEvaluatorMap(HashMap<String, Evaluator> evaluatorList) {
+        evaluatorList = evaluatorList;
     }
 
 }
