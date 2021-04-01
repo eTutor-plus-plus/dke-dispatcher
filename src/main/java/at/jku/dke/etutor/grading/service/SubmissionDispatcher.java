@@ -1,9 +1,9 @@
 package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.rest.dto.Submission;
-import at.jku.dke.etutor.evaluation.Analysis;
-import at.jku.dke.etutor.evaluation.Evaluator;
-import at.jku.dke.etutor.evaluation.Grading;
+import at.jku.dke.etutor.core.evaluation.Analysis;
+import at.jku.dke.etutor.core.evaluation.Evaluator;
+import at.jku.dke.etutor.core.evaluation.Grading;
 
 
 /**
@@ -31,7 +31,7 @@ public class SubmissionDispatcher implements Runnable{
     @Override
     public void run() {
         try {
-            Evaluator evaluator = ModuleManager.getEvaluatorMap().get(submission.getTaskType());
+            Evaluator evaluator = ModuleManager.getEvaluator(submission.getTaskType());
             Analysis analysis = evaluator
                     .analyze(submission.getExerciseId(),
                     submission.getUserId(), submission.getPassedAttributes(), submission.getPassedParameters());

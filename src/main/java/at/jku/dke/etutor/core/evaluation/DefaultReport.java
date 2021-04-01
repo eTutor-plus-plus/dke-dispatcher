@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.evaluation;
+package at.jku.dke.etutor.core.evaluation;
 
 public class DefaultReport implements Report{
 

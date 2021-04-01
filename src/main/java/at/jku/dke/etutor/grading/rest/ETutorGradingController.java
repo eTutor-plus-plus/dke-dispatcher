@@ -2,7 +2,7 @@ package at.jku.dke.etutor.grading.rest;
 
 
 
-import at.jku.dke.etutor.evaluation.Grading;
+import at.jku.dke.etutor.core.evaluation.Grading;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

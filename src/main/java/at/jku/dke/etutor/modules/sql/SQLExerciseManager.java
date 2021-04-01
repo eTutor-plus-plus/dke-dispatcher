@@ -105,7 +105,7 @@ public class SQLExerciseManager /* implements ModuleExerciseManager */ {
 			}
 									
 			//INSERTING SQL EXERCISE INTO DATABASE
-			//ks java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+			java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		
 			//GET MAX ID FROM DB
 			sql = "SELECT MAX(id) FROM exercises";

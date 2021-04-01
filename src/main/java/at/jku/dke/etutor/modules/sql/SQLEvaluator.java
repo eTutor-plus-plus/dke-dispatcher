@@ -11,10 +11,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.annotation.Required;
 
 
-import at.jku.dke.etutor.evaluation.*;
+import at.jku.dke.etutor.core.evaluation.*;
+
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalyzer;
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalyzerConfig;
@@ -27,11 +28,10 @@ import at.jku.dke.etutor.modules.sql.report.SQLReport;
 import at.jku.dke.etutor.modules.sql.report.SQLReporter;
 import at.jku.dke.etutor.modules.sql.report.SQLReporterConfig;
 import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
 
 
-
-
-public class SQLEvaluator implements Evaluator /* , MessageSourceAware */ {
+public class SQLEvaluator implements Evaluator, MessageSourceAware {
 
 	private Logger logger;
 	private static String LINE_SEP = System.getProperty("line.separator", "\n");
@@ -47,7 +47,7 @@ public class SQLEvaluator implements Evaluator /* , MessageSourceAware */ {
 		}
 	}
 	
-	//@Required
+	@Required
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}

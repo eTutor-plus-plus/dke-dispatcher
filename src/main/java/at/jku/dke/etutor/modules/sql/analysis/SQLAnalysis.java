@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.Vector;
 
 
-import at.jku.dke.etutor.evaluation.Analysis;
-import at.jku.dke.etutor.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.core.evaluation.Analysis;
+import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 
 

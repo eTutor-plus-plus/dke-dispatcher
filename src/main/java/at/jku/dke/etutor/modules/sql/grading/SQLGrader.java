@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-import at.jku.dke.etutor.evaluation.DefaultGrading;
+import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
 import at.jku.dke.etutor.modules.sql.analysis.SQLCriterionAnalysis;

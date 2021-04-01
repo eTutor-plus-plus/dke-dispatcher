@@ -7,7 +7,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 
-import at.jku.dke.etutor.evaluation.DefaultGrading;
+import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.sql.analysis.*;
 import org.springframework.context.MessageSource;
 

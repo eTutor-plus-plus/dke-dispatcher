@@ -1,8 +1,8 @@
 package at.jku.dke.etutor.modules.sql.report;
 
 
-import at.jku.dke.etutor.evaluation.DefaultReport;
-import at.jku.dke.etutor.evaluation.Report;
+import at.jku.dke.etutor.core.evaluation.DefaultReport;
+import at.jku.dke.etutor.core.evaluation.Report;
 
 import java.io.Serializable;
 import java.util.Collection;

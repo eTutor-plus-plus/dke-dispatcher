@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.evaluation;
+package at.jku.dke.etutor.core.evaluation;
 
 import java.util.Locale;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.sql.ui;
 
-public class SQLEditor /* implements Editor*/ {
+public class SQLEditor /* implements Editor */ {
 
 	/* @Override
 	public HashMap<String, Object> preparePerformTask(

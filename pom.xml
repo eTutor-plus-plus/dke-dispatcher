@@ -11,7 +11,7 @@
     <groupId>at.jku.dke.etutor.grading</groupId>
     <artifactId>etutor-grading</artifactId>
     <version>0.0.1</version>
-    <name>eTutor-at.jku.dke.etutor.evaluation.Grading</name>
+    <name>eTutor-at.jku.dke.etutor.core.evaluation.Grading</name>
     <description>The eTutor grading component</description>
     <properties>
         <java.version>15</java.version>
