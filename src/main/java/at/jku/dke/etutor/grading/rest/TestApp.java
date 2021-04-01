@@ -10,23 +10,25 @@ import java.util.HashMap;
 
 import at.jku.dke.etutor.grading.rest.dto.Submission;
 
-import at.jku.dke.etutor.grading.service.ModuleManager;
 import org.springframework.http.HttpHeaders;
-import rmi.RMIClient;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class TestApp {
     public static void main(String[] args) throws IOException, InterruptedException, NotBoundException {
         HttpClient client = HttpClient.newHttpClient();
-        RMIClient rmiClient = new RMIClient();
-        rmiClient.startClient();
 
-        //adding sqlEvaluator to ModuleManager
-        HashMap<String, etutor.core.evaluation.Evaluator> evaluatorMap = new HashMap<>();
-        etutor.core.evaluation.Evaluator sqlEvaluator = rmiClient.getSQLEvaluator();
+        //RMIClient rmiClient = new RMIClient();
+        //rmiClient.startClient();
+
+        /*adding sqlEvaluator to ModuleManager
+        HashMap<String, Evaluator> evaluatorMap = new HashMap<>();
+        Evaluator sqlEvaluator = new SQLEvaluator();
         evaluatorMap.put("sql", sqlEvaluator);
         ModuleManager.setEvaluatorMap(evaluatorMap);
+        */
+
 
         // creating submission for sql module
         Submission submission = new Submission();
@@ -39,6 +41,7 @@ public class TestApp {
         passedAttributes.put("submission", "SELECT * FROM KONTO");
         passedAttributes.put("diagnoseLevel", "1");
         submission.setPassedAttributes(passedAttributes);
+        submission.setPassedParameters(new HashMap<String, String>());
 
         String submissionJson = new ObjectMapper().writeValueAsString(submission);
 

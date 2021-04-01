@@ -1,9 +1,8 @@
 package at.jku.dke.etutor.grading.service;
-
-
-
+import at.jku.dke.etutor.evaluation.Evaluator;
 
 import java.util.HashMap;
+
 
 /**
  * Maps the tasktypes to the modules
@@ -11,14 +10,19 @@ import java.util.HashMap;
 
 
 public class ModuleManager{
-    public static HashMap<String, etutor.core.evaluation.Evaluator> evaluatorMap;
+    private static HashMap<String, Evaluator> evaluatorMap;
 
-    public static HashMap<String, etutor.core.evaluation.Evaluator> getEvaluatorMap() {
+    public ModuleManager(HashMap<String, Evaluator> evaluatorMap){
+        this.evaluatorMap = evaluatorMap;
+    }
+
+
+    public  static HashMap<String, Evaluator> getEvaluatorMap() {
         return evaluatorMap;
     }
 
-    public static void setEvaluatorMap(HashMap<String, etutor.core.evaluation.Evaluator> evaluatorList) {
-        evaluatorList = evaluatorList;
+    public  void setEvaluatorMap(HashMap<String, Evaluator> evaluatorMap) {
+        evaluatorMap = evaluatorMap;
     }
 
 }

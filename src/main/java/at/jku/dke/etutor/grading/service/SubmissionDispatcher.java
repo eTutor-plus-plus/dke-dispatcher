@@ -1,13 +1,14 @@
 package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.rest.dto.Submission;
-import at.jku.dke.etutor.grading.rest.dto.evaluation.Analysis;
-import at.jku.dke.etutor.grading.rest.dto.evaluation.Evaluator;
-import at.jku.dke.etutor.grading.rest.dto.evaluation.Grading;
+import at.jku.dke.etutor.evaluation.Analysis;
+import at.jku.dke.etutor.evaluation.Evaluator;
+import at.jku.dke.etutor.evaluation.Grading;
+
 
 /**
  * Is used to forward the submission to the corresponding module
- *  and persist the resulting Grading which is identified by the submissionId
+ *  and persist the resulting at.jku.dke.etutor.evaluation.Grading which is identified by the submissionId
  */
 
 public class SubmissionDispatcher implements Runnable{
@@ -25,7 +26,7 @@ public class SubmissionDispatcher implements Runnable{
     /**
      * Identifies the module according to submission.taskType
      *  and calls the modules' implementations for evaluating the submission.
-     *  To be done: saves the Grading-Object
+     *  To be done: saves the at.jku.dke.etutor.evaluation.Grading-Object
      */
     @Override
     public void run() {
