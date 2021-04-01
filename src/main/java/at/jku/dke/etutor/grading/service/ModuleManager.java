@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.grading.service;
 
-import at.jku.dke.etutor.grading.rest.dto.evaluation.Evaluator;
+
 
 
 import java.util.HashMap;
@@ -11,13 +11,13 @@ import java.util.HashMap;
 
 
 public class ModuleManager{
-    public static HashMap<String, Evaluator> evaluatorMap;
+    public static HashMap<String, etutor.core.evaluation.Evaluator> evaluatorMap;
 
-    public static HashMap<String, Evaluator> getEvaluatorMap() {
+    public static HashMap<String, etutor.core.evaluation.Evaluator> getEvaluatorMap() {
         return evaluatorMap;
     }
 
-    public static void setEvaluatorMap(HashMap<String, Evaluator> evaluatorList) {
+    public static void setEvaluatorMap(HashMap<String, etutor.core.evaluation.Evaluator> evaluatorList) {
         evaluatorList = evaluatorList;
     }
 

@@ -9,11 +9,12 @@ import java.rmi.NotBoundException;
 import java.util.HashMap;
 
 import at.jku.dke.etutor.grading.rest.dto.Submission;
-import at.jku.dke.etutor.grading.rest.dto.evaluation.Evaluator;
+
 import at.jku.dke.etutor.grading.service.ModuleManager;
+import org.springframework.http.HttpHeaders;
 import rmi.RMIClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpHeaders;
+
 
 public class TestApp {
     public static void main(String[] args) throws IOException, InterruptedException, NotBoundException {
@@ -22,8 +23,8 @@ public class TestApp {
         rmiClient.startClient();
 
         //adding sqlEvaluator to ModuleManager
-        HashMap<String, Evaluator> evaluatorMap = new HashMap<>();
-        Evaluator sqlEvaluator = rmiClient.getSQLEvaluator();
+        HashMap<String, etutor.core.evaluation.Evaluator> evaluatorMap = new HashMap<>();
+        etutor.core.evaluation.Evaluator sqlEvaluator = rmiClient.getSQLEvaluator();
         evaluatorMap.put("sql", sqlEvaluator);
         ModuleManager.setEvaluatorMap(evaluatorMap);
 
