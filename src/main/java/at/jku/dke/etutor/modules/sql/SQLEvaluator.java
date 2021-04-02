@@ -133,7 +133,7 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 			java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 			conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
 			conn.setAutoCommit(true);
-
+			//System.out.println(conn.getMetaData().getURL());
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE
 			query = new String();
 
@@ -149,23 +149,25 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 					query = query.concat("			c.id = e.submission_db" + LINE_SEP);
 				} else {
 					query = query.concat("			c.id = e.practise_db" + LINE_SEP);
+
 				}
 			}
+
 			this.logger.log(Level.INFO,"QUERY for reading connection data:\n" + query);
 
 			stmt = conn.createStatement();
 			rset = stmt.executeQuery(query);
-			
+
 			if (rset.next()){
 				referenceConnUser = rset.getString("conn_user");				
 				referenceConnPwd = rset.getString("conn_pwd");				
-				referenceConnString = rset.getString("conn_string");				
+				referenceConnString = rset.getString("conn_string");
 			}
 			
 			//ESTABLISHING CONNECTION TO EXERCISE SPECIFIC REFERENCE DATABASE
 			java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 			this.logger.log(Level.INFO,referenceConnString + " - " + referenceConnUser + " - " + referenceConnPwd);
-			
+
 			referenceConn = DriverManager.getConnection("jdbc:oracle:thin:@" + referenceConnString, referenceConnUser, referenceConnPwd);
 			referenceConn.setAutoCommit(true);
 			
@@ -184,6 +186,7 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 				rset = stmt.executeQuery(query);
 				if (rset.next()){
 					correctQuery = rset.getString("solution");
+
 				}
 			}
 		} catch (SQLException e){
@@ -250,6 +253,7 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 			criterionAnalysis = (SQLCriterionAnalysis)criterionAnalysesIterator.next();
 			if (!criterionAnalysis.isCriterionSatisfied()) {
 				sqlAnalysis.setSubmissionSuitsSolution(false);
+
 			}
 		}
 			

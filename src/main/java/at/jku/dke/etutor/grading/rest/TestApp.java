@@ -7,11 +7,8 @@ import java.net.URI;
 import java.net.http.HttpResponse;
 import java.rmi.NotBoundException;
 import java.util.HashMap;
-
 import at.jku.dke.etutor.grading.rest.dto.Submission;
-
 import org.springframework.http.HttpHeaders;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -34,11 +31,11 @@ public class TestApp {
         Submission submission = new Submission();
         submission.setExerciseId(1);
         submission.setTaskType("sql");
-        submission.setUserId(290792);
+        submission.setUserId(2110794);
         submission.setMaxPoints(100);
         HashMap<String, String> passedAttributes = new HashMap<>();
         passedAttributes.put("action", "diagnose");
-        passedAttributes.put("submission", "SELECT * FROM KONTO");
+        passedAttributes.put("submission", "SELECT id FROM KONTO");
         passedAttributes.put("diagnoseLevel", "1");
         submission.setPassedAttributes(passedAttributes);
         submission.setPassedParameters(new HashMap<String, String>());
@@ -61,6 +58,9 @@ public class TestApp {
         System.out.println(response.uri());
         System.out.println(response.headers());
 
+        // EntityModel<SubmissionId> model = new ObjectMapper().readValue(response.body(), EntityModel.class);
+        // System.out.println(model.getContent().getId());
+        // System.out.println(model.getLinks().toString());
 
     }
 

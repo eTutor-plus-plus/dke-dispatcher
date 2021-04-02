@@ -3,6 +3,8 @@ package at.jku.dke.etutor.grading.rest.dto;
 
 import org.springframework.stereotype.Component;
 
+
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -14,7 +16,7 @@ import java.util.Map;
 
 
 @Component
-public class Submission {
+public class Submission implements Serializable {
     private String taskType;
     private int exerciseId;
     private int userId;
