@@ -7,8 +7,11 @@ import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.Evaluator;
 import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
+import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
+import at.jku.dke.etutor.modules.sql.analysis.SQLCriterionAnalysis;
 
 
+import java.util.Iterator;
 import java.util.Locale;
 
 
@@ -39,25 +42,31 @@ public class SubmissionDispatcher implements Runnable{
     public void run() {
         try {
             Evaluator evaluator = ModuleManager.getEvaluator(submission.getTaskType());
-            Analysis analysis = evaluator
-                    .analyze(submission.getExerciseId(),
-                    submission.getUserId(), submission.getPassedAttributes(), submission.getPassedParameters());
-            System.out.println(analysis.submissionSuitsSolution());
-            Grading grading = evaluator.grade(analysis, submission.getMaxPoints(),
-                    submission.getPassedAttributes(), submission.getPassedParameters());
-            GradingManager.gradingMap.put(submissionId.getId(), new RestGrading(grading.getPoints(), grading.getMaxPoints()));
+            if (evaluator != null){
+                Analysis analysis = evaluator
+                        .analyze(submission.getExerciseId(),
+                        submission.getUserId(), submission.getPassedAttributes(), submission.getPassedParameters());
 
-            /*
-            Report report = evaluator.report(analysis, grading, submission.getPassedAttributes(),
-                submission.getPassedParameters(),
-                    new Locale.Builder().setLanguage("en").setRegion("US").build());
-                     System.out.println(report.toString());
-             */
+                Grading grading = evaluator.grade(analysis, submission.getMaxPoints(),
+                        submission.getPassedAttributes(), submission.getPassedParameters());
+                GradingManager.gradingMap.put(submissionId.getId(), new RestGrading(grading.getPoints(), grading.getMaxPoints()));
 
+                processAnalysis(analysis);
 
+           }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    private void processAnalysis(Analysis analysis){
+        if (analysis instanceof SQLAnalysis){
+            Iterator it =  ((SQLAnalysis) analysis).iterCriterionAnalyses();
+            while(it.hasNext()) {
+                SQLCriterionAnalysis temp = (SQLCriterionAnalysis) it.next();
+                System.out.println(temp.toString() + " " + temp.isCriterionSatisfied());
+            }
+        }
+
     }
 
     public Submission getSubmission() {
