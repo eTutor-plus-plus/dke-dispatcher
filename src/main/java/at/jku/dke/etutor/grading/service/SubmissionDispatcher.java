@@ -45,17 +45,16 @@ public class SubmissionDispatcher implements Runnable{
         try {
             Evaluator evaluator = ModuleManager.getEvaluator(submission.getTaskType());
             if (evaluator != null){
-
                 Analysis analysis = evaluator
                         .analyze(submission.getExerciseId(),
                         submission.getUserId(), submission.getPassedAttributes(), submission.getPassedParameters());
 
                 Grading grading = evaluator.grade(analysis, submission.getMaxPoints(),
                         submission.getPassedAttributes(), submission.getPassedParameters());
-                GradingManager.gradingMap.put(submissionId.getId(), new RestGrading(grading.getPoints(), grading.getMaxPoints()));
 
+                RestGrading restGrading = new RestGrading(grading.getPoints(), grading.getMaxPoints());
+                DatabaseManager.addGrading(restGrading, submissionId);
                 processAnalysis(analysis);
-
            }
         } catch (Exception e) {
             e.printStackTrace();

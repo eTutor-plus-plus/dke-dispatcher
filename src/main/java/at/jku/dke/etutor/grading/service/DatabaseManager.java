@@ -5,10 +5,7 @@ import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 @Component
 public class DatabaseManager {
@@ -39,6 +36,28 @@ public class DatabaseManager {
                     "'"+submission.getPassedAttributes().get("submission")+"'"+", " +
                     submission.getMaxPoints() +
                     ");";
+            try {
+                PreparedStatement stmt = con.prepareStatement(query);
+                stmt.executeUpdate();
+                con.commit();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+                try {
+                    con.rollback();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void addGrading(RestGrading grading, SubmissionId id){
+        if(connected){
+            String query = "INSERT INTO grading VALUES("+
+                    "'"+id.getId()+"', " +
+                    grading.getMaxPoints()+", " +
+                    grading.getPoints() +
+                    ");";
             System.out.println(query);
             try {
                 PreparedStatement stmt = con.prepareStatement(query);
@@ -55,9 +74,23 @@ public class DatabaseManager {
         }
     }
 
-    public RestGrading getGrading(String submissionId){
-
+    public static RestGrading getGrading(String submissionId){
+        if(connected){
+            String query = "SELECT * FROM grading WHERE submissionId = " + "'" + submissionId + "';";
+            try {
+                PreparedStatement stmt = con.prepareStatement(query);
+                ResultSet resultSet = stmt.executeQuery();
+                RestGrading grading = null;
+                if (resultSet.next()){
+                    double maxPoints = resultSet.getDouble("maxPoints");
+                    double points = resultSet.getDouble("points");
+                    grading = new RestGrading(points, maxPoints);
+                }
+                return grading;
+            }catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
         return null;
     }
-
 }

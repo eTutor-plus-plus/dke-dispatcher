@@ -29,14 +29,14 @@ public class TestApp {
 
         // creating submission for sql module
         Submission submission = new Submission();
-        submission.setExerciseId(1);
+        submission.setExerciseId(13890);
         submission.setTaskType("sql");
-        submission.setUserId(2110794);
+        submission.setUserId(210);
         submission.setMaxPoints(100);
         HashMap<String, String> passedAttributes = new HashMap<>();
         passedAttributes.put("action", "diagnose");
-        passedAttributes.put("submission", "SELECT * FROM KONTO");
-        passedAttributes.put("diagnoseLevel", "1");
+        passedAttributes.put("submission", "select * from artist");
+        passedAttributes.put("diagnoseLevel", "3");
         submission.setPassedAttributes(passedAttributes);
         submission.setPassedParameters(new HashMap<String, String>());
 

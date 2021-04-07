@@ -10,8 +10,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ModuleManager{
-    private static Evaluator sqlEvaluator = new SQLEvaluator();
+    private static Evaluator sqlEvaluator;
 
+    public ModuleManager(){
+        sqlEvaluator = new SQLEvaluator();
+
+    }
 
     public static Evaluator getEvaluator(String tasktype){
         switch (tasktype) {
