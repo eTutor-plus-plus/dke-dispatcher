@@ -29,6 +29,8 @@ public class ETutorGradingController {
            return ResponseEntity.ok(EntityModel.of(grading,
                    linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("self")));
        }
-       else return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+       else return new ResponseEntity<>(EntityModel.of(new RestGrading(0,0),
+               linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("self")),
+               HttpStatus.NOT_FOUND);
     }
 }

@@ -41,7 +41,7 @@ public class ETutorSubmissionController {
                     linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("grading")), HttpStatus.ACCEPTED);
         } catch (IOException e){
             e.printStackTrace();
-            return new ResponseEntity<>(EntityModel.of(submissionId), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(EntityModel.of(submissionId), HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
