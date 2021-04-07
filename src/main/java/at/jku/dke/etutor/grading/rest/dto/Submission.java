@@ -15,7 +15,7 @@ import java.util.Map;
  */
 
 
-@Component
+
 public class Submission implements Serializable {
     private String taskType;
     private int exerciseId;

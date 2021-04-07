@@ -9,6 +9,7 @@ import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
 import at.jku.dke.etutor.modules.sql.analysis.SQLCriterionAnalysis;
+import at.jku.dke.etutor.modules.sql.grading.SQLGrader;
 
 
 import java.util.Iterator;
@@ -32,6 +33,7 @@ public class SubmissionDispatcher implements Runnable{
     public SubmissionDispatcher(Submission submission, SubmissionId submissionId){
         this.submission=submission;
         this.submissionId=submissionId;
+        DatabaseManager.addSubmission(submission, submissionId);
     }
     /**
      * Identifies the module according to submission.taskType
@@ -43,6 +45,7 @@ public class SubmissionDispatcher implements Runnable{
         try {
             Evaluator evaluator = ModuleManager.getEvaluator(submission.getTaskType());
             if (evaluator != null){
+
                 Analysis analysis = evaluator
                         .analyze(submission.getExerciseId(),
                         submission.getUserId(), submission.getPassedAttributes(), submission.getPassedParameters());
@@ -64,9 +67,10 @@ public class SubmissionDispatcher implements Runnable{
             while(it.hasNext()) {
                 SQLCriterionAnalysis temp = (SQLCriterionAnalysis) it.next();
                 System.out.println(temp.toString() + " " + temp.isCriterionSatisfied());
+                System.out.println("EvaluationCriterion " + " " + temp.getEvaluationCriterion().toString());
+                System.out.println("AnalysisException" + " "+ temp.getAnalysisException());
             }
         }
-
     }
 
     public Submission getSubmission() {

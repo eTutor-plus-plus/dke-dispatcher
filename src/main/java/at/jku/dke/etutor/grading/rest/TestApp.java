@@ -35,7 +35,7 @@ public class TestApp {
         submission.setMaxPoints(100);
         HashMap<String, String> passedAttributes = new HashMap<>();
         passedAttributes.put("action", "diagnose");
-        passedAttributes.put("submission", "SELECT id FROM KONTO");
+        passedAttributes.put("submission", "SELECT * FROM KONTO");
         passedAttributes.put("diagnoseLevel", "1");
         submission.setPassedAttributes(passedAttributes);
         submission.setPassedParameters(new HashMap<String, String>());
