@@ -41,7 +41,7 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 		super();
 
 		try {
-			this.logger = Logger.getLogger("etutor.modules.sql");
+			this.logger = Logger.getLogger("at.jku.dke.etutor.modules.sql");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

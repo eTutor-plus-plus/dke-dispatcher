@@ -30,7 +30,7 @@ public class SQLExerciseManager /* implements ModuleExerciseManager */ {
 			//this.conn = DriverManager.getConnection(CONN_URL, CONN_USER, CONN_PWD);
 			//this.conn.setAutoCommit(true);
 
-			this.logger = Logger.getLogger("etutor.modules.sql");
+			this.logger = Logger.getLogger("at.jku.dke.etutor.modules.sql");
 
 		} catch (Exception e){
 			e.printStackTrace();		

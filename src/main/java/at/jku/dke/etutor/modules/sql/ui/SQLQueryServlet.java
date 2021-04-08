@@ -212,12 +212,12 @@ public class SQLQueryServlet extends HttpServlet implements SingleThreadModel {
 
 	public void init(ServletConfig arg0) throws ServletException {
 		try {
-			this.umLogger = Logger.getLogger("etutor.modules.sql");
+			this.umLogger = Logger.getLogger("at.jku.dke.etutor.modules.sql");
 		} catch (Exception e){
 			e.printStackTrace();
 		}
 		try {
-			this.cmLogger = Logger.getLogger("etutor.modules.sql");
+			this.cmLogger = Logger.getLogger("at.jku.dke.etutor.modules.sql");
 		} catch (Exception e){
 			e.printStackTrace();
 		}

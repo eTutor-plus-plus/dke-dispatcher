@@ -20,8 +20,8 @@ public class Submission implements Serializable {
     private String taskType;
     private int exerciseId;
     private int userId;
-    private Map passedAttributes;
-    private Map passedParameters;
+    private Map<String, String> passedAttributes;
+    private Map<String, String> passedParameters;
     private int maxPoints;
 
 
@@ -57,7 +57,7 @@ public class Submission implements Serializable {
         this.userId = userId;
     }
 
-    public Map getPassedAttributes() {
+    public Map<String, String> getPassedAttributes() {
         return passedAttributes;
     }
 
@@ -65,7 +65,7 @@ public class Submission implements Serializable {
         this.passedAttributes = passedAttributes;
     }
 
-    public Map getPassedParameters() {
+    public Map<String, String> getPassedParameters() {
         return passedParameters;
     }
 

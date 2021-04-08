@@ -19,7 +19,7 @@ public class SQLGrader {
 		super();
 
 		try {
-			this.logger = Logger.getLogger("etutor.modules.sql");
+			this.logger = Logger.getLogger("at.jku.dke.etutor.modules.sql");
 		} catch (Exception ignore) {
 			ignore.printStackTrace();
 		}
