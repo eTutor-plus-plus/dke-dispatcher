@@ -14,7 +14,7 @@ sowie ein Link zur zweiten Schnittstelle (spezifisch für die ID).
 Falls bei der Generierung der ID oder dem Iinitialisieren des Threads Exceptions auftreten, wird eine ResponseEntity mit Status Code 500 und einer Standard ID von -1 zurückgesendet.
 
 Der **SubmissionDispatcher** 
-identifiziert zunächst den vom jeweiligen Modul implementierte Evaluator in Abhängigkeit von dem übermittelten Task-Type und ruft danach die
+identifiziert zunächst den vom jeweiligen Modul implementierten Evaluator in Abhängigkeit von dem übermittelten Task-Type und ruft danach die
 unterschiedlichen Methoden zur Auswertung der Submission auf. 
 Das daraus entstehende GradingDTO-Objekt wird zusammen mit der Submission ID ebenfalls in einer PostgreSQL Tabelle gespeichert. 
 Darin finden sich die maximal erreichbaren sowie die erreichten Punkte.
