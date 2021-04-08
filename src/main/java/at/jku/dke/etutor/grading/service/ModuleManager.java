@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 /**
  * Maps the tasktypes to the modules
  */
-
 @Component
 public class ModuleManager{
     private static Evaluator sqlEvaluator;

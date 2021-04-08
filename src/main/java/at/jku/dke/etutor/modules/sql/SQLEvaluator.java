@@ -163,8 +163,8 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 				referenceConnPwd = rset.getString("conn_pwd");				
 				referenceConnString = rset.getString("conn_string");
 			}
-			//ks
-			referenceConnString = "mond.dke.uni-linz.ac.at:1521:etutor";
+			//ks referenceConnString = "mond.dke.uni-linz.ac.at:1521:etutor";
+
 			//ESTABLISHING CONNECTION TO EXERCISE SPECIFIC REFERENCE DATABASE
 			java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 			this.logger.log(Level.INFO,referenceConnString + " - " + referenceConnUser + " - " + referenceConnPwd);

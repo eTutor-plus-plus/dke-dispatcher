@@ -4,6 +4,7 @@ package at.jku.dke.etutor.grading.rest.dto;
 import org.springframework.stereotype.Component;
 
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -13,14 +14,28 @@ import java.util.Map;
  *  Parameters are corresponding to the modules implementation of the interfaces (see package evaluation).
  *
  */
-
-
-
+@Entity
 public class Submission implements Serializable {
+    @Id
+    private String submissionId;
+
     private String taskType;
     private int exerciseId;
     private int userId;
+
+    @ElementCollection
+    @CollectionTable(name="submission_attribute_mapping",
+    joinColumns = {@JoinColumn(name = "submission", referencedColumnName = "submissionId")})
+    @MapKeyColumn(name="attribute_key")
+    @Column(name="attribute_value")
     private Map<String, String> passedAttributes;
+
+
+    @ElementCollection
+    @CollectionTable(name="submission_parameter_mapping",
+            joinColumns = {@JoinColumn(name = "submission", referencedColumnName = "submissionId")})
+    @MapKeyColumn(name="parameter_key")
+    @Column(name="parameter_value")
     private Map<String, String> passedParameters;
     private int maxPoints;
 
@@ -31,6 +46,14 @@ public class Submission implements Serializable {
 
     public void setMaxPoints(int maxPoints) {
         this.maxPoints = maxPoints;
+    }
+
+    public String getSubmissionId() {
+        return submissionId;
+    }
+
+    public void setSubmissionId(String submissionId) {
+        this.submissionId = submissionId;
     }
 
     public String getTaskType() {

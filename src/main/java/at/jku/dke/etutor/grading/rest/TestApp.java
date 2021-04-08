@@ -29,19 +29,18 @@ public class TestApp {
 
         // creating submission for sql module
         Submission submission = new Submission();
-        submission.setExerciseId(10043);
+        submission.setExerciseId(1);
         submission.setTaskType("sql");
-        submission.setUserId(999);
-        submission.setMaxPoints(100);
+        submission.setUserId(99999);
+        submission.setMaxPoints(1000);
         HashMap<String, String> passedAttributes = new HashMap<>();
         passedAttributes.put("action", "diagnose");
-        passedAttributes.put("submission", "select distinct longitude, latitude from node;");
+        passedAttributes.put("submission", "select * from konto;");
         passedAttributes.put("diagnoseLevel", "3");
         submission.setPassedAttributes(passedAttributes);
         submission.setPassedParameters(new HashMap<String, String>());
 
         String submissionJson = new ObjectMapper().writeValueAsString(submission);
-
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/submission"))
