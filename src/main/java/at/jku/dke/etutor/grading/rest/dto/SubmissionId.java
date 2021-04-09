@@ -28,9 +28,9 @@ public class SubmissionId {
     }
 
     /**
-     * takes the submission and generates a unique uuid depending oon the byte[] of the submission
+     * takes the submission and generates a unique uuid depending on the byte[] of the submission
      * (same submissions produce same uuid)
-     * sets the submissionId for the Submission-Object and persists it using the corresponding repository
+     * sets the submissionId for the Submission-Object and persists it using the corresponding JpaRepository
      * @param submission The submission from the student
      * @return a new SubmissionId Instance which wraps the generated ID
      * @throws IOException

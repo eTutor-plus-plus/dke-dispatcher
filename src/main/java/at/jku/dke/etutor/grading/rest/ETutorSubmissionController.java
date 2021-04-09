@@ -55,11 +55,13 @@ public class ETutorSubmissionController {
                     submissionRepository, gradingDTORepository));
             t.start();
             return new ResponseEntity<>(EntityModel.of(submissionId,
-                    linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("grading")), HttpStatus.ACCEPTED);
+                    linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("grading")),
+                    HttpStatus.ACCEPTED);
         } catch (IOException e){
             logger.log(Level.SEVERE, "Request processing stopped due to errors");
             e.printStackTrace();
-            return new ResponseEntity<>(EntityModel.of(submissionId), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(EntityModel.of(submissionId),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
