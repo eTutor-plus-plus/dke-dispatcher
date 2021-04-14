@@ -1,0 +1,1526 @@
+"ID","SUBMISSION_DB","PRACTISE_DB","SOLUTION"
+10015,1,1,"SELECT u.prodno, s.Y,  SUM(u.qty) PQTY, SUM(s.qty) SQTY, SUM(s.qty)-SUM(u.qty) DQTY FROM  (SELECT t1.y, s1.prodno, SUM(s1.qty) qty FROM sales s1, TIME t1 WHERE s1.dayno=t1.dayno GROUP BY t1.y, s1.prodno) s, (SELECT t2.y, u1.prodno, SUM(u1.qty) qty FROM purchase u1, TIME t2 WHERE u1.dayno=t2.dayno GROUP BY t2.y, u1.prodno) u WHERE s.prodno=u.prodno AND u.y=s.y GROUP BY (u.prodno, s.y) ORDER BY u.prodno"
+10043,1,1,"select distinct longitude, latitude from node;"
+10042,1,1,"select * from segment where code = 'H10';"
+10044,1,1,"select max(toKM - fromKM) MaxLen from segment;"
+10045,1,1,"select code, max(toKM - fromKM) MaxLen from segment group by code;"
+10046,1,1,"SELECT code, MAX(toKM - fromKM) MaxLen
+FROM segment
+GROUP BY code
+HAVING MAX(toKM - fromKM) > 50;"
+10047,1,1,"SELECT name, longitude, latitude
+FROM highway, node
+WHERE startNodeID = nodeID;"
+10048,1,1,"SELECT DISTINCT c.name, n1.longitude, n1.latitude
+FROM node n1, node n2, city c, exit e
+WHERE n1.type != n2.type AND
+      n1.longitude = n2.longitude AND
+      n1.latitude = n2.latitude AND
+      n1.nodeID = e.nodeID AND
+      e.ZIP = c.ZIP;"
+10051,1,1,"select s1.code, s1.segID, s1.toKM - s1.fromKM Length from segment s1 where s1.toKM - s1.fromKM = (select max (s2.toKM - s2.fromKM) from segment s2 where s1.code = s2.code)"
+10052,1,1,"(SELECT n1.nodeID, n1.longitude, n1.latitude FROM node n1, exit e, highwayExit he WHERE he.code = 'H10' AND       he.nodeID = e.nodeID AND       e.nodeID = n1.nodeID) UNION (SELECT n2.nodeID, n2.longitude, n2.latitude FROM node n2, intersection i, HighwayIntersection hi WHERE hi.code = 'H10' AND       hi.nodeID = i.nodeID AND       i.nodeID = n2.nodeID);
+"
+10050,1,1,"SELECT s1.code, s1.segID, (s1.toKM - s1.fromKM) AS LENGTH
+FROM segment s1
+WHERE (s1.toKM - s1.fromKM) >
+      (SELECT (s2.toKM - s2.fromKM)
+       FROM segment s2
+       WHERE s2.segID = 'S01' AND s2.code = 'H10')"
+13169,4,3,"select k.kontonr, k.inhname, max(betrag), min(betrag)
+from konto k, buchung b
+where k.kontonr = b.vonkonto
+group by k.kontonr, k.inhname;"
+13089,1,2,"	
+DROP TABLE ETUTOR_JESS.JessExercise;
+
+CREATE ETUTOR_JESS.TABLE JessExercise (
+	id	NUMBER,
+	private_facts VARCHAR(4000),
+	public_facts VARCHAR(4000),
+	reference_solution VARCHAR(4000),
+	transitivity NUMBER,
+	recursion NUMBER,
+	negation NUMBER,
+	searchtree NUMBER,
+	exampletype NUMBER,
+	maximumpoints NUMBER,
+	PRIMARY KEY(id)
+	);
+"
+13170,4,3,"select buchngnr, betrag
+from buchung
+where betrag >
+  (select avg(betrag) * 1.5 from Buchung);"
+13171,4,3,"select buchngnr, betrag
+from buchung
+where vonkonto in
+  (select kontonr
+   from konto
+   where ADD_MONTHS(sysdate, -360)<gebdat)
+or aufkonto in 
+  (select kontonr
+   from konto
+   where ADD_MONTHS(sysdate, -360)<gebdat)
+order by betrag desc;
+"
+13172,4,3,"select betrag from buchung
+where vonkonto in
+  (select k.kontonr
+   from konto k, inhaber i
+   where k.inhname=i.name 
+   and k.gebdat=i.gebdat
+   and adresse like '%z');"
+13173,4,3,"select inhname, saldo
+from konto
+where saldo-80000 >
+  (select max(betrag)
+   from buchung
+   where datum between '01-OCT-95' and '31-OCT-95')
+order by inhname, saldo desc;"
+13174,4,3,"select kontonr, saldo
+from konto k1
+where saldo <
+  (select sum(betrag)
+   from buchung b1
+   where k1.kontonr=b1.aufkonto);"
+13175,4,3,"select i.name, i.gebdat, i.adresse, count(*)anzahl
+from inhaber i, konto k
+where i.name=k.inhname and i.gebdat=k.gebdat
+group by i.name, i.gebdat, i.adresse
+having count(*) >
+  (select avg(count(*))
+   from konto
+   group by inhname, gebdat);"
+13176,6,5,"select count(*) entlehnungen
+from entlehng e
+where (e.bis = '01-JAN-2999');"
+13597,12,11,"Select s.name, s.matrnr, s.kennr
+from student s, zeugnis z, professor p
+where p.pname = 'Huber'
+and s.matrnr = z.matrnr
+and z.profnr = p.profnr
+and z.note <>5
+order by s.name, s.matrnr;"
+13598,12,11,"Select z1.lvanr, s1.matrnr, s1.name, s2.matrnr, s2.name
+from student s1, student s2, zeugnis z1, zeugnis z2
+where s1.matrnr = z1.matrnr
+and z1.note <> 5
+and s2.matrnr = z2.matrnr
+and z2.note <> 5
+and z1.lvanr = z2.lvanr
+and s1.matrnr > s2.matrnr
+order by z1.lvanr, s1.name, s2.name;"
+13599,12,11,"select s.name, s.matrnr, s.kennr
+from student s
+where not exists
+(select * 
+ from 
+ zeugnis z
+ where z.matrnr = s.matrnr
+ and z.note < 5)
+order by s.kennr, s.name, s.matrnr;"
+13600,12,11,"Select kennr, min(note), avg(note)
+from student, zeugnis
+where student.matrnr = zeugnis.matrnr
+group by kennr
+having (avg(note) <= (min(note) + 1))
+order by kennr;
+"
+13601,12,11,"select pname, count(*), avg(note)
+from professor, zeugnis
+where professor.profnr = zeugnis.profnr
+group by pname
+order by count(*), pname;"
+13602,12,11,"select p.pname, s.kennr
+from professor p, student s, zeugnis z
+where p.profnr = z.profnr
+and z.matrnr = s.matrnr
+group by p.pname, s.kennr 
+order by p.pname, s.kennr;"
+13603,12,11,"Select s.matrnr, s.name, s.kennr, l.bez, z.note
+from student s, zeugnis z, diplomprfg d, voraussetzungen v, lva l
+where s.matrnr = z.matrnr
+and z.lvanr = v.lvanr
+and v.pnr = d.pnr
+and l.lvanr = z.lvanr
+and z.note < 5
+and d.bezeichnung = 'Angewandte INF'
+order by s.matrnr, s.name, s.kennr;"
+13604,12,11,"select s.matrnr, s.name, s.kennr
+from student s
+where not exists
+(Select * from diplomprfg d, voraussetzungen v
+ where d.pnr = v.pnr
+ and d.bezeichnung = 'Angewandte INF'
+ and not exists (Select * from zeugnis z
+                 where z.matrnr = s.matrnr
+                 and z.lvanr = v.lvanr
+                 and z.note <> 5))
+order by s.matrnr, s.name, s.kennr;"
+13605,12,11,"select s.matrnr, s.name, avg(z.note), count(*)
+from student s, zeugnis z
+where s.matrnr = z.matrnr
+group by s.matrnr, s.name
+having count(*) >= All 
+(Select count(*) from zeugnis z2
+ group by z2.matrnr);"
+13606,10,9,"select distinct s.mano, s.name, t.tno
+from studenten s, reserviert r, terminal t
+where s.mano = r.mano
+and r.tno = t.tno
+and not (t.rechner = s.rechner)
+order by s.mano;"
+13607,10,9,"select s1.mano, s1.name, r1.tno, r1.tag, r1.stunde, r2.mano as mano2
+from studenten s1, reserviert r1, reserviert r2
+where s1.mano = r1.mano 
+and r1.tno = r2.tno
+and ((r1.tag=r2.tag and r1.stunde+1=r2.stunde) 
+ OR (r1.tag+1=r2.tag and r1.stunde=23 and r2.stunde=0))
+order by s1.mano, r1.tno, r1.tag, r1.stunde;
+"
+13608,10,9,"select s.mano
+from studenten s
+where not exists
+(select * from reserviert r
+where s.mano = r.mano)
+order by s.mano;"
+13609,10,9,"select t.rechner, r.tag, r.stunde, count(r.tno) terminals
+from terminal t, reserviert r
+where t.tno = r.tno
+group by t.rechner, r.tag, r.stunde
+order by r.tag, r.stunde;"
+13610,10,9,"Select distinct s.mano, s.name
+from studenten s, reserviert r
+where s.mano = r.mano
+and r.stunde <=11
+order by s.mano;"
+13611,10,9,"select distinct s.mano, s.name
+from studenten s, reserviert r
+where s.mano = r.mano
+group by s.mano, s.name
+having count(distinct r.tag) = 1
+order by s.mano;"
+2,2,1,"SELECT r1.recordId, r1.artistName, r1.title
+FROM   record r1, track t1
+WHERE  r1.type='Album' AND r1.recordId=t1.recordId
+GROUP BY r1.recordId, r1.artistName, r1.title
+HAVING SUM(length) <
+  (SELECT AVG(SUM(t2.length))
+  FROM record r2, track t2
+  WHERE r2.type='Album' AND r2.recordId=t2.recordId
+  GROUP BY r2.recordId);"
+5,2,1,"SELECT p.ean, p.bezeichnung, f.filnr, f.inhname, s.bestand
+FROM   produkt p, filiale f, sortiment s
+WHERE  p.ean=s.ean
+AND    f.filnr=s.filnr
+AND    s.bestand >= 50
+ORDER BY p.ean DESC, f.filnr"
+6,2,1,"SELECT DISTINCT b.bestell_nr
+FROM   Bestellung b, Bestellposition p
+WHERE  b.bestell_nr = p.bestell_nr
+       AND b.Datum = TO_DATE('13-10-03','DD-MM-YY')
+       AND p.Menge > 100;"
+7,2,1,"SELECT bestell_nr, Datum
+    FROM Bestellung
+    WHERE bestell_nr NOT IN
+        (SELECT bestell_nr 
+         FROM Lieferposition);"
+8,2,1,"SELECT p.Bezeichnung
+FROM   Bestellposition bp, Bauprodukt p, Bestellung b
+WHERE  bp.prod_nr = p.prod_nr
+       AND bp.bestell_nr = b.bestell_nr
+       AND b.Datum = TO_DATE('13-10-03','DD-MM-YY')
+GROUP BY p.prod_nr, p.Bezeichnung
+HAVING COUNT(DISTINCT bp.bestell_nr) > 5;"
+9,2,1,"SELECT ls.Datum, p.Bezeichnung, SUM(lp.Menge) Liefermenge
+FROM   Bauprodukt p, Bestellposition bp, Lieferposition lp, Lieferschein ls
+WHERE  p.prod_nr = bp.prod_nr
+       AND bp.bestell_nr = lp.bestell_nr
+       AND bp.pos_nr = lp.bestellpos_nr
+       AND lp.liefer_nr = ls.liefer_nr
+GROUP BY ls.Datum, p.prod_nr, p.Bezeichnung;"
+13,2,1,"select sa.art, sa.bezeichnung, count (s.name) as ANZAHL, sum (s.laenge) as LAENGE
+from strassenart sa, strasse s
+where sa.art = s.strassenart
+group by sa.art, sa.bezeichnung
+having sum (s.laenge) >= ALL
+  (select sum (s2.laenge)
+   from strasse s2
+   group by s2.strassenart)"
+14,2,1,"select *
+from ort o
+where o.plz in (
+  (select ortVon
+   from strasse s, strassenart sa
+   where s.strassenart = sa.art AND
+         sa.bezeichnung = 'Landesstrasse')
+  UNION
+  (select ortNach
+   from strasse s, strassenart sa
+   where s.strassenart = sa.art AND
+         sa.bezeichnung = 'Landesstrasse') )"
+15,2,1,"select *
+from ort o
+where not exists
+  (select *
+   from strassenart sa
+   where not exists
+     (select *
+      from liegtAnStrasse las, strasse s
+      where las.strassenname = s.name AND
+            s.strassenart = sa.art AND
+            o.plz = las.ort))"
+17,2,1,"SELECT s1.filnr, s1.ean as EAN_1, p1.bezeichnung as BEZ_1, s2.ean as EAN_2, p2.bezeichnung as BEZ_2,
+       (s1.vkpreis-s1.preisred) as preis
+FROM   sortiment s1, sortiment s2, produkt p1, produkt p2
+WHERE  s1.ean = p1.ean
+AND    s2.ean = p2.ean 
+AND    s1.ean <> s2.ean
+AND    s1.filnr = s2.filnr
+AND    s1.vkpreis-s1.preisred = s2.vkpreis-s2.preisred"
+18,2,1,"SELECT p.ean, p.bezeichnung
+FROM   produkt p
+WHERE  p.ean NOT IN (SELECT s.ean
+                     FROM   sortiment s, filiale f
+                     WHERE  s.filnr = f.filnr
+                     AND    f.plz BETWEEN 4010 AND 4049)"
+19,2,1,"SELECT f.filnr, f.inhname
+FROM   filiale f
+WHERE  NOT EXISTS (SELECT *
+                   FROM   produkt p
+                   WHERE  p.kategorie NOT IN (SELECT p2.kategorie
+                                              FROM   sortiment s, produkt p2
+                                              WHERE  s.ean=p2.ean
+                                              AND    s.filnr=f.filnr))"
+20,2,1,"SELECT COUNT(*) as AnzahlSortiment, COUNT(DISTINCT s.ean)As AnzahlEAN, SUM(s.bestand*p.ekpreis) as Bestandwert
+FROM   sortiment s, produkt p
+WHERE  s.ean=p.ean"
+21,2,1,"SELECT f.filnr, f.plz, SUM(p.ekpreis * s.bestand) as Lagerwert
+FROM   filiale f, produkt p, sortiment s
+WHERE  f.filnr = s.filnr
+AND    p.ean = s.ean
+AND    p.kategorie = 'Ersatz'
+GROUP BY f.filnr, f.plz
+HAVING SUM(p.ekpreis * s.bestand) > 300000"
+22,2,1,"SELECT rp.rechnungnr, rp.datum as Datum, p.kategorie, COUNT(*) as Anzahl, 
+       SUM(rp.einzelpreis*rp.menge) AS rechnungsbetrag
+FROM   rechnungpos rp, produkt p
+WHERE  rp.ean=p.ean
+AND    NOT EXISTS (SELECT *
+                   FROM   rechnungpos rp2, produkt p2
+                   WHERE  rp2.ean=p2.ean
+                   AND    (rp2.rechnungnr=rp.rechnungnr AND rp2.datum=rp.datum)AND p2.kategorie<>p.kategorie)
+GROUP BY rp.rechnungnr, rp.datum, p.kategorie
+"
+23,2,1,"(SELECT k.kundenr, k.name
+FROM   kunde k, rechnung r, rechnungpos rp, produkt p
+WHERE  k.kundenr=r.kundenr
+AND    r.rechnungnr=rp.rechnungnr
+AND    r.datum=rp.datum
+AND    rp.ean=p.ean
+AND    p.kategorie='Audio')
+INTERSECT
+(SELECT k.kundenr, k.name
+FROM   kunde k, rechnung r, rechnungpos rp, produkt p
+WHERE  k.kundenr=r.kundenr
+AND    r.rechnungnr=rp.rechnungnr
+AND    r.datum=rp.datum
+AND    rp.ean=p.ean
+AND    p.kategorie='Sonstiges')
+MINUS
+(SELECT k.kundenr, k.name
+FROM   kunde k, rechnung r, rechnungpos rp, produkt p
+WHERE  k.kundenr=r.kundenr
+AND    r.rechnungnr=rp.rechnungnr
+AND    r.datum=rp.datum
+AND    rp.ean=p.ean
+AND    p.kategorie='Pflege')
+"
+24,2,1,"SELECT audio.kundenr, audio.umsatz As Umsatz_Audio, sonst.umsatz as Umsatz_Sonstiges
+FROM
+(SELECT k.kundenr, k.name, SUM(rp.menge*rp.einzelpreis) umsatz
+FROM   kunde k, rechnung r, rechnungpos rp, produkt p
+WHERE  k.kundenr=r.kundenr
+AND    r.rechnungnr=rp.rechnungnr
+AND    r.datum=rp.datum
+AND    rp.ean=p.ean
+AND    p.kategorie='Audio'
+GROUP BY k.kundenr, k.name) audio,
+(SELECT k.kundenr, k.name, SUM(rp.menge*rp.einzelpreis) umsatz
+FROM   kunde k, rechnung r, rechnungpos rp, produkt p
+WHERE  k.kundenr=r.kundenr
+AND    r.rechnungnr=rp.rechnungnr
+AND    r.datum=rp.datum
+AND    rp.ean=p.ean
+AND    p.kategorie='Sonstiges'
+GROUP BY k.kundenr, k.name) sonst
+WHERE  audio.kundenr=sonst.kundenr
+"
+25,2,1,"SELECT MIN(TO_DATE(rp.datum)) as Tag
+FROM   rechnungpos rp
+WHERE  (SELECT SUM(rp2.menge*rp2.einzelpreis)
+        FROM   rechnungpos rp2
+        WHERE  rp2.datum<=rp.datum) > 0.5 *
+       (SELECT SUM(rp3.menge*rp3.einzelpreis)
+        FROM   rechnungpos rp3)
+"
+26,2,1,"SELECT f.filnr, f.plz, SUM(p.ekpreis * s.bestand) as Lagerwert
+FROM   filiale f, produkt p, sortiment s
+WHERE  f.filnr = s.filnr
+AND    p.ean = s.ean
+AND    p.kategorie = 'Ersatz'
+GROUP BY f.filnr, f.plz
+HAVING SUM(p.ekpreis * s.bestand) > 
+                 (SELECT AVG(SUM(p1.ekpreis * s1.bestand))
+                  FROM   produkt p1, sortiment s1
+                  WHERE  p1.ean = s1.ean
+                  AND    p1.kategorie = 'Ersatz'
+                  GROUP BY s1.filnr)"
+27,2,1,"SELECT f.filnr, p.kategorie, SUM(rp.menge*rp.einzelpreis) Umsatz, d.avg_umsatz
+FROM   filiale f, produkt p, rechnung r, rechnungpos rp,
+       (SELECT p1.kategorie, 
+               SUM(rp1.menge*rp1.einzelpreis)/COUNT(DISTINCT r1.filnr) 
+               AS avg_umsatz
+        FROM   rechnung r1, rechnungpos rp1, produkt p1
+        WHERE  r1.rechnungnr = rp1.rechnungnr AND r1.datum = rp1.datum
+        AND    rp1.ean = p1.ean
+        GROUP BY p1.kategorie) d
+WHERE  f.filnr=r.filnr
+AND    rp.ean=p.ean
+AND    r.rechnungnr=rp.rechnungnr AND r.datum = rp.datum
+AND    p.kategorie=d.kategorie
+GROUP BY f.filnr, p.kategorie, d.avg_umsatz
+"
+28,2,1,"SELECT (Bestell.BMenge - Liefer.LMenge) As Menge
+	FROM
+	(SELECT SUM(bp.Menge) AS BMenge 
+	FROM Bauprodukt p, Bestellposition bp, Bestellung b 	WHERE p.prod_nr = bp.prod_nr
+	AND bp.bestell_nr = b.bestell_nr
+	AND p.Bezeichnung = 'Zementsack'
+	AND b.Anschrift = 'Uniweg 1')  Bestell,
+	(SELECT SUM(lp.Menge) AS LMenge
+	FROM Bauprodukt p, Bestellposition bp, Lieferposition lp, Bestellung b
+	WHERE p.prod_nr = bp.prod_nr
+	AND bp.bestell_nr = lp.bestell_nr
+	AND bp.pos_nr = lp.bestellpos_nr
+	AND bp.bestell_nr = b.bestell_nr
+	AND p.Bezeichnung = 'Zementsack'
+AND b.Anschrift = 'Uniweg 1') Liefer;"
+29,2,1,"SELECT AVG(COUNT (*)) AS ANZAHL FROM human p, parent par WHERE ParentName = name AND gender = 'f' GROUP BY name"
+30,2,1,"SELECT name FROM human WHERE (age < 18) AND NOT EXISTS (SELECT * FROM parent WHERE name = ChildName)"
+31,2,1,"SELECT p.ChildName As Name FROM parent p, parent geschwister WHERE p.ParentName = geschwister.ParentName 
+GROUP BY p.ChildName HAVING COUNT (distinct geschwister.ChildName) >
+(SELECT AVG(COUNT(distinct g.ChildName)) FROM parent p2, parent g WHERE p2.ParentName = g.ParentName 
+GROUP BY p2.ChildName)"
+32,2,1,"SELECT count (*) As Anzahl FROM human vater, human mutter, parent vrel, parent mrel WHERE (vater.age - mutter.age >= 4) AND vater.name = vrel.ParentName AND mutter.name = mrel.ParentName AND vrel.ChildName = mrel.ChildName AND mutter.gender = 'f' AND vater.gender = 'm'"
+33,2,1,"SELECT AVG(MIN(p.age - enkel.age)) AS DURCHSCHNITTSALTER
+FROM human p, human enkel, parent ist_kind, parent ist_enkel
+WHERE (p.name = ist_kind.ParentName)
+AND (ist_kind.ChildName = ist_enkel.ParentName)
+AND (ist_enkel.ChildName = enkel.name)
+AND (p.gender = 'm') GROUP BY p.name"
+34,2,1,"select distinct p.persnr, p.name, p.beruf
+from   person p, mietet m, wohnung w
+where  p.persnr=m.mieternr
+and    m.wohnnr=w.wohnnr
+and    m.bis=TO_DATE('31-12-2099','DD-MM-YYYY') and    m.preis <= 1100
+and    w.bezirk=4
+order by p.name"
+35,2,1,"select distinct w.wohnnr, w.gross, p.name
+from   wohnung w, person p, mietet m, person p1
+where  w.eigentuemer=p.persnr
+and    w.gross > 50
+and    m.wohnnr=w.wohnnr 
+and    p1.persnr=m.mieternr
+and    p1.stand='verheiratet'
+order by w.wohnnr"
+36,2,1,"select count(*) Anzahl, sum(m.preis) Gesamtsumme, avg(m.preis/w.gross) Durchschnittsmiete
+from   mietet m, wohnung w
+where  m.wohnnr=w.wohnnr
+and    m.bis=TO_DATE('31-12-2099','DD-MM-YYYY');"
+37,2,1,"select p.persnr, p.name, count(*) AnzahlWohnungen, sum(w.gross) Gesamtwohnflaeche
+from   person p, wohnung w
+where  p.persnr=w.eigentuemer
+group by p.persnr, p.name
+order by count(*) desc, p.persnr"
+38,2,1,"select w.wohnnr, w.gross, count(*) AnzahlMietverh, avg(m.preis/w.gross) D_Miete, max(m.preis/w.gross) Hoechstmiete
+from   wohnung w, mietet m
+where  w.wohnnr=m.wohnnr
+group by w.wohnnr, w.gross
+having avg(m.preis/w.gross) > 15
+order by w.wohnnr"
+39,2,1,"select w.wohnnr, w.gross, count(*) Anzahlmietverh, avg(m.preis/w.gross) D_Miete, max(m.preis/w.gross) Hoechstmiete
+from   wohnung w, mietet m
+where  w.wohnnr=m.wohnnr
+group by w.wohnnr, w.gross
+having max(m.preis/w.gross) > 
+          (select avg(max(m1.preis/w1.gross))
+           from   wohnung w1, mietet m1
+           where  w1.wohnnr=m1.wohnnr
+           group by w1.wohnnr)
+order by w.wohnnr"
+40,2,1,"select distinct w.bezirk
+from   wohnung w
+where  not exists
+       (select * 
+        from   wohnung w1
+        where  w1.bezirk=w.bezirk
+        and    not exists
+               (select *
+                from   mietet m
+                where  m.bis=TO_DATE('31-12-2099','DD-MM-YYYY')                and    m.wohnnr=w1.wohnnr))
+order by w.bezirk"
+41,2,1,"select w.bezirk, count(*) Anzahl_Wohnungen
+from   wohnung w
+where  not exists
+       (select *
+        from   mietet m, wohnung w1
+        where  m.wohnnr=w1.wohnnr
+        and    m.bis=TO_DATE('31-12-2099','DD-MM-YYYY')
+        and    w1.bezirk=w.bezirk)
+group by w.bezirk
+order by w.bezirk"
+42,2,1,"select w.eigentuemer, COUNT(*) Anzahl_Mietverh, COUNT(DISTINCT w.wohnnr) Anzahl_Wohnungen, MAX(m.preis/w.gross) Hoechstmiete
+from   wohnung w, mietet m
+where  w.wohnnr=m.wohnnr
+group by w.eigentuemer
+order by w.eigentuemer"
+43,2,1,"select w.eigentuemer, m.preis
+from   wohnung w, mietet m
+where  w.wohnnr=m.wohnnr
+and    not exists 
+          (select *
+           from   mietet m1, wohnung w1
+           where  m1.wohnnr=w1.wohnnr
+           and    w1.eigentuemer=w.eigentuemer
+           and    m1.preis > m.preis)
+and    not exists
+          (select *
+           from   mietet m1, wohnung w1
+           where  m1.wohnnr=w1.wohnnr
+           and    w1.eigentuemer=w.eigentuemer
+           and    m1.von > m.von)   "
+44,2,1,"select o1.plz as plz1, o1.name ort1, o2.plz plz2, o2.name ort2,
+       l2.beiKM - l1.beiKM as entfernung,
+       s.name, s.bezeichnung
+from ort o1, ort o2, liegtAnStrasse l1, liegtAnStrasse l2, strasse s
+where o1.plz = l1.ort AND
+      o2.plz = l2.ort AND
+      s.name = l1.strassenname AND
+      l1.strassenname = l2.strassenname AND
+      l2.beiKM > l1.beiKM AND
+      NOT exists (
+        select *
+        from liegtAnStrasse ldazw
+        where ldazw.strassenname = l1.strassenname AND
+              ldazw.beiKM > l1.beiKM AND
+              ldazw.beiKM < l2.beiKM)"
+51,2,1,"SELECT DISTINCT p.persnr, p.name
+FROM   person p, wohnung w, mietet m
+WHERE  p.persnr=w.eigentuemer AND w.wohnnr=m.wohnnr
+AND    m.bis=TO_DATE('31-12-2099','DD-MM-YYYY') AND p.stand='ledig'
+AND    m.preis/w.gross > 7
+ORDER BY p.persnr
+"
+52,2,1,"SELECT w.wohnnr, w.eigentuemer, p1.name as VName, m.mieternr, p2.name as MName
+FROM   wohnung w, person p1, person p2, mietet m
+WHERE  w.wohnnr=m.wohnnr AND w.eigentuemer=p1.persnr AND m.mieternr=p2.persnr
+AND    w.bezirk=1 AND m.bis=TO_DATE('31-12-2099','DD-MM-YYYY') ORDER BY w.wohnnr
+"
+53,2,1,"SELECT DISTINCT w.wohnnr, w.bezirk FROM   wohnung w, mietet m WHERE  w.wohnnr=m.wohnnr AND    w.wohnnr NOT IN (SELECT m2.wohnnr FROM   mietet m2 WHERE  m2.bis=TO_DATE('31-12-2099','DD-MM-YYYY'))ORDER BY w.bezirk, w.wohnnr"
+54,2,1,"SELECT DISTINCT p.persnr, p.name
+FROM   person p, wohnung w
+WHERE  p.persnr=w.eigentuemer
+AND    NOT EXISTS (SELECT * 
+                   FROM   wohnung w2
+                   WHERE  w2.eigentuemer=p.persnr
+                   AND NOT EXISTS (SELECT * 
+                                   FROM   mietet m
+                                   WHERE  m.wohnnr=w2.wohnnr))
+"
+55,2,1,"SELECT w.bezirk, SUM(w.gross) FLAECHE
+FROM   wohnung w, mietet m
+WHERE  w.wohnnr=m.wohnnr AND m.bis=TO_DATE('31-12-2099','DD-MM-YYYY') GROUP BY w.bezirk
+HAVING SUM(w.gross)> (SELECT AVG(SUM(w1.gross))
+                      FROM   wohnung w1, mietet m1
+                      WHERE  w1.wohnnr=m1.wohnnr AND m1.bis=TO_DATE('31-12-2099','DD-MM-YYYY')                      GROUP BY w1.bezirk)
+"
+56,2,1,"SELECT w.wohnnr, w.bezirk, w.gross, (m.preis/w.gross) qm_miete, d.d_miete 
+FROM   wohnung w, mietet m,
+       (SELECT w1.bezirk, AVG(m1.preis/w1.gross) d_miete
+        FROM   wohnung w1, mietet m1
+        WHERE  w1.wohnnr=m1.wohnnr AND m1.bis=TO_DATE('31-12-2099','DD-MM-YYYY')
+        GROUP BY w1.bezirk) d
+WHERE  w.wohnnr=m.wohnnr AND m.bis=TO_DATE('31-12-2099','DD-MM-YYYY') AND    w.bezirk=d.bezirk
+"
+57,2,1,"SELECT p.persnr, p.name, COUNT(*) as MIETVERHAELTNISSE
+FROM   person p, wohnung w, mietet m
+WHERE  p.persnr=w.eigentuemer AND w.wohnnr=m.wohnnr
+GROUP BY p.persnr, p.name
+HAVING COUNT(*)=COUNT(DISTINCT m.mieternr)
+"
+58,2,1,"SELECT m1.mieternr, p.name, m1.wohnnr Wohnung1nr, m1.von Wohnung1von, m1.bis Wohnung1bis, m2.wohnnr Wohnung2nr, m2.von Wohnung2von, m2.bis Wohnung2bis
+FROM   mietet m1, person p, mietet m2, wohnung w1, wohnung w2
+WHERE  m1.mieternr=p.persnr AND m1.mieternr=m2.mieternr 
+AND    m1.wohnnr=w1.wohnnr AND m2.wohnnr=w2.wohnnr
+AND    w1.bezirk=w2.bezirk
+AND    m1.wohnnr < m2.wohnnr
+AND    ((m1.von BETWEEN m2.von AND m2.bis) OR (m2.von BETWEEN m1.von AND m1.bis))
+"
+59,2,1,"SELECT bezirk, SUM(erloes) as MIETEINNAHMEN FROM 
+((SELECT w.bezirk, SUM(ROUND(MONTHS_BETWEEN(m.bis, m.von))*m.preis) erloes
+FROM   wohnung w, mietet m
+WHERE  w.wohnnr=m.wohnnr
+AND    m.bis <> TO_DATE('31-12-2099','DD-MM-YYYY')
+GROUP BY w.bezirk)
+UNION
+(SELECT w.bezirk, SUM(ROUND(MONTHS_BETWEEN(SYSDATE, m.von))*m.preis) erloes
+FROM   wohnung w, mietet m
+WHERE  w.wohnnr=m.wohnnr
+AND    m.bis = TO_DATE('31-12-2099','DD-MM-YYYY')
+GROUP BY w.bezirk))
+GROUP BY bezirk
+HAVING SUM(erloes)=(SELECT MAX(SUM(erloes)) 
+                    FROM ((SELECT w.bezirk, SUM(ROUND(MONTHS_BETWEEN(m.bis, m.von))*m.preis) erloes
+                           FROM   wohnung w, mietet m
+                           WHERE  w.wohnnr=m.wohnnr
+                           AND    m.bis <> TO_DATE('31-12-2099','DD-MM-YYYY')
+                           GROUP BY w.bezirk)
+                          UNION
+                          (SELECT w.bezirk, SUM(ROUND(MONTHS_BETWEEN(SYSDATE, m.von))*m.preis) erloes
+                           FROM   wohnung w, mietet m
+                           WHERE  w.wohnnr=m.wohnnr
+                           AND    m.bis = TO_DATE('31-12-2099','DD-MM-YYYY')
+                           GROUP BY w.bezirk))
+                          GROUP BY bezirk)
+"
+60,2,1,"SELECT a1.name, a1.nationality, r1.title, r1.releaseDate FROM artist a1, record r1, distribute d1 WHERE a1.name=r1.artistName AND r1.recordId=d1.recordId AND d1.media='MD' AND NOT EXISTS (SELECT * FROM record r2, distribute d2 WHERE r2.recordId=d2.recordId AND d2.media='MD' AND r2.releaseDate<r1.releaseDate)"
+61,2,1,"SELECT r.recordid, r.artistName, r.title, r.releaseDate, r.type FROM record r, distribute d WHERE d.recordId=r.recordId GROUP BY r.recordId, r.artistName, r.title, r.releaseDate, r.type HAVING COUNT(*) = (SELECT COUNT(DISTINCT media) FROM distribute)"
+62,2,1,"SELECT g.genreId, g.name
+FROM genre g
+WHERE NOT EXISTS (
+SELECT *
+FROM record r, distribute d
+WHERE r.genreId=g.genreId AND r.recordId=d.recordId AND d.media='DVD'
+);"
+63,2,1,"SELECT r1.recordId, r1.artistName, r1.title FROM record r1 WHERE 
+r1.genreId IN ( 
+   SELECT r2.genreId 
+   FROM record r2 
+   WHERE r2.type='Single' 
+   GROUP BY r2.genreId 
+   HAVING COUNT(*) >= ALL 
+     (SELECT COUNT(*) FROM record r3 WHERE r3.type='Single' GROUP BY 
+     r3.genreId)) 
+ORDER BY r1.artistName, r1.title;"
+64,2,1,"SELECT r1.artistname, AVG(v.vkCD)*100/SUM(d1.price) AS CDAnteil 
+FROM record r1, distribute d1, 
+     (SELECT r2.artistname, SUM(d2.price) AS vkCD 
+     FROM record r2, distribute d2 
+     WHERE r2.recordId=d2.recordId AND d2.media='CD' 
+     GROUP BY r2.artistname 
+     ) v
+WHERE r1.recordId=d1.recordId AND r1.artistname=v.artistname 
+GROUP BY r1.artistname;"
+65,2,1,"select a.name, a.nationality, r.title 
+from artist a, record r, distribute d 
+where a.name=r.artistname and r.recordid=d.recordid and d.media='MD' 
+order by a.name, r.title;"
+66,2,1,"select a.name, a.nationality, min(r.releasedate) as Datum 
+from artist a, record r, distribute d 
+where a.name=r.artistname and r.recordid=d.recordid and d.media='CD' 
+group by a.name, a.nationality 
+order by a.name, a.nationality;"
+67,2,1,"select r.title, r.artistname, d.price 
+from  record r, distribute d 
+where r.recordid=d.recordid and d.media='CD' 
+and not exists 
+      (select * 
+       from   record r1, distribute d1 
+       where  r1.recordid=d1.recordid 
+       and    d1.media='CD' 
+       and    d1.price>d.price) 
+order by r.title; "
+68,2,1,"select r.recordid, r.title, count(*) Tracks 
+from   record r, track t 
+where  r.recordid=t.recordid 
+group by r.recordid, r.title 
+having count(*) = (select max(count(*)) 
+                    from   record r1, track t1 
+                    where  r1.recordid=t1.recordid 
+                    group by r1.recordid) order by r.title;"
+69,2,1,"select s.kennzahl as STR_KZ, s.bezeichnung as STR_BEZ, f.kurzbez as FK_KBEZ, f.bezeichnung as FK_BEZ
+from studienrichtung s, fakultaet f
+where s.gehoert_zu = f.kurzbez AND
+  not exists(
+     select *
+     from koje k
+     where k.gemietet_von = s.kennzahl);"
+70,2,1,"select s.kennzahl, s.bezeichnung, sum(flaeche) as Flaeche
+from studienrichtung s, koje k
+where k.gemietet_von = s.kennzahl
+group by s.kennzahl, s.bezeichnung;"
+71,2,1,"select f.kurzbez, f.bezeichnung, count(*) Anzahl
+from fakultaet f, studienrichtung s, koje k
+where s.gehoert_zu = f.kurzbez AND
+      k.gemietet_von = s.kennzahl
+group by f.kurzbez, f.bezeichnung
+having count (standnr) = (
+ select MAX (count(*))
+ from studienrichtung s2, koje k2
+ where k2.gemietet_von = s2.kennzahl
+ group by s2.gehoert_zu);"
+72,2,1,"select s1.kennzahl SKZ1, s1.bezeichnung BEZ1, k1.standnr SN1, k2.standnr SN2, s2.kennzahl SKZ2, s2.bezeichnung BEZ2
+from studienrichtung s1, koje k1, studienrichtung s2, koje k2
+where k1.gemietet_von = s1.kennzahl AND
+      k2.gemietet_von = s2.kennzahl AND
+      k1.linkernachbar = k2.standnr AND
+      k1.standnr > k2.standnr AND
+      k1.gemietet_von <> k2.gemietet_von;"
+73,2,1,"select g.genreId, g.name, count(*) anzahl
+from genre g, record r, distribute d
+where g.genreid=r.genreid and r.recordid=d.recordid and d.media='CD' 
+group by g.genreid, g.name;"
+74,1,1,"SELECT name FROM  human WHERE  gender='m' AND    age > 30"
+115,2,1,"select * from students where country='Thailand' or country='Japan' order by country, name;"
+116,2,1,"select distinct (s.country) from students s, course c, enrollment e where e.studentId=s.studentId and e.courseCode=c.courseCode and c.name='Database';"
+117,2,1,"select country, count(*) as numberOfStudents from students group by country;"
+118,2,1,"select country, count(*) as numberOfStudents from students where country <> 'Australia' group by country;"
+119,2,1,"select country, count(*) as numberOfStudents from students group by country having count(*)>=10;"
+120,2,1,"select * from students where studentId not in(select studentId from enrollment);"
+121,2,1,"SELECT * FROM hotel;"
+122,2,1,"SELECT * FROM hotel WHERE address LIKE '%London%';"
+123,2,1,"SELECT name, address FROM guest WHERE UPPER(address) LIKE '%LONDON%';"
+124,2,1,"SELECT * FROM room WHERE type IN ('double','family') AND price < 40;"
+125,2,1,"SELECT * FROM booking WHERE dateto IS NULL;"
+126,2,1,"SELECT name, address FROM guest WHERE UPPER(address) LIKE '%LONDON%' ORDER BY name;"
+127,2,1,"SELECT * FROM booking WHERE dateto IS NULL ORDER BY hno, datefrom;"
+128,2,1,"SELECT rno, hno, price FROM room WHERE type = 'family' ORDER BY hno, price DESC;"
+129,2,1,"SELECT r.price, r.type FROM room r, hotel h WHERE r.hno = h.hno AND h.name = 'Grosvenor Hotel';"
+130,2,1,"SELECT b.datefrom, b.dateto FROM booking b, room r WHERE b.hno = r.hno AND b.rno = r.rno AND r.type = 'family';"
+131,2,1,"SELECT DISTINCT g.name, g.address FROM guest g, booking b, hotel h WHERE b.gno = g.gno AND b.hno = h.hno AND h.name = 'Grosvenor Hotel';"
+132,2,1,"SELECT g.name, g.address FROM guest g, booking b, room r WHERE g.gno = b.gno AND b.hno = r.hno AND b.rno = r.rno AND r.type = 'family';"
+133,2,1,"SELECT COUNT(*) AS noOfHotels FROM hotel;"
+134,2,1,"SELECT AVG(price) AS AVGFamily FROM room WHERE type = 'family';"
+135,2,1,"SELECT SUM(price) AS revenue FROM room WHERE type = 'double' AND hno = 'H001';"
+136,2,1,"SELECT COUNT(DISTINCT gno) AS guests FROM booking WHERE datefrom < TO_DATE('01-05-1997','dd-mm-yyyy') AND dateto > TO_DATE('31-03-1997','dd-mm-yyyy');"
+137,2,1,"SELECT SUM(price) AS income FROM room r, booking b, hotel h WHERE r.hno = h.hno AND r.rno = b.rno AND r.hno = b.hno AND h.name = 'Grosvenor Hotel' AND b.datefrom <= TO_DATE('26-03-1997','dd-mm-yyyy') AND b.dateto > TO_DATE('26-03-1997','dd-mm-yyyy');"
+138,2,1,"SELECT r.rno FROM room r, hotel h WHERE r.hno = h.hno AND h.name = 'Grosvenor Hotel' AND r.rno NOT IN (SELECT b.rno FROM booking b WHERE b.rno = r.rno AND b.hno = r.hno AND datefrom <= TO_DATE('26-03-1997','dd-mm-yyyy'));"
+139,2,1,"SELECT SUM(r.price) AS lost FROM room r, hotel h WHERE r.hno = h.hno AND h.name = 'Grosvenor Hotel' AND r.rno NOT IN (SELECT b.rno FROM booking b WHERE b.rno = r.rno AND b.hno = r.hno AND datefrom <= TO_DATE('26-03-1997','dd-mm-yyyy') AND dateto > TO_DATE('26-03-1997','dd-mm-yyyy'));"
+140,2,1,"SELECT r.hno, r.rno, r.type, r.price, g.name
+FROM   hotel h JOIN room r ON h.hno = r.hno 
+               LEFT OUTER JOIN (SELECT * 
+                                FROM   booking b 
+                                WHERE  b.datefrom <= TO_DATE('26-03-1997','dd-mm-yyyy') AND 
+                                       b.dateto > TO_DATE('26-03-1997','dd-mm-yyyy')) b ON (r.rno = b.rno AND r.hno = b.hno)
+               LEFT OUTER JOIN guest g ON g.gno = b.gno
+WHERE  h.name='Grosvenor Hotel';"
+141,2,1,"SELECT hno, COUNT(*) AS noOfRooms FROM room GROUP BY hno;"
+142,2,1,"SELECT hno, COUNT(*) AS noOfRooms FROM room WHERE hno IN (SELECT hno FROM hotel WHERE UPPER(address) LIKE '%LONDON%') GROUP BY hno;"
+143,2,1,"SELECT h.hno, h.name, COUNT(*) AS occRooms FROM hotel h, booking b WHERE h.hno = b.hno AND b.datefrom <= TO_DATE('26-03-1997','dd-mm-yyyy') AND b.dateto > TO_DATE('26-03-1997','dd-mm-yyyy') GROUP BY h.hno, h.name;"
+144,2,1,"SELECT r1.type, COUNT (*) AS noBooked FROM room r1, booking b1 WHERE r1.hno = b1.hno AND r1.rno = b1.rno GROUP BY r1.type HAVING COUNT(*) >= ALL (SELECT COUNT(*) FROM room r2, booking b2 WHERE r2.hno = b2.hno AND r2.rno = b2.rno GROUP BY r2.type);"
+145,2,1,"SELECT h.name, SUM(r.price) AS lost FROM room r, hotel h WHERE r.hno = h.hno AND (r.rno, r.hno) NOT IN (SELECT rno, hno FROM booking WHERE datefrom <= TO_DATE('26-03-1997','dd-mm-yyyy') AND dateto > TO_DATE('26-03-1997','dd-mm-yyyy')) GROUP BY h.name;"
+146,2,1,"SELECT Name, Address, City FROM Staff WHERE Dnum = 'D001';"
+147,2,1,"SELECT s.Name, d.dname FROM Staff s, Dept d WHERE s.Snum = d.Manager;"
+148,2,1,"SELECT e.Name staff_member, s.Name supervisor FROM Staff s, Staff e WHERE e.Supervisor = s.Snum AND e.City <> s.City;"
+149,2,1,"SELECT Name, Salary FROM Staff WHERE Salary > 65000 AND Snum NOT IN (SELECT DISTINCT Supervisor FROM Staff WHERE Supervisor IS NOT NULL);"
+150,2,1,"SELECT p.Pnum, p.Pname, p.Pcity, p.Dnum FROM Project p WHERE p.Pcity NOT IN(SELECT dl.Dcity FROM DeptLocation dl WHERE dl.Dnum = p.Dnum);"
+151,2,1,"SELECT p.Pname FROM Project p, WorksOn w WHERE p.Pnum = w.Pnum GROUP BY p.Pname HAVING COUNT(*) > 2;"
+152,2,1,"SELECT s1.snum, s1.name, s1.dnum, count(*) AS nsupervised FROM staff s1, staff s2 WHERE s1.snum=s2.supervisor GROUP BY s1.snum, s1.name, s1.dnum;"
+153,2,1,"SELECT   AVG(count(*)) AS avgsupervised
+FROM     staff s1, staff s2
+WHERE    s1.snum = s2.supervisor 
+GROUP BY s1.snum;"
+10011,1,1,"select pu.prodno, t.y year, t.m month, SUM(pu.qty*pu.price) value
+from   purchase pu, time t
+where  pu.dayno=t.dayno
+group by rollup (pu.prodno, t.y, t.m)
+order by pu.prodno, t.y, t.m"
+10009,1,1,"select pu.prodno, t.m month, SUM(pu.qty*pu.price) value
+from   purchase pu, time t
+where  pu.dayno=t.dayno
+group by pu.prodno, t.m"
+10010,1,1,"select pu.prodno, t.m month, SUM(pu.qty*pu.price) value
+from   purchase pu, time t
+where  pu.dayno=t.dayno
+group by grouping sets ((pu.prodno, t.m), (pu.prodno))"
+10012,1,1,"select pu.prodno, t.m month, SUM(pu.qty*pu.price) value,
+SUM(SUM(pu.qty*pu.price)) OVER 
+(PARTITION BY pu.prodno ORDER BY t.m ROWS UNBOUNDED PRECEDING) cumvalue
+from   purchase pu, time t
+where  pu.dayno=t.dayno
+group by pu.prodno, t.m;
+"
+10013,1,1,"select l.state, pr.type, sum(s.price*s.qty) turnover,
+rank() over (partition by l.state order by sum(s.price*s.qty) desc) R
+from   location l, product pr, sales s
+where  l.locno=s.locno and pr.prodno=s.prodno
+group by l.state, pr.type"
+10014,1,1,"select s.prodno, l.state, SUM(s.qty*s.price) TURNOVER, 
+(SUM(s.qty*s.price)*100/SUM(SUM(s.qty*s.price)) OVER 
+(PARTITION BY s.prodno ORDER BY l.state ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)) TShARE
+from   sales s, location l
+where  s.locno=l.locno
+group by s.prodno, l.state
+order by s.prodno, l.state"
+10049,1,1,"SELECT s.code, s.segId, (s.toKM - s.fromKM) AS ""Length"" 
+FROM   segment s WHERE  (s.toKM - s.fromKM) > 
+       (SELECT (s1.toKM - s1.fromKM)
+        FROM   segment s1 
+        WHERE  s1.segId = 'S01' AND 
+               s1.code = 'H10');"
+1,2,1,"SELECT a.name, a.nationality
+FROM   artist a 
+WHERE  NOT EXISTS
+        (SELECT r.recordId 
+         FROM record r, distribute d
+         WHERE r.artistName = a.name AND 
+               r.recordId = d.recordId AND 
+               d.media = 'CD' AND 
+               d.price < 20);"
+13612,10,9,"select s.mano, s.name, count(*) stunden
+from studenten s, reserviert r
+where s.mano = r.mano
+group by s.mano, s.name
+having count(*) >= ALL
+ (Select count(*) from reserviert r1
+  group by r1.mano);
+"
+13613,10,9,"select s.mano, s.name, r.tag, r.stunde, r.tno
+from studenten s, reserviert r
+where s.mano = r.mano 
+and NOT Exists
+ (Select * from terminal t, wartung w
+  where r.tno = t.tno
+  and t.rechner = w.rechner
+  and r.tag = w.tag
+  and r.stunde between w.vonstunde and w.bisstunde)
+order by s.mano, r.tag, r.stunde;"
+13614,10,9,"Select s.mano, s.name
+from studenten s
+where exists
+ (select * from reserviert r
+  where s.mano = r.mano)
+AND NOT EXISTS
+ (select * from reserviert r
+  Where s.mano = r.mano 
+  AND NOT EXISTS
+   (Select * from Terminal t, wartung w
+    where r.tno = t.tno 
+    and t.rechner = w.rechner
+    and r.tag = w.tag
+    and r.stunde between w.vonstunde and w.bisstunde));
+"
+13615,8,7,"select p.name, p.beruf, w.gross, p.stand
+from person p, vermietet v, wohnung w
+where p.persnr = v.mieternr
+and v.wohnnr = w.wohnnr
+and w.gross > 80
+and p.stand = 'ledig'
+order by p.name, w.gross;
+"
+13616,8,7,"select p1.name, p1.stand, v1.preis, v2.preis
+from person p1, vermietet v1, person p2, vermietet v2
+where p1.persnr = v1.mieternr
+and p2.persnr = v2.mieternr
+and v1.vermieternr = v2.mieternr
+and v1.preis < v2.preis
+and p1.stand = p2.stand
+order by p1.name, p1.stand;"
+13617,8,7,"select p.name, p.stand, p.beruf
+from person p
+where p.persnr not in
+ (Select v1.vermieternr from vermietet v1
+  union
+  select v2.mieternr from vermietet v2)
+order by p.name, p.stand, p.beruf;"
+13618,8,7,"select w1.bezirk, min (v1.preis/w1.gross), max (v2.preis/w2.gross)
+from wohnung w1, wohnung w2, vermietet v1, vermietet v2
+where w1.wohnnr = v1.wohnnr 
+and w2.wohnnr = v2.wohnnr
+and w1.bezirk = w2.bezirk
+and v1.preis/w1.gross * 1.5 < v2.preis/w2.gross
+group by w1.bezirk
+order by w1.bezirk;"
+13619,8,7,"select w.bezirk, count (*)
+from wohnung w, vermietet v
+where w.wohnnr = v.wohnnr
+group by w.bezirk
+order by count (*);"
+13620,8,7,"select p.name, avg(v.preis) Dpreis, avg(w.gross) DGroesse
+from person p, vermietet v, wohnung w
+where p.persnr = v.vermieternr
+and v.wohnnr = w.wohnnr
+group by p.name 
+order by p.name;"
+13621,8,7,"select w.bezirk, avg (v.preis/w.gross)
+from Wohnung w, vermietet v
+where w.wohnnr = v.wohnnr
+group by w.bezirk
+having avg(v.preis/w.gross) >= ALL
+  (select avg(v1.preis/w1.gross)
+   from wohnung w1, vermietet v1
+   where w1.wohnnr = v1.wohnnr
+   group by w1.bezirk);
+"
+13622,8,7,"select p.name, w.bezirk, sum (v.preis)
+from person p, wohnung w, vermietet v
+where p.persnr = v.vermieternr
+and w.wohnnr = v.wohnnr
+group by p.name, w.bezirk
+having sum (v.preis) > ANY
+ (Select sum (v1.preis) from vermietet v1, wohnung w1
+  where v1.wohnnr = w1.wohnnr
+  group by v1.vermieternr);
+"
+13623,8,7,"select p1.persnr, p1.name, sum (v1.preis)
+from person p1, vermietet v1
+where p1.stand = 'verheiratet'
+and p1.persnr = v1.vermieternr
+and p1.beruf IN
+ (select p2.beruf
+  from person p2
+  where p2.persnr <> p1.persnr)
+group by p1.persnr, p1.name;
+
+"
+13624,8,7,"select w2.bezirk, count(*)
+from wohnung w2, vermietet v2
+where w2.wohnnr = v2.wohnnr
+group by w2.bezirk
+having count (*) > 
+ (select count(*) from person p, vermietet v, wohnung w
+  where p.persnr = v.mieternr
+  and v.wohnnr = w.wohnnr
+  and p.stand = 'ledig'
+  and w.bezirk = 
+   (Select w1.bezirk
+    from wohnung w1
+    group by w1.bezirk
+    having count(*) <= ALL
+     (Select count(*) from wohnung w3
+      group by w3.bezirk)));
+"
+13645,2,1,"select avg(tokm - fromkm) from segment"
+13646,2,1,"select k.kontoNr, sum(b.betrag) as Gesamtsumme from konto k , buchung b where k.kontoNr=b.aufKonto group by kontoNr"
+13647,2,1,"select i.name, i.gebdat, i.adresse, count(*) as Anzahl, sum(b.betrag) as Betragssumme from buchung b, konto k, inhaber i where i.name=k.inhname and i.gebdat=k.gebdat and k.kontoNr=b.aufKonto group by i.name, i.gebdat, i.adresse"
+100,2,1,"SELECT k.kontonr, i.name, i.gebdat, i.adresse FROM   konto k, inhaber i WHERE  k.inhname=i.name AND k.gebdat=i.gebdat AND    i.adresse LIKE '%Linz%'"
+101,2,1,"select k1.inhname, k1.gebdat, b.buchngnr from   konto k1, konto k2, buchung b where  k1.inhname = k2.inhname and    k1.gebdat = k2.gebdat and    k1.kontonr = b.vonkonto and    k2.kontonr = b.aufkonto order by k1.inhname, k1.gebdat, b.buchngnr desc"
+102,2,1,"SELECT COUNT(*) AS Anzahl FROM konto"
+103,2,1,"SELECT k.inhname, k.gebdat, COUNT(*) AS Anzahl FROM   konto k GROUP BY k.inhname, k.gebdat"
+104,2,1,"SELECT AVG(COUNT(*)) AS AVG_Anzahl FROM   konto k GROUP BY k.inhname, k.gebdat"
+105,2,1,"select count(distinct aufkonto) as Anzahl
+from buchung"
+106,2,1,"select i1.name, i1.gebdat, i1.adresse, count(*) as Anzahl, sum(betrag) SUM_Betrag from   inhaber i1, konto k1, buchung b1
+where  i1.name = k1.inhname and i1.gebdat = k1.gebdat
+and    k1.kontonr = b1.aufkonto
+group by i1.name, i1.gebdat, i1.adresse
+having count(*)>4"
+107,2,1,"select distinct inhname, gebdat from konto where saldo> 10000"
+108,2,1,"select i1.name, i1.gebdat, i1.adresse, count(*) anzahl, sum(betrag) sum_betrag
+from   inhaber i1, konto k1, buchung b1
+where  i1.name = k1.inhname and i1.gebdat = k1.gebdat
+and    k1.kontonr = b1.aufkonto
+group by i1.name, i1.gebdat, i1.adresse
+having count(*) >
+       (select avg(count(*))
+        from   konto k2, buchung b2
+        where  k2.kontonr = b2.aufkonto
+        group by k2.inhname, k2.gebdat)"
+109,2,1,"select i.name, i.gebdat
+from inhaber i
+where not exists (select *
+                  from   konto k
+                  where  k.inhname = i.name
+                  and    k.gebdat = i.gebdat
+                  and    not exists (select *
+                                     from   buchung b
+                                     where  k.kontonr = b.aufkonto))
+order by i.name, i.gebdat"
+110,2,1,"select k.kontonr, k.filiale, sum(b.betrag) ksum, f.filsum
+from   konto k, buchung b,
+       (select k1.filiale,
+               sum(b1.betrag) filsum
+        from   konto k1, buchung b1
+        where  k1.kontonr = b1.aufkonto
+        or     k1.kontonr = b1.vonkonto
+        group by k1.filiale) f
+ where  (k.kontonr=b.vonkonto
+ or      k.kontonr=b.aufkonto)
+ and    k.filiale = f.filiale
+ group by k.kontonr, k.filiale, f.filsum"
+112,2,1,"select k.inhname, k.gebdat, b.buchngnr, b.aufkonto
+from   konto k, buchung b
+where  k.kontonr = b.aufkonto
+and    not exists
+         (select *
+          from   konto k2, buchung b2
+          where k2.kontonr=b2.aufkonto
+          and   k2.inhname=k.inhname
+          and   k2.gebdat=k.gebdat
+          and   b2.buchngnr < b.buchngnr)"
+111,2,1,"select k.kontonr, k.filiale
+from   konto k
+where  k.kontonr not in
+         (select b.vonkonto
+          from   buchung b, konto k2
+          where  b.aufkonto=k2.kontonr
+          and    k2.inhname='Hofreiter Martin'
+          and    k2.gebdat='12-FEB-80')"
+13648,2,1,"select k.kontoNr from konto k
+where k.kontoNr not in (select distinct b.aufKonto from buchung b)"
+13649,2,1,"SELECT segid, (toKM - fromKM) AS Length FROM segment WHERE   (toKM - fromKM) > (SELECT avg(toKM - fromKM) FROM segment)"
+13650,2,1,"SELECT code, AVG(toKM - fromKM) AS AVGSegmentLength FROM segment GROUP BY code"
+13651,2,1,"SELECT s1.code, s1.segID, s2.code, s2.segID FROM segment s1, segment s2 WHERE (s1.segID <> s2.segID OR s1.code <> s2.code) AND (s1.toKM - s1.fromKM) = (s2.toKM - s2.fromKM)"
+13652,2,1,"SELECT segID, s1.toKM - s1.fromKM AS SegmentLength, s2.HighwayLength FROM segment s1, ( SELECT code, SUM(toKM-fromKM) AS HighwayLength FROM segment GROUP BY code) s2
+	WHERE   s2.code = s1.code;"
+13653,2,1,"SELECT DISTINCT longitude, latitude FROM node ORDER BY  longitude ASC, latitude DESC;
+"
+13654,2,1,"(SELECT	n1.nodeID, n1.longitude, n1.latitude FROM node n1, exit e, highwayExit he WHERE	he.code = 'H10' AND he.nodeID = e.nodeID AND e.nodeID = n1.nodeID) UNION (SELECT n2.nodeID, n2.longitude, n2.latitude FROM node n2, intersection i, HighwayIntersection hi WHERE hi.code = 'H10' AND hi.nodeID = i.nodeID AND i.nodeID = n2.nodeID)"
+13777,6,5,"select count(*) ENTLEHNUNGEN from entlehng e where (e.bis = '01-01-2999');"
+13778,6,5,"select B.NAME, B.Adresse, COUNT(*) ANZAHL
+from BENUTZER B, ENTLEHNG E
+where (B.BENNR = E.BENUTZER)
+group by B.NAME, B.ADRESSE
+order by 3 desc;"
+13779,6,5,"select b.bennr, b.name, b.gebdat, b.adresse, count(*) ANZAHL
+from benutzer b, entlehng e
+where (b.bennr = e.benutzer) and (e.bis = '01-01-2999')
+group by b.bennr, b.name, b.gebdat, b.adresse
+having count(*) > 2
+order by 2;"
+13783,6,5,"select e.entlngnr, e.von, be.name, bu.titel
+from entlehng e, benutzer be, buch bu
+where (e.buch = bu.buchnr) and (e.benutzer = be.bennr) and
+      (e.bis = '01-01-2999') and ((e.von + 100) < SYSDATE)
+order by be.name;"
+13788,6,5,"select b.titel, count(*) ANZAHL,
+  ROUND(AVG(e.bis - e.von)) DURCHSCHNITT
+from buch b, entlehng e
+where (b.buchnr = e.buch) and (e.bis <> '01-01-2999')
+group by b.buchnr, b.titel
+order by 2 desc;"
+13795,6,5,"select b.buchnr, b.titel
+from buch b
+where b.buchnr not in
+  (select distinct e.buch
+   from entlehng e
+   where e.von <= '31-12-1994' and e.bis >= '01-01-1994');"
+13805,2,1,"select f.filNr, f.inhName, p.ean, p.bezeichnung, (p.ekPreis * s.bestand) ""Wert""
+from filiale f, produkt p, sortiment s
+where p.ean = s.ean and s.filNr = f.filNr and p.listPreis = s.vkPreis;"
+13811,2,1,"select distinct k.kundeNr, k.name, k.bonStufe
+from kunde k, rechnung r
+where k.kundeNr = r.kundeNr
+and k.kundeNr NOT IN
+(select r1.kundeNr from rechnung r1 where bezahlt = 'N');"
+13815,2,1,"select p.ean, p.bezeichnung, p.ekPreis
+from produkt p
+where p.ekPreis > 
+(select avg(p1.ekPreis)
+ from produkt p1
+ where p1.kategorie = p.kategorie);"
+13818,2,1,"select p1.ean, p1.bezeichnung,
+((p1.listPreis - p1.ekPreis)/p1.ekPreis)*100 ""Spanne"", p1.kategorie
+from produkt p1
+where ((p1.listPreis - p1.ekPreis)/p1.ekPreis) =
+    (select MIN((p2.listPreis - p2.ekPreis)/p2.ekPreis)
+     from produkt p2
+     group by p2.kategorie
+     having p2.kategorie = p1.kategorie);"
+13823,2,1,"SELECT p.ean, p.bezeichnung, COUNT(f.filNr)
+FROM produkt p
+JOIN sortiment s ON p.ean = s.ean
+JOIN filiale f ON s.filNr = f.filNr
+WHERE p.ean NOT IN (
+  SELECT DISTINCT rp.ean
+  FROM rechnungPos rp
+)
+GROUP BY p.ean, p.bezeichnung;"
+13824,2,1,"select r.datum, r.rechnungNr, Sum(p.menge * p.einzelPreis) ""Summe"", k.name
+from rechnung r, kunde k, rechnungPos p
+where r.datum = p.datum AND r.rechnungNr = p.rechnungNr AND r.kundeNr = k.kundeNr
+group by r.datum, r.rechnungNr, k.name
+having not exists 
+(select * from rechnungPos p1
+ where p1.rechnungNr = r.rechnungNr AND p1.datum = r.datum
+ and (p1.menge * p1.einzelPreis) <= 1000)
+order by Sum(p.menge * p.einzelPreis) DESC;"
+13825,2,1,"select f.filNr, f.inhName, f.strasse, f.plz
+from filiale f
+where not exists(
+select p.kategorie
+from produkt p
+where 2*(select count(*) 
+         from produkt p1, sortiment s where p1.ean = s.ean 
+         and p1.kategorie = p.kategorie 
+         and f.filNr = s.filNr)
+      <=
+        (select count(*)
+         from produkt p2
+         where p2.kategorie = p.kategorie));"
+13826,2,1,"select f.filNr, f.inhName, p.ean, p.bezeichnung, (s.vkPreis - s.preisRed) ""Billigst""
+from filiale f, produkt p, sortiment s
+where f.filNr = s.filNr and s.ean = p.ean
+and (s.vkPreis - s.preisRed) = 
+(select MIN(s1.vkPreis - s1.preisRed)
+ from sortiment s1
+ where s1.ean = p.ean);"
+13863,2,1,"select f.filnr, f.inhName, count(*)
+from filiale f, sortiment s
+where f.filnr=s.filnr
+group by f.filnr, f.inhName
+order by count(*) desc;"
+13864,2,1,"select s.ean, s.filnr, (s.vkpreis-s.preisred) tats_Preis, p.listpreis,
+       ROUND(100*((s.vkpreis-s.preisred)-p.listpreis)/p.listpreis) Abweichung
+from sortiment s, produkt p
+where s.ean=p.ean
+and ABS((s.vkpreis-s.preisred)-p.listpreis)>0.2*p.listpreis
+order by s.ean, s.filnr;"
+13865,2,1,"select distinct k.kundenr, k.name, k.bonStufe
+from kunde k, rechnung r
+where k.kundenr = r.kundenr
+and   r.bezahlt='N'
+and   k.kundenr NOT IN (select r2.kundenr from rechnung r2 where r2.bezahlt='Y')
+order by k.kundenr;"
+13866,4,1,"select s.filnr, p.kategorie, Sum(s.bestand*p.ekpreis) lagerwert
+from sortiment s, produkt p
+where s.ean=p.ean
+and p.kategorie NOT IN
+(select p2.kategorie
+ from produkt p2, rechnungpos rp2, rechnung r2
+ where p2.ean=rp2.ean
+ and rp2.datum=r2.datum
+ and rp2.rechnungnr=r2.rechnungnr
+ and s.filnr=r2.filnr)
+group by s.filnr, p.kategorie
+order by s.filnr, p.kategorie"
+13867,2,1,"select p.kategorie, p.ean, SUM(rp.menge) Stueck, Sum(rp.einzelpreis*rp.menge) Umsatz
+from produkt p, rechnungpos rp
+where p.ean=rp.ean
+group by p.kategorie, p.ean
+having SUM(rp.menge)>=ALL
+ (select sum(rp2.menge)
+  from produkt p2, rechnungpos rp2
+  where p2.ean = rp2.ean
+  and p2.kategorie =p.kategorie
+  group by p2.ean)
+order by p.kategorie;"
+13868,2,1,"Select rp.rechnungnr, rp.datum, sum((rp.einzelpreis-p.ekpreis)*rp.menge) RG
+from rechnungpos rp, produkt p
+where p.ean=rp.ean
+group by rp.rechnungnr, rp.datum
+having sum((rp.einzelpreis-p.ekpreis)*rp.menge)
+       > (select avg(sum((rp2.einzelpreis-p2.ekpreis)*rp2.menge))
+          from rechnungpos rp2, produkt p2
+          where rp2.ean=p2.ean
+          group by rp2.rechnungnr, rp2.datum);"
+13869,2,1,"select distinct f.filnr, f.plz, r.datum
+from filiale f, rechnung r
+where f.filnr = r.filnr
+and (select count(distinct p.kategorie)
+     from produkt p, sortiment s
+     where p.ean=s.ean and s.filnr=r.filnr) > 2*
+    (select count(distinct p2.kategorie)
+     from produkt p2, rechnungpos rp2, rechnung r2
+     where p2.ean=rp2.ean
+     and rp2.rechnungnr=r2.rechnungnr and rp2.datum=r2.datum
+     and r2.datum=r.datum and r2.filnr=r.filnr)
+order by f.filnr, r.datum;"
+13870,2,1,"select f.filnr, f.plz, sum(rp.menge*rp.einzelpreis) Umsatz
+from filiale f, rechnung r, rechnungpos rp
+where f.filnr=r.filnr
+and r.rechnungnr=rp.rechnungnr and r.datum = rp.datum
+group by f.filnr, f.plz
+having sum(rp.menge*rp.einzelpreis) >
+  (select avg(sum(rp2.menge*rp2.einzelpreis))
+   from filiale f2, rechnung r2, rechnungpos rp2
+   where f2.filnr=r2.filnr and r2.rechnungnr=rp2.rechnungnr and r2.datum=rp2.datum
+   group by f2.filnr)
+order by umsatz desc;"
+13871,2,1,"select p.ean, p.kategorie, sum(rp.einzelpreis*rp.menge) Umsatz, a.ges_umsatz
+from produkt p, rechnungpos rp,
+  (select p2.kategorie, sum(rp2.menge*rp2.einzelpreis) as ges_umsatz
+   from produkt p2, rechnungpos rp2
+   where p2.ean=rp2.ean
+   group by p2.kategorie) a
+where p.kategorie=a.kategorie
+and rp.ean=p.ean
+group by p.ean, p.kategorie, a.ges_umsatz
+having sum(rp.einzelpreis*rp.menge) > a.ges_umsatz/3
+order by p.ean;"
+13872,14,13,"select kategorie, sum(vkpreis * menge) as umsatz 
+from artikel a, auftragszeile az
+where az.artikel=a.ean
+group by kategorie
+order by umsatz;"
+13873,14,13,"select k.nr, k.name, sum(vkpreis * menge) as umsatz 
+from kunde k, auftragskopf ak, auftragszeile az
+where k.nr=ak.kunde and
+  ak.nr = az.nr
+group by k.nr, k.name
+having sum(vkpreis*menge) > 5000
+order by umsatz;"
+13874,14,13,"select a.ean, a.bezeichnung
+from artikel a
+where
+  not exists (
+     select * 
+     from auftragszeile az
+     where az.artikel = a.ean);"
+13875,14,13,"select distinct v.kurzzeichen, v.name
+from vertreter v, auftragskopf ak, kunde k
+where v.kurzzeichen = ak.vertreter AND
+      ak.kunde = k.nr AND
+      k.gebiet = 'OST';"
+13876,14,13,"select a.ean, a.bezeichnung, ekpreis, 
+  sum(az.vkpreis * az.menge)/sum(Menge) as ""d_vkpreis"",
+  ((sum(az.vkpreis * az.menge)/sum(Menge))-ekpreis) as ""d_db""
+from artikel a, auftragszeile az
+where a.ean = az.artikel
+group by ean, bezeichnung, ekpreis
+order by ean;"
+13877,14,13,"select distinct k.gebiet
+from kunde k, auftragskopf ak, auftragszeile az
+where k.nr = ak.kunde AND
+      ak.nr = az.nr
+group by k.gebiet
+having sum(az.vkpreis * az.menge) = (
+  select max (sum(az2.vkpreis * az2.menge))
+  from kunde k2, auftragskopf ak2, auftragszeile az2
+  where k2.nr = ak2.kunde AND
+        ak2.nr = az2.nr
+group by k2.gebiet);"
+13878,14,13,"select v.kurzzeichen as kz, v.name, v.provision, k.gebiet, 
+sum(az.vkpreis*az.menge) as UMSATZ,
+sum(az.vkpreis*az.menge)*v.provision/100 as PROVBETRAG
+from kunde k, vertreter v, auftragskopf ak, auftragszeile az
+where k.nr = ak.kunde AND
+     v.kurzzeichen = ak.vertreter AND
+     ak.nr = az.nr AND
+     ak.lieferdatum >= '01-SEP-99'
+group by v.kurzzeichen, v.name, v.provision, k.gebiet
+order by v.kurzzeichen;"
+13879,14,13,"(select k.nr, a.kategorie, sum(az.vkpreis*az.menge) as UMSATZ
+ from kunde k, artikel a, auftragskopf ak, auftragszeile az
+ where k.nr=ak.kunde and
+       ak.nr=az.nr and
+       az.artikel=a.ean and
+       k.gebiet = 'OST'
+ group by k.nr, a.kategorie
+)
+UNION
+(select distinct k2.nr, a2.kategorie, 0 as UMSATZ
+ from kunde k2, artikel a2
+ where k2.gebiet = 'OST' and
+       not exists (
+          select * 
+          from auftragskopf ak3, auftragszeile az3, artikel a3
+          where ak3.nr=az3.nr and
+                ak3.kunde=k2.nr and
+                az3.artikel=a3.ean and
+                a3.kategorie=a2.kategorie)
+)
+order by nr, kategorie;"
+13880,14,13,"SELECT a.ean, a.bezeichnung,
+       (SUM((az.vkpreis - a.ekpreis) * az.menge)/SUM(az.menge)) AS DB_ARTIKEL,
+       kategorie.DB_KATEG
+FROM   artikel a, auftragszeile az,
+       (SELECT a2.kategorie, (SUM((az2.vkpreis - a2.ekpreis)*az2.menge)/SUM(az2.menge)) AS DB_KATEG
+        FROM   artikel a2, auftragszeile az2
+        WHERE  az2.artikel=a2.ean
+        GROUP BY a2.kategorie) kategorie
+WHERE  a.ean=az.artikel AND
+       kategorie.kategorie=a.kategorie
+GROUP BY a.ean, a.bezeichnung, kategorie.DB_KATEG
+HAVING (SUM((az.vkpreis - a.ekpreis) * az.menge)/SUM(az.menge)) > kategorie.DB_KATEG
+ORDER BY ean;
+
+/*select a.ean, a.bezeichnung,
+(sum (az.vkpreis * az.menge)/sum(menge))-avg(a.ekpreis) as ""DB_ARTIKEL"",
+kategorie.""DB_KATEG""
+from artikel a, auftragszeile az,
+(select a2.kategorie, (sum(az2.vkpreis*az2.menge)/sum(az2.menge)) - avg(a2.ekpreis) as ""DB_KATEG""
+ from artikel a2, auftragszeile az2
+ where az2.artikel=a2.ean
+ group by a2.kategorie) kategorie
+where
+ a.ean=az.artikel and
+ kategorie.kategorie=a.kategorie
+group by a.ean, a.bezeichnung, kategorie.""DB_KATEG""
+having (sum(az.vkpreis*az.menge)/sum(Menge))
+       - avg(a.ekpreis) > kategorie.""DB_KATEG""
+order by ean;*/"
+13881,14,13,"select v.kurzzeichen, v.name
+from vertreter v
+where not exists (
+  select * 
+  from kunde k
+  where not exists (
+    select * 
+    from auftragskopf ak, kunde k2
+    where ak.kunde = k2.nr and
+          k2.gebiet = k.gebiet and
+          ak.vertreter = v.kurzzeichen));"
+13882,14,13,"(select k.nr, k.name
+ from kunde k, auftragskopf ak, auftragszeile az
+ where k.nr = ak.kunde and
+       ak.nr = az.nr and
+       az.menge > 0
+)
+MINUS
+(select k2.nr, k2.name
+ from kunde k2, auftragskopf ak2
+ where k2.nr = ak2.kunde and ak2.vertreter = 'GP');"
+96,2,1,"SELECT DISTINCT p.persnr, p.name FROM person p, wohnung w, mietet m WHERE  p.persnr=w.eigentuemer AND w.wohnnr=m.wohnnr AND m.bis=TO_DATE('31-12-2099','dd-mm-yyyy') AND p.stand='ledig' AND m.preis/w.gross > 7 ORDER BY p.persnr"
+97,2,1,"SELECT w.wohnnr, w.eigentuemer AS v_persnr, p1.name as v_name, m.mieternr AS m_persnr, p2.name as m_name FROM   wohnung w, person p1, person p2, mietet m WHERE  w.wohnnr=m.wohnnr AND w.eigentuemer=p1.persnr AND m.mieternr=p2.persnr AND w.bezirk=1 AND m.bis=TO_DATE('31-12-2099','dd-mm-yyyy') ORDER BY w.wohnnr"
+98,2,1,"SELECT DISTINCT w.wohnnr, w.bezirk FROM wohnung w, mietet m WHERE w.wohnnr=m.wohnnr AND w.wohnnr NOT IN (SELECT m2.wohnnr FROM mietet m2 WHERE  m2.bis=TO_DATE('31-12-2099','dd-mm-yyyy')) ORDER BY w.bezirk, w.wohnnr"
+99,2,1,"SELECT DISTINCT p.persnr, p.name FROM person p, wohnung w WHERE  p.persnr=w.eigentuemer AND NOT EXISTS (SELECT * FROM wohnung w2 WHERE w2.eigentuemer=p.persnr AND NOT EXISTS (SELECT * FROM mietet m WHERE  m.wohnnr=w2.wohnnr))"
+79,2,1,"SELECT KursNr FROM kurs WHERE Lektor='Mueller'"
+80,2,1,"SELECT * FROM student WHERE Land='Deutschland' OR Land='Schweiz' ORDER BY land, name"
+81,2,1,"SELECT DISTINCT(s.Land) AS Land FROM student s, kurs k, belegung b WHERE b.MatrikelNr=s.MatrikelNr AND b.KursNr=k.KursNr AND k.Name='Datenbanken'"
+82,2,1,"SELECT Land, count(*) AS AnzahlStudierende FROM student GROUP BY Land"
+83,2,1,"SELECT Land, count(*) AS AnzahlStudierende FROM student WHERE Land <> 'Austria' GROUP BY Land"
+84,2,1,"SELECT Land, count(*) AS AnzahlStudierende FROM student GROUP BY Land HAVING count(*)>10"
+85,2,1,"SELECT * FROM student WHERE MatrikelNr NOT IN (SELECT MatrikelNr FROM belegung)"
+86,2,1,"SELECT * FROM person ORDER BY Name, Beruf"
+87,2,1,"SELECT DISTINCT beruf FROM person"
+88,2,1,"SELECT name, beruf FROM person WHERE persnr = 1"
+89,2,1,"SELECT eigentuemer AS persnr FROM wohnung WHERE bezirk = 2 OR bezirk = 3"
+90,2,1,"SELECT persnr, name FROM person, wohnung WHERE (bezirk = 2 OR bezirk = 3) AND person.persnr = wohnung.eigentuemer"
+91,2,1,"SELECT p.persnr, p.name, w.gross, m.preis FROM person p, wohnung w, mietet m WHERE w.bezirk = 2 AND p.persnr = w.eigentuemer AND w.wohnnr = m.wohnnr"
+92,2,1,"SELECT AVG(gross) AS durchschnittsgroesse FROM wohnung"
+93,2,1,"SELECT bezirk, AVG(gross) AS durchschnittsgroesse FROM wohnung GROUP BY bezirk"
+94,2,1,"SELECT bezirk, AVG(gross) AS durchschnittsgroesse FROM wohnung GROUP BY bezirk HAVING count(*) > 1"
+95,2,1,"SELECT bezirk, AVG (gross) as durchschnittsgroesse FROM wohnung WHERE wohnung.eigentuemer IN (SELECT persnr FROM person WHERE stand = 'ledig') GROUP BY bezirk"
+10003,2,1,"select distinct inhname as name, gebdat
+from konto
+where saldo>10000"
+13883,10,1,"select count(*) from cat"
+10004,2,1,"select i.name, i.gebdat, b.buchngNr, k.kontoNr 
+from inhaber i, konto k, buchung b
+where i.name=k.inhname and i.gebdat=k.gebdat and b.aufkonto=k.kontonr 
+and b.datum <= ALL(select datum from buchung b1 where b1.aufkonto=k.kontonr);"
+13884,10,1,"select count(*) from cat"
+13885,1,1,"select * from cat"
+114,2,1,"select coursecode from course where lecturer='Miller'"
+13886,1,1,"select count(*) from course"
+13887,1,1,"select * from cat"
+13888,1,1,"select name from course"
+13889,1,1,"select * from course"
+13890,2,1,"select * from artist"
+13891,6,5,"SELECT titel, autor FROM buch WHERE LOWER(titel) LIKE '%database%';"
+13893,15,15,"SELECT
+  name,
+  cnt
+FROM (
+       SELECT
+         c.NAME,
+         COUNT(DATE_VALID) AS cnt,
+         sum(SHARE_CNT)    AS share_sum
+       FROM COMPANY c
+         JOIN LISTED_AT la ON c.ID = la.COMPANY_ID AND DATE_VALID = TO_DATE('04-08-2016', 'dd-mm-yyyy')
+       GROUP BY c.ID, c.NAME) a
+WHERE share_sum = (SELECT max(summed)
+                   FROM (
+                          SELECT sum(SHARE_CNT) AS summed
+                          FROM LISTED_AT
+                          WHERE DATE_VALID = TO_DATE('04-08-2016', 'dd-mm-yyyy')
+                          GROUP BY COMPANY_ID) s)
+"
+13894,15,15,"SELECT
+  c.NAME  AS company_name,
+  se.NAME AS stock_exchange_name,
+  value
+FROM (SELECT
+        COMPANY_ID,
+        STOCK_EXCHANGE_CODE,
+        SHARE_CNT * SHARE_PRICE AS value
+      FROM LISTED_AT
+      WHERE DATE_VALID = TO_DATE('04-08-2016', 'dd-mm-yyyy')) la
+  JOIN COMPANY c ON la.COMPANY_ID = c.ID
+  JOIN STOCK_EXCHANGE se ON se.CODE = la.STOCK_EXCHANGE_CODE
+ORDER BY value DESC
+"
+13895,15,15,"SELECT *
+FROM COMPANY c
+WHERE NOT exists(
+    SELECT sa.COUNTRY_CODE
+    FROM LISTED_AT la
+      JOIN STOCK_EXCHANGE sa ON la.STOCK_EXCHANGE_CODE = sa.CODE
+    WHERE la.COMPANY_ID = c.ID AND NOT exists(SELECT *
+                                              FROM BASED_IN bi
+                                              WHERE
+                                                bi.COUNTRY_CODE = sa.COUNTRY_CODE AND la.COMPANY_ID = bi.COMPANY_ID))
+"
+13896,15,15,"SELECT co.NAME
+FROM COUNTRY co
+WHERE NOT exists(SELECT *
+                 FROM BASED_IN bi
+                 WHERE bi.COUNTRY_CODE = co.CODE)
+"
+13897,15,15,"SELECT co.NAME
+FROM COUNTRY co
+WHERE exists(SELECT COUNTRY_CODE
+             FROM STOCK_EXCHANGE se
+             WHERE se.COUNTRY_CODE = co.CODE
+             GROUP BY COUNTRY_CODE
+             HAVING count(*) >= 2)
+"
+13898,15,15,"SELECT DISTINCT STOCK_EXCHANGE_CODE
+FROM STOCK_EXCHANGE se
+  JOIN LISTED_AT la ON se.CODE = la.STOCK_EXCHANGE_CODE
+WHERE la.COMPANY_ID =
+      (SELECT id
+       FROM COMPANY c
+       WHERE c.year_established =
+             (SELECT min(YEAR_ESTABLISHED)
+              FROM COMPANY c))
+ORDER BY STOCK_EXCHANGE_CODE;
+"
+13899,15,15,"select s.*
+from stock_exchange s
+where (select sum(share_price * share_cnt) 
+              from listed_at 
+              where stock_exchange_code = s.code 
+                and date_valid = to_date('2015-12-04', 'yyyy-mm-dd')) >
+      (select avg(sum(share_price * share_cnt))
+              from listed_at 
+              where date_valid = to_date('2015-12-04', 'yyyy-mm-dd')
+              group by stock_exchange_code);"
+13900,15,15,"WITH main AS (SELECT *
+              FROM (
+                     SELECT
+                       c.name,
+                       sum(share_cnt * share_price) AS summed
+                     FROM listed_at la
+                       JOIN company c ON la.company_id = c.id
+                     WHERE date_valid = TO_DATE('04-08-2016', 'dd-mm-yyyy')
+                     GROUP BY c.id, c.name) a )
+SELECT NAME
+FROM main
+WHERE summed IN ((SELECT min(summed)
+                  FROM main), (SELECT max(summed)
+                               FROM main))
+ORDER BY summed DESC;"
+13901,16,16,"SELECT c.""product_category"", SUM(f.""unit_sales"")
+FROM   ""sales_fact_1997"" f
+       JOIN ""product"" p ON 
+         f.""product_id"" = p.""product_id""
+       JOIN ""product_class"" c ON 
+         p.""product_class_id"" = c.""product_class_id""
+GROUP BY c.""product_category"";"
+13902,16,16,"SELECT s.""store_state"", c.""product_category"", SUM(f.""unit_sales"")
+FROM   ""sales_fact_1997"" f
+       JOIN ""product"" p ON 
+         f.""product_id"" = p.""product_id""
+       JOIN ""product_class"" c ON 
+         p.""product_class_id"" = c.""product_class_id""
+       JOIN ""store"" s ON
+         f.""store_id"" = s.""store_id""
+WHERE s.""store_type"" = 'Supermarket'
+GROUP BY c.""product_category"", s.""store_state""
+ORDER BY s.""store_state"", c.""product_category"";"
+13903,16,16,"SELECT t.""month_of_year"" as month_of_year, SUM(f.""unit_sales"") as sum_unit_sales
+FROM   ""sales_fact_1997"" f
+       JOIN ""time_by_day"" t ON 
+         f.""time_id"" = t.""time_id""
+GROUP BY t.""month_of_year""
+ORDER BY t.""month_of_year"";"
+13904,16,16,"SELECT r.""sales_state_province"" AS province, SUM(f.""unit_sales"") AS unit_sales
+FROM   ""sales_fact_1997"" f
+       JOIN ""customer"" c ON 
+         f.""customer_id"" = c.""customer_id""
+       JOIN ""region"" r ON 
+         c.""customer_region_id"" = r.""region_id""
+WHERE r.""sales_region"" = 'North West'
+GROUP BY r.""sales_state_province"";"
+13905,16,16,"SELECT s.""store_state"", c.""product_category"", SUM(f.""unit_sales"")
+FROM   ""sales_fact_1997"" f
+       JOIN ""product"" p ON 
+         f.""product_id"" = p.""product_id""
+       JOIN ""product_class"" c ON 
+         p.""product_class_id"" = c.""product_class_id""
+       JOIN ""store"" s ON
+         f.""store_id"" = s.""store_id""
+GROUP BY ROLLUP(s.""store_state"", c.""product_category"");"
+13906,16,16,"SELECT s.""store_state"", c.""product_category"", SUM(f.""unit_sales"")
+FROM   ""sales_fact_1997"" f
+       JOIN ""product"" p ON 
+         f.""product_id"" = p.""product_id""
+       JOIN ""product_class"" c ON 
+         p.""product_class_id"" = c.""product_class_id""
+       JOIN ""store"" s ON
+         f.""store_id"" = s.""store_id""
+GROUP BY CUBE(s.""store_state"", c.""product_category"");"
+13907,16,16,"SELECT s.""store_state"", c.""product_category"", SUM(f.""unit_sales"")
+FROM   ""sales_fact_1997"" f
+       JOIN ""product"" p ON 
+         f.""product_id"" = p.""product_id""
+       JOIN ""product_class"" c ON 
+         p.""product_class_id"" = c.""product_class_id""
+       JOIN ""store"" s ON
+         f.""store_id"" = s.""store_id""
+GROUP BY GROUPING SETS((s.""store_state"", c.""product_category""), ());"
+13908,16,16,"SELECT r.""sales_state_province"", cl.""product_family"", SUM(f.""unit_sales"")
+FROM   ""sales_fact_1997"" f
+       JOIN ""product"" p ON
+         f.""product_id"" = p.""product_id""
+       JOIN ""product_class"" cl ON 
+         p.""product_class_id"" = cl.""product_class_id""
+       JOIN ""customer"" c ON 
+         f.""customer_id"" = c.""customer_id""
+       JOIN ""region"" r ON 
+         c.""customer_region_id"" = r.""region_id""
+GROUP BY CUBE(r.""sales_state_province"", cl.""product_family"");"
+13892,1,1,"SELECT   g.branche, SUM(umsatz) AS Umsatz
+FROM     gewinne g
+WHERE    g.bundesland = 'OÖ' AND g.jahr = 2011
+GROUP BY g.branche
+HAVING   COUNT(g.firma) > 10;"
+13909,16,16,"SELECT r.""sales_state_province"" AS province, cl.""product_family"" AS family, s.""store_type"" AS type, SUM(f.""unit_sales"") AS unit_sales
+FROM   ""sales_fact_1997"" f
+       JOIN ""product"" p ON
+         f.""product_id"" = p.""product_id""
+       JOIN ""product_class"" cl ON 
+         p.""product_class_id"" = cl.""product_class_id""
+       JOIN ""customer"" c ON 
+         f.""customer_id"" = c.""customer_id""
+       JOIN ""region"" r ON 
+         c.""customer_region_id"" = r.""region_id""
+       JOIN ""store"" s ON
+         f.""store_id"" = s.""store_id""
+GROUP BY GROUPING SETS((r.""sales_state_province"", cl.""product_family"", s.""store_type""), (r.""sales_state_province"", s.""store_type""), ())
+ORDER BY r.""sales_state_province"", cl.""product_family"", s.""store_type"";"
+13910,16,16,"SELECT r.""sales_state_province"" province, SUM(f.""unit_sales"") AS unit_sales,
+       RANK() OVER( PARTITION BY r.""sales_country"" ORDER BY SUM(f.""unit_sales"") DESC) AS rank
+FROM   ""sales_fact_1997"" f
+       JOIN ""customer"" c ON 
+         f.""customer_id"" = c.""customer_id""
+       JOIN ""region"" r ON 
+         c.""customer_region_id"" = r.""region_id""
+GROUP BY r.""sales_state_province"", r.""sales_country"";"
+13911,16,16,"SELECT t.""month_of_year"", SUM(f.""unit_sales"") AS total,
+       RANK() OVER( PARTITION BY t.""the_year"" ORDER BY SUM(f.""unit_sales"") DESC) AS rank
+FROM   ""sales_fact_1997"" f
+       JOIN ""time_by_day"" t ON 
+         f.""time_id"" = t.""time_id""
+GROUP BY t.""month_of_year"", t.""the_year""
+ORDER BY t.""the_year"", t.""month_of_year"";"
+13912,16,16,"SELECT t.""month_of_year"", SUM(f.""unit_sales""),
+       SUM(SUM(f.""unit_sales"")) OVER( PARTITION BY t.""the_year"" ORDER BY t.""month_of_year"")
+FROM   ""sales_fact_1997"" f
+       JOIN ""time_by_day"" t ON 
+         f.""time_id"" = t.""time_id""
+       JOIN ""store"" s ON
+         f.""store_id"" = s.""store_id""
+GROUP BY t.""month_of_year"", t.""the_year"";"
+13913,16,16,"SELECT t.""month_of_year"", SUM(f.""unit_sales""),
+       AVG(SUM(f.""unit_sales"")) OVER( PARTITION BY t.""the_year"" ORDER BY t.""month_of_year"" ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS moving_average
+FROM   ""sales_fact_1997"" f
+       JOIN ""time_by_day"" t ON 
+         f.""time_id"" = t.""time_id""
+       JOIN ""store"" s ON
+         f.""store_id"" = s.""store_id""
+GROUP BY t.""month_of_year"", t.""the_year"";"

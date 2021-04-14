@@ -166,14 +166,13 @@ public class SQLAnalyzer {
 
 		try {
 			stmt = config.getConnection().createStatement();
-			stmt.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
+			//ks original stmt.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			rset = stmt.executeQuery(submittedQuery);
-
 			rsmd = rset.getMetaData();
 			for (int i=1; i<=rsmd.getColumnCount(); i++){
 				analysis.addQueryResultColumnLabel(rsmd.getColumnLabel(i));
 			}
-			
+
 			while (rset.next()){
 				tuple = new Vector();
 				for (int i=1; i<=rsmd.getColumnCount(); i++){
@@ -224,14 +223,14 @@ public class SQLAnalyzer {
 		if (this.usesOrderByStatement(config.getCorrectQuery())) {
 			try {
 				correctQuery_STMT = config.getConnection().createStatement();
-				correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
+				//ks original , in PSQL nicht möglich: correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 
 				correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery());
 				correctQuery_RSMD = correctQuery_RSET.getMetaData();
 				columnsCount = correctQuery_RSMD.getColumnCount();
 
 				submittedQuery_STMT = config.getConnection().createStatement();
-				submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
+				//ks original , in PSQL nicht möglich: submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 
 				submittedQuery_RSET = submittedQuery_STMT.executeQuery(submittedQuery);
 
@@ -346,12 +345,12 @@ public class SQLAnalyzer {
 
 		try {
 			correctQuery_STMT = config.getConnection().createStatement();
-			correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
+			//ks original , in PSQL nicht möglich: correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery());
 			rsmd = correctQuery_RSET.getMetaData();
 
 			submittedQuery_STMT = config.getConnection().createStatement();
-			submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
+			//ks original , in PSQL nicht möglich: submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 
 			columns = new String();
 			for (int i = 1; i <= rsmd.getColumnCount(); i++) {
@@ -366,12 +365,13 @@ public class SQLAnalyzer {
 			
 			checkQuery = new String();
 			checkQuery = checkQuery.concat("SELECT " + columns + " ");
-			checkQuery = checkQuery.concat("FROM (" + config.getCorrectQuery() + ") ");
+			//ks original , in PSQL Alias für Unterabfrage: checkQuery = checkQuery.concat("FROM (" + config.getCorrectQuery() + ")");
+			checkQuery = checkQuery.concat("FROM (" + config.getCorrectQuery() + ") AS correctQuery ");
 			checkQuery = checkQuery.concat("ORDER BY " + columns);
 			
 			this.logger.log(Level.INFO, "CORRECT QUERY:\n" + checkQuery);
 
-			correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
+			//ks original , in PSQL nicht möglich: correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			checkQuery_RSET = correctQuery_STMT.executeQuery(checkQuery);
 
 			rsmd = checkQuery_RSET.getMetaData();
@@ -392,12 +392,13 @@ public class SQLAnalyzer {
 
 			checkQuery = new String();
 			checkQuery = checkQuery.concat("SELECT " + columns + " ");
-			checkQuery = checkQuery.concat("FROM (" + submittedQuery + ") ");
+			//ks original , in PSQL Alias für Unteranfrage Pflicht : checkQuery = checkQuery.concat("FROM (" + submittedQuery + ") ");
+			checkQuery = checkQuery.concat("FROM (" + submittedQuery + ") AS submittedQuery ");
 			checkQuery = checkQuery.concat("ORDER BY " + columns);
 
 			this.logger.log(Level.INFO, "SUBMITTED QUERY:\n" + checkQuery);
-			
-			submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
+
+			//ks original , in PSQL nicht möglich: submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			checkQuery_RSET = submittedQuery_STMT.executeQuery(checkQuery);
 
 			while (checkQuery_RSET.next()) {
@@ -486,13 +487,13 @@ public class SQLAnalyzer {
 		try {
 
 			correctQuery_STMT = config.getConnection().createStatement();
-			correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
+			//ks original , in PSQL nicht möglich: correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery());
 
 			correctQueryMetaData = correctQuery_RSET.getMetaData();
 
 			submittedQuery_STMT = config.getConnection().createStatement();
-			submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
+			//ks original , in PSQL nicht möglich: submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			submittedQuery_RSET = submittedQuery_STMT.executeQuery(submittedQuery);
 			submittedQueryMetaData = submittedQuery_RSET.getMetaData();
 
@@ -590,17 +591,20 @@ public class SQLAnalyzer {
 		this.logger.log(Level.INFO, "Checking for cartesian product.");
 
 		try {
-			query = "SELECT COUNT(*) FROM (" + submittedQuery + ")";
+			//
+			//ks original query = "SELECT COUNT(*) FROM (" + submittedQuery + ")";
+			query = "SELECT COUNT(*) FROM (" + submittedQuery + ") AS submittedQuery"; // in PostgreSQL muss Unteranfrage Aliasnamen erhalten
 			submittedQuery_STMT = config.getConnection().createStatement();
-			submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
+			//ks original submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			submittedQuery_RSET = submittedQuery_STMT.executeQuery(query);
 			if (submittedQuery_RSET.next()) {
 				countSubmittedQuery = submittedQuery_RSET.getInt(1);
 			}
 
-			query = "SELECT COUNT(*) FROM (" + config.getCorrectQuery() + ")";
+			//ks original , in PostgreSQL muss Unterabfrage Alias erhalten: query = "SELECT COUNT(*) FROM (" + config.getCorrectQuery() + ")";
+			query = "SELECT COUNT(*) FROM (" + config.getCorrectQuery() + ") AS correctQuery";
 			correctQuery_STMT = config.getConnection().createStatement();
-			correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
+			//ks original in PostgreSQL nicht möglich: correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			correctQuery_RSET = correctQuery_STMT.executeQuery(query);
 			if (correctQuery_RSET.next()) {
 				countCorrectQuery = correctQuery_RSET.getInt(1);

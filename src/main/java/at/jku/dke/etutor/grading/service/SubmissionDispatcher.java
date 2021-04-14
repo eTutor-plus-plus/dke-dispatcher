@@ -72,6 +72,7 @@ public class SubmissionDispatcher implements Runnable {
             }
         } catch(Exception e){
             logger.log(Level.SEVERE, "Stopped Evaluation due to errors");
+            e.printStackTrace();
         }
     }
 

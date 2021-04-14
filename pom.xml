@@ -14,7 +14,7 @@
     <name>eTutor-at.jku.dke.etutor.core.evaluation.Grading</name>
     <description>The eTutor grading component</description>
     <properties>
-        <java.version>15</java.version>
+        <java.version>16</java.version>
         <springfox.version>2.6.1</springfox.version>
         <log4j2.version>2.14.1</log4j2.version>
     </properties>

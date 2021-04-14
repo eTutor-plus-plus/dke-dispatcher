@@ -130,8 +130,10 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 
 		try{
 			//ESTABLISHING CONNECTION TO SQL DATABASE
-			java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-			conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
+			//ks java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+			Class.forName("org.postgresql.Driver");
+			//ks conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
+			conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/sql", "sql", "sql");
 			conn.setAutoCommit(true);
 			//System.out.println(conn.getMetaData().getURL());
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE
@@ -163,13 +165,17 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 				referenceConnPwd = rset.getString("conn_pwd");				
 				referenceConnString = rset.getString("conn_string");
 			}
-			//ks referenceConnString = "mond.dke.uni-linz.ac.at:1521:etutor";
+
+
+			//ks referenceConnString = "mond.dke.uni-linz.ac.at:1521:etutor"; transformiert die IP-Adressen von Table Connections der Live DB auf String, der von Roman auf localhost gemapped werden kann
 
 			//ESTABLISHING CONNECTION TO EXERCISE SPECIFIC REFERENCE DATABASE
-			java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+			//ks original java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+
 			this.logger.log(Level.INFO,referenceConnString + " - " + referenceConnUser + " - " + referenceConnPwd);
 
-			referenceConn = DriverManager.getConnection("jdbc:oracle:thin:@" + referenceConnString, referenceConnUser, referenceConnPwd);
+			//ks original referenceConn = DriverManager.getConnection("jdbc:oracle:thin:@" + referenceConnString, referenceConnUser, referenceConnPwd);
+			referenceConn = DriverManager.getConnection(referenceConnString, referenceConnUser, referenceConnPwd);
 			referenceConn.setAutoCommit(true);
 			
 			//DETERMINING CORRECT QUERY
@@ -244,7 +250,6 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 
 		SQLAnalysis sqlAnalysis;
 		SQLAnalyzer analyzer = new SQLAnalyzer();
-		
 		sqlAnalysis = analyzer.analyze(analysis.getSubmission(), analyzerConfig);
 		sqlAnalysis.setSubmission(analysis.getSubmission());
 		sqlAnalysis.setSubmissionSuitsSolution(true);
@@ -257,7 +262,7 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 
 			}
 		}
-			
+
 		return sqlAnalysis;
 	}
 
