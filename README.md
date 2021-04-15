@@ -1,13 +1,21 @@
 # eTutor-Grading
 
-Funktionsweise eTutor-Grading:
+# Installation
+
+### PostgreSQL
+Zur Speicherung der Submissions und Gradings muss auf dem Standardport 5432 des localhosts eine PostgreSQL-Datenbank eingerichtet sein. Weiters muss eine Datenbank mit dem Namen "etutor", sowie ein Benutzer mit Namen und Passwort "etutor" existieren. Die Erstellung der Tabellen erfolgt automatisch. Die Zugangsdaten können unter resources/application.properties geändert werden.
+
+Für das Modul SQL werden die Tabellen der Übungsbeispiele benötigt, sowie die Referenztabellen "exercises" und "connections", welche die Lösungen der Beispiele sowie die Zugangsdaten zu den Aufgabenspezifischen Datenbanken enthalten (im neuen eTutor-Projekt in einer Datenbank). Um diese zu erstellen, müssen die  [.csv Dateien](https://github.com/jku-win-dke/eTutor-Grading/tree/master/src/main/java/at/jku/dke/etutor/modules/sql/PostgreS) mit den Daten in den Ordner C://Users/public verschoben werden und danach das [Skript](https://github.com/jku-win-dke/eTutor-Grading/blob/master/src/main/java/at/jku/dke/etutor/modules/sql/PostgreS/DDL.sql) ddl.sql ausgeführt werden.
+Weiters muss ein Benutzer mit Namen und Passwort "sql" existieren.
+
+## Funktionsbeschreibung package grading (Swagger API Dokumentation tbd):
 
 Es stehen 2 Schnittstellen zur Verfügung:
 * SubmissionController (/submission)
 * GradingController (/grading)
 
-Der **SubmissionController** nimmt Objekte vom Typ Submission (als JSON-Represäntation) im Body eines Http-Post-Requests entgegen. 
-Daraufhin wird in Abhängigkeit der Submission eine UUID generiert, im Submission Objekt referenziert und dieses persistiert, und damit ein Objekt vom Typ SubmissionDispatcher extends Runnable initialisiert->
+Der **SubmissionController** nimmt Objekte vom Typ Submission (als JSON) im Body eines Http-Post-Requests entgegen. 
+Daraufhin wird in Abhängigkeit der Submission eine UUID generiert, im Submission Objekt referenziert, dieses persistiert, und damit ein Objekt vom Typ SubmissionDispatcher extends Runnable initialisiert->
 die Verarbeitung der Submission startet in einem seperatem Trhead.
 Die Schnittstelle schickt eine ResponseEntity<EntityModel<SubmissionId>> als Response zurück (Http.Status = Accepted), darin finden sich die ID (gewrapped als SubmissionId Objekt) 
 sowie ein Link zur zweiten Schnittstelle (spezifisch für die ID).
@@ -29,9 +37,7 @@ Wenn kein Grading für die angefragte ID gefunden wird, wird mit dem Status Code
 sowie ebenfalls ein Link als Selbstreferenz zurückgeschickt.
 
 
-*Zur Speicherung der Entitäten wird JPA verwendet, die Zugangsdaten finden sich unter application.properties. JPA übernimmt auch das Erstellen der Tabellen, somit muss zurzeit lediglich ein PostgreSQL Server am Standardport 5432 auf localhost laufen welcher eine Datenbank mit Namen "etutorgrading" sowie einen Benutzer mit Namen und Passwort "etutor" zur Verfügung stellt.
-Die Zugangsdaten zur Oracle Datenbank für das SQL Modul finden sich unter SQLConstants.java (Verweisen zurzeit auf meinen DKE Zugang wegen HomeOffice)
-*
+
 
 
 
