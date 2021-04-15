@@ -114,7 +114,7 @@ DROP TABLE human CASCADE;
 DROP TABLE inhaber CASCADE;
 DROP TABLE studienrichtung CASCADE;
 DROP TABLE koje CASCADE;
-
+DROP TABLE gewinne CASCADE;
 
 
   CREATE TABLE person
@@ -613,7 +613,7 @@ CREATE TABLE filiale
  	FROM 'C:\Users\Public\FILIALE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;	
 
-DROP TABLE gewinne;
+
 
 CREATE TABLE gewinne
    (	
@@ -726,7 +726,7 @@ CREATE TABLE studienrichtung
    FROM 'C:\Users\Public\STUDIENRICHTUNG_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
-DROP TABLE KOJE;
+
 
 CREATE TABLE koje
    (	
