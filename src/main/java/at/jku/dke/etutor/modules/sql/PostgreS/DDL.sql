@@ -12,6 +12,9 @@ CREATE DATABASE sql
     CONNECTION LIMIT = -1;
 */	
 
+---------------------------------------------------
+--Granting Select Privileges To User "sql"--
+---------------------------------------------------
 REVOKE ALL
 ON ALL TABLES IN SCHEMA public 
 FROM PUBLIC;
@@ -25,7 +28,10 @@ ALTER DEFAULT PRIVILEGES
     IN SCHEMA public
     GRANT SELECT ON TABLES TO sql;
 
-/* oracle base database with exercises and connections */	
+---------------------------------------------------
+-- reference tables with exercises and connections 
+---------------------------------------------------
+	
 DROP TABLE exercises;
 DROP TABLE connections;
 CREATE TABLE CONNECTIONS 
@@ -49,7 +55,7 @@ CREATE TABLE CONNECTIONS
 	  REFERENCES connections (ID) 
 
    );
-   
+ 
     COPY connections
    FROM   'C:\Users\Public\sql_connections.csv'
    DELIMITER ',' CSV HEADER;
@@ -67,11 +73,24 @@ CREATE TABLE CONNECTIONS
    COPY exercises
    FROM 'C:\Users\Public\sql_exercises.csv'
    DELIMITER ',' CSV HEADER;
+ 
+--------------------------------------------------- 
+--Modifying exercises where oracle solution does not work in postgreSQL
+--------------------------------------------------- 
+UPDATE  exercises
+SET solution = 'SELECT ean, bezeichnung, Spanne, kategorie FROM (select p1.ean, p1.bezeichnung,
+((p1.listPreis - p1.ekPreis)/p1.ekPreis)*100 Spanne, p1.kategorie
+from produkt p1
+where ((p1.listPreis - p1.ekPreis)/p1.ekPreis) =
+    (select MIN((p2.listPreis - p2.ekPreis)/p2.ekPreis)
+     from produkt p2
+     group by p2.kategorie
+     having p2.kategorie = p1.kategorie) ) AS correctQuery ORDER BY ean, bezeichnung, Spanne, kategorie'
+WHERE id = 13818;
    
-  
-   
-/* SQL_TRIAL_BEGIN Tables from referenced oracle database */
- DROP TABLE vermietet CASCADE;
+---------------------------------------------------
+-- SCHEME OWNED BY SQL_TRIAL_BEGIN (ORACLE)
+---------------------------------------------------
  DROP TABLE wohnung CASCADE;
  DROP TABLE person CASCADE;
  DROP TABLE aenderungs_protokoll CASCADE;
@@ -116,7 +135,9 @@ DROP TABLE studienrichtung CASCADE;
 DROP TABLE koje CASCADE;
 DROP TABLE gewinne CASCADE;
 
-
+---------------------------------------------------
+--Tables--
+---------------------------------------------------
   CREATE TABLE person
    (	PERSNR integer, 
 	NAME VARCHAR(10), 
@@ -129,35 +150,24 @@ DROP TABLE gewinne CASCADE;
    FROM   'C:\Users\Public\sql_trial_begin_person.csv'
    DELIMITER ',' CSV HEADER;
 
+---------------------------------------------------
 CREATE TABLE wohnung 
-   (	WOHNNR integer, 
+   (	
+	 WOHNNR integer,
+	 EIGENTUEMER integer,
 	BEZIRK integer, 
 	GROSS integer, 
 	 PRIMARY KEY (WOHNNR)
    ); 
    
+
    COPY wohnung
-   FROM   'C:\Users\Public\sql_trial_begin_wohnung.csv'
+   FROM   'C:\Users\Public\WOHNUNG_DATA_TABLE.csv'
    DELIMITER ',' CSV HEADER;
    
   
-CREATE TABLE vermietet
-   (	VERMIETERNR integer, 
-	MIETERNR integer, 
-	WOHNNR integer, 
-	PREIS integer, 
-	 FOREIGN KEY (VERMIETERNR)
-	  REFERENCES person (PERSNR), 
-	 FOREIGN KEY (MIETERNR)
-	  REFERENCES person (PERSNR), 
-	 FOREIGN KEY (WOHNNR)
-	  REFERENCES wohnung (WOHNNR)
-   );
-  
-  COPY vermietet
-  FROM 'C:\Users\Public\sql_trial_begin_vermietet.csv'
-   DELIMITER ',' CSV HEADER;
- 
+---------------------------------------------------
+
 CREATE TABLE aenderungs_protokoll
    (	
 	FILNR integer, 
@@ -172,6 +182,7 @@ CREATE TABLE aenderungs_protokoll
   	FROM 'C:\Users\Public\sql_trial_begin_aenderungs_protokoll.csv'
    	DELIMITER ',' CSV HEADER;
 
+---------------------------------------------------
 CREATE TABLE artist
    (	
 	   	NAME VARCHAR(50) NOT NULL, 
@@ -182,7 +193,8 @@ CREATE TABLE artist
 	COPY artist
   	FROM 'C:\Users\Public\sql_trial_begin_artist.csv'
    	DELIMITER ',' CSV HEADER; 
-	
+
+---------------------------------------------------	
 CREATE TABLE bauprodukt
    (	
 	 PROD_NR numeric(4,0) NOT NULL, 
@@ -195,6 +207,7 @@ CREATE TABLE bauprodukt
    	DELIMITER ',' CSV HEADER;
 	
 	
+---------------------------------------------------
 CREATE TABLE students
    (	
 	STUDENTID VARCHAR(7), 
@@ -208,6 +221,7 @@ CREATE TABLE students
 	
 	
 	
+---------------------------------------------------
 CREATE TABLE student
    (	
 	MATRIKELNR VARCHAR(7) NOT NULL, 
@@ -221,6 +235,7 @@ CREATE TABLE student
 	
 	
 	
+---------------------------------------------------
 CREATE TABLE kurs
    (	
 	KURSNR numeric(2,0) NOT NULL, 
@@ -232,7 +247,8 @@ CREATE TABLE kurs
  	FROM 'C:\Users\Public\sql_trial_begin_kurs.csv'
     DELIMITER ',' CSV HEADER;
    
-   
+ 
+---------------------------------------------------  
 CREATE TABLE belegung
    (	
 	 MATRIKELNR VARCHAR(7) NOT NULL, 
@@ -248,7 +264,8 @@ CREATE TABLE belegung
    	COPY belegung
  	FROM 'C:\Users\Public\sql_trial_begin_belegung.csv'
     DELIMITER ',' CSV HEADER;
-   
+
+---------------------------------------------------   
 CREATE TABLE bestellung
    (	
 	 BESTELL_NR numeric(10,0) NOT NULL, 
@@ -260,6 +277,7 @@ CREATE TABLE bestellung
  	FROM 'C:\Users\Public\sql_trial_begin_bestellung.csv'
     DELIMITER ',' CSV HEADER;
 	
+---------------------------------------------------
 CREATE TABLE bestellposition
    (	
 	 BESTELL_NR numeric(10,0) NOT NULL, 
@@ -274,7 +292,8 @@ CREATE TABLE bestellposition
    COPY bestellposition
  	FROM 'C:\Users\Public\sql_trial_begin_bestellposition.csv'
     DELIMITER ',' CSV HEADER;
-	
+
+---------------------------------------------------	
 CREATE TABLE book
    (	
 	BOOKID numeric(4,0), 
@@ -285,7 +304,8 @@ CREATE TABLE book
     COPY book
  	FROM 'C:\Users\Public\sql_trial_begin_book.csv'
     DELIMITER ',' CSV HEADER;
-	
+
+---------------------------------------------------	
 CREATE TABLE branch
    (	
 	BRANCHID numeric(4,0), 
@@ -299,6 +319,7 @@ CREATE TABLE branch
 
 
 
+---------------------------------------------------
 CREATE TABLE bookcopies
    (	
 	 BOOKID numeric(4,0), 
@@ -316,6 +337,7 @@ CREATE TABLE bookcopies
     DELIMITER ',' CSV HEADER;
 	
 
+---------------------------------------------------
 CREATE TABLE guest
    (	
 	GNO CHAR(4 ) NOT NULL , 
@@ -328,6 +350,7 @@ CREATE TABLE guest
     DELIMITER ',' CSV HEADER;
 
 
+---------------------------------------------------
 CREATE TABLE hotel
    (	
 	HNO CHAR(4 ) NOT NULL , 
@@ -340,6 +363,7 @@ CREATE TABLE hotel
     DELIMITER ',' CSV HEADER;
 
 
+---------------------------------------------------
 CREATE TABLE room
    (	
 	HNO CHAR(4) NOT NULL , 
@@ -354,6 +378,7 @@ CREATE TABLE room
  	FROM 'C:\Users\Public\sql_trial_begin_room.csv'
     DELIMITER ',' CSV HEADER;
 
+---------------------------------------------------
 CREATE TABLE booking
    (	
 	HNO CHAR(4) NOT NULL, 
@@ -371,7 +396,8 @@ CREATE TABLE booking
 	COPY booking
  	FROM 'C:\Users\Public\sql_trial_begin_booking.csv'
     DELIMITER ',' CSV HEADER;
-	
+
+---------------------------------------------------	
 CREATE TABLE borrower
    (	
 	CARDNO numeric(4,0), 
@@ -387,6 +413,7 @@ CREATE TABLE borrower
  	FROM 'C:\Users\Public\sql_trial_begin_borrower.csv'
     DELIMITER ',' CSV HEADER;
 
+---------------------------------------------------
 CREATE TABLE bookloan
    (	
 	BOOKID numeric(4,0), 
@@ -406,7 +433,8 @@ CREATE TABLE bookloan
  	FROM 'C:\Users\Public\sql_trial_begin_bookloan.csv'
     DELIMITER ',' CSV HEADER;
 	
-	
+
+---------------------------------------------------	
 CREATE TABLE buchung
    (	
 	 BUCHNGNR numeric, 
@@ -419,6 +447,7 @@ CREATE TABLE buchung
  	FROM 'C:\Users\Public\BUCHUNG_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 	
+---------------------------------------------------
 CREATE TABLE city
    (	
 	 ZIP CHAR(4 ) NOT NULL , 
@@ -429,7 +458,8 @@ CREATE TABLE city
    COPY city
  	FROM 'C:\Users\Public\CITY_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
-	
+
+---------------------------------------------------	
 CREATE TABLE course
    (	
 	COURSECODE numeric(2,0), 
@@ -442,6 +472,7 @@ CREATE TABLE course
     DELIMITER ',' CSV HEADER;
 	
 
+---------------------------------------------------
 CREATE TABLE dept
    (	
 	 DNUM CHAR(4) NOT NULL , 
@@ -482,7 +513,8 @@ CREATE TABLE staff
  	FROM 'C:\Users\Public\STAFF_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 	
-	  
+
+---------------------------------------------------	  
 CREATE TABLE deptlocation
    (	
 	 DNUM CHAR(4 ) NOT NULL , 
@@ -496,6 +528,7 @@ CREATE TABLE deptlocation
     DELIMITER ',' CSV HEADER;
 
 
+---------------------------------------------------
 CREATE TABLE genre
    (	
 	GENREID numeric NOT NULL, 
@@ -508,6 +541,7 @@ CREATE TABLE genre
     DELIMITER ',' CSV HEADER;
 
 
+---------------------------------------------------
 CREATE TABLE record 
    (	
 	 RECORDID numeric NOT NULL, 
@@ -527,6 +561,7 @@ CREATE TABLE record
     DELIMITER ',' CSV HEADER;
 
 
+---------------------------------------------------
 CREATE TABLE distribute
    (	
 	 RECORDID numeric NOT NULL, 
@@ -539,7 +574,8 @@ CREATE TABLE distribute
    COPY distribute
  	FROM 'C:\Users\Public\DISTRIBUTE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
-	
+
+---------------------------------------------------	
 CREATE TABLE enrollment
    (	
 	 STUDENTID VARCHAR(7 ), 
@@ -558,6 +594,7 @@ CREATE TABLE enrollment
 
 
 
+---------------------------------------------------
 CREATE TABLE node
    (	NODEID VARCHAR(5 ) NOT NULL , 
 	LONGITUDE numeric(5,2) NOT NULL , 
@@ -574,6 +611,7 @@ CREATE TABLE node
     DELIMITER ',' CSV HEADER;	
 
 
+---------------------------------------------------
 CREATE TABLE exit 
    (	
 	 NODEID VARCHAR(5 ) NOT NULL, 
@@ -589,7 +627,8 @@ CREATE TABLE exit
 	COPY exit
  	FROM 'C:\Users\Public\EXIT_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;	
-	
+
+---------------------------------------------------	
 CREATE TABLE fakultaet
    (	
 	KURZBEZ VARCHAR(5 ) NOT NULL , 
@@ -601,6 +640,7 @@ CREATE TABLE fakultaet
     DELIMITER ',' CSV HEADER;	
 
 
+---------------------------------------------------
 CREATE TABLE filiale
    (	
 	FILNR numeric(3,0) NOT NULL , 
@@ -615,6 +655,7 @@ CREATE TABLE filiale
 
 
 
+---------------------------------------------------
 CREATE TABLE gewinne
    (	
 	FIRMA VARCHAR(100), 
@@ -627,6 +668,7 @@ CREATE TABLE gewinne
  	FROM 'C:\Users\Public\GEWINNE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
+---------------------------------------------------
 CREATE TABLE highway
    (	
 	CODE CHAR(5) NOT NULL , 
@@ -645,7 +687,8 @@ CREATE TABLE highway
    COPY highway
  	FROM 'C:\Users\Public\HIGHWAY_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
-	
+
+---------------------------------------------------	
 CREATE TABLE highwayexit
    (	
 	CODE CHAR(5 ), 
@@ -660,7 +703,8 @@ CREATE TABLE highwayexit
 	COPY highwayexit
  	FROM 'C:\Users\Public\HIGHWAYEXIT_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
-	
+
+---------------------------------------------------	
 CREATE TABLE intersection
    (	
 	 NODEID VARCHAR(5 ) NOT NULL , 
@@ -674,6 +718,7 @@ CREATE TABLE intersection
  	FROM 'C:\Users\Public\INTERSECTION_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
+---------------------------------------------------
 CREATE TABLE highwayintersection
    (	
 	 CODE CHAR(5 ) NOT NULL , 
@@ -689,6 +734,7 @@ CREATE TABLE highwayintersection
  	FROM 'C:\Users\Public\HIGHWAYINTERSECTION_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
+---------------------------------------------------
 CREATE TABLE human
    (	
 	 NAME VARCHAR(50 ) NOT NULL , 
@@ -703,6 +749,7 @@ CREATE TABLE human
 
 
 
+---------------------------------------------------
  CREATE TABLE inhaber
    (	
 	 NAME CHAR(20), 
@@ -713,6 +760,7 @@ CREATE TABLE human
    FROM 'C:\Users\Public\INHABER_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
+---------------------------------------------------
 CREATE TABLE studienrichtung
    (	
 	 KENNZAHL numeric NOT NULL , 
@@ -727,7 +775,7 @@ CREATE TABLE studienrichtung
     DELIMITER ',' CSV HEADER;
 
 
-
+---------------------------------------------------
 CREATE TABLE koje
    (	
 	 STANDNR VARCHAR(5) NOT NULL , 
@@ -747,6 +795,455 @@ CREATE TABLE koje
 	COPY koje
    FROM 'C:\Users\Public\KOJE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
+-----------------------------------------
+DROP TABLE konto CASCADE;
+DROP TABLE kunde CASCADE;
+DROP TABLE lieferposition CASCADE;
+DROP TABLE lieferschein CASCADE;
+DROP TABLE liegtanstrasse CASCADE;
+DROP TABLE strasse CASCADE;
+DROP TABLE ort CASCADE;
+DROP TABLE location CASCADE;
+DROP TABLE mietet CASCADE;
+DROP TABLE orteverbindung CASCADE;
+DROP TABLE parent CASCADE;
+DROP TABLE product CASCADE;
+DROP TABLE produkt CASCADE;
+DROP TABLE project CASCADE;
+DROP TABLE time CASCADE;
+DROP TABLE purchase CASCADE;
+DROP TABLE rechnung CASCADE;
+-----------------------------------------
+CREATE TABLE konto
+   (	
+	 KONTONR numeric, 
+	FILIALE numeric, 
+	INHNAME CHAR(20 ), 
+	GEBDAT DATE, 
+	SALDO numeric(10,2)
+   );
+   COPY konto
+   FROM 'C:\Users\Public\konto_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+   
+-----------------------------------------
+CREATE TABLE kunde
+   (	
+	KUNDENR numeric(5,0) NOT NULL, 
+	NAME VARCHAR(30 ) NOT NULL, 
+	BONSTUFE CHAR(1 ) NOT NULL , 
+	CONSTRAINT SYS_C002824 PRIMARY KEY (KUNDENR)
+   );
+   COPY kunde
+   FROM 'C:\Users\Public\KUNDE_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+-----------------------------------------
+CREATE TABLE lieferschein
+   (	
+	LIEFER_NR numeric(10,0) NOT NULL, 
+	DATUM DATE NOT NULL , 
+	 CONSTRAINT SYS_C002859 PRIMARY KEY (LIEFER_NR)
+   );
+   COPY lieferschein
+   FROM 'C:\Users\Public\lieferschein_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+-----------------------------------------
+CREATE TABLE lieferposition
+   (	
+	 LIEFER_NR numeric(10,0) NOT NULL , 
+	LIEFERPOS_NR numeric(4,0) NOT NULL , 
+	BESTELL_NR numeric(10,0) NOT NULL , 
+	BESTELLPOS_NR numeric(4,0), 
+	MENGE numeric(4,0) NOT NULL , 
+	 CONSTRAINT SYS_C002862 PRIMARY KEY (LIEFER_NR, LIEFERPOS_NR),
+	 CONSTRAINT SYS_C002863 FOREIGN KEY (LIEFER_NR)
+	  REFERENCES lieferschein (LIEFER_NR) DEFERRABLE INITIALLY DEFERRED, 
+	 CONSTRAINT SYS_C002864 FOREIGN KEY (BESTELL_NR, BESTELLPOS_NR)
+	  REFERENCES bestellposition (BESTELL_NR, POS_NR) DEFERRABLE INITIALLY DEFERRED
+   );
+   COPY lieferposition
+   FROM 'C:\Users\Public\LIEFERPOSITION_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+-----------------------------------------
+CREATE TABLE strasse
+   (	
+	 NAME VARCHAR(10 ) NOT NULL , 
+	BEZEICHNUNG VARCHAR(30 ), 
+	ORTVON VARCHAR(6 ), 
+	ORTNACH VARCHAR(6 ), 
+	STRASSENART VARCHAR(2), 
+	LAENGE numeric(5,2), 
+	 CONSTRAINT SYS_C002766 PRIMARY KEY (NAME)
+	 /*,CONSTRAINT "SYS_C002767" FOREIGN KEY ("ORTVON")
+	   REFERENCES "SQL_TRIAL_BEGIN"."ORT" ("PLZ") ON DELETE CASCADE DISABLE, 
+	 CONSTRAINT "SYS_C002768" FOREIGN KEY ("ORTNACH")
+	  REFERENCES "SQL_TRIAL_BEGIN"."ORT" ("PLZ") ON DELETE CASCADE DISABLE, 
+	 CONSTRAINT "SYS_C002769" FOREIGN KEY ("STRASSENART")
+	  REFERENCES "SQL_TRIAL_BEGIN"."STRASSENART" ("ART") ON DELETE CASCADE DISABLE*/
+   );
+   COPY strasse
+   FROM 'C:\Users\Public\STRASSE_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+-----------------------------------------
+CREATE TABLE ort
+   (	
+	PLZ VARCHAR(6) NOT NULL, 
+	NAME VARCHAR(20), 
+	 CONSTRAINT SYS_C002764 PRIMARY KEY (PLZ)
+   );
+   COPY ort
+   FROM 'C:\Users\Public\ORT_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+   
+-----------------------------------------
+CREATE TABLE liegtanstrasse
+   (	
+	STRASSENNAME VARCHAR(10 ) NOT NULL , 
+	ORT VARCHAR(6 ) NOT NULL , 
+	BEIKM numeric(5,2), 
+	 CONSTRAINT SYS_C002770 PRIMARY KEY (STRASSENNAME, ORT),
+	 CONSTRAINT SYS_C002771 FOREIGN KEY (STRASSENNAME)
+	  REFERENCES strasse (NAME) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, 
+	 CONSTRAINT SYS_C002772 FOREIGN KEY (ORT)
+	  REFERENCES ort (PLZ) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+   );
+   COPY liegtanstrasse
+   FROM 'C:\Users\Public\LIEGTANSTRASSE_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+-----------------------------------------
+CREATE TABLE location
+   (	
+	LOCNO numeric(10,0), 
+	NAME VARCHAR(10 ), 
+	CITY VARCHAR(10 ), 
+	STATE VARCHAR(5 ), 
+	PRIMARY KEY (LOCNO)
+   );
+    COPY location
+   FROM 'C:\Users\Public\LOCATION_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+-----------------------------------------
+CREATE TABLE mietet
+   (	
+	MIETERNR numeric, 
+	WOHNNR numeric, 
+	PREIS numeric, 
+	VON DATE, 
+	BIS DATE
+   );
+   COPY mietet
+   FROM 'C:\Users\Public\MIETET_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+-----------------------------------------
+CREATE TABLE orteverbindung
+   (	
+	 STRASSENNAME VARCHAR(10 ) NOT NULL , 
+	ORTVON VARCHAR(6 ) /*NOT NULL DISABLE*/, 
+	ORTNACH VARCHAR(6 ) /*NOT NULL DISABLE*/, 
+	DISTANZ numeric(5,2), 
+	 CONSTRAINT SYS_C002933 PRIMARY KEY (STRASSENNAME, ORTVON, ORTNACH)
+	  /* ,
+	 CONSTRAINT "SYS_C002934" FOREIGN KEY ("STRASSENNAME")
+	  REFERENCES "SQL_TRIAL_BEGIN"."STRASSE" ("NAME") ON DELETE CASCADE DISABLE, 
+	 CONSTRAINT "SYS_C002935" FOREIGN KEY ("ORTVON")
+	  REFERENCES "SQL_TRIAL_BEGIN"."ORT" ("PLZ") ON DELETE CASCADE DISABLE, 
+	 CONSTRAINT "SYS_C002936" FOREIGN KEY ("ORTNACH")
+	  REFERENCES "SQL_TRIAL_BEGIN"."ORT" ("PLZ") ON DELETE CASCADE DISABLE */
+   );
+   COPY orteverbindung
+   FROM 'C:\Users\Public\ORTEVERBINDUNG_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+-----------------------------------------
+CREATE TABLE parent
+   (	
+	 PARENTNAME VARCHAR(50 ) NOT NULL , 
+	CHILDNAME VARCHAR(50 ) NOT NULL , 
+	 CONSTRAINT SYS_C002868 PRIMARY KEY (PARENTNAME, CHILDNAME)
+	   /* ,CONSTRAINT "SYS_C002869" FOREIGN KEY ("PARENTNAME")
+	  REFERENCES "SQL_TRIAL_BEGIN"."HUMAN" ("NAME") DISABLE, 
+	 CONSTRAINT "SYS_C002870" FOREIGN KEY ("CHILDNAME")
+	  REFERENCES "SQL_TRIAL_BEGIN"."HUMAN" ("NAME") DISABLE */
+   );
+   COPY parent
+   FROM 'C:\Users\Public\parent_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
 
- 
+-----------------------------------------
+CREATE TABLE product
+   (	
+	 PRODNO numeric(20,0), 
+	NAME VARCHAR(15 ), 
+	TYPE VARCHAR(10 ), 
+	CAT VARCHAR(10 ), 
+	 PRIMARY KEY (PRODNO)
+   );
+    COPY product
+   FROM 'C:\Users\Public\PRODUCT_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+-----------------------------------------
+CREATE TABLE produkt
+   (	
+	 EAN CHAR(15 ) NOT NULL , 
+	BEZEICHNUNG VARCHAR(20 ) NOT NULL , 
+	KATEGORIE VARCHAR(10 ) NOT NULL , 
+	EKPREIS numeric(7,2) NOT NULL , 
+	LISTPREIS numeric(7,2) NOT NULL , 
+	 /* CONSTRAINT SYS_C002815 CHECK (ekPreis > 0) DISABLE, 
+	 CONSTRAINT "SYS_C002816" CHECK (listPreis > 0) DISABLE, */
+	 CONSTRAINT SYS_C002817 PRIMARY KEY (EAN), 
+	 CONSTRAINT PRODUKT_UK41098377439043 UNIQUE (BEZEICHNUNG)
+   );
+    COPY produkt
+   FROM 'C:\Users\Public\PRODUKT_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+-----------------------------------------
+CREATE TABLE project
+   (	
+	 PNUM CHAR(4 ) NOT NULL , 
+	PNAME VARCHAR(20 ) NOT NULL, 
+	PCITY VARCHAR(20 ), 
+	DNUM CHAR(4 ), 
+	 PRIMARY KEY (PNUM), 
+	 FOREIGN KEY (DNUM)
+	  REFERENCES dept (DNUM) 
+   );
+    COPY project
+   FROM 'C:\Users\Public\PROJECT_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+ -----------------------------------------
+ CREATE TABLE time
+   (	
+	 DAYNO numeric(3,0), 
+	D CHAR(10 ), 
+	M CHAR(7 ), 
+	Y numeric(4,0), 
+	 PRIMARY KEY (DAYNO)
+   );
+   COPY time
+   FROM 'C:\Users\Public\TIME_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+  -----------------------------------------
+ CREATE TABLE purchase
+   (	
+	 DAYNO numeric(2,0), 
+	PRODNO numeric(20,0), 
+	QTY numeric(6,0), 
+	PRICE numeric(6,0), 
+	 PRIMARY KEY (DAYNO, PRODNO), 
+	 FOREIGN KEY (DAYNO)
+	  REFERENCES time (DAYNO) , 
+	 FOREIGN KEY (PRODNO)
+	  REFERENCES product (PRODNO) 
+   );
+   COPY purchase
+   FROM 'C:\Users\Public\PURCHASE_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+-----------------------------------------
 
+CREATE TABLE rechnung
+   (	
+	 RECHNUNGNR numeric(5,0) NOT NULL , 
+	DATUM DATE NOT NULL , 
+	BEZAHLT CHAR(1 ) NOT NULL , 
+	KUNDENR numeric(5,0) NOT NULL , 
+	FILNR numeric(3,0) NOT NULL,
+	PRIMARY KEY (RECHNUNGNR, DATUM)
+	 /* 
+	   ,CONSTRAINT "SYS_C002837" CHECK (bezahlt IN ('Y', 'N')) DISABLE, 
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)
+  TABLESPACE "EXERCISE"  ENABLE, 
+	 CONSTRAINT "SYS_C002839" FOREIGN KEY ("KUNDENR")
+	  REFERENCES "SQL_TRIAL_BEGIN"."KUNDE" ("KUNDENR") DISABLE, 
+	 CONSTRAINT "SYS_C002840" FOREIGN KEY ("FILNR")
+	  REFERENCES "SQL_TRIAL_BEGIN"."FILIALE" ("FILNR") DISABLE*/
+   );
+      COPY rechnung
+   FROM 'C:\Users\Public\RECHNUNG_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+
+-----------------------------------------
+DROP TABLE rechnungpos CASCADE;
+DROP TABLE sales CASCADE;
+DROP TABLE segment CASCADE;
+DROP TABLE sortiment CASCADE;
+DROP TABLE sortiment_aenderungen CASCADE;
+DROP TABLE staffhotel CASCADE;
+DROP TABLE test CASCADE;
+DROP TABLE strassenart CASCADE;
+DROP TABLE track CASCADE;
+DROP TABLE workson CASCADE;
+-----------------------------------------
+CREATE TABLE rechnungpos
+   (	
+	 RECHNUNGNR numeric(5,0) NOT NULL , 
+	DATUM DATE NOT NULL , 
+	EAN CHAR(15 ) NOT NULL , 
+	POSITIONNR numeric(3,0) NOT NULL , 
+	EINZELPREIS numeric(7,2) NOT NULL , 
+	MENGE numeric(3,0) NOT NULL, 
+	 /* CONSTRAINT "SYS_C002844" CHECK (einzelPreis > 0) DISABLE, 
+	 CONSTRAINT "SYS_C002845" CHECK (menge > 0) DISABLE, */
+	 PRIMARY KEY (RECHNUNGNR, DATUM, POSITIONNR)
+	   /*, 
+	 CONSTRAINT "SYS_C002847" FOREIGN KEY ("EAN")
+	  REFERENCES "SQL_TRIAL_BEGIN"."PRODUKT" ("EAN") DISABLE, 
+	 CONSTRAINT "SYS_C002848" FOREIGN KEY ("RECHNUNGNR", "DATUM")
+	  REFERENCES "SQL_TRIAL_BEGIN"."RECHNUNG" ("RECHNUNGNR", "DATUM") DISABLE
+	   */
+   );
+    COPY rechnungpos
+   FROM 'C:\Users\Public\RECHNUNGPOS_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+
+-----------------------------------------
+CREATE TABLE sales 
+   (	
+	 DAYNO numeric(3,0), 
+	LOCNO numeric(3,0), 
+	PRODNO numeric(3,0), 
+	QTY numeric(3,0), 
+	PRICE numeric(3,0), 
+	 PRIMARY KEY (DAYNO, LOCNO, PRODNO),
+	 FOREIGN KEY (DAYNO)
+	  REFERENCES time (DAYNO) , 
+	 FOREIGN KEY (LOCNO)
+	  REFERENCES location (LOCNO) , 
+	 FOREIGN KEY (PRODNO)
+	  REFERENCES product (PRODNO) 
+   );
+	COPY sales
+   FROM 'C:\Users\Public\SALES_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+
+-----------------------------------------
+CREATE TABLE segment
+   (	
+	CODE CHAR(5 ) NOT NULL , 
+	SEGID CHAR(5) NOT NULL , 
+	FROMKM numeric(5,2) NOT NULL , 
+	TOKM numeric(5,2) NOT NULL , 
+	 /*
+	   CONSTRAINT "SYS_C003469" CHECK (fromKM >= 0) DISABLE, 
+	 CONSTRAINT "SYS_C003470" CHECK (toKM > 0) DISABLE, 
+	 CONSTRAINT "SYS_C003471" CHECK (fromKM < toKM) DISABLE, 
+	   CONSTRAINT "SYS_C003473" FOREIGN KEY ("CODE")
+	  REFERENCES "SQL_TRIAL_BEGIN"."HIGHWAY" ("CODE") ON DELETE CASCADE DISABLE,
+	   */
+	 PRIMARY KEY (CODE, SEGID)	 
+   );
+   COPY segment
+   FROM 'C:\Users\Public\SEGMENT_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+-----------------------------------------
+ CREATE TABLE sortiment
+   (	
+	 FILNR numeric(3,0) NOT NULL, 
+	EAN CHAR(15 ) NOT NULL, 
+	VKPREIS numeric(7,2) NOT NULL, 
+	PREISRED numeric(7,2) NOT NULL , 
+	BESTAND numeric(3,0) NOT NULL , 
+	/*
+	 CONSTRAINT "SYS_C002828" CHECK (vkPreis > 0) DISABLE, 
+	 CONSTRAINT "SYS_C002829" CHECK (preisRed BETWEEN 0
+    AND vkPreis) DISABLE, 
+	 CONSTRAINT "SYS_C002830" CHECK (bestand >=0) DISABLE, 
+	  */
+	PRIMARY KEY (FILNR, EAN)
+	  /*
+	 CONSTRAINT "SYS_C002832" FOREIGN KEY ("FILNR")
+	  REFERENCES "SQL_TRIAL_BEGIN"."FILIALE" ("FILNR") DISABLE, 
+	 CONSTRAINT "SYS_C002833" FOREIGN KEY ("EAN")
+	  REFERENCES "SQL_TRIAL_BEGIN"."PRODUKT" ("EAN") DISABLE
+	*/	   
+   );
+   COPY sortiment
+   FROM 'C:\Users\Public\SORTIMENT_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+
+-----------------------------------------
+CREATE TABLE sortiment_aenderungen
+   (	
+	 FILNR numeric(3,0), 
+	EAN CHAR(15 ), 
+	VKPREIS numeric(7,2), 
+	PREISRED numeric(7,2), 
+	BESTAND numeric(3,0)
+	   /*
+	   , 
+	 CONSTRAINT "SYS_C002941" FOREIGN KEY ("FILNR")
+	  REFERENCES "SQL_TRIAL_BEGIN"."FILIALE" ("FILNR") DISABLE, 
+	 CONSTRAINT "SYS_C002942" FOREIGN KEY ("EAN")
+	  REFERENCES "SQL_TRIAL_BEGIN"."PRODUKT" ("EAN") DISABLE
+	*/   
+   );
+   COPY sortiment_aenderungen
+   FROM 'C:\Users\Public\SORTIMENT_AENDERUNGEN_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+   
+-----------------------------------------  
+CREATE TABLE staffhotel
+   (	
+	 SNO CHAR(4 ) NOT NULL, 
+	NAME VARCHAR(16 ) NOT NULL , 
+	ADDRESS VARCHAR(40 ), 
+	POSITION VARCHAR(16 ), 
+	SALARY numeric(8,2), 
+	 PRIMARY KEY (SNO)	   
+   );
+   COPY staffhotel
+    FROM 'C:\Users\Public\STAFFHOTEL_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+	
+----------------------------------------- 
+CREATE TABLE strassenart
+   (	
+	ART VARCHAR(2 ) NOT NULL , 
+	BEZEICHNUNG VARCHAR(30 ), 
+	PRIMARY KEY (ART)
+   );
+      COPY strassenart
+    FROM 'C:\Users\Public\STRASSENART_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+----------------------------------------- 
+CREATE TABLE test
+   (	
+	   ID numeric(10,0)
+   );
+    COPY test
+    FROM 'C:\Users\Public\TEST_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+
+----------------------------------------- 
+CREATE TABLE track
+   (	
+	 RECORDID numeric NOT NULL , 
+	TNUMBER numeric NOT NULL , 
+	TITLE VARCHAR(50 ), 
+	LENGTH numeric, 
+	PRIMARY KEY (RECORDID, TNUMBER)
+	   /*
+	 CONSTRAINT "SYS_C002899" FOREIGN KEY ("RECORDID")
+	  REFERENCES "SQL_TRIAL_BEGIN"."RECORD" ("RECORDID") DISABLE
+ 		*/  
+   );
+    COPY track
+    FROM 'C:\Users\Public\track_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+
+-----------------------------------------
+ CREATE TABLE workson
+   (	
+	 SNUM CHAR(4 ) NOT NULL, 
+	PNUM CHAR(4 ) NOT NULL , 
+	HOURS numeric(2,0), 
+	 PRIMARY KEY (SNUM, PNUM), 
+	 FOREIGN KEY (SNUM)
+	  REFERENCES staff (SNUM), 
+	 FOREIGN KEY (PNUM)
+	  REFERENCES project (PNUM) 
+   );
+   COPY workson
+    FROM 'C:\Users\Public\workson_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;

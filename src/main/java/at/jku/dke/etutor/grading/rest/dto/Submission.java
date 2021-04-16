@@ -26,7 +26,7 @@ public class Submission implements Serializable {
     @CollectionTable(name="submission_attribute_mapping",
     joinColumns = {@JoinColumn(name = "submission", referencedColumnName = "submissionId")})
     @MapKeyColumn(name="attribute_key")
-    @Column(name="attribute_value")
+    @Column(name="attribute_value", length = 2048)
     private Map<String, String> passedAttributes;
 
 

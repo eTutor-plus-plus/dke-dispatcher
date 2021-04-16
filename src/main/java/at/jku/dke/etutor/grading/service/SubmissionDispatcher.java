@@ -12,6 +12,7 @@ import at.jku.dke.etutor.modules.sql.analysis.SQLCriterionAnalysis;
 
 
 import java.util.Iterator;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -80,12 +81,20 @@ public class SubmissionDispatcher implements Runnable {
 
     private void processAnalysis(Analysis analysis) {
         if (analysis instanceof SQLAnalysis) {
+            analysis = (SQLAnalysis)analysis;
+            Vector columns = ((SQLAnalysis) analysis).getQueryResultColumnLabels();
+            System.out.println("The column labels are: " + columns);
+
+           Vector tuples = ((SQLAnalysis) analysis).getQueryResultTuples();
+           System.out.println("The tupels are: " + tuples);
+
             Iterator it = ((SQLAnalysis) analysis).iterCriterionAnalyses();
             while (it.hasNext()) {
                 SQLCriterionAnalysis temp = (SQLCriterionAnalysis) it.next();
                 System.out.println(temp.toString() + " " + temp.isCriterionSatisfied());
                 System.out.println("EvaluationCriterion " + " " + temp.getEvaluationCriterion().toString());
                 System.out.println("AnalysisException" + " " + temp.getAnalysisException());
+
             }
         }
     }
