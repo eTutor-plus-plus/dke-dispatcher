@@ -3,11 +3,11 @@ package at.jku.dke.etutor.modules.sql;
 
 public class SQLConstants {
 	
-	public static final String CONN_PWD = "schramlgut18"; //"sql";//
+	public static final String CONN_PWD = "sql";//"schramlgut18"; //"sql";//
 
-	public static final String CONN_USER = "dke32";//"sql";//
+	public static final String CONN_USER = "sql";//"dke32";//"sql";//
 
-	public static final String CONN_URL = "jdbc:oracle:thin:@140.78.58.1:1521:lehre";//"jdbc:oracle:thin:@mond.dke.uni-linz.ac.at:1521:etutor";//
+	public static final String CONN_URL = "jdbc:postgresql://localhost:5432/sql"; //"jdbc:oracle:thin:@140.78.58.1:1521:lehre";//"jdbc:oracle:thin:@mond.dke.uni-linz.ac.at:1521:etutor";//
 
 	// USER INTERFACE ETUTOR-CORE CONSTANTS
 	public static final String ATTR_USER_ID = "userID"; // CoreConstants.ATTR_USER_ID

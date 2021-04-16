@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.grading.service;
 
 
+import at.jku.dke.etutor.core.evaluation.Report;
 import at.jku.dke.etutor.grading.rest.dto.*;
 import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.Evaluator;
@@ -12,6 +13,7 @@ import at.jku.dke.etutor.modules.sql.analysis.SQLCriterionAnalysis;
 
 
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,9 +66,10 @@ public class SubmissionDispatcher implements Runnable {
                         submission.getPassedAttributes(), submission.getPassedParameters());
                 logger.info("Finished evaluating submission");
 
-
                 GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading.getPoints(), grading.getMaxPoints());
+                logger.info("Saving grading to database");
                 gradingDTORepository.save(gradingDTO);
+                logger.info("Finished saving grading to database");
                 processAnalysis(analysis);
             }else{
                 logger.log(Level.SEVERE, "Could not find evaluator for tasktype: " + submission.getTaskType());

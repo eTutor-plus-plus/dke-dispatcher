@@ -44,12 +44,12 @@ public class ETutorSubmissionController {
      */
     @PostMapping("")
     public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody Submission submission) {
-        logger.info("Request received");
+        logger.info("Submission received");
         SubmissionId submissionId = new SubmissionId("-1");
         try{
             logger.info("Calculating submission-ID");
             submissionId = SubmissionId.createId(submission);
-            logger.info("Finished calculating submission-ID");
+            logger.info("Finished calculating submission-ID: " + submissionId.getId());
 
             Thread t = new Thread(new SubmissionDispatcher(submission,
                     submissionRepository, gradingDTORepository));

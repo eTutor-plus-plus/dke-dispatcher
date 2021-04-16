@@ -1,7 +1,12 @@
 package at.jku.dke.etutor.grading.service;
 import at.jku.dke.etutor.core.evaluation.Evaluator;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.stereotype.Component;
+
+import java.util.Locale;
 
 
 /**
@@ -9,11 +14,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ModuleManager{
-    private static Evaluator sqlEvaluator;
+    private static SQLEvaluator sqlEvaluator;
 
     public ModuleManager(){
         sqlEvaluator = new SQLEvaluator();
-
     }
 
     public static Evaluator getEvaluator(String tasktype){

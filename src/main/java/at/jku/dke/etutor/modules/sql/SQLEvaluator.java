@@ -132,10 +132,8 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 			//ESTABLISHING CONNECTION TO SQL DATABASE
 			//ks java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 			Class.forName("org.postgresql.Driver");
-			//ks conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
-			conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/sql", "sql", "sql");
+			conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
 			conn.setAutoCommit(true);
-			//System.out.println(conn.getMetaData().getURL());
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE
 			query = new String();
 
@@ -167,14 +165,17 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 			}
 
 
-			//ks referenceConnString = "mond.dke.uni-linz.ac.at:1521:etutor"; transformiert die IP-Adressen von Table Connections der Live DB auf String, der von Roman auf localhost gemapped werden kann
+			//ks referenceConnString = "mond.dke.uni-linz.ac.at:1521:etutor"; transformiert die IP-Adressen von Table Connections der Live Oracle DB auf String, der von Roman auf localhost gemapped werden kann
 
 			//ESTABLISHING CONNECTION TO EXERCISE SPECIFIC REFERENCE DATABASE
+
 			//ks original java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 
 			this.logger.log(Level.INFO,referenceConnString + " - " + referenceConnUser + " - " + referenceConnPwd);
 
 			//ks original referenceConn = DriverManager.getConnection("jdbc:oracle:thin:@" + referenceConnString, referenceConnUser, referenceConnPwd);
+
+
 			referenceConn = DriverManager.getConnection(referenceConnString, referenceConnUser, referenceConnPwd);
 			referenceConn.setAutoCommit(true);
 			

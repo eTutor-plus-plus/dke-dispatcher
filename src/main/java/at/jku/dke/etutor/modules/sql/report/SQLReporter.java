@@ -15,6 +15,8 @@ import org.springframework.context.MessageSource;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationAction;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.NoSuchMessageException;
 
 
 public class SQLReporter {
@@ -34,7 +36,7 @@ public class SQLReporter {
 }
 
 	public SQLReport createReport(SQLAnalysis analysis, DefaultGrading grading, SQLReporterConfig config, Locale locale) {
-		String LS;
+  		String LS;
 		String prologue;
 		SQLReport report;
 		Collection tuple;
