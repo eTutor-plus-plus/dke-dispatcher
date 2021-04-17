@@ -9,4 +9,6 @@ public interface Evaluator {
     public Grading grade(Analysis analysis, int maxPoints, Map passedAttributes, Map passedParameters) throws Exception;
 
     public Report report(Analysis analysis, Grading grading, Map passedAttributes, Map passedParameters, Locale locale) throws Exception;
+
+    public Feedback giveFeedback(Analysis analysis, Grading grading, Map passedAttributes, Map passedParameters, Locale locale);
 }

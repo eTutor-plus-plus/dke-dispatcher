@@ -1,15 +1,14 @@
 package at.jku.dke.etutor.grading.service;
 
 
-import at.jku.dke.etutor.core.evaluation.Report;
+import at.jku.dke.etutor.core.evaluation.*;
 import at.jku.dke.etutor.grading.rest.dto.*;
-import at.jku.dke.etutor.core.evaluation.Analysis;
-import at.jku.dke.etutor.core.evaluation.Evaluator;
-import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
 import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
 import at.jku.dke.etutor.modules.sql.analysis.SQLCriterionAnalysis;
+import at.jku.dke.etutor.modules.sql.feedback.SQLFeedback;
+import at.jku.dke.etutor.modules.sql.report.SQLErrorReport;
 
 
 import java.util.Iterator;
@@ -70,7 +69,13 @@ public class SubmissionDispatcher implements Runnable {
                 logger.info("Saving grading to database");
                 gradingDTORepository.save(gradingDTO);
                 logger.info("Finished saving grading to database");
-                processAnalysis(analysis);
+
+                Feedback feedback = evaluator.giveFeedback(analysis, grading,
+                        submission.getPassedAttributes(), submission.getPassedParameters(), Locale.GERMAN);
+                System.out.println(feedback.getDescription());
+                System.out.println(feedback.getError());
+                System.out.println(feedback.getHint());
+
             }else{
                 logger.log(Level.SEVERE, "Could not find evaluator for tasktype: " + submission.getTaskType());
             }
@@ -82,23 +87,15 @@ public class SubmissionDispatcher implements Runnable {
 
 
 
-    private void processAnalysis(Analysis analysis) {
+    private void processAnalysis(Evaluator evaluator, Grading grading, Analysis analysis, Submission submission) {
         if (analysis instanceof SQLAnalysis) {
-            analysis = (SQLAnalysis)analysis;
-            Vector columns = ((SQLAnalysis) analysis).getQueryResultColumnLabels();
-            System.out.println("The column labels are: " + columns);
+            Feedback feedback = evaluator.giveFeedback(analysis, grading,
+                    submission.getPassedAttributes(), submission.getPassedParameters(), Locale.GERMAN);
+            System.out.println(feedback.getDescription());
+            System.out.println(feedback.getError());
+            System.out.println(feedback.getHint());
 
-           Vector tuples = ((SQLAnalysis) analysis).getQueryResultTuples();
-           System.out.println("The tupels are: " + tuples);
-
-            Iterator it = ((SQLAnalysis) analysis).iterCriterionAnalyses();
-            while (it.hasNext()) {
-                SQLCriterionAnalysis temp = (SQLCriterionAnalysis) it.next();
-                System.out.println(temp.toString() + " " + temp.isCriterionSatisfied());
-                System.out.println("EvaluationCriterion " + " " + temp.getEvaluationCriterion().toString());
-                System.out.println("AnalysisException" + " " + temp.getAnalysisException());
-
-            }
+            SQLFeedback sqlFeedback = (SQLFeedback) feedback;
         }
     }
 

@@ -58,7 +58,7 @@ public class ETutorSubmissionControllerTests {
         Submission submission = new Submission();
         HashMap<String, String> attributeMap = new HashMap<>();
         attributeMap.put("action", "diagnose");
-        attributeMap.put("diagnoseLevel", "1");
+        attributeMap.put("diagnoseLevel", "3");
         submission.setPassedAttributes(attributeMap);
         submission.setPassedParameters(new HashMap<String, String>());
         submission.setUserId(1);

@@ -16,27 +16,16 @@ public class TestApp {
     public static void main(String[] args) throws IOException, InterruptedException, NotBoundException {
         HttpClient client = HttpClient.newHttpClient();
 
-        //RMIClient rmiClient = new RMIClient();
-        //rmiClient.startClient();
-
-        /*adding sqlEvaluator to ModuleManager
-        HashMap<String, Evaluator> evaluatorMap = new HashMap<>();
-        Evaluator sqlEvaluator = new SQLEvaluator();
-        evaluatorMap.put("sql", sqlEvaluator);
-        ModuleManager.setEvaluatorMap(evaluatorMap);
-        */
-
-
         // creating submission for sql module
         Submission submission = new Submission();
-        submission.setExerciseId(88);
+        submission.setExerciseId(10042);
         submission.setTaskType("sql");
         submission.setUserId(99999);
         submission.setMaxPoints(1000);
         HashMap<String, String> passedAttributes = new HashMap<>();
         passedAttributes.put("action", "diagnose");
-        passedAttributes.put("submission", "SELECT name, beruf FROM person WHERE persnr = 1");
-        passedAttributes.put("diagnoseLevel", "1");
+        passedAttributes.put("submission", "SELECT code from segment where tokm = 127");
+        passedAttributes.put("diagnoseLevel", "2");
         submission.setPassedAttributes(passedAttributes);
         submission.setPassedParameters(new HashMap<String, String>());
 
