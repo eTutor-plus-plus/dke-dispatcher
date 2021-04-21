@@ -4,6 +4,7 @@ import at.jku.dke.etutor.grading.rest.dto.Submission;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 @SpringBootTest
+@Disabled
 public class ETutorSubmissionControllerTests {
     Submission submission;
 
@@ -36,6 +38,7 @@ public class ETutorSubmissionControllerTests {
 
 
     @Test
+    @Disabled
     void testETutorSubmissionController_StatusCode() throws IOException, InterruptedException {
         ObjectMapper mapper = new ObjectMapper();
         String submissionJson = mapper.writeValueAsString(submission);

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import at.jku.dke.etutor.modules.sql.feedback.SQLFeedback;
+
 import org.springframework.beans.factory.annotation.Required;
 
 
@@ -170,7 +170,7 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 
 			//ESTABLISHING CONNECTION TO EXERCISE SPECIFIC REFERENCE DATABASE
 
-			//ks original java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+			//ks original: java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 
 			this.logger.log(Level.INFO,referenceConnString + " - " + referenceConnUser + " - " + referenceConnPwd);
 
@@ -449,7 +449,7 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 			logger.info("  key: "+key+" value: " + passedParameters.get(key));
 		}
 		SQLReport report = new SQLReport();
-		SQLReporter reporter = new SQLReporter(messageSource);
+		SQLReporter reporter = new SQLReporter();
 		SQLReporterConfig reporterConfig = new SQLReporterConfig();
 
 		String action;
@@ -497,72 +497,5 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 		}
 
 		return reporter.createReport((SQLAnalysis)analysis, (DefaultGrading)grading, reporterConfig, locale);
-	}
-
-	@Override
-	public Feedback giveFeedback(Analysis analysis, Grading grading, Map passedAttributes, Map passedParameters, Locale locale) {
-		logger.info("analysis: " + analysis);
-		logger.info("grading: " + grading);
-		logger.info("passedAttributes (" + passedAttributes.size() + ")");
-		for (Object key: passedAttributes.keySet()) {
-			logger.info("  key: "+key+" value: " + passedAttributes.get(key));
-		}
-		logger.info("passedParameters (" + passedParameters.size() + ")");
-		for (Object key: passedParameters.keySet()) {
-			logger.info("  key: "+key+" value: " + passedParameters.get(key));
-		}
-
-		SQLFeedback feedback = new SQLFeedback();
-		SQLReporterConfig reporterConfig = new SQLReporterConfig();
-
-		String action;
-		String message;
-		String diagnoseLevel;
-		Object action_Param = passedAttributes.get("action");
-		Object diagnoseLevel_Param = passedAttributes.get("diagnoseLevel");
-
-		if ((action_Param == null) || (!(action_Param instanceof String))){
-			message = new String();
-			message = message.concat("Stopped reporting due to errors. ");
-			message = message.concat("Can not utilize evaluation action parameter.");
-
-			this.logger.log(Level.SEVERE, message);
-			throw new IllegalArgumentException(message);
-		}
-
-		if ((diagnoseLevel_Param == null) || (!(diagnoseLevel_Param instanceof String))){
-			message = new String();
-			message = message.concat("Stopped reporting due to errors. ");
-			message = message.concat("Can not utilize diagnose level parameter.");
-
-			this.logger.log(Level.SEVERE, message);
-			throw new IllegalArgumentException(message);
-		}
-
-		action = (String)action_Param;
-		diagnoseLevel = (String)diagnoseLevel_Param;
-
-		if (action.toUpperCase().equals(SQLEvaluationAction.RUN.toString())){
-			reporterConfig.setAction(SQLEvaluationAction.RUN);
-			reporterConfig.setDiagnoseLevel(1);
-		}
-		if (action.toUpperCase().equals(SQLEvaluationAction.SUBMIT.toString())){
-			reporterConfig.setAction(SQLEvaluationAction.SUBMIT);
-			reporterConfig.setDiagnoseLevel(2);
-		}
-		if (action.toUpperCase().equals(SQLEvaluationAction.DIAGNOSE.toString())){
-			reporterConfig.setAction(SQLEvaluationAction.DIAGNOSE);
-			reporterConfig.setDiagnoseLevel(Integer.parseInt(diagnoseLevel));
-		}
-		if (action.toUpperCase().equals(SQLEvaluationAction.CHECK.toString())){
-			reporterConfig.setAction(SQLEvaluationAction.DIAGNOSE);
-			reporterConfig.setDiagnoseLevel(0);
-		}
-
-		SQLAnalysis sqlAnalysis = (SQLAnalysis) analysis;
-		DefaultGrading defaultGrading = (DefaultGrading) grading;
-
-
-		return SQLFeedback.createFeedback(sqlAnalysis,defaultGrading, reporterConfig, locale );
 	}
 }

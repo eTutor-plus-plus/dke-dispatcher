@@ -15,6 +15,7 @@ import java.util.UUID;
 public class SubmissionId {
     private String submissionId;
 
+    public SubmissionId(){};
     public SubmissionId(String value){
         this.submissionId=value;
     }

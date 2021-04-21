@@ -10,5 +10,5 @@ public interface Evaluator {
 
     public Report report(Analysis analysis, Grading grading, Map passedAttributes, Map passedParameters, Locale locale) throws Exception;
 
-    public Feedback giveFeedback(Analysis analysis, Grading grading, Map passedAttributes, Map passedParameters, Locale locale);
+
 }

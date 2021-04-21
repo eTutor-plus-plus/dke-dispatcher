@@ -7,7 +7,13 @@ import java.net.URI;
 import java.net.http.HttpResponse;
 import java.rmi.NotBoundException;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
+import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
+import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
+import com.fasterxml.jackson.core.type.TypeReference;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -20,17 +26,17 @@ public class TestApp {
         Submission submission = new Submission();
         submission.setExerciseId(10042);
         submission.setTaskType("sql");
-        submission.setUserId(99999);
+        submission.setUserId(98);
         submission.setMaxPoints(1000);
         HashMap<String, String> passedAttributes = new HashMap<>();
         passedAttributes.put("action", "diagnose");
-        passedAttributes.put("submission", "SELECT code from segment where tokm = 127");
-        passedAttributes.put("diagnoseLevel", "2");
+        passedAttributes.put("submission", "SELECT * from segment");
+        passedAttributes.put("diagnoseLevel", "3");
         submission.setPassedAttributes(passedAttributes);
         submission.setPassedParameters(new HashMap<String, String>());
 
         String submissionJson = new ObjectMapper().writeValueAsString(submission);
-
+        // Sending submission request
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/submission"))
                 .POST(HttpRequest.BodyPublishers.ofString(submissionJson))
@@ -46,10 +52,25 @@ public class TestApp {
         System.out.println(response.uri());
         System.out.println(response.headers());
 
-        // EntityModel<SubmissionId> model = new ObjectMapper().readValue(response.body(), EntityModel.class);
-        // System.out.println(model.getContent().getId());
-        // System.out.println(model.getLinks().toString());
+        // unmarshalling submission response
+        ObjectMapper mapper = new ObjectMapper();
+        EntityModel<SubmissionId> submissionModel = mapper.readValue(response.body(), new TypeReference<EntityModel<SubmissionId>>(){});
+        SubmissionId submissionId = submissionModel.getContent();
+        String id = submissionId.getId();
+        System.out.println(submissionId.getId());
 
+        // Requesting grading
+        TimeUnit.SECONDS.sleep(10);
+        request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/grading/"+id))
+                .build();
+
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        //Unmarshalling grading response
+        EntityModel<GradingDTO> entityModel = mapper.readValue(response.body(), new TypeReference<EntityModel<GradingDTO>>(){});
+        GradingDTO grading = entityModel.getContent();
+        System.out.println(grading.getReport().getDescription());
     }
 
 }

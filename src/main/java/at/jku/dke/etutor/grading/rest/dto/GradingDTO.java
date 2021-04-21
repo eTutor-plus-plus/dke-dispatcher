@@ -1,7 +1,12 @@
 package at.jku.dke.etutor.grading.rest.dto;
 
+import at.jku.dke.etutor.core.evaluation.DefaultGrading;
+import at.jku.dke.etutor.core.evaluation.DefaultReport;
+import at.jku.dke.etutor.core.evaluation.Grading;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -16,12 +21,29 @@ public class GradingDTO {
     private double points;
     private double maxPoints;
 
+    @OneToOne
+    private ReportDTO report;
+
     public GradingDTO(){}
 
     public GradingDTO(String submissionId, double points, double maxPoints){
         this.points = points;
         this.maxPoints= maxPoints;
         this.submissionId=submissionId;
+    }
+
+    public GradingDTO(String submissionId, Grading grading){
+        this.submissionId=submissionId;
+        this.points = grading.getPoints();
+        this.maxPoints = grading.getMaxPoints();
+    }
+
+    public ReportDTO getReport() {
+        return report;
+    }
+
+    public void setReport(ReportDTO report) {
+        this.report = report;
     }
 
     public String getSubmissionId() {

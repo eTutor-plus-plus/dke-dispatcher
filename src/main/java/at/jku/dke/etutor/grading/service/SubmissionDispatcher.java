@@ -4,16 +4,14 @@ package at.jku.dke.etutor.grading.service;
 import at.jku.dke.etutor.core.evaluation.*;
 import at.jku.dke.etutor.grading.rest.dto.*;
 import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
+import at.jku.dke.etutor.grading.rest.repositories.ReportDTORepository;
 import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
-import at.jku.dke.etutor.modules.sql.analysis.SQLCriterionAnalysis;
-import at.jku.dke.etutor.modules.sql.feedback.SQLFeedback;
-import at.jku.dke.etutor.modules.sql.report.SQLErrorReport;
 
 
-import java.util.Iterator;
+
+
 import java.util.Locale;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,12 +31,16 @@ public class SubmissionDispatcher implements Runnable {
     private Logger logger;
     private SubmissionRepository submissionRepository;
     private GradingDTORepository gradingDTORepository;
+    private ReportDTORepository reportDTORepository;
 
-
-    public SubmissionDispatcher(Submission submission, SubmissionRepository submissionRepository, GradingDTORepository gradingDTORepository) {
+    public SubmissionDispatcher(Submission submission, SubmissionRepository submissionRepository,
+                                GradingDTORepository gradingDTORepository, ReportDTORepository reportDTORepository) {
         this.submission = submission;
         this.submissionRepository = submissionRepository;
         this.gradingDTORepository = gradingDTORepository;
+        this.reportDTORepository = reportDTORepository;
+
+
         this.logger = Logger.getLogger("at.jku.dke.etutor.grading");
 
         logger.info("Saving submission to database");
@@ -65,17 +67,28 @@ public class SubmissionDispatcher implements Runnable {
                         submission.getPassedAttributes(), submission.getPassedParameters());
                 logger.info("Finished evaluating submission");
 
-                GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading.getPoints(), grading.getMaxPoints());
+                GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading);
+
+
+                if(grading.getPoints()<grading.getMaxPoints()) {
+                    logger.info("Requesting report");
+                    DefaultReport report = (DefaultReport) evaluator.report
+                            (analysis, grading, submission.getPassedAttributes(),
+                                    submission.getPassedParameters(), Locale.GERMAN);
+                    logger.info("Received report");
+
+                    System.out.println(report.getError());
+                    System.out.println(report.getDescription());
+                    System.out.println(report.getHint());
+                    ReportDTO reportDTO = new ReportDTO(submission.getSubmissionId(), report);
+                    logger.info("Saving report to database");
+                    reportDTORepository.save(reportDTO);
+                    logger.info("Finished saving report to database");
+                    gradingDTO.setReport(reportDTO);
+                }
                 logger.info("Saving grading to database");
                 gradingDTORepository.save(gradingDTO);
                 logger.info("Finished saving grading to database");
-
-                Feedback feedback = evaluator.giveFeedback(analysis, grading,
-                        submission.getPassedAttributes(), submission.getPassedParameters(), Locale.GERMAN);
-                System.out.println(feedback.getDescription());
-                System.out.println(feedback.getError());
-                System.out.println(feedback.getHint());
-
             }else{
                 logger.log(Level.SEVERE, "Could not find evaluator for tasktype: " + submission.getTaskType());
             }
@@ -89,13 +102,7 @@ public class SubmissionDispatcher implements Runnable {
 
     private void processAnalysis(Evaluator evaluator, Grading grading, Analysis analysis, Submission submission) {
         if (analysis instanceof SQLAnalysis) {
-            Feedback feedback = evaluator.giveFeedback(analysis, grading,
-                    submission.getPassedAttributes(), submission.getPassedParameters(), Locale.GERMAN);
-            System.out.println(feedback.getDescription());
-            System.out.println(feedback.getError());
-            System.out.println(feedback.getHint());
 
-            SQLFeedback sqlFeedback = (SQLFeedback) feedback;
         }
     }
 

@@ -4,6 +4,7 @@ package at.jku.dke.etutor.grading.rest;
 import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
+import at.jku.dke.etutor.grading.rest.repositories.ReportDTORepository;
 import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
 import org.springframework.http.HttpStatus;
@@ -29,10 +30,12 @@ public class ETutorSubmissionController {
     private Logger logger;
     private SubmissionRepository submissionRepository;
     private GradingDTORepository gradingDTORepository;
-    public ETutorSubmissionController(SubmissionRepository submissionRepository, GradingDTORepository gradingDTORepository){
+    private ReportDTORepository reportDTORepository;
+    public ETutorSubmissionController(SubmissionRepository submissionRepository, GradingDTORepository gradingDTORepository, ReportDTORepository reportDTORepository){
         this.logger = Logger.getLogger("at.jku.dke.etutor.grading");
         this.submissionRepository=submissionRepository;
         this.gradingDTORepository = gradingDTORepository;
+        this.reportDTORepository = reportDTORepository;
     }
 
     /**
@@ -52,8 +55,9 @@ public class ETutorSubmissionController {
             logger.info("Finished calculating submission-ID: " + submissionId.getId());
 
             Thread t = new Thread(new SubmissionDispatcher(submission,
-                    submissionRepository, gradingDTORepository));
+                    submissionRepository, gradingDTORepository, reportDTORepository));
             t.start();
+
             return new ResponseEntity<>(EntityModel.of(submissionId,
                     linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("grading")),
                     HttpStatus.ACCEPTED);

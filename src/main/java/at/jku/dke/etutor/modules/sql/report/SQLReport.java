@@ -19,6 +19,8 @@ public class SQLReport extends DefaultReport implements Report, Serializable{
 	private Vector queryResultTuples;
 	private Vector errorReports;
 	private Vector queryResultColumnLabels;
+	private Vector missingTuples;
+	private Vector surplusTuples;
 
 	private boolean showHints;
 	private boolean showPrologue;
@@ -43,8 +45,26 @@ public class SQLReport extends DefaultReport implements Report, Serializable{
 		this.errorReports = new Vector();
 		this.queryResultTuples = new Vector();
 		this.queryResultColumnLabels = new Vector();
+		this.missingTuples = new Vector();
+		this.surplusTuples=new Vector();
 	}
-	
+
+	public Vector getMissingTuples() {
+		return missingTuples;
+	}
+
+	public void setMissingTuples(Vector missingTuples) {
+		this.missingTuples = missingTuples;
+	}
+
+	public Vector getSurplusTuples() {
+		return surplusTuples;
+	}
+
+	public void setSurplusTuples(Vector surplusTuples) {
+		this.surplusTuples = surplusTuples;
+	}
+
 	public boolean hasErrorReports(){
 		return this.errorReports.size() > 0;
 	}
