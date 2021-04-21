@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.http.HttpResponse;
 import java.rmi.NotBoundException;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
@@ -14,8 +15,10 @@ import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpHeaders;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.ResponseEntity;
 
 
 public class TestApp {
@@ -26,7 +29,7 @@ public class TestApp {
         Submission submission = new Submission();
         submission.setExerciseId(10042);
         submission.setTaskType("sql");
-        submission.setUserId(98);
+        submission.setUserId(987321);
         submission.setMaxPoints(1000);
         HashMap<String, String> passedAttributes = new HashMap<>();
         passedAttributes.put("action", "diagnose");
@@ -47,18 +50,23 @@ public class TestApp {
 
         System.out.println(response.body());
         System.out.println(response.request());
-        System.out.println(response.previousResponse());
         System.out.println(response.toString());
         System.out.println(response.uri());
         System.out.println(response.headers());
 
         // unmarshalling submission response
         ObjectMapper mapper = new ObjectMapper();
+
         EntityModel<SubmissionId> submissionModel = mapper.readValue(response.body(), new TypeReference<EntityModel<SubmissionId>>(){});
         SubmissionId submissionId = submissionModel.getContent();
-        String id = submissionId.getId();
-        System.out.println(submissionId.getId());
-
+        String id = submissionId.getSubmissionId();
+        System.out.println(submissionId.getSubmissionId());
+        Optional<Link> link = submissionModel.getLink("grading");
+        if(link.isPresent()){
+            System.out.println();
+            System.out.println(link.get().toString());
+        }else   System.out.println(submissionModel.hasLinks());
+        System.out.println(submissionModel.toString());
         // Requesting grading
         TimeUnit.SECONDS.sleep(10);
         request = HttpRequest.newBuilder()

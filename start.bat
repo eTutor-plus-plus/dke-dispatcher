@@ -1,0 +1,1 @@
+java -jar ./target/etutor-grading-0.0.1.jar

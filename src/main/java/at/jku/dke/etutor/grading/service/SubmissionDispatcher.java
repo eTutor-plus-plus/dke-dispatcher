@@ -42,10 +42,13 @@ public class SubmissionDispatcher implements Runnable {
 
 
         this.logger = Logger.getLogger("at.jku.dke.etutor.grading");
-
-        logger.info("Saving submission to database");
-        submissionRepository.save(submission);
-        logger.info("Finished saving submission to database");
+        try {
+            logger.info("Saving submission to database");
+            submissionRepository.save(submission);
+            logger.info("Finished saving submission to database");
+        }catch(Exception e){
+            logger.log(Level.SEVERE, "Could not save submission");
+        }
     }
 
     /**
@@ -68,8 +71,6 @@ public class SubmissionDispatcher implements Runnable {
                 logger.info("Finished evaluating submission");
 
                 GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading);
-
-
                 if(grading.getPoints()<grading.getMaxPoints()) {
                     logger.info("Requesting report");
                     DefaultReport report = (DefaultReport) evaluator.report
@@ -81,14 +82,23 @@ public class SubmissionDispatcher implements Runnable {
                     System.out.println(report.getDescription());
                     System.out.println(report.getHint());
                     ReportDTO reportDTO = new ReportDTO(submission.getSubmissionId(), report);
-                    logger.info("Saving report to database");
-                    reportDTORepository.save(reportDTO);
-                    logger.info("Finished saving report to database");
+
+                    try{
+                        logger.info("Saving report to database");
+                        reportDTORepository.save(reportDTO);
+                        logger.info("Finished saving report to database");
+                    }catch(Exception e){
+                        logger.log(Level.SEVERE, "Could not save report");
+                    }
                     gradingDTO.setReport(reportDTO);
                 }
-                logger.info("Saving grading to database");
-                gradingDTORepository.save(gradingDTO);
-                logger.info("Finished saving grading to database");
+                try{
+                    logger.info("Saving grading to database");
+                    gradingDTORepository.save(gradingDTO);
+                    logger.info("Finished saving grading to database");
+                }catch(Exception e){
+                    logger.log(Level.SEVERE, "Could not save grading");
+                }
             }else{
                 logger.log(Level.SEVERE, "Could not find evaluator for tasktype: " + submission.getTaskType());
             }

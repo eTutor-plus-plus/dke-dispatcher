@@ -20,12 +20,12 @@ public class SubmissionId {
         this.submissionId=value;
     }
 
-    public String getId() {
+    public String getSubmissionId() {
         return submissionId;
     }
 
-    public void setId(String value) {
-        this.submissionId = value;
+    public void setSubmissionId(String submissionId) {
+        this.submissionId = submissionId;
     }
 
     /**

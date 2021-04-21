@@ -52,7 +52,7 @@ public class ETutorSubmissionController {
         try{
             logger.info("Calculating submission-ID");
             submissionId = SubmissionId.createId(submission);
-            logger.info("Finished calculating submission-ID: " + submissionId.getId());
+            logger.info("Finished calculating submission-ID: " + submissionId.getSubmissionId());
 
             Thread t = new Thread(new SubmissionDispatcher(submission,
                     submissionRepository, gradingDTORepository, reportDTORepository));
