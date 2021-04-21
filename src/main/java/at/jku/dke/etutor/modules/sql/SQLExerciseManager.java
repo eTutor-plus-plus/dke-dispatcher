@@ -1,5 +1,7 @@
 package at.jku.dke.etutor.modules.sql;
 
+import at.jku.dke.etutor.core.manager.ModuleExerciseManager;
+
 import java.io.FileWriter;
 import java.io.Serializable;
 import java.sql.Connection;
@@ -17,7 +19,7 @@ import java.util.logging.Logger;
 
 
 
-public class SQLExerciseManager /* implements ModuleExerciseManager */ {
+public class SQLExerciseManager implements ModuleExerciseManager {
 	
 	private Logger logger;
 

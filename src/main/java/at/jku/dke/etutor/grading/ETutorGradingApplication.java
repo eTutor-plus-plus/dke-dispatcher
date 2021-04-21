@@ -4,6 +4,8 @@ package at.jku.dke.etutor.grading;
 import at.jku.dke.etutor.grading.rest.ETutorGradingController;
 import at.jku.dke.etutor.grading.rest.ETutorSubmissionController;
 import at.jku.dke.etutor.grading.service.ModuleManager;
+import at.jku.dke.etutor.grading.service.RepositoryManager;
+import org.aspectj.apache.bcel.Repository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +22,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @ComponentScan(basePackageClasses = {
         ETutorGradingController.class,
         ETutorSubmissionController.class,
-        ModuleManager.class
+        ModuleManager.class,
+        RepositoryManager.class
 })
 @SpringBootApplication
 public class ETutorGradingApplication {

@@ -29,7 +29,7 @@ public class TestApp {
         Submission submission = new Submission();
         submission.setExerciseId(10042);
         submission.setTaskType("sql");
-        submission.setUserId(987321);
+        submission.setUserId(9873214);
         submission.setMaxPoints(1000);
         HashMap<String, String> passedAttributes = new HashMap<>();
         passedAttributes.put("action", "diagnose");
@@ -80,5 +80,4 @@ public class TestApp {
         GradingDTO grading = entityModel.getContent();
         System.out.println(grading.getReport().getDescription());
     }
-
 }

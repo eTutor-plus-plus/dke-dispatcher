@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 @SpringBootTest
-@Disabled
+//@Disabled
 public class ETutorSubmissionControllerTests {
     Submission submission;
 
@@ -53,7 +53,6 @@ public class ETutorSubmissionControllerTests {
 
         assertEquals(202, response.statusCode());
     }
-
 
 
 
@@ -89,6 +88,7 @@ public class ETutorSubmissionControllerTests {
         }
         return submission;
     }
+
 
 
 }

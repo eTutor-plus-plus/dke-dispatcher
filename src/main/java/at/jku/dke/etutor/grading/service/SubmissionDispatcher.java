@@ -18,33 +18,24 @@ import java.util.logging.Logger;
 
 /**
  * Is used to forward the submission to the corresponding module
- * and persist the resulting at.jku.dke.etutor.evaluation.Grading, identified by the submissionId
+ * and persist the entities
  */
 
 public class SubmissionDispatcher implements Runnable {
     /**
      * @param submission: the submission which is sent to ETutorSubmissionController
-     * @param submissionRepository: repository for manipulating table "submission" (jpa)
-     * @param gradingDTORepository: repository for manipulating table "grading" (jpa)
      */
     private Submission submission;
     private Logger logger;
-    private SubmissionRepository submissionRepository;
-    private GradingDTORepository gradingDTORepository;
-    private ReportDTORepository reportDTORepository;
 
-    public SubmissionDispatcher(Submission submission, SubmissionRepository submissionRepository,
-                                GradingDTORepository gradingDTORepository, ReportDTORepository reportDTORepository) {
+
+    public SubmissionDispatcher(Submission submission) {
         this.submission = submission;
-        this.submissionRepository = submissionRepository;
-        this.gradingDTORepository = gradingDTORepository;
-        this.reportDTORepository = reportDTORepository;
-
 
         this.logger = Logger.getLogger("at.jku.dke.etutor.grading");
         try {
             logger.info("Saving submission to database");
-            submissionRepository.save(submission);
+            RepositoryManager.getSubmissionRepository().save(submission);
             logger.info("Finished saving submission to database");
         }catch(Exception e){
             logger.log(Level.SEVERE, "Could not save submission");
@@ -54,7 +45,7 @@ public class SubmissionDispatcher implements Runnable {
     /**
      * Identifies the module according to submission.taskType
      * and calls the modules' implementations for evaluating the submission.
-     * Persists the resulting grading
+     * Persists the entities (submission, report, grading)
      */
     @Override
     public void run() {
@@ -85,7 +76,7 @@ public class SubmissionDispatcher implements Runnable {
 
                     try{
                         logger.info("Saving report to database");
-                        reportDTORepository.save(reportDTO);
+                        RepositoryManager.getReportRepository().save(reportDTO);
                         logger.info("Finished saving report to database");
                     }catch(Exception e){
                         logger.log(Level.SEVERE, "Could not save report");
@@ -94,7 +85,7 @@ public class SubmissionDispatcher implements Runnable {
                 }
                 try{
                     logger.info("Saving grading to database");
-                    gradingDTORepository.save(gradingDTO);
+                    RepositoryManager.getGradingRepository().save(gradingDTO);
                     logger.info("Finished saving grading to database");
                 }catch(Exception e){
                     logger.log(Level.SEVERE, "Could not save grading");

@@ -54,8 +54,7 @@ public class ETutorSubmissionController {
             submissionId = SubmissionId.createId(submission);
             logger.info("Finished calculating submission-ID: " + submissionId.getSubmissionId());
 
-            Thread t = new Thread(new SubmissionDispatcher(submission,
-                    submissionRepository, gradingDTORepository, reportDTORepository));
+            Thread t = new Thread(new SubmissionDispatcher(submission));
             t.start();
 
             return new ResponseEntity<>(EntityModel.of(submissionId,
