@@ -29,112 +29,88 @@ ALTER DEFAULT PRIVILEGES
     GRANT SELECT ON TABLES TO sql;
 
 ---------------------------------------------------
--- reference tables with exercises and connections 
----------------------------------------------------
-	
-DROP TABLE exercises;
-DROP TABLE connections;
-CREATE TABLE CONNECTIONS 
-   (	ID integer NOT NULL, 
-	CONN_STRING VARCHAR(100) NOT NULL , 
-	CONN_USER VARCHAR(100) NOT NULL , 
-	CONN_PWD VARCHAR(100) NOT NULL , 
-	 CONSTRAINT "CONNECTIONS_PK" PRIMARY KEY (ID)
-   );
-
-  CREATE TABLE exercises
-   (	ID integer NOT NULL, 
-	SUBMISSION_DB integer NOT NULL, 
-	PRACTISE_DB integer NOT NULL, 
-	SOLUTION VARCHAR(2048) NOT NULL , 
-	 CONSTRAINT "EXERCISES_PK" PRIMARY KEY (ID),
-	
-	 CONSTRAINT "EXERCISES_FK1" FOREIGN KEY (PRACTISE_DB)
-	  REFERENCES connections (ID) , 
-	 CONSTRAINT "EXERCISES_FK2" FOREIGN KEY (SUBMISSION_DB)
-	  REFERENCES connections (ID) 
-
-   );
- 
-    COPY connections
-   FROM   'C:\Users\Public\sql_connections.csv'
-   DELIMITER ',' CSV HEADER;
-   
-   UPDATE connections
-	SET conn_user = 'sql';
-
-	UPDATE connections
-	SET conn_pwd = 'sql';
-
-	UPDATE connections
-	SET conn_string = 'jdbc:postgresql://localhost:5432/sql';
-	
-	
-   COPY exercises
-   FROM 'C:\Users\Public\sql_exercises.csv'
-   DELIMITER ',' CSV HEADER;
- 
---------------------------------------------------- 
---Modifying exercises where oracle solution does not work in postgreSQL
---------------------------------------------------- 
-UPDATE  exercises
-SET solution = 'SELECT ean, bezeichnung, Spanne, kategorie FROM (select p1.ean, p1.bezeichnung,
-((p1.listPreis - p1.ekPreis)/p1.ekPreis)*100 Spanne, p1.kategorie
-from produkt p1
-where ((p1.listPreis - p1.ekPreis)/p1.ekPreis) =
-    (select MIN((p2.listPreis - p2.ekPreis)/p2.ekPreis)
-     from produkt p2
-     group by p2.kategorie
-     having p2.kategorie = p1.kategorie) ) AS correctQuery ORDER BY ean, bezeichnung, Spanne, kategorie'
-WHERE id = 13818;
-   
----------------------------------------------------
 -- SCHEME OWNED BY SQL_TRIAL_BEGIN (ORACLE)
 ---------------------------------------------------
- DROP TABLE wohnung CASCADE;
- DROP TABLE person CASCADE;
- DROP TABLE aenderungs_protokoll CASCADE;
- DROP TABLE students CASCADE;
- DROP TABLE bestellposition CASCADE;
- DROP TABLE bauprodukt CASCADE;
- DROP TABLE belegung CASCADE;
- DROP TABLE kurs CASCADE;
- DROP TABLE student CASCADE;
- DROP TABLE bestellung CASCADE;
- DROP TABLE bookcopies CASCADE;
- DROP TABLE bookloan CASCADE;
- DROP TABLE book CASCADE;
- DROP TABLE borrower CASCADE;
- DROP TABLE branch CASCADE;
- DROP TABLE booking CASCADE;
- DROP TABLE room CASCADE;
- DROP TABLE hotel CASCADE;
- DROP TABLE guest CASCADE;
- DROP TABLE buchung CASCADE;
- DROP TABLE city CASCADE;
- DROP TABLE course CASCADE;
- DROP TABLE staff CASCADE;
- DROP TABLE distribute CASCADE;
- DROP TABLE record CASCADE;
- DROP TABLE genre CASCADE;
- DROP TABLE artist CASCADE;
- DROP TABLE dept CASCADE;
- DROP TABLE deptlocation CASCADE;
-DROP TABLE enrollment CASCADE;
-DROP TABLE node CASCADE;
-DROP TABLE exit CASCADE;
-DROP TABLE fakultaet CASCADE;
-DROP TABLE filiale CASCADE;
-DROP TABLE highway CASCADE;
-DROP TABLE highwayexit CASCADE;
-DROP TABLE highwayintersection CASCADE;
-DROP TABLE intersection CASCADE;
-DROP TABLE human CASCADE;
-DROP TABLE inhaber CASCADE;
-DROP TABLE studienrichtung CASCADE;
-DROP TABLE koje CASCADE;
-DROP TABLE gewinne CASCADE;
-
+ DROP TABLE if exists wohnung CASCADE;
+ DROP TABLE if exists person CASCADE;
+ DROP TABLE if exists aenderungs_protokoll CASCADE;
+ DROP TABLE if exists students CASCADE;
+ DROP TABLE if exists bestellposition CASCADE;
+ DROP TABLE if exists bauprodukt CASCADE;
+ DROP TABLE if exists belegung CASCADE;
+ DROP TABLE if exists kurs CASCADE;
+ DROP TABLE if exists student CASCADE;
+ DROP TABLE if exists bestellung CASCADE;
+ DROP TABLE if exists bookcopies CASCADE;
+ DROP TABLE if exists bookloan CASCADE;
+ DROP TABLE if exists book CASCADE;
+ DROP TABLE if exists borrower CASCADE;
+ DROP TABLE if exists branch CASCADE;
+ DROP TABLE if exists booking CASCADE;
+ DROP TABLE if exists room CASCADE;
+ DROP TABLE if exists hotel CASCADE;
+ DROP TABLE if exists guest CASCADE;
+ DROP TABLE if exists buchung CASCADE;
+ DROP TABLE if exists city CASCADE;
+ DROP TABLE if exists course CASCADE;
+ DROP TABLE if exists staff CASCADE;
+ DROP TABLE if exists distribute CASCADE;
+ DROP TABLE if exists record CASCADE;
+ DROP TABLE if exists genre CASCADE;
+ DROP TABLE if exists artist CASCADE;
+ DROP TABLE if exists dept CASCADE;
+ DROP TABLE if exists deptlocation CASCADE;
+DROP TABLE if exists enrollment CASCADE;
+DROP TABLE if exists node CASCADE;
+DROP TABLE if exists exit CASCADE;
+DROP TABLE if exists fakultaet CASCADE;
+DROP TABLE if exists filiale CASCADE;
+DROP TABLE if exists highway CASCADE;
+DROP TABLE if exists highwayexit CASCADE;
+DROP TABLE if exists highwayintersection CASCADE;
+DROP TABLE if exists intersection CASCADE;
+DROP TABLE if exists human CASCADE;
+DROP TABLE if exists inhaber CASCADE;
+DROP TABLE if exists studienrichtung CASCADE;
+DROP TABLE if exists koje CASCADE;
+DROP TABLE if exists gewinne CASCADE;
+-----------------------------------------
+DROP TABLE if exists konto CASCADE;
+DROP TABLE if exists kunde CASCADE;
+DROP TABLE if exists lieferposition CASCADE;
+DROP TABLE if exists lieferschein CASCADE;
+DROP TABLE if exists liegtanstrasse CASCADE;
+DROP TABLE if exists strasse CASCADE;
+DROP TABLE if exists ort CASCADE;
+DROP TABLE if exists location CASCADE;
+DROP TABLE if exists mietet CASCADE;
+DROP TABLE if exists orteverbindung CASCADE;
+DROP TABLE if exists parent CASCADE;
+DROP TABLE if exists product CASCADE;
+DROP TABLE if exists produkt CASCADE;
+DROP TABLE if exists project CASCADE;
+DROP TABLE if exists time CASCADE;
+DROP TABLE if exists purchase CASCADE;
+DROP TABLE if exists rechnung CASCADE;
+-----------------------------------------
+DROP TABLE if exists rechnungpos CASCADE;
+DROP TABLE if exists sales CASCADE;
+DROP TABLE if exists segment CASCADE;
+DROP TABLE if exists sortiment CASCADE;
+DROP TABLE if exists sortiment_aenderungen CASCADE;
+DROP TABLE if exists staffhotel CASCADE;
+DROP TABLE if exists test CASCADE;
+DROP TABLE if exists strassenart CASCADE;
+DROP TABLE if exists track CASCADE;
+DROP TABLE if exists workson CASCADE;
+-----------------------------------------
+DROP TABLE if exists benutzer CASCADE;
+DROP TABLE if exists buch CASCADE;
+DROP TABLE if exists entlehng CASCADE;
+DROP TABLE if exists reserviert CASCADE;
+DROP TABLE if exists studenten CASCADE;
+DROP TABLE if exists wartung CASCADE;
+DROP TABLE if exists terminal CASCADE;
 ---------------------------------------------------
 --Tables--
 ---------------------------------------------------
@@ -147,7 +123,7 @@ DROP TABLE gewinne CASCADE;
    ); 
  
    COPY person
-   FROM   'C:\Users\Public\sql_trial_begin_person.csv'
+   FROM   'C:\Users\Public\PERSON_DATA_TABLE.csv'
    DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------
@@ -795,25 +771,7 @@ CREATE TABLE koje
 	COPY koje
    FROM 'C:\Users\Public\KOJE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
------------------------------------------
-DROP TABLE konto CASCADE;
-DROP TABLE kunde CASCADE;
-DROP TABLE lieferposition CASCADE;
-DROP TABLE lieferschein CASCADE;
-DROP TABLE liegtanstrasse CASCADE;
-DROP TABLE strasse CASCADE;
-DROP TABLE ort CASCADE;
-DROP TABLE location CASCADE;
-DROP TABLE mietet CASCADE;
-DROP TABLE orteverbindung CASCADE;
-DROP TABLE parent CASCADE;
-DROP TABLE product CASCADE;
-DROP TABLE produkt CASCADE;
-DROP TABLE project CASCADE;
-DROP TABLE time CASCADE;
-DROP TABLE purchase CASCADE;
-DROP TABLE rechnung CASCADE;
------------------------------------------
+
 CREATE TABLE konto
    (	
 	 KONTONR numeric, 
@@ -1063,18 +1021,7 @@ CREATE TABLE rechnung
    FROM 'C:\Users\Public\RECHNUNG_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
------------------------------------------
-DROP TABLE rechnungpos CASCADE;
-DROP TABLE sales CASCADE;
-DROP TABLE segment CASCADE;
-DROP TABLE sortiment CASCADE;
-DROP TABLE sortiment_aenderungen CASCADE;
-DROP TABLE staffhotel CASCADE;
-DROP TABLE test CASCADE;
-DROP TABLE strassenart CASCADE;
-DROP TABLE track CASCADE;
-DROP TABLE workson CASCADE;
------------------------------------------
+
 CREATE TABLE rechnungpos
    (	
 	 RECHNUNGNR numeric(5,0) NOT NULL , 
@@ -1247,3 +1194,100 @@ CREATE TABLE track
    COPY workson
     FROM 'C:\Users\Public\workson_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
+	
+
+CREATE TABLE benutzer 
+   (	
+	 BENNR numeric, 
+	NAME VARCHAR(20), 
+	GEBDAT DATE, 
+	ADRESSE VARCHAR(20), 
+	 PRIMARY KEY (BENNR)
+   );
+   COPY benutzer
+    FROM 'C:\Users\Public\benutzer_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+	
+-----------------------------------------
+CREATE TABLE buch
+   (	
+	 BUCHNR numeric, 
+	TITEL VARCHAR(30), 
+	AUTOR VARCHAR(20 ), 
+	 PRIMARY KEY (BUCHNR)
+   );
+   COPY buch
+    FROM 'C:\Users\Public\buch_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+
+	
+-----------------------------------------
+
+CREATE TABLE entlehng
+   (	
+	ENTLNGNR integer, 
+	BUCH integer, 
+	BENUTZER integer, 
+	VON DATE, 
+	BIS DATE, 
+	 PRIMARY KEY (ENTLNGNR), 
+	 UNIQUE (BUCH, BENUTZER, VON), 
+	 FOREIGN KEY (BUCH)
+	  REFERENCES buch (BUCHNR), 
+	 FOREIGN KEY (BENUTZER)
+	  REFERENCES benutzer (BENNR) 
+   );
+   COPY entlehng
+    FROM 'C:\Users\Public\entlehng_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+------------------------------------------------
+CREATE TABLE reserviert
+   (	
+	 TNO numeric, 
+	TAG numeric, 
+	STUNDE numeric, 
+	MANO numeric NOT NULL , 
+	 PRIMARY KEY (TNO, TAG, STUNDE)
+   );
+      COPY reserviert
+    FROM 'C:\Users\Public\reserviert_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+--------------------------------------------------
+CREATE TABLE studenten
+   (	
+	 MANO numeric, 
+	NAME VARCHAR(10) NOT NULL , 
+	RECHNER VARCHAR(10 ) NOT NULL, 
+	 PRIMARY KEY (MANO) 
+   );
+   COPY studenten
+    FROM 'C:\Users\Public\studenten_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+--------------------------------------------------	
+CREATE TABLE terminal
+   (	
+	 TNO numeric, 
+	RECHNER VARCHAR(10 ) NOT NULL , 
+	 PRIMARY KEY (TNO)
+   );
+    COPY terminal
+    FROM 'C:\Users\Public\terminal_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+	
+--------------------------------------------------
+ CREATE TABLE wartung
+   (	
+	RECHNER VARCHAR(10 ), 
+	TAG numeric, 
+	VONSTUNDE numeric, 
+	BISSTUNDE numeric, 
+	 PRIMARY KEY (RECHNER, TAG, VONSTUNDE)
+   );
+   COPY wartung
+    FROM 'C:\Users\Public\wartung_DATA_TABLE.csv'
+    DELIMITER ',' CSV HEADER;
+	
+--------------------------------------------------
+
+
+
