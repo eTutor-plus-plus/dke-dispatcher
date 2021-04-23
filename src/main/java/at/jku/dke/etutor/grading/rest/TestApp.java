@@ -29,7 +29,7 @@ public class TestApp {
         Submission submission = new Submission();
         submission.setExerciseId(10042);
         submission.setTaskType("sql");
-        submission.setUserId(9873214);
+        submission.setUserId(98224);
         submission.setMaxPoints(1000);
         HashMap<String, String> passedAttributes = new HashMap<>();
         passedAttributes.put("action", "diagnose");
