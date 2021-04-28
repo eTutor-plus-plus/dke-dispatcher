@@ -6,6 +6,7 @@ import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -66,7 +67,7 @@ public class TestSQLModule {
         HttpResponse<String> response = sendRequest(request);
         String id = getId(response);
 
-        TimeUnit.SECONDS.sleep(3);
+        TimeUnit.SECONDS.sleep(2);
         request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/grading/"+id))
                 .build();
@@ -108,8 +109,8 @@ public class TestSQLModule {
     ResultSet getExercises(){
         PreparedStatement stmt;
         ResultSet rs;
-        try (Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/sql", "sql", "sql")) {
-            String query = "select id, solution from exercises where (practise_db NOT IN (15, 16) OR submission_db NOT IN (15, 16)) ORDER BY id asc;";
+        try (Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5433/sql", "sql", "sql")) {
+            String query = "select id, solution from exercises where id IN (13651) ORDER BY id asc;";
             stmt = con.prepareStatement(query);
             return stmt.executeQuery();
         } catch (Exception e) {
@@ -151,3 +152,4 @@ public class TestSQLModule {
         return submission;
     }
 }
+

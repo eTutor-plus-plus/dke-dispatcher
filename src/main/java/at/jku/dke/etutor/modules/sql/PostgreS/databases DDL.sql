@@ -17,7 +17,7 @@ CREATE DATABASE sql
     TABLESPACE = pg_default 	
     CONNECTION LIMIT = -1;
 ----------------------------------------
-DROP DATABASE sql_trial_begin;
+DROP DATABASE if exists sql_trial_begin;
 ----------------------------------------
 CREATE DATABASE sql_trial_begin
     WITH 
