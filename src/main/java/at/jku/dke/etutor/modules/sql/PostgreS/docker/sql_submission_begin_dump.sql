@@ -278,18 +278,6 @@ CREATE TABLE public.deptlocation (
 ALTER TABLE public.deptlocation OWNER TO postgres;
 
 --
--- Name: diplomprfg; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.diplomprfg (
-    pnr character(5) NOT NULL,
-    bezeichnung character varying(20) NOT NULL
-);
-
-
-ALTER TABLE public.diplomprfg OWNER TO postgres;
-
---
 -- Name: distribute; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -614,18 +602,6 @@ CREATE TABLE public.location (
 ALTER TABLE public.location OWNER TO postgres;
 
 --
--- Name: lva; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.lva (
-    lvanr numeric(6,0) NOT NULL,
-    bez character varying(20) NOT NULL
-);
-
-
-ALTER TABLE public.lva OWNER TO postgres;
-
---
 -- Name: mietet; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -737,18 +713,6 @@ CREATE TABLE public.produkt (
 
 
 ALTER TABLE public.produkt OWNER TO postgres;
-
---
--- Name: professor; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.professor (
-    profnr numeric NOT NULL,
-    pname character varying(10) NOT NULL
-);
-
-
-ALTER TABLE public.professor OWNER TO postgres;
 
 --
 -- Name: project; Type: TABLE; Schema: public; Owner: postgres
@@ -979,9 +943,9 @@ ALTER TABLE public.strassenart OWNER TO postgres;
 --
 
 CREATE TABLE public.student (
-    matrnr numeric(7,0) NOT NULL,
-    name character varying(10) NOT NULL,
-    kennr numeric(3,0) NOT NULL
+    matrikelnr character varying(7) NOT NULL,
+    name character varying(20),
+    land character varying(20)
 );
 
 
@@ -1078,32 +1042,6 @@ CREATE TABLE public.track (
 ALTER TABLE public.track OWNER TO postgres;
 
 --
--- Name: vermietet; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.vermietet (
-    vermieternr integer,
-    mieternr integer,
-    wohnnr integer,
-    preis numeric
-);
-
-
-ALTER TABLE public.vermietet OWNER TO postgres;
-
---
--- Name: voraussetzungen; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.voraussetzungen (
-    lvanr numeric(6,0) NOT NULL,
-    pnr character(5) NOT NULL
-);
-
-
-ALTER TABLE public.voraussetzungen OWNER TO postgres;
-
---
 -- Name: wartung; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1143,20 +1081,6 @@ CREATE TABLE public.workson (
 
 
 ALTER TABLE public.workson OWNER TO postgres;
-
---
--- Name: zeugnis; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.zeugnis (
-    matrnr numeric(7,0) NOT NULL,
-    lvanr numeric(6,0) NOT NULL,
-    note numeric(1,0) NOT NULL,
-    profnr numeric(1,0)
-);
-
-
-ALTER TABLE public.zeugnis OWNER TO postgres;
 
 --
 -- Data for Name: aenderungs_protokoll; Type: TABLE DATA; Schema: public; Owner: postgres
@@ -1354,7 +1278,7 @@ COPY public.bookcopies (bookid, branchid, ncopies) FROM stdin;
 --
 
 COPY public.booking (hno, gno, datefrom, dateto, rno) FROM stdin;
-H001	G001	1997-05-01	\N	R101
+H001	G001	1997-05-01	\N	    
 H002	G003	1997-03-25	1997-03-27	R203
 H003	G005	1997-03-15	1997-03-20	R101
 H004	G006	1997-04-01	\N	R102
@@ -1362,9 +1286,9 @@ H005	G004	1997-03-26	1997-04-04	R103
 H001	G001	1997-03-12	1997-04-12	R202
 H002	G002	1997-03-21	1997-04-05	R101
 H003	G003	1997-03-31	1997-04-13	R102
-H001	G004	1997-08-05	1997-08-10	R102
-H002	G001	1997-07-26	1997-08-05	R203
-H003	G002	1997-08-26	1997-09-03	R202
+H001	G004	1997-08-05	1997-08-10	    
+H002	G001	1997-07-26	1997-08-05	    
+H003	G002	1997-08-26	1997-09-03	    
 \.
 
 
@@ -1479,16 +1403,16 @@ COPY public.buchung (buchngnr, vonkonto, aufkonto, betrag, datum) FROM stdin;
 
 COPY public.city (zip, name) FROM stdin;
 2001	Cinderella City
+2011	Dagobert City
 2002	Donald Duck City
-2003	Mowgli City
+2007	Dumbo City
+2009	Flipper City
+2006	Goofy City
 2004	Lassie City
 2005	Mickey Mouse City
-2006	Goofy City
-2007	Dumbo City
+2003	Mowgli City
 2008	Robin Hood City
-2009	Flipper City
 2010	Seven Dwarfs City
-2011	Dagobert City
 \.
 
 
@@ -1537,19 +1461,6 @@ D004	Cookfield
 D004	Springton
 D004	Summerton
 D004	Watervale
-\.
-
-
---
--- Data for Name: diplomprfg; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.diplomprfg (pnr, bezeichnung) FROM stdin;
-PRF01	Grundlagen DBS
-PRF02	Grundlagen INF
-PRF03	Grundlagen BWL
-PRF04	Grundlagen VWL
-PRF05	Angewandte INF
 \.
 
 
@@ -1697,6 +1608,7 @@ N12	E10  	2010
 COPY public.fakultaet (kurzbez, bezeichnung) FROM stdin;
 SoWi	Sozial- und Wirtschaftswissenschaftliche Fakultdt
 TNF	Teschnisch-Naturwissenschaftliche Fakultdt
+ReWi	Rechtswissenschaftliche Fakultaet
 \.
 
 
@@ -1879,8 +1791,8 @@ Gruber Martha       	2050-07-29	Klagenfurt
 --
 
 COPY public.intersection (nodeid, name) FROM stdin;
-N01	Voralpenkreuz
 N09	Inntaldreieck
+N01	Voralpenkreuz
 \.
 
 
@@ -1889,13 +1801,12 @@ N09	Inntaldreieck
 --
 
 COPY public.koje (standnr, flaeche, linkernachbar, rechternachbar, gemietet_von, beschriftung) FROM stdin;
-D14	5	D13	RAND	175	Forschungsschwerpunkte am Institut fuer WIN
 C11	5	RAND	C12	175	WIN
 C12	4	C11	C13	175	Das Studium
-C13	3	C12	RAND	880	Informatik: das bringt es
+C13	3	C12	RAND	880	Informatik: Das bringt es!
 D11	3	RAND	D12	175	Berufsmoeglichkeiten nach dem Studium der WIN
 D12	2	D11	D13	880	Berufsmoeglichkeiten fuer Informatiker
-D13	4	D12	D14	880	Bio-Informatik: Eine Chance fuer die Zukunft?
+D13	4	D12	RAND	880	Bio-Informatik: Eine Chance fuer die Zukunft?
 \.
 
 
@@ -2034,29 +1945,11 @@ COPY public.location (locno, name, city, state) FROM stdin;
 
 
 --
--- Data for Name: lva; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.lva (lvanr, bez) FROM stdin;
-100121	Expertensysteme
-100122	Informatik A
-100123	Informatik B
-100124	EPROG
-100125	Datenbanksysteme
-100126	Rechnernetzwerke
-100127	VWL
-100128	Modellbildung
-100200	BWL
-100234	Datenschutz
-\.
-
-
---
 -- Data for Name: mietet; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.mietet (mieternr, wohnnr, preis, von, bis) FROM stdin;
-1	2	500	1996-01-01	1999-12-31
+1	2	500	1996-01-01	1999-08-31
 8	2	900	1999-10-01	2001-12-31
 6	9	1500	1994-04-01	1999-09-30
 11	9	1600	1999-10-01	1999-12-31
@@ -2195,7 +2088,7 @@ COPY public.product (prodno, name, type, cat) FROM stdin;
 --
 
 COPY public.produkt (ean, bezeichnung, kategorie, ekpreis, listpreis) FROM stdin;
-0-666-4567-2-22	Autoschampoo	Pflege	35.69	9.00
+0-666-4567-2-22	Autoschampoo	Pflege	35.00	69.90
 0-777-4997-2-43	Glanzpolitur	Pflege	70.00	119.90
 0-456-4887-3-22	Kaltwachs	Pflege	90.00	199.90
 0-55-48567-16-2	Armaturenreiniger	Pflege	115.00	333.00
@@ -2214,19 +2107,6 @@ COPY public.produkt (ean, bezeichnung, kategorie, ekpreis, listpreis) FROM stdin
 4-1161-730-3-88	Warndreieck	Sonstiges	350.00	499.00
 0-4381-880-7-00	Verbandskasten DIN	Sonstiges	965.00	999.00
 5-6661-000-0-00	Abschleppseil	Sonstiges	225.00	475.00
-\.
-
-
---
--- Data for Name: professor; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.professor (profnr, pname) FROM stdin;
-1	Meier
-2	Schmidt
-3	Frick
-4	Huber
-5	Wallner
 \.
 
 
@@ -2302,7 +2182,7 @@ COPY public.rechnung (rechnungnr, datum, bezahlt, kundenr, filnr) FROM stdin;
 4	2000-08-11	Y	78436	1
 5	2000-08-11	Y	95543	1
 6	2000-08-11	N	13451	2
-1	2000-09-15	N	11111	1
+1	2000-09-15	Y	11111	1
 2	2000-09-15	Y	22221	3
 3	2000-09-15	Y	87654	4
 1	2000-10-03	Y	11111	6
@@ -2320,6 +2200,7 @@ COPY public.rechnung (rechnungnr, datum, bezahlt, kundenr, filnr) FROM stdin;
 3	2000-10-21	Y	87654	5
 1	2000-10-25	N	13451	2
 2	2000-10-25	Y	99332	1
+2	2000-10-31	N	22221	4
 \.
 
 
@@ -2415,7 +2296,7 @@ COPY public.room (hno, rno, type, price) FROM stdin;
 H001	R101	single	22.00
 H001	R102	double	39.00
 H001	R103	double	39.00
-H001	R201	family	85.00
+H001	R201	family	44.00
 H001	R202	double	44.00
 H001	R203	family	49.00
 H002	R101	double	41.00
@@ -2433,7 +2314,7 @@ H003	R203	double	44.00
 H004	R101	double	41.00
 H004	R102	family	49.00
 H004	R103	family	49.00
-H004	R201	single	90.00
+H004	R201	single	27.00
 H004	R202	single	24.00
 H004	R203	double	39.00
 H005	R101	single	23.00
@@ -2441,13 +2322,13 @@ H005	R102	double	35.00
 H005	R103	double	35.00
 H005	R201	family	39.00
 H005	R202	single	23.00
-H005	R203	single	20.00
+H005	R203	single	90.00
 H006	R101	double	33.00
 H006	R102	double	37.00
 H006	R103	family	45.00
 H006	R201	family	49.00
 H006	R202	family	39.00
-H006	R203	family	39.00
+H006	R203	family	85.00
 \.
 
 
@@ -2516,8 +2397,7 @@ H70  	S03  	177.00	299.00
 --
 
 COPY public.sortiment (filnr, ean, vkpreis, preisred, bestand) FROM stdin;
-6	3-211-1000-2-00	20.00	0.00	20
-1	0-666-4567-2-22	69.90	0.00	100
+1	0-666-4567-2-22	69.00	9.00	100
 1	0-777-4997-2-43	120.00	30.00	150
 1	0-456-4887-3-22	229.00	9.00	130
 1	0-55-48567-16-2	300.00	0.00	100
@@ -2592,6 +2472,7 @@ COPY public.sortiment (filnr, ean, vkpreis, preisred, bestand) FROM stdin;
 6	3-1111-654-3-99	1300.00	0.00	7
 6	0-4381-880-7-00	1350.00	0.00	25
 6	5-6661-000-0-00	553.00	23.00	11
+6	3-211-1000-2-00	20.00	0.00	20
 \.
 
 
@@ -2677,19 +2558,37 @@ L	Landesstrasse
 -- Data for Name: student; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.student (matrnr, name, kennr) FROM stdin;
-9526301	Meier	880
-9525300	Huber	175
-9526298	Bauer	176
-9525301	Kaiser	176
-9525303	Huber	175
-9525650	Richter	880
-9524300	Weiss	880
-9525700	Traxler	177
-9525701	Seyfried	175
-9525702	Weikinger	880
-9524790	Rechberger	880
-9525791	Gangl	176
+COPY public.student (matrikelnr, name, land) FROM stdin;
+9978653	Maria Mayr	Austria
+0034534	James Bond	England
+5489007	Adam Smith	England
+9988687	Anna Kurz	Schweiz
+0299123	Maria Mayr	Schweiz
+0178543	Barbara Eggersdorfer	Schweiz
+7813037	Michael Lofter	Schweiz
+9954632	Christian Just	Deutschland
+0076802	Bernd Achleitner	Deutschland
+9756432	Barbara Anegg	Deutschland
+9755785	Margit Bauer	Deutschland
+9784322	Martina Binder	Deutschland
+9856564	Manfred Fiebiger	Austria
+9876542	Gabriele Grabner	Austria
+9800745	Alfred Grassegger	Austria
+9900965	Herwig Huber	Austria
+9921213	Manuela Jansa	Austria
+9955432	Reinhard Kaiser	Austria
+7732123	Heinz Kneifel	Austria
+0076768	Helmut Leonhart	Austria
+0076323	Gabriel Menzinger	Austria
+0023132	Gabriela Oettl	Austria
+0154321	Maria-Anna Pelzl	USA
+0158732	Matthias Sandhofer	Deutschland
+0199054	Arno Seeber	Deutschland
+0203032	Ludwig Spoetl	Deutschland
+0299789	Michaela Stangl	Deutschland
+0278321	Michael Steyrer	Deutschland
+9677432	Toegel Richard	USA
+9722543	Natalie Zoechling	Schweiz
 \.
 
 
@@ -2755,6 +2654,7 @@ COPY public.studienrichtung (kennzahl, gehoert_zu, bezeichnung) FROM stdin;
 175	SoWi	Wirtschaftsinformatik
 880	TNF	Informatik
 750	TNF	Technische Physik
+101	ReWi	Rechtswissenschaften
 \.
 
 
@@ -2856,43 +2756,6 @@ COPY public.track (recordid, tnumber, title, length) FROM stdin;
 
 
 --
--- Data for Name: vermietet; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.vermietet (vermieternr, mieternr, wohnnr, preis) FROM stdin;
-11	1	2	10000
-11	2	7	12000
-12	6	9	20000
-12	9	4	10000
-12	5	3	15000
-6	7	11	15000
-6	8	1	13000
-5	11	6	20000
-8	12	13	30000
-8	13	5	13000
-5	14	12	17000
-\.
-
-
---
--- Data for Name: voraussetzungen; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.voraussetzungen (lvanr, pnr) FROM stdin;
-100121	PRF01
-100122	PRF02
-100123	PRF05
-100124	PRF02
-100125	PRF01
-100126	PRF05
-100127	PRF04
-100128	PRF04
-100200	PRF03
-100234	PRF01
-\.
-
-
---
 -- Data for Name: wartung; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2949,26 +2812,6 @@ E016	P008	16
 E017	P011	32
 E018	P009	32
 E019	P010	32
-\.
-
-
---
--- Data for Name: zeugnis; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.zeugnis (matrnr, lvanr, note, profnr) FROM stdin;
-9526301	100123	3	4
-9525300	100123	2	5
-9525301	100124	5	4
-9525300	100234	3	1
-9525650	100234	4	4
-9525702	100123	1	4
-9524300	100123	2	3
-9525700	100122	3	4
-9525701	100125	4	2
-9525300	100126	2	2
-9525701	100127	4	5
-9524790	100128	5	5
 \.
 
 
@@ -3053,14 +2896,6 @@ ALTER TABLE ONLY public.deptlocation
 
 
 --
--- Name: diplomprfg diplomprfg_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.diplomprfg
-    ADD CONSTRAINT diplomprfg_pkey PRIMARY KEY (pnr);
-
-
---
 -- Name: enrollment enrollment_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3090,14 +2925,6 @@ ALTER TABLE ONLY public.entlehng
 
 ALTER TABLE ONLY public.location
     ADD CONSTRAINT location_pkey PRIMARY KEY (locno);
-
-
---
--- Name: lva lva_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.lva
-    ADD CONSTRAINT lva_pkey PRIMARY KEY (lvanr);
 
 
 --
@@ -3154,14 +2981,6 @@ ALTER TABLE ONLY public.product
 
 ALTER TABLE ONLY public.produkt
     ADD CONSTRAINT produkt_uk41098377439043 UNIQUE (bezeichnung);
-
-
---
--- Name: professor professor_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.professor
-    ADD CONSTRAINT professor_pkey PRIMARY KEY (profnr);
 
 
 --
@@ -3250,14 +3069,6 @@ ALTER TABLE ONLY public.staffhotel
 
 ALTER TABLE ONLY public.strassenart
     ADD CONSTRAINT strassenart_pkey PRIMARY KEY (art);
-
-
---
--- Name: student student_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.student
-    ADD CONSTRAINT student_pkey PRIMARY KEY (matrnr);
 
 
 --
@@ -3533,6 +3344,14 @@ ALTER TABLE ONLY public.highwayintersection
 
 
 --
+-- Name: student sys_c005003; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.student
+    ADD CONSTRAINT sys_c005003 PRIMARY KEY (matrikelnr);
+
+
+--
 -- Name: kurs sys_c005004; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3573,14 +3392,6 @@ ALTER TABLE ONLY public.track
 
 
 --
--- Name: voraussetzungen voraussetzungen_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.voraussetzungen
-    ADD CONSTRAINT voraussetzungen_pkey PRIMARY KEY (lvanr, pnr);
-
-
---
 -- Name: wartung wartung_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3602,14 +3413,6 @@ ALTER TABLE ONLY public.wohnung
 
 ALTER TABLE ONLY public.workson
     ADD CONSTRAINT workson_pkey PRIMARY KEY (snum, pnum);
-
-
---
--- Name: zeugnis zeugnis_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.zeugnis
-    ADD CONSTRAINT zeugnis_pkey PRIMARY KEY (matrnr, lvanr);
 
 
 --
@@ -3706,22 +3509,6 @@ ALTER TABLE ONLY public.entlehng
 
 ALTER TABLE ONLY public.entlehng
     ADD CONSTRAINT entlehng_buch_fkey FOREIGN KEY (buch) REFERENCES public.buch(buchnr);
-
-
---
--- Name: booking fk_booking_gno; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.booking
-    ADD CONSTRAINT fk_booking_gno FOREIGN KEY (gno) REFERENCES public.guest(gno);
-
-
---
--- Name: booking fk_booking_hno_rno; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.booking
-    ADD CONSTRAINT fk_booking_hno_rno FOREIGN KEY (hno, rno) REFERENCES public.room(hno, rno);
 
 
 --
@@ -3941,27 +3728,19 @@ ALTER TABLE ONLY public.highwayintersection
 
 
 --
+-- Name: belegung sys_c005006; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.belegung
+    ADD CONSTRAINT sys_c005006 FOREIGN KEY (matrikelnr) REFERENCES public.student(matrikelnr);
+
+
+--
 -- Name: belegung sys_c005007; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.belegung
     ADD CONSTRAINT sys_c005007 FOREIGN KEY (kursnr) REFERENCES public.kurs(kursnr);
-
-
---
--- Name: voraussetzungen voraussetzungen_lvanr_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.voraussetzungen
-    ADD CONSTRAINT voraussetzungen_lvanr_fkey FOREIGN KEY (lvanr) REFERENCES public.lva(lvanr);
-
-
---
--- Name: voraussetzungen voraussetzungen_pnr_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.voraussetzungen
-    ADD CONSTRAINT voraussetzungen_pnr_fkey FOREIGN KEY (pnr) REFERENCES public.diplomprfg(pnr);
 
 
 --
@@ -3978,30 +3757,6 @@ ALTER TABLE ONLY public.workson
 
 ALTER TABLE ONLY public.workson
     ADD CONSTRAINT workson_snum_fkey FOREIGN KEY (snum) REFERENCES public.staff(snum);
-
-
---
--- Name: zeugnis zeugnis_lvanr_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.zeugnis
-    ADD CONSTRAINT zeugnis_lvanr_fkey FOREIGN KEY (lvanr) REFERENCES public.lva(lvanr);
-
-
---
--- Name: zeugnis zeugnis_matrnr_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.zeugnis
-    ADD CONSTRAINT zeugnis_matrnr_fkey FOREIGN KEY (matrnr) REFERENCES public.student(matrnr);
-
-
---
--- Name: zeugnis zeugnis_profnr_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.zeugnis
-    ADD CONSTRAINT zeugnis_profnr_fkey FOREIGN KEY (profnr) REFERENCES public.professor(profnr);
 
 
 --
@@ -4135,13 +3890,6 @@ GRANT SELECT ON TABLE public.dept TO sql;
 --
 
 GRANT SELECT ON TABLE public.deptlocation TO sql;
-
-
---
--- Name: TABLE diplomprfg; Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT SELECT ON TABLE public.diplomprfg TO sql;
 
 
 --
@@ -4313,13 +4061,6 @@ GRANT SELECT ON TABLE public.location TO sql;
 
 
 --
--- Name: TABLE lva; Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT SELECT ON TABLE public.lva TO sql;
-
-
---
 -- Name: TABLE mietet; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -4373,13 +4114,6 @@ GRANT SELECT ON TABLE public.product TO sql;
 --
 
 GRANT SELECT ON TABLE public.produkt TO sql;
-
-
---
--- Name: TABLE professor; Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT SELECT ON TABLE public.professor TO sql;
 
 
 --
@@ -4544,20 +4278,6 @@ GRANT SELECT ON TABLE public.track TO sql;
 
 
 --
--- Name: TABLE vermietet; Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT SELECT ON TABLE public.vermietet TO sql;
-
-
---
--- Name: TABLE voraussetzungen; Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT SELECT ON TABLE public.voraussetzungen TO sql;
-
-
---
 -- Name: TABLE wartung; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -4576,13 +4296,6 @@ GRANT SELECT ON TABLE public.wohnung TO sql;
 --
 
 GRANT SELECT ON TABLE public.workson TO sql;
-
-
---
--- Name: TABLE zeugnis; Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT SELECT ON TABLE public.zeugnis TO sql;
 
 
 --

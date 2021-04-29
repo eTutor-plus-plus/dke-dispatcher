@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.modules.sql;
 
+import at.jku.dke.etutor.grading.ETutorGradingApplication;
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
@@ -10,8 +11,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.net.URI;
@@ -25,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@SpringBootTest(classes= ETutorGradingApplication.class)
 public class TestSQLModule {
     ObjectMapper mapper = new ObjectMapper();
     HttpClient client = HttpClient.newHttpClient();
@@ -51,7 +56,7 @@ public class TestSQLModule {
                 Submission submission = prepareSubmission(id, solution);
                 assertFalse(submission == null);
                 GradingDTO grading = executeTest(submission);
-                //assertEquals(1, grading.getPoints());
+                assertEquals(1, grading.getPoints());
             //}
         }
     }
@@ -67,7 +72,7 @@ public class TestSQLModule {
         HttpResponse<String> response = sendRequest(request);
         String id = getId(response);
 
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.SECONDS.sleep(5);
         request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/grading/"+id))
                 .build();
@@ -94,12 +99,11 @@ public class TestSQLModule {
     Submission prepareSubmission(int id, String solution){
         Submission submission = new Submission();
         HashMap<String, String> attributeMap = new HashMap<>();
-        attributeMap.put("action", "diagnose");
+        attributeMap.put("action", "submit");
         attributeMap.put("diagnoseLevel", "3");
         attributeMap.put("submission", solution);
         submission.setPassedAttributes(attributeMap);
         submission.setPassedParameters(new HashMap<String, String>());
-        submission.setUserId(1);
         submission.setMaxPoints(1);
         submission.setTaskType("sql");
         submission.setExerciseId(id);
@@ -110,7 +114,7 @@ public class TestSQLModule {
         PreparedStatement stmt;
         ResultSet rs;
         try (Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5433/sql", "sql", "sql")) {
-            String query = "select id, solution from exercises where id IN (13651) ORDER BY id asc;";
+            String query = "select id, solution from exercises where submission_db NOT in (15,16) and id not in (13883, 13884, 13885, 13887, 13089) ORDER BY id asc;";
             stmt = con.prepareStatement(query);
             return stmt.executeQuery();
         } catch (Exception e) {
@@ -122,11 +126,10 @@ public class TestSQLModule {
     Submission fetchSpecificSQLSubmssionUtil(int exerciseID)throws NoExerciseFoundException{
         Submission submission = new Submission();
         HashMap<String, String> attributeMap = new HashMap<>();
-        attributeMap.put("action", "diagnose");
+        attributeMap.put("action", "submit");
         attributeMap.put("diagnoseLevel", "3");
         submission.setPassedAttributes(attributeMap);
         submission.setPassedParameters(new HashMap<String, String>());
-        submission.setUserId(1);
         submission.setMaxPoints(1);
         submission.setTaskType("sql");
 
@@ -135,7 +138,7 @@ public class TestSQLModule {
         String solution;
         int exerciseId;
 
-        try (Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/sql", "sql", "sql")) {
+        try (Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5433/sql", "sql", "sql")) {
             String query = "select * from exercises where id = "+ exerciseID +";";
             stmt = con.prepareStatement(query);
             rs = stmt.executeQuery();

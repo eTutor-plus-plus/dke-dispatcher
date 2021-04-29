@@ -55,7 +55,7 @@ public class SubmissionDispatcher implements Runnable {
             if (evaluator != null) {
                 Analysis analysis = evaluator
                         .analyze(submission.getExerciseId(),
-                                submission.getUserId(), submission.getPassedAttributes(), submission.getPassedParameters());
+                                -1, submission.getPassedAttributes(), submission.getPassedParameters());
 
                 Grading grading = evaluator.grade(analysis, submission.getMaxPoints(),
                         submission.getPassedAttributes(), submission.getPassedParameters());

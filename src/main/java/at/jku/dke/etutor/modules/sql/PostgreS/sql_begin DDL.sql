@@ -123,7 +123,7 @@ DROP TABLE if exists terminal CASCADE;
    ); 
  
    COPY person
-   FROM   'C:\Users\Public\PERSON_DATA_TABLE.csv'
+   FROM   'C:\Users\Public\submission\PERSON_DATA_TABLE.csv'
    DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------
@@ -138,7 +138,7 @@ CREATE TABLE wohnung
    
 
    COPY wohnung
-   FROM   'C:\Users\Public\WOHNUNG_DATA_TABLE.csv'
+   FROM   'C:\Users\Public\submission\WOHNUNG_DATA_TABLE.csv'
    DELIMITER ',' CSV HEADER;
    
   
@@ -155,7 +155,7 @@ CREATE TABLE aenderungs_protokoll
    );
 
 	COPY aenderungs_protokoll
-  	FROM 'C:\Users\Public\sql_trial_begin_aenderungs_protokoll.csv'
+  	FROM 'C:\Users\Public\submission\AENDERUNGS_PROTOKOLL_DATA_TABLE.csv'
    	DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------
@@ -167,7 +167,7 @@ CREATE TABLE artist
    );
    
 	COPY artist
-  	FROM 'C:\Users\Public\sql_trial_begin_artist.csv'
+  	FROM 'C:\Users\Public\submission\ARTIST_DATA_TABLE.csv'
    	DELIMITER ',' CSV HEADER; 
 
 ---------------------------------------------------	
@@ -179,7 +179,7 @@ CREATE TABLE bauprodukt
    );
 	
 	COPY bauprodukt
-  	FROM 'C:\Users\Public\sql_trial_begin_bauprodukt.csv'
+  	FROM 'C:\Users\Public\submission\bauprodukt_data_table.csv'
    	DELIMITER ',' CSV HEADER;
 	
 	
@@ -192,7 +192,7 @@ CREATE TABLE students
 	PRIMARY KEY (STUDENTID)
    );
    COPY students
- 	FROM 'C:\Users\Public\sql_trial_begin_students.csv'
+ 	FROM 'C:\Users\Public\submission\students_data_table.csv'
    DELIMITER ',' CSV HEADER; 
 	
 	
@@ -206,7 +206,7 @@ CREATE TABLE student
 	CONSTRAINT SYS_C005003 PRIMARY KEY (MATRIKELNR)
    );
 	COPY student
- 	FROM 'C:\Users\Public\sql_trial_begin_student.csv'
+ 	FROM 'C:\Users\Public\submission\STUDENT_data_table.csv'
     DELIMITER ',' CSV HEADER; 
 	
 	
@@ -220,7 +220,7 @@ CREATE TABLE kurs
 	CONSTRAINT SYS_C005004 PRIMARY KEY (KURSNR)
    );
    	COPY kurs
- 	FROM 'C:\Users\Public\sql_trial_begin_kurs.csv'
+ 	FROM 'C:\Users\Public\submission\kurs_data_table.csv'
     DELIMITER ',' CSV HEADER;
    
  
@@ -238,7 +238,7 @@ CREATE TABLE belegung
 	  REFERENCES KURS (KURSNR) 
    ); 
    	COPY belegung
- 	FROM 'C:\Users\Public\sql_trial_begin_belegung.csv'
+ 	FROM 'C:\Users\Public\submission\belegung_data_table.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------   
@@ -250,7 +250,7 @@ CREATE TABLE bestellung
 	 CONSTRAINT SYS_C002853 PRIMARY KEY (BESTELL_NR)
    );
    COPY bestellung
- 	FROM 'C:\Users\Public\sql_trial_begin_bestellung.csv'
+ 	FROM 'C:\Users\Public\submission\bestellung_data_table.csv'
     DELIMITER ',' CSV HEADER;
 	
 ---------------------------------------------------
@@ -266,7 +266,7 @@ CREATE TABLE bestellposition
 	  REFERENCES bauprodukt (PROD_NR)
    );
    COPY bestellposition
- 	FROM 'C:\Users\Public\sql_trial_begin_bestellposition.csv'
+ 	FROM 'C:\Users\Public\submission\bestellposition_data_table.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------	
@@ -278,7 +278,7 @@ CREATE TABLE book
 	PRIMARY KEY (BOOKID)
    );
     COPY book
- 	FROM 'C:\Users\Public\sql_trial_begin_book.csv'
+ 	FROM 'C:\Users\Public\submission\book_data_table.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------	
@@ -290,7 +290,7 @@ CREATE TABLE branch
 	PRIMARY KEY (BRANCHID)
    );
 	COPY branch
- 	FROM 'C:\Users\Public\sql_trial_begin_branch.csv'
+ 	FROM 'C:\Users\Public\submission\branch_data_table.csv'
     DELIMITER ',' CSV HEADER;
 
 
@@ -309,7 +309,7 @@ CREATE TABLE bookcopies
 	  REFERENCES branch (BRANCHID) 
    );
 	COPY bookcopies
- 	FROM 'C:\Users\Public\sql_trial_begin_bookcopies.csv'
+ 	FROM 'C:\Users\Public\submission\bookcopies_data_table.csv'
     DELIMITER ',' CSV HEADER;
 	
 
@@ -322,7 +322,7 @@ CREATE TABLE guest
 	CONSTRAINT PK_GUEST PRIMARY KEY (GNO)
    );
 	COPY guest
- 	FROM 'C:\Users\Public\sql_trial_begin_guest.csv'
+ 	FROM 'C:\Users\Public\submission\guest_data_table.csv'
     DELIMITER ',' CSV HEADER;
 
 
@@ -335,7 +335,7 @@ CREATE TABLE hotel
 	CONSTRAINT PK_HOTEL PRIMARY KEY (HNO)
    );
 	COPY hotel
- 	FROM 'C:\Users\Public\sql_trial_begin_hotel.csv'
+ 	FROM 'C:\Users\Public\submission\hotel_data_table.csv'
     DELIMITER ',' CSV HEADER;
 
 
@@ -351,7 +351,7 @@ CREATE TABLE room
 	  REFERENCES hotel (HNO)
    );
    COPY room
- 	FROM 'C:\Users\Public\sql_trial_begin_room.csv'
+ 	FROM 'C:\Users\Public\submission\room_data_table.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------
@@ -362,15 +362,15 @@ CREATE TABLE booking
 	DATEFROM DATE NOT NULL, 
 	DATETO DATE, 
 	RNO CHAR(4), 
-	 CONSTRAINT PK_BOOKING PRIMARY KEY (HNO, GNO, DATEFROM),
+	 CONSTRAINT PK_BOOKING PRIMARY KEY (HNO, GNO, DATEFROM)/*,
   
 	 CONSTRAINT FK_BOOKING_GNO FOREIGN KEY (GNO)
 	  REFERENCES guest (GNO), 
 	 CONSTRAINT FK_BOOKING_HNO_RNO FOREIGN KEY (HNO, RNO)
-	  REFERENCES room (HNO, RNO)
+	  REFERENCES room (HNO, RNO)*/
    );
 	COPY booking
- 	FROM 'C:\Users\Public\sql_trial_begin_booking.csv'
+ 	FROM 'C:\Users\Public\submission\booking_data_table.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------	
@@ -386,7 +386,7 @@ CREATE TABLE borrower
 	  REFERENCES branch (BRANCHID) 
    );
 	COPY borrower
- 	FROM 'C:\Users\Public\sql_trial_begin_borrower.csv'
+ 	FROM 'C:\Users\Public\submission\borrower_data_table.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------
@@ -406,7 +406,7 @@ CREATE TABLE bookloan
 	  REFERENCES borrower (CARDNO) 
    );
 	COPY bookloan
- 	FROM 'C:\Users\Public\sql_trial_begin_bookloan.csv'
+ 	FROM 'C:\Users\Public\submission\bookloan_data_table.csv'
     DELIMITER ',' CSV HEADER;
 	
 
@@ -420,7 +420,7 @@ CREATE TABLE buchung
 	DATUM DATE
    );	
 	COPY buchung
- 	FROM 'C:\Users\Public\BUCHUNG_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\BUCHUNG_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 	
 ---------------------------------------------------
@@ -432,7 +432,7 @@ CREATE TABLE city
 	 CONSTRAINT SYS_C003476 UNIQUE (NAME)
    );
    COPY city
- 	FROM 'C:\Users\Public\CITY_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\CITY_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------	
@@ -444,7 +444,7 @@ CREATE TABLE course
 	PRIMARY KEY (COURSECODE)
    );
 	 COPY course
- 	FROM 'C:\Users\Public\COURSE_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\COURSE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 	
 
@@ -483,10 +483,10 @@ CREATE TABLE staff
 	  REFERENCES staff (SNUM) DEFERRABLE INITIALLY DEFERRED;
 	  
 	COPY dept
- 	FROM 'C:\Users\Public\DEPT_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\DEPT_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER; 
 	COPY staff
- 	FROM 'C:\Users\Public\STAFF_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\STAFF_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 	
 
@@ -500,7 +500,7 @@ CREATE TABLE deptlocation
 	  REFERENCES dept (DNUM)
    );	
 	COPY deptlocation
- 	FROM 'C:\Users\Public\DEPTLOCATION_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\DEPTLOCATION_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 
@@ -513,7 +513,7 @@ CREATE TABLE genre
 	CONSTRAINT SYS_C002894 PRIMARY KEY (GENREID)
    );
    COPY genre
- 	FROM 'C:\Users\Public\GENRE_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\GENRE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 
@@ -533,7 +533,7 @@ CREATE TABLE record
 	  REFERENCES genre (GENREID)
    );
 	COPY record
- 	FROM 'C:\Users\Public\RECORD_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\RECORD_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 
@@ -548,7 +548,7 @@ CREATE TABLE distribute
 	  REFERENCES record (RECORDID)
    );
    COPY distribute
- 	FROM 'C:\Users\Public\DISTRIBUTE_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\DISTRIBUTE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------	
@@ -564,7 +564,7 @@ CREATE TABLE enrollment
 	  REFERENCES course (COURSECODE)
    );
    COPY enrollment
- 	FROM 'C:\Users\Public\ENROLLMENT_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\ENROLLMENT_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;	
 
 
@@ -583,7 +583,7 @@ CREATE TABLE node
 	 CONSTRAINT SYS_C003458 PRIMARY KEY (NODEID)
    ) ;
    COPY node
- 	FROM 'C:\Users\Public\NODE_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\NODE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;	
 
 
@@ -601,7 +601,7 @@ CREATE TABLE exit
 	  REFERENCES city (ZIP)
    );
 	COPY exit
- 	FROM 'C:\Users\Public\EXIT_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\EXIT_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;	
 
 ---------------------------------------------------	
@@ -612,7 +612,7 @@ CREATE TABLE fakultaet
 	CONSTRAINT SYS_C002923 PRIMARY KEY (KURZBEZ)
    );
    COPY fakultaet
- 	FROM 'C:\Users\Public\FAKULTAET_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\FAKULTAET_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;	
 
 
@@ -626,7 +626,7 @@ CREATE TABLE filiale
 	CONSTRAINT SYS_C002821 PRIMARY KEY (FILNR)
    );
    COPY filiale
- 	FROM 'C:\Users\Public\FILIALE_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\FILIALE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;	
 
 
@@ -641,7 +641,7 @@ CREATE TABLE gewinne
 	UMSATZ numeric(10,2)
    );
    COPY gewinne
- 	FROM 'C:\Users\Public\GEWINNE_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\GEWINNE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------
@@ -661,7 +661,7 @@ CREATE TABLE highway
 	  REFERENCES node (NODEID) 
    );
    COPY highway
- 	FROM 'C:\Users\Public\HIGHWAY_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\HIGHWAY_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------	
@@ -677,7 +677,7 @@ CREATE TABLE highwayexit
 	  REFERENCES exit (NODEID)
    );
 	COPY highwayexit
- 	FROM 'C:\Users\Public\HIGHWAYEXIT_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\HIGHWAYEXIT_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------	
@@ -691,7 +691,7 @@ CREATE TABLE intersection
 	  REFERENCES node (NODEID) ON DELETE CASCADE
    );
 	COPY intersection
- 	FROM 'C:\Users\Public\INTERSECTION_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\INTERSECTION_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------
@@ -707,7 +707,7 @@ CREATE TABLE highwayintersection
 	  REFERENCES intersection (NODEID)
    );	
 	COPY highwayintersection
- 	FROM 'C:\Users\Public\HIGHWAYINTERSECTION_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\HIGHWAYINTERSECTION_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------
@@ -719,7 +719,7 @@ CREATE TABLE human
 	 CONSTRAINT SYS_C002867 PRIMARY KEY (NAME)
    );
    COPY human
- 	FROM 'C:\Users\Public\HUMAN_DATA_TABLE.csv'
+ 	FROM 'C:\Users\Public\submission\HUMAN_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 
@@ -733,7 +733,7 @@ CREATE TABLE human
 	ADRESSE CHAR(20)
    );
    COPY inhaber
-   FROM 'C:\Users\Public\INHABER_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\INHABER_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 ---------------------------------------------------
@@ -747,7 +747,7 @@ CREATE TABLE studienrichtung
 	  REFERENCES fakultaet (KURZBEZ) 
    );
    COPY studienrichtung
-   FROM 'C:\Users\Public\STUDIENRICHTUNG_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\STUDIENRICHTUNG_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 
@@ -769,7 +769,7 @@ CREATE TABLE koje
 	  REFERENCES studienrichtung (KENNZAHL) 
    );
 	COPY koje
-   FROM 'C:\Users\Public\KOJE_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\KOJE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 CREATE TABLE konto
@@ -781,7 +781,7 @@ CREATE TABLE konto
 	SALDO numeric(10,2)
    );
    COPY konto
-   FROM 'C:\Users\Public\konto_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\konto_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
    
 -----------------------------------------
@@ -793,7 +793,7 @@ CREATE TABLE kunde
 	CONSTRAINT SYS_C002824 PRIMARY KEY (KUNDENR)
    );
    COPY kunde
-   FROM 'C:\Users\Public\KUNDE_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\KUNDE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 -----------------------------------------
 CREATE TABLE lieferschein
@@ -803,7 +803,7 @@ CREATE TABLE lieferschein
 	 CONSTRAINT SYS_C002859 PRIMARY KEY (LIEFER_NR)
    );
    COPY lieferschein
-   FROM 'C:\Users\Public\lieferschein_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\lieferschein_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 -----------------------------------------
 CREATE TABLE lieferposition
@@ -820,7 +820,7 @@ CREATE TABLE lieferposition
 	  REFERENCES bestellposition (BESTELL_NR, POS_NR) DEFERRABLE INITIALLY DEFERRED
    );
    COPY lieferposition
-   FROM 'C:\Users\Public\LIEFERPOSITION_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\LIEFERPOSITION_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 -----------------------------------------
 CREATE TABLE strasse
@@ -840,7 +840,7 @@ CREATE TABLE strasse
 	  REFERENCES "SQL_TRIAL_BEGIN"."STRASSENART" ("ART") ON DELETE CASCADE DISABLE*/
    );
    COPY strasse
-   FROM 'C:\Users\Public\STRASSE_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\STRASSE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 -----------------------------------------
 CREATE TABLE ort
@@ -850,7 +850,7 @@ CREATE TABLE ort
 	 CONSTRAINT SYS_C002764 PRIMARY KEY (PLZ)
    );
    COPY ort
-   FROM 'C:\Users\Public\ORT_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\ORT_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
    
 -----------------------------------------
@@ -866,7 +866,7 @@ CREATE TABLE liegtanstrasse
 	  REFERENCES ort (PLZ) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
    );
    COPY liegtanstrasse
-   FROM 'C:\Users\Public\LIEGTANSTRASSE_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\LIEGTANSTRASSE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 -----------------------------------------
 CREATE TABLE location
@@ -878,7 +878,7 @@ CREATE TABLE location
 	PRIMARY KEY (LOCNO)
    );
     COPY location
-   FROM 'C:\Users\Public\LOCATION_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\LOCATION_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 -----------------------------------------
 CREATE TABLE mietet
@@ -890,7 +890,7 @@ CREATE TABLE mietet
 	BIS DATE
    );
    COPY mietet
-   FROM 'C:\Users\Public\MIETET_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\MIETET_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 -----------------------------------------
 CREATE TABLE orteverbindung
@@ -909,7 +909,7 @@ CREATE TABLE orteverbindung
 	  REFERENCES "SQL_TRIAL_BEGIN"."ORT" ("PLZ") ON DELETE CASCADE DISABLE */
    );
    COPY orteverbindung
-   FROM 'C:\Users\Public\ORTEVERBINDUNG_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\ORTEVERBINDUNG_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 -----------------------------------------
 CREATE TABLE parent
@@ -923,7 +923,7 @@ CREATE TABLE parent
 	  REFERENCES "SQL_TRIAL_BEGIN"."HUMAN" ("NAME") DISABLE */
    );
    COPY parent
-   FROM 'C:\Users\Public\parent_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\parent_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 -----------------------------------------
@@ -936,7 +936,7 @@ CREATE TABLE product
 	 PRIMARY KEY (PRODNO)
    );
     COPY product
-   FROM 'C:\Users\Public\PRODUCT_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\PRODUCT_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 -----------------------------------------
 CREATE TABLE produkt
@@ -952,7 +952,7 @@ CREATE TABLE produkt
 	 CONSTRAINT PRODUKT_UK41098377439043 UNIQUE (BEZEICHNUNG)
    );
     COPY produkt
-   FROM 'C:\Users\Public\PRODUKT_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\PRODUKT_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 -----------------------------------------
 CREATE TABLE project
@@ -966,7 +966,7 @@ CREATE TABLE project
 	  REFERENCES dept (DNUM) 
    );
     COPY project
-   FROM 'C:\Users\Public\PROJECT_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\PROJECT_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
  -----------------------------------------
  CREATE TABLE time
@@ -978,7 +978,7 @@ CREATE TABLE project
 	 PRIMARY KEY (DAYNO)
    );
    COPY time
-   FROM 'C:\Users\Public\TIME_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\TIME_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
   -----------------------------------------
  CREATE TABLE purchase
@@ -994,7 +994,7 @@ CREATE TABLE project
 	  REFERENCES product (PRODNO) 
    );
    COPY purchase
-   FROM 'C:\Users\Public\PURCHASE_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\PURCHASE_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 -----------------------------------------
 
@@ -1018,7 +1018,7 @@ CREATE TABLE rechnung
 	  REFERENCES "SQL_TRIAL_BEGIN"."FILIALE" ("FILNR") DISABLE*/
    );
       COPY rechnung
-   FROM 'C:\Users\Public\RECHNUNG_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\RECHNUNG_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 
@@ -1041,7 +1041,7 @@ CREATE TABLE rechnungpos
 	   */
    );
     COPY rechnungpos
-   FROM 'C:\Users\Public\RECHNUNGPOS_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\RECHNUNGPOS_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 -----------------------------------------
@@ -1061,7 +1061,7 @@ CREATE TABLE sales
 	  REFERENCES product (PRODNO) 
    );
 	COPY sales
-   FROM 'C:\Users\Public\SALES_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\SALES_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 -----------------------------------------
@@ -1081,7 +1081,7 @@ CREATE TABLE segment
 	 PRIMARY KEY (CODE, SEGID)	 
    );
    COPY segment
-   FROM 'C:\Users\Public\SEGMENT_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\SEGMENT_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 -----------------------------------------
  CREATE TABLE sortiment
@@ -1106,7 +1106,7 @@ CREATE TABLE segment
 	*/	   
    );
    COPY sortiment
-   FROM 'C:\Users\Public\SORTIMENT_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\SORTIMENT_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 -----------------------------------------
@@ -1126,7 +1126,7 @@ CREATE TABLE sortiment_aenderungen
 	*/   
    );
    COPY sortiment_aenderungen
-   FROM 'C:\Users\Public\SORTIMENT_AENDERUNGEN_DATA_TABLE.csv'
+   FROM 'C:\Users\Public\submission\SORTIMENT_AENDERUNGEN_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
    
 -----------------------------------------  
@@ -1140,7 +1140,7 @@ CREATE TABLE staffhotel
 	 PRIMARY KEY (SNO)	   
    );
    COPY staffhotel
-    FROM 'C:\Users\Public\STAFFHOTEL_DATA_TABLE.csv'
+    FROM 'C:\Users\Public\submission\STAFFHOTEL_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 	
 ----------------------------------------- 
@@ -1151,7 +1151,7 @@ CREATE TABLE strassenart
 	PRIMARY KEY (ART)
    );
       COPY strassenart
-    FROM 'C:\Users\Public\STRASSENART_DATA_TABLE.csv'
+    FROM 'C:\Users\Public\submission\STRASSENART_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 ----------------------------------------- 
 CREATE TABLE test
@@ -1159,7 +1159,7 @@ CREATE TABLE test
 	   ID numeric(10,0)
    );
     COPY test
-    FROM 'C:\Users\Public\TEST_DATA_TABLE.csv'
+    FROM 'C:\Users\Public\submission\TEST_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 ----------------------------------------- 
@@ -1176,7 +1176,7 @@ CREATE TABLE track
  		*/  
    );
     COPY track
-    FROM 'C:\Users\Public\track_DATA_TABLE.csv'
+    FROM 'C:\Users\Public\submission\track_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 -----------------------------------------
@@ -1192,7 +1192,7 @@ CREATE TABLE track
 	  REFERENCES project (PNUM) 
    );
    COPY workson
-    FROM 'C:\Users\Public\workson_DATA_TABLE.csv'
+    FROM 'C:\Users\Public\submission\workson_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 	
 
@@ -1205,7 +1205,7 @@ CREATE TABLE benutzer
 	 PRIMARY KEY (BENNR)
    );
    COPY benutzer
-    FROM 'C:\Users\Public\benutzer_DATA_TABLE.csv'
+    FROM 'C:\Users\Public\submission\benutzer_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 	
 -----------------------------------------
@@ -1217,7 +1217,7 @@ CREATE TABLE buch
 	 PRIMARY KEY (BUCHNR)
    );
    COPY buch
-    FROM 'C:\Users\Public\buch_DATA_TABLE.csv'
+    FROM 'C:\Users\Public\submission\buch_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 
 	
@@ -1238,7 +1238,7 @@ CREATE TABLE entlehng
 	  REFERENCES benutzer (BENNR) 
    );
    COPY entlehng
-    FROM 'C:\Users\Public\entlehng_DATA_TABLE.csv'
+    FROM 'C:\Users\Public\submission\entlehng_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 ------------------------------------------------
 CREATE TABLE reserviert
@@ -1250,7 +1250,7 @@ CREATE TABLE reserviert
 	 PRIMARY KEY (TNO, TAG, STUNDE)
    );
       COPY reserviert
-    FROM 'C:\Users\Public\reserviert_DATA_TABLE.csv'
+    FROM 'C:\Users\Public\submission\reserviert_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 --------------------------------------------------
 CREATE TABLE studenten
@@ -1261,7 +1261,7 @@ CREATE TABLE studenten
 	 PRIMARY KEY (MANO) 
    );
    COPY studenten
-    FROM 'C:\Users\Public\studenten_DATA_TABLE.csv'
+    FROM 'C:\Users\Public\submission\studenten_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 --------------------------------------------------	
 CREATE TABLE terminal
@@ -1271,7 +1271,7 @@ CREATE TABLE terminal
 	 PRIMARY KEY (TNO)
    );
     COPY terminal
-    FROM 'C:\Users\Public\terminal_DATA_TABLE.csv'
+    FROM 'C:\Users\Public\submission\terminal_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 	
 --------------------------------------------------
@@ -1284,7 +1284,7 @@ CREATE TABLE terminal
 	 PRIMARY KEY (RECHNER, TAG, VONSTUNDE)
    );
    COPY wartung
-    FROM 'C:\Users\Public\wartung_DATA_TABLE.csv'
+    FROM 'C:\Users\Public\submission\wartung_DATA_TABLE.csv'
     DELIMITER ',' CSV HEADER;
 	
 --------------------------------------------------

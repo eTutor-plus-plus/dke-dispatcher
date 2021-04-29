@@ -1,0 +1,7 @@
+"STANDNR","FLAECHE","LINKERNACHBAR","RECHTERNACHBAR","GEMIETET_VON","BESCHRIFTUNG"
+"C11",5,"RAND","C12",175,"WIN"
+"C12",4,"C11","C13",175,"Das Studium"
+"C13",3,"C12","RAND",880,"Informatik: Das bringt es!"
+"D11",3,"RAND","D12",175,"Berufsmoeglichkeiten nach dem Studium der WIN"
+"D12",2,"D11","D13",880,"Berufsmoeglichkeiten fuer Informatiker"
+"D13",4,"D12","RAND",880,"Bio-Informatik: Eine Chance fuer die Zukunft?"

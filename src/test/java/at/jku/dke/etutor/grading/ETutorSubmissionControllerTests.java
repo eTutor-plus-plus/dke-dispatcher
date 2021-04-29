@@ -63,7 +63,6 @@ public class ETutorSubmissionControllerTests {
         attributeMap.put("diagnoseLevel", "3");
         submission.setPassedAttributes(attributeMap);
         submission.setPassedParameters(new HashMap<String, String>());
-        submission.setUserId(1);
         submission.setMaxPoints(1);
         submission.setTaskType("sql");
 

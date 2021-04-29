@@ -20,7 +20,7 @@ public class Submission implements Serializable {
 
     private String taskType;
     private int exerciseId;
-    private int userId;
+
 
     @ElementCollection
     @CollectionTable(name="submission_attribute_mapping",
@@ -69,14 +69,6 @@ public class Submission implements Serializable {
 
     public void setExerciseId(int exerciseId) {
         this.exerciseId = exerciseId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public Map<String, String> getPassedAttributes() {
