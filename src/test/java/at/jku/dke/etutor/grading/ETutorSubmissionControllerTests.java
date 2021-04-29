@@ -24,8 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
-@SpringBootTest
-//@Disabled
+@SpringBootTest(classes = ETutorGradingApplication.class)
 public class ETutorSubmissionControllerTests {
     Submission submission;
 
@@ -38,8 +37,8 @@ public class ETutorSubmissionControllerTests {
 
 
     @Test
-    @Disabled
-    void testETutorSubmissionController_StatusCode() throws IOException, InterruptedException {
+    //@Disabled
+    void whenValidSubmission_thenStatusCode202() throws IOException, InterruptedException {
         ObjectMapper mapper = new ObjectMapper();
         String submissionJson = mapper.writeValueAsString(submission);
 
@@ -53,8 +52,6 @@ public class ETutorSubmissionControllerTests {
 
         assertEquals(202, response.statusCode());
     }
-
-
 
     Submission createRandomSQLSubmssionUtil() {
         Submission submission = new Submission();
@@ -71,8 +68,8 @@ public class ETutorSubmissionControllerTests {
         String solution;
         int exerciseId;
 
-        try (Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/sql", "sql", "sql")) {
-            String query = "select * from exercises where practise_db IN (1,2,3,4) OR submission_db IN (1,2,3,4) order by random() limit 1;";
+        try (Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5433/sql", "sql", "sql")) {
+            String query = "select * from exercises where practise_db  NOT IN (15,16) OR submission_db NOT IN (15,16) order by random() limit 1;";
             stmt = con.prepareStatement(query);
             rs = stmt.executeQuery();
             if (rs.next()) {
@@ -87,7 +84,4 @@ public class ETutorSubmissionControllerTests {
         }
         return submission;
     }
-
-
-
 }

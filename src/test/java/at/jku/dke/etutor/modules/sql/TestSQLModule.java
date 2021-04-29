@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-@SpringBootTest(classes= ETutorGradingApplication.class)
+//@SpringBootTest(classes= ETutorGradingApplication.class)
 public class TestSQLModule {
     ObjectMapper mapper = new ObjectMapper();
     HttpClient client = HttpClient.newHttpClient();
@@ -40,7 +40,7 @@ public class TestSQLModule {
     }
 
     @Test
-   //@Disabled
+   @Disabled
     void testSolutions() throws IOException, InterruptedException, SQLException {
         ResultSet exercises = getExercises();
         while(exercises.next()){
@@ -99,7 +99,7 @@ public class TestSQLModule {
     Submission prepareSubmission(int id, String solution){
         Submission submission = new Submission();
         HashMap<String, String> attributeMap = new HashMap<>();
-        attributeMap.put("action", "submit");
+        attributeMap.put("action", "diagnose");
         attributeMap.put("diagnoseLevel", "3");
         attributeMap.put("submission", solution);
         submission.setPassedAttributes(attributeMap);
@@ -113,8 +113,8 @@ public class TestSQLModule {
     ResultSet getExercises(){
         PreparedStatement stmt;
         ResultSet rs;
-        try (Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5433/sql", "sql", "sql")) {
-            String query = "select id, solution from exercises where submission_db NOT in (15,16) and id not in (13883, 13884, 13885, 13887, 13089) ORDER BY id asc;";
+        try (Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5433/sql", "etutor", "etutor")) {
+            String query = "select id, solution from exercises where id in (select exercise_id from sql_solution_problems) and id > 13089 ORDER BY id asc;";
             stmt = con.prepareStatement(query);
             return stmt.executeQuery();
         } catch (Exception e) {
