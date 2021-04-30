@@ -62,16 +62,13 @@ public class SubmissionDispatcher implements Runnable {
                 logger.info("Finished evaluating submission");
 
                 GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading);
-                if(grading.getPoints()<grading.getMaxPoints()) {
+                if(grading.getPoints()<grading.getMaxPoints() || grading.getPoints() == 0) {
                     logger.info("Requesting report");
                     DefaultReport report = (DefaultReport) evaluator.report
                             (analysis, grading, submission.getPassedAttributes(),
                                     submission.getPassedParameters(), Locale.GERMAN);
                     logger.info("Received report");
 
-                    System.out.println(report.getError());
-                    System.out.println(report.getDescription());
-                    System.out.println(report.getHint());
                     ReportDTO reportDTO = new ReportDTO(submission.getSubmissionId(), report);
 
                     try{
@@ -87,11 +84,13 @@ public class SubmissionDispatcher implements Runnable {
                     logger.info("Saving grading to database");
                     RepositoryManager.getGradingRepository().save(gradingDTO);
                     logger.info("Finished saving grading to database");
+                    return;
                 }catch(Exception e){
                     logger.log(Level.SEVERE, "Could not save grading");
                 }
             }else{
                 logger.log(Level.SEVERE, "Could not find evaluator for tasktype: " + submission.getTaskType());
+                return;
             }
         } catch(Exception e){
             logger.log(Level.SEVERE, "Stopped Evaluation due to errors");

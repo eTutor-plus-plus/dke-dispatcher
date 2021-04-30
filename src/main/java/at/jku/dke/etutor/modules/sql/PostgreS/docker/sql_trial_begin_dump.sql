@@ -511,7 +511,7 @@ ALTER TABLE public.koje OWNER TO postgres;
 --
 
 CREATE TABLE public.konto (
-    kontonr numeric,
+    kontonr numeric NOT NULL,
     filiale numeric,
     inhname character(20),
     gebdat date,
@@ -1815,19 +1815,19 @@ D13	4	D12	D14	880	Bio-Informatik: Eine Chance fuer die Zukunft?
 --
 
 COPY public.konto (kontonr, filiale, inhname, gebdat, saldo) FROM stdin;
-13	3	Gruber Martha       	2050-07-29	1000.00
-1	1	Steiner Heinz       	2042-10-10	12400.00
 2	2	Wopfner Karin       	1975-08-13	500.00
-3	3	Steiner Heinz       	2042-10-10	13500.00
-4	3	Hafner Eleonore     	2060-03-09	8000.00
 5	2	Wopfner Karin       	1975-08-13	1100.00
-6	2	Steindl Kurt        	2036-04-24	6000.00
-7	1	Gruber Martha       	2050-07-29	7500.00
 8	2	Wopfner Karin       	1975-08-13	1900.00
 9	1	Hofreiter Martin    	1980-02-12	10400.00
 10	2	Hofreiter Martin    	1980-02-12	5100.00
-11	1	Gruber Martha       	2050-07-29	8200.00
-12	3	Gruber Martha       	2050-07-29	1200.00
+13	3	Gruber Martha       	1950-07-29	1000.00
+1	1	Steiner Heinz       	1942-10-10	12400.00
+3	3	Steiner Heinz       	1942-10-10	13500.00
+4	3	Hafner Eleonore     	1960-03-09	8000.00
+6	2	Steindl Kurt        	1936-04-24	6000.00
+7	1	Gruber Martha       	1950-07-29	7500.00
+11	1	Gruber Martha       	1950-07-29	8200.00
+12	3	Gruber Martha       	1950-07-29	1200.00
 \.
 
 
@@ -2915,6 +2915,14 @@ ALTER TABLE ONLY public.entlehng
 
 ALTER TABLE ONLY public.entlehng
     ADD CONSTRAINT entlehng_pkey PRIMARY KEY (entlngnr);
+
+
+--
+-- Name: konto konto_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.konto
+    ADD CONSTRAINT konto_pkey PRIMARY KEY (kontonr);
 
 
 --
