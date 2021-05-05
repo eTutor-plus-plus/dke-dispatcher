@@ -40,7 +40,7 @@ public class TestSQLModule {
     }
 
     @Test
-    //@Disabled
+    @Disabled
     void whenSubmissionIsSolution_thenAllPoints() throws IOException, InterruptedException, SQLException {
         ResultSet exercises = getExercisesResultSet();
         while(exercises.next()){
