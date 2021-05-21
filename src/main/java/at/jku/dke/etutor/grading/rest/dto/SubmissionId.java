@@ -37,15 +37,16 @@ public class SubmissionId {
      * @throws IOException
      */
     public static SubmissionId createId(Submission submission) throws IOException {
+        /*
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bos);
         oos.writeObject(submission);
         oos.flush();
         byte[] data = bos.toByteArray();
-
-        UUID uuid = UUID.nameUUIDFromBytes(data);
+         */
+        UUID uuid = UUID.randomUUID();
         submission.setSubmissionId(uuid.toString());
-        return new SubmissionId(UUID.randomUUID().toString());
+        return new SubmissionId(uuid.toString());
     }
 
 
