@@ -7,6 +7,7 @@ import at.jku.dke.etutor.grading.service.ModuleManager;
 import at.jku.dke.etutor.grading.service.RepositoryManager;
 import org.aspectj.apache.bcel.Repository;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,6 +16,7 @@ import org.springframework.hateoas.client.LinkDiscoverer;
 import org.springframework.hateoas.client.LinkDiscoverers;
 import org.springframework.hateoas.mediatype.collectionjson.CollectionJsonLinkDiscoverer;
 import org.springframework.plugin.core.SimplePluginRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -30,7 +32,8 @@ import java.util.List;
         ETutorGradingController.class,
         ETutorSubmissionController.class,
         ModuleManager.class,
-        RepositoryManager.class
+        RepositoryManager.class,
+        ETutorGradingApplication.class
 })
 @SpringBootApplication
 public class ETutorGradingApplication {
@@ -53,5 +56,12 @@ public class ETutorGradingApplication {
         List<LinkDiscoverer> plugins = new ArrayList<>();
         plugins.add(new CollectionJsonLinkDiscoverer());
         return new LinkDiscoverers(SimplePluginRegistry.create(plugins));
+    }
+
+
+    public void addResourceHandlers(ResourceHandlerRegistry registry)
+    {
+        //enabling swagger-ui part for visual documentation
+        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
     }
 }

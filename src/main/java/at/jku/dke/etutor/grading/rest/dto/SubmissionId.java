@@ -45,7 +45,7 @@ public class SubmissionId {
 
         UUID uuid = UUID.nameUUIDFromBytes(data);
         submission.setSubmissionId(uuid.toString());
-        return new SubmissionId(uuid.toString());
+        return new SubmissionId(UUID.randomUUID().toString());
     }
 
 

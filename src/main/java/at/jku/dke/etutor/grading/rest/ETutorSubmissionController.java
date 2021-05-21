@@ -7,8 +7,11 @@ import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.repositories.ReportDTORepository;
 import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.hateoas.EntityModel;
@@ -45,9 +48,11 @@ public class ETutorSubmissionController {
      *          - HttpStatus.INTERNAL_SERVER_ERROR if exception occurs
      *          - HttpStatus.ACCEPTED if submission is accepted for processing
      */
+    @CrossOrigin(origins="http://localhost:4200")
     @PostMapping("")
-    public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody Submission submission) {
+    public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody Submission submission) throws JsonProcessingException {
         logger.info("Submission received");
+        logger.info(new ObjectMapper().writeValueAsString(submission));
         SubmissionId submissionId = new SubmissionId("-1");
         try{
             logger.info("Calculating submission-ID");
