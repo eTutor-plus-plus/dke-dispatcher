@@ -6,10 +6,7 @@ import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -39,6 +36,7 @@ public class ETutorGradingController {
      *          - HttpStatus.NOT_FOUND if no Grading is available for the given id.
      *          - HttpStatus.OK if Grading is available
      */
+    @CrossOrigin(origins="http://localhost:4200")
     @GetMapping("/{submissionId}")
     public ResponseEntity<EntityModel<GradingDTO>> getGrading(@PathVariable String submissionId) {
         logger.info("Received request for Grading with Submission ID: " + submissionId);
