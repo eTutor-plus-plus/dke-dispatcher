@@ -6,12 +6,13 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Represents the students submission which hast to be distributed to and evaluated by the corresponding module,
  *  depending on the tasktype.
- *  Parameters are corresponding to the modules implementation of the interfaces (see package evaluation).
+ *  Parameters are corresponding to the modules implementation of the core-interfaces (see package core/evaluation).
  */
 @Entity
 public class Submission implements Serializable {
@@ -38,6 +39,10 @@ public class Submission implements Serializable {
     private Map<String, String> passedParameters;
     private int maxPoints;
 
+    public Submission(){
+        passedParameters= new HashMap<>();
+        passedAttributes=new HashMap<>();
+    }
 
     public int getMaxPoints() {
         return maxPoints;

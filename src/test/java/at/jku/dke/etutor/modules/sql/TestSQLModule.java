@@ -91,7 +91,7 @@ public class TestSQLModule {
     Submission prepareSubmission(int id, String solution){
         Submission submission = new Submission();
         HashMap<String, String> attributeMap = new HashMap<>();
-        attributeMap.put("action", "submit");
+        attributeMap.put("action", "diagnose");
         attributeMap.put("diagnoseLevel", "3");
         attributeMap.put("submission", solution);
         submission.setPassedAttributes(attributeMap);
