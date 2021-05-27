@@ -49,7 +49,7 @@ public class SQLReporter {
         StringBuffer error;
         StringBuffer description;
 
-        LS = " \n";
+        LS = " <br>";
         tab = " \t";
 
         report = new SQLReport();
@@ -87,7 +87,7 @@ public class SQLReporter {
 
                 if ((criterionAnalysis instanceof TuplesAnalysis) && (config.getDiagnoseLevel() > 0)) {
                     tuplesAnalysis = (TuplesAnalysis) criterionAnalysis;
-                    error.append("The tuples of your query are not correct");
+                    error.append("<b>The tuples of your query are not correct<b>");
 
                     int missingTuplesCount = tuplesAnalysis.getMissingTuples().size();
                     int surplusTuplesCount = tuplesAnalysis.getSurplusTuples().size();
@@ -119,7 +119,7 @@ public class SQLReporter {
                         }
 
                         if (tuplesAnalysis.hasSurplusTuples()) {
-                            description.append("There are " + surplusTuplesCount + "too much tuples in the result of your query");
+                            description.append("There are "+ surplusTuplesCount + "  surplus tuples in the result of your query");
 
                         }
                     }
@@ -127,57 +127,62 @@ public class SQLReporter {
                     if (config.getDiagnoseLevel() == 3) {
 
                         if (tuplesAnalysis.hasMissingTuples()) {
-                            description.append("The following " + missingTuplesCount + " tuples are missing in the result of your query: " + LS);
+                            description.append("The following " + missingTuplesCount + " tuples are missing in the result of your query: <br>");
 
                             report.setMissingTuples(tuplesAnalysis.getMissingTuples());
 
 
                             columnLabelsIterator = tuplesAnalysis.iterColumnLabels();
+                            description.append("<table border=1 frame=void rules=rows><tr>");
                             while (columnLabelsIterator.hasNext()) {
-                                description.append(columnLabelsIterator.next() + tab + tab);
+                                description.append("<th>" +columnLabelsIterator.next() + "</th>");
                             }
-                            description.append(LS);
+                            description.append("</tr>");
 
                             tuplesIterator = tuplesAnalysis.iterMissingTuples();
                             while (tuplesIterator.hasNext()) {
-                                // description.append("<tr>");
+
                                 tuple = (Collection) tuplesIterator.next();
 
                                 tupleAttributesIterator = tuple.iterator();
+                                description.append("<tr>");
                                 while (tupleAttributesIterator.hasNext()) {
-                                    description.append(tupleAttributesIterator.next() + tab + tab);
+                                    description.append("<td>"+ tupleAttributesIterator.next() + "</td>");
                                 }
-                                description.append(LS);
+                                description.append("</tr>");
                             }
+                            description.append("</table>");
                         }
 
                         if ((tuplesAnalysis.hasMissingTuples()) && (tuplesAnalysis.hasSurplusTuples())) {
-                            description.append(LS);
+                            description.append("<br><br>");
                         }
 
                         if (tuplesAnalysis.hasSurplusTuples()) {
 
-                            description.append("The following " + surplusTuplesCount + " Tuples are too much in the result of your query " + LS);
-
+                            description.append("The following " + surplusTuplesCount + " tuples are too much in the result of your query: " + LS);
+                            description.append("<table border=1 frame=void rules=rows>");
                             report.setSurplusTuples(tuplesAnalysis.getSurplusTuples());
 
                             columnLabelsIterator = tuplesAnalysis.iterColumnLabels();
+                            description.append("<tr>");
                             while (columnLabelsIterator.hasNext()) {
-                                description.append(columnLabelsIterator.next() + tab + tab);
+                                description.append("<th>" + columnLabelsIterator.next() +"</th>");
                             }
-                            description.append(LS);
+                            description.append("</tr>");
 
                             tuplesIterator = tuplesAnalysis.iterSurplusTuples();
                             while (tuplesIterator.hasNext()) {
-                                // description.append("<tr>");
+                                description.append("<tr>");
                                 tuple = (Collection) tuplesIterator.next();
 
                                 tupleAttributesIterator = tuple.iterator();
                                 while (tupleAttributesIterator.hasNext()) {
-                                    description.append(tupleAttributesIterator.next() + tab + tab);
+                                    description.append("<td>"+tupleAttributesIterator.next() + "</td>");
                                 }
-                                description.append(LS);
+                                description.append("</tr>");
                             }
+                            description.append("</table>");
                         }
 
 
@@ -187,14 +192,14 @@ public class SQLReporter {
                 if ((criterionAnalysis instanceof ColumnsAnalysis) && (config.getDiagnoseLevel() > 0)) {
                     columnsAnalysis = (ColumnsAnalysis) criterionAnalysis;
 
-                    error.append("The columns of your result are not correct");
+                    error.append("<b>The columns of your result are not correct </b><br>");
 
                     int missingColumnsCount = columnsAnalysis.getMissingColumns().size();
                     int surplusColumnsCount = columnsAnalysis.getSurplusColumns().size();
 
                     if (config.getDiagnoseLevel() == 1) {
                         if (columnsAnalysis.hasMissingColumns()) {
-                            description.append("There are missing columns");
+                            description.append("There are missing columns <br>");
                         }
 
                         if ((columnsAnalysis.hasMissingColumns()) && (columnsAnalysis.hasSurplusColumns())) {
@@ -202,7 +207,7 @@ public class SQLReporter {
                         }
 
                         if (columnsAnalysis.hasSurplusColumns()) {
-                            description.append("There are surplus columns");
+                            description.append("There are surplus columns<br>");
                         }
                     }
 
@@ -210,7 +215,7 @@ public class SQLReporter {
                     if (config.getDiagnoseLevel() == 2) {
 
                         if (columnsAnalysis.hasMissingColumns()) {
-                            description = description.append("There are " + missingColumnsCount + " columns missing");
+                            description = description.append("There are " + missingColumnsCount + " columns missing <br>");
 
 
                             if ((columnsAnalysis.hasMissingColumns()) && (columnsAnalysis.hasSurplusColumns())) {
@@ -218,7 +223,7 @@ public class SQLReporter {
                             }
 
                             if (columnsAnalysis.hasSurplusColumns()) {
-                                description = description.append("There are " + surplusColumnsCount + " too much");
+                                description = description.append("There are " + surplusColumnsCount + " too much <br>");
 
                             }
                         }
@@ -227,20 +232,22 @@ public class SQLReporter {
                     if (config.getDiagnoseLevel() == 3) {
 
                         if (columnsAnalysis.getMissingColumns().size() > 0) {
-                            description.append("The following collumns are missing: " + LS);
+                            description.append("<b>The following collumns are missing: </b><br> ");
 
                             columnsIterator = columnsAnalysis.iterMissingColumns();
                             while (columnsIterator.hasNext()) {
                                 description.append(columnsIterator.next() + tab);
                             }
+                            description.append("<br>");
                         }
 
                         if (columnsAnalysis.getSurplusColumns().size() > 0) {
-                            description.append("The following collumns are too much: " + LS);
+                            description.append("<b>The following collumns are too much: </b><br>");
                             columnsIterator = columnsAnalysis.iterSurplusColumns();
                             while (columnsIterator.hasNext()) {
                                 description.append(columnsIterator.next() + tab);
                             }
+                            description.append("<br>");
                         }
                     }
 
@@ -248,13 +255,13 @@ public class SQLReporter {
 
                 if ((criterionAnalysis instanceof OrderingAnalysis) && (config.getDiagnoseLevel() > 0)) {
                     //hint.append(messageSource.getMessage("sqlreporter.orderbymanual", new Object[]{props.getProperty("hint_sql_order_by")}, locale));
-                    error.append("The order of your tuples is not correct");
+                    error.append("<b>The order of your tuples is not correct<b>");
                     description.append("The order of your tuples is not correct");
                 }
 
                 if ((criterionAnalysis instanceof CartesianProductAnalysis) && (config.getDiagnoseLevel() > 0)) {
                     //hint.append(messageSource.getMessage("sqlreporter.wheremanual", new Object[]{props.getProperty("hint_sql_where")}, locale));
-                    error.append("There are too many tuples in the result of your query");
+                    error.append("<b>There are too many tuples in the result of your query<b>");
                     description.append("Your result may be a cartesian product");
                 }
 

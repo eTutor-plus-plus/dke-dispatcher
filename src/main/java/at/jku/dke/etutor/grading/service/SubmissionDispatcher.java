@@ -9,8 +9,8 @@ import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
 
 
-
-
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,6 +62,7 @@ public class SubmissionDispatcher implements Runnable {
                 logger.info("Finished evaluating submission");
 
                 GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading);
+                gradingDTO.setResult(generateHTMLResult(evaluator, grading, analysis, submission));
                 if(grading.getPoints()<grading.getMaxPoints() || grading.getPoints() == 0) {
                     logger.info("Requesting report");
                     DefaultReport report = (DefaultReport) evaluator.report
@@ -100,10 +101,42 @@ public class SubmissionDispatcher implements Runnable {
 
 
 
-    private void processAnalysis(Evaluator evaluator, Grading grading, Analysis analysis, Submission submission) {
-        if (analysis instanceof SQLAnalysis) {
+    private String generateHTMLResult(Evaluator evaluator, Grading grading, Analysis analysis, Submission submission) {
+        if (submission.getPassedAttributes().get("action").equalsIgnoreCase("submit"))return null;
 
+        StringBuilder result = new StringBuilder();
+
+        if (analysis instanceof SQLAnalysis) {
+            result.append("The result of your query: <br>");
+
+            SQLAnalysis sqlAnalysis = (SQLAnalysis)analysis;
+            Iterator it= sqlAnalysis.getQueryResultColumnLabels().iterator();
+
+
+            result.append("<table border=1 frame=void rules=rows>");
+            result.append("<tr>");
+            while(it.hasNext()){
+                result.append("<th>" + it.next().toString() + "</th>");
+            }
+            result.append("</tr>");
+
+            it = sqlAnalysis.getQueryResultTuples().iterator();
+            Collection tuple;
+            Iterator tupleAttributesIterator;
+            while(it.hasNext()){
+                result.append("<tr>");
+                tuple = (Collection)it.next();
+                tupleAttributesIterator = tuple.iterator();
+                while(tupleAttributesIterator.hasNext()){
+                    result.append("<td>"+tupleAttributesIterator.next().toString()+"</td>");
+                }
+                result.append("</tr>");
+            }
+            result.append("</table>");
+
+            return result.toString();
         }
+        return null;
     }
 
     public Submission getSubmission() {
