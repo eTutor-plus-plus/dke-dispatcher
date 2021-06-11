@@ -8,6 +8,7 @@ import at.jku.dke.etutor.grading.rest.repositories.ReportDTORepository;
 import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
+import at.jku.dke.etutor.modules.sql.analysis.SQLCriterionAnalysis;
 
 
 import java.util.Collection;
@@ -111,7 +112,8 @@ public class SubmissionDispatcher implements Runnable {
 
         if (analysis instanceof SQLAnalysis) {
             SQLAnalysis sqlAnalysis = (SQLAnalysis)analysis;
-            if(!sqlAnalysis.getCriterionAnalysis(SQLEvaluationCriterion.CARTESIAN_PRODUCT).isCriterionSatisfied()) return null;
+            SQLCriterionAnalysis cartesianProduct = sqlAnalysis.getCriterionAnalysis(SQLEvaluationCriterion.CARTESIAN_PRODUCT);
+            if(cartesianProduct != null && !cartesianProduct.isCriterionSatisfied()) return null;
 
             result.append("The result of your query: <br>");
             Iterator it= sqlAnalysis.getQueryResultColumnLabels().iterator();
