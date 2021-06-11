@@ -6,6 +6,7 @@ import at.jku.dke.etutor.grading.rest.dto.*;
 import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
 import at.jku.dke.etutor.grading.rest.repositories.ReportDTORepository;
 import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
+import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
 
 
@@ -88,6 +89,7 @@ public class SubmissionDispatcher implements Runnable {
                     return;
                 }catch(Exception e){
                     logger.log(Level.SEVERE, "Could not save grading");
+                    return;
                 }
             }else{
                 logger.log(Level.SEVERE, "Could not find evaluator for tasktype: " + submission.getTaskType());
@@ -96,6 +98,7 @@ public class SubmissionDispatcher implements Runnable {
         } catch(Exception e){
             logger.log(Level.SEVERE, "Stopped Evaluation due to errors");
             e.printStackTrace();
+            return;
         }
     }
 
@@ -107,9 +110,10 @@ public class SubmissionDispatcher implements Runnable {
         StringBuilder result = new StringBuilder();
 
         if (analysis instanceof SQLAnalysis) {
-            result.append("The result of your query: <br>");
-
             SQLAnalysis sqlAnalysis = (SQLAnalysis)analysis;
+            if(!sqlAnalysis.getCriterionAnalysis(SQLEvaluationCriterion.CARTESIAN_PRODUCT).isCriterionSatisfied()) return null;
+
+            result.append("The result of your query: <br>");
             Iterator it= sqlAnalysis.getQueryResultColumnLabels().iterator();
 
 
@@ -128,7 +132,8 @@ public class SubmissionDispatcher implements Runnable {
                 tuple = (Collection)it.next();
                 tupleAttributesIterator = tuple.iterator();
                 while(tupleAttributesIterator.hasNext()){
-                    result.append("<td>"+tupleAttributesIterator.next().toString()+"</td>");
+                    Object next = tupleAttributesIterator.next();
+                    if(next != null)    result.append("<td>"+next.toString()+"</td>");
                 }
                 result.append("</tr>");
             }

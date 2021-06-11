@@ -83,7 +83,7 @@ SET row_security = off;
 -- Name: etutor; Type: DATABASE; Schema: -; Owner: etutor
 --
 
-CREATE DATABASE etutor WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'German_Germany.1252';
+CREATE DATABASE etutor WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 
 ALTER DATABASE etutor OWNER TO etutor;
@@ -103,7 +103,6 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
 
 --
 -- Name: grading; Type: TABLE; Schema: public; Owner: etutor
@@ -409,7 +408,7 @@ SET row_security = off;
 -- Name: sql; Type: DATABASE; Schema: -; Owner: etutor
 --
 
-CREATE DATABASE sql WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'German_Germany.1252';
+CREATE DATABASE sql WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 
 ALTER DATABASE sql OWNER TO etutor;
@@ -429,7 +428,6 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
 
 --
 -- Name: connections; Type: TABLE; Schema: public; Owner: postgres
@@ -911,7 +909,7 @@ SET row_security = off;
 -- Name: sql_stock_exchange; Type: DATABASE; Schema: -; Owner: etutor
 --
 
-CREATE DATABASE sql_stock_exchange WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'German_Germany.1252';
+CREATE DATABASE sql_stock_exchange WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 
 ALTER DATABASE sql_stock_exchange OWNER TO etutor;
@@ -931,7 +929,6 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
 
 --
 -- Name: based_in; Type: TABLE; Schema: public; Owner: postgres
@@ -1250,7 +1247,7 @@ SET row_security = off;
 -- Name: sql_submission_auftraege; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE sql_submission_auftraege WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'German_Germany.1252';
+CREATE DATABASE sql_submission_auftraege WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 
 ALTER DATABASE sql_submission_auftraege OWNER TO postgres;
@@ -1270,7 +1267,6 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
 
 --
 -- Name: artikel; Type: TABLE; Schema: public; Owner: postgres
@@ -1527,7 +1523,7 @@ SET row_security = off;
 -- Name: sql_submission_begin; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE sql_submission_begin WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'German_Germany.1252';
+CREATE DATABASE sql_submission_begin WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 
 ALTER DATABASE sql_submission_begin OWNER TO postgres;
@@ -1547,7 +1543,6 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
 
 --
 -- Name: aenderungs_protokoll; Type: TABLE; Schema: public; Owner: postgres
@@ -5865,7 +5860,7 @@ SET row_security = off;
 -- Name: sql_submission_pruefungen; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE sql_submission_pruefungen WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'German_Germany.1252';
+CREATE DATABASE sql_submission_pruefungen WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 
 ALTER DATABASE sql_submission_pruefungen OWNER TO postgres;
@@ -5885,7 +5880,6 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
 
 --
 -- Name: diplomprfg; Type: TABLE; Schema: public; Owner: postgres
@@ -6232,7 +6226,7 @@ SET row_security = off;
 -- Name: sql_submission_wohnungen; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE sql_submission_wohnungen WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'German_Germany.1252';
+CREATE DATABASE sql_submission_wohnungen WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 
 ALTER DATABASE sql_submission_wohnungen OWNER TO postgres;
@@ -6252,7 +6246,6 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
 
 --
 -- Name: person; Type: TABLE; Schema: public; Owner: postgres
@@ -6456,7 +6449,7 @@ SET row_security = off;
 -- Name: sql_trial_auftraege; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE sql_trial_auftraege WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'German_Germany.1252';
+CREATE DATABASE sql_trial_auftraege WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 
 ALTER DATABASE sql_trial_auftraege OWNER TO postgres;
@@ -6476,7 +6469,6 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
 
 --
 -- Name: artikel; Type: TABLE; Schema: public; Owner: postgres
@@ -6733,7 +6725,7 @@ SET row_security = off;
 -- Name: sql_trial_begin; Type: DATABASE; Schema: -; Owner: etutor
 --
 
-CREATE DATABASE sql_trial_begin WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'German_Germany.1252';
+CREATE DATABASE sql_trial_begin WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 
 ALTER DATABASE sql_trial_begin OWNER TO etutor;
@@ -6753,7 +6745,6 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
 
 --
 -- Name: aenderungs_protokoll; Type: TABLE; Schema: public; Owner: postgres
@@ -11093,7 +11084,7 @@ SET row_security = off;
 -- Name: sql_trial_pruefungen; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE sql_trial_pruefungen WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'German_Germany.1252';
+CREATE DATABASE sql_trial_pruefungen WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 
 ALTER DATABASE sql_trial_pruefungen OWNER TO postgres;
@@ -11113,7 +11104,6 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
 
 --
 -- Name: diplomprfg; Type: TABLE; Schema: public; Owner: postgres
@@ -11460,7 +11450,7 @@ SET row_security = off;
 -- Name: sql_trial_wohnungen; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE sql_trial_wohnungen WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'German_Germany.1252';
+CREATE DATABASE sql_trial_wohnungen WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 
 ALTER DATABASE sql_trial_wohnungen OWNER TO postgres;
@@ -11480,7 +11470,6 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
 
 --
 -- Name: person; Type: TABLE; Schema: public; Owner: postgres

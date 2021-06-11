@@ -48,7 +48,7 @@ public class ETutorSubmissionController {
      *          - HttpStatus.INTERNAL_SERVER_ERROR if exception occurs
      *          - HttpStatus.ACCEPTED if submission is accepted for processing
      */
-    @CrossOrigin(origins="http://localhost:4200")
+    @CrossOrigin(origins="*")
     @PostMapping("")
     public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody Submission submission) throws JsonProcessingException {
         logger.info("Submission received");

@@ -17,7 +17,7 @@ public class GradingDTO {
     private String submissionId;
     private double points;
     private double maxPoints;
-    @Column(length = 3096)
+    @Column(length = 4192)
     private String result;
 
     @OneToOne

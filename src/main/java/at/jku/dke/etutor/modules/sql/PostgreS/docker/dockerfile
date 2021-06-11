@@ -1,0 +1,10 @@
+FROM postgres:11.12
+
+ENV POSTGRES_USER=docker
+ENV POSTGRES_PASSWORD=docker
+
+COPY . /dumpfiles
+
+WORKDIR /dumpfiles
+RUN mv /dumpfiles/all_dump.sql /docker-entrypoint-initdb.d
+

@@ -36,7 +36,7 @@ public class ETutorGradingController {
      *          - HttpStatus.NOT_FOUND if no Grading is available for the given id.
      *          - HttpStatus.OK if Grading is available
      */
-    @CrossOrigin(origins="http://localhost:4200")
+    @CrossOrigin(origins="*")
     @GetMapping("/{submissionId}")
     public ResponseEntity<EntityModel<GradingDTO>> getGrading(@PathVariable String submissionId) {
         logger.info("Received request for Grading with Submission ID: " + submissionId);

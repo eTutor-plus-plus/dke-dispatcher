@@ -14,7 +14,7 @@ public class ReportDTO {
     private String submissionId;
     private String hint;
     private String error;
-    @Column(length = 3096)
+    @Column(length = 4192)
     private String description;
 
     public ReportDTO(){
