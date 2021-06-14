@@ -11,7 +11,7 @@ $docker build .
 
 Danach kann das erstellte Image als Container auf Port 5433 gestartet weden:
 
-$docker run -p 5433:5432 -d <Image-Id>
+$docker run -p 5433:5432 -d <<Image-Id>>
   
 Anschließend kann die Rest-Schnittstelle gestartet werden.
 
