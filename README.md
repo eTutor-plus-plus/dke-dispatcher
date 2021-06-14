@@ -3,9 +3,21 @@
 # Installation
 
 ### PostgreSQL
-Zur Speicherung der Submissions und Gradings muss auf dem Standardport 5432 des localhosts eine PostgreSQL-Datenbank eingerichtet sein. Weiters muss eine Datenbank mit dem Namen "etutor", sowie ein Benutzer mit Namen und Passwort "etutor" existieren. Die Erstellung der Tabellen erfolgt automatisch. Die Zugangsdaten können unter resources/application.properties geändert werden.
+Zur Speicherung der Submissions und Gradings muss auf dem Standardport 5433 des localhosts eine PostgreSQL-Datenbankserver laufen. 
+Die benötigten Datenbanken für die Submissions, Gradings und den Daten für das SQL-Modul können als Docker Container erstellt werden.
+Dazu muss im Ordner /src/main/java/at/jku/dke/etutor/modules/sql/PostgreS/docker/ folgender Befehl ausgeführt werden: 
 
-Zur Erstellung der Datenbank(en) für das SQL Modul siehe [readme](https://github.com/jku-win-dke/eTutor-Grading/blob/master/src/main/java/at/jku/dke/etutor/modules/sql/PostgreS/readme.txt).
+$docker build . 
+
+Danach kann das erstellte Image als Container auf Port 5433 gestartet weden:
+
+$docker run -p 5433:5432 -d <Image-Id>
+  
+Anschließend kann die Rest-Schnittstelle gestartet werden.
+
+
+
+
 
 ## Funktionsbeschreibung package grading (Swagger API Dokumentation tbd):
 
@@ -34,6 +46,8 @@ Grading-Instanz für diese in der Datenbank ab. Wird diese gefunden wird als Res
 mit dem GradingDTO Objekt sowie einem auf sich selbst verweisenden Link im response-body zurückgesendet.
 Wenn kein Grading für die angefragte ID gefunden wird, wird mit dem Status Code Not_Found ein GradingDTO mit 0 erreichten von 0 erreichbaren Punkten 
 sowie ebenfalls ein Link als Selbstreferenz zurückgeschickt.
+  
+Eine Swageger-API Doku kann im Testbetrieb unter localhost:8081/swagger-ui.html eingesehen werden.
 
 
 
