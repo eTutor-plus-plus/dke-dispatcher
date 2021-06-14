@@ -3,7 +3,7 @@
 # Installation
 
 ### PostgreSQL
-Zur Speicherung der Submissions und Gradings muss auf dem Standardport 5433 des localhosts eine PostgreSQL-Datenbankserver laufen. 
+Zur Speicherung der Submissions und Gradings muss auf dem Port 5433 des localhosts eine PostgreSQL-Datenbankserver laufen. 
 Die benötigten Datenbanken für die Submissions, Gradings und den Daten für das SQL-Modul können als Docker Container erstellt werden.
 Dazu muss im Ordner /src/main/java/at/jku/dke/etutor/modules/sql/PostgreS/docker/ folgender Befehl ausgeführt werden: 
 
