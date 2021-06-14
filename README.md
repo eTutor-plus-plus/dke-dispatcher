@@ -19,7 +19,7 @@ Anschließend kann die Rest-Schnittstelle gestartet werden.
 
 
 
-## Funktionsbeschreibung package grading (Swagger API Dokumentation tbd):
+## Funktionsbeschreibung package grading
 
 Es stehen 2 Schnittstellen zur Verfügung:
 * SubmissionController (/submission)
