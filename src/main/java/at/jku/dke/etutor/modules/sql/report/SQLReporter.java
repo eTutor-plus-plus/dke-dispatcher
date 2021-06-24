@@ -87,7 +87,7 @@ public class SQLReporter {
 
                 if ((criterionAnalysis instanceof TuplesAnalysis) && (config.getDiagnoseLevel() > 0)) {
                     tuplesAnalysis = (TuplesAnalysis) criterionAnalysis;
-                    error.append("<b>The tuples of your query are not correct<b>");
+                    error.append("<strong>The tuples of your query are not correct</strong>");
 
                     int missingTuplesCount = tuplesAnalysis.getMissingTuples().size();
                     int surplusTuplesCount = tuplesAnalysis.getSurplusTuples().size();
@@ -192,7 +192,7 @@ public class SQLReporter {
                 if ((criterionAnalysis instanceof ColumnsAnalysis) && (config.getDiagnoseLevel() > 0)) {
                     columnsAnalysis = (ColumnsAnalysis) criterionAnalysis;
 
-                    error.append("<b>The columns of your result are not correct </b><br>");
+                    error.append("<strong>The columns of your result are not correct<strong><br>");
 
                     int missingColumnsCount = columnsAnalysis.getMissingColumns().size();
                     int surplusColumnsCount = columnsAnalysis.getSurplusColumns().size();
@@ -255,7 +255,7 @@ public class SQLReporter {
 
                 if ((criterionAnalysis instanceof OrderingAnalysis) && (config.getDiagnoseLevel() > 0)) {
                     //hint.append(messageSource.getMessage("sqlreporter.orderbymanual", new Object[]{props.getProperty("hint_sql_order_by")}, locale));
-                    error.append("<b>The order of your tuples is not correct<b>");
+                    error.append("<strong>The order of your tuples is not correct<strong>");
                     description.append("The order of your tuples is not correct");
                 }
 

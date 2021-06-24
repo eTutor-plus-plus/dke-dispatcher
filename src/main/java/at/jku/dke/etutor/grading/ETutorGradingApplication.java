@@ -3,6 +3,7 @@ package at.jku.dke.etutor.grading;
 
 import at.jku.dke.etutor.grading.rest.ETutorGradingController;
 import at.jku.dke.etutor.grading.rest.ETutorSubmissionController;
+import at.jku.dke.etutor.grading.rest.repositories.ETutorSQLController;
 import at.jku.dke.etutor.grading.service.ModuleManager;
 import at.jku.dke.etutor.grading.service.RepositoryManager;
 import org.aspectj.apache.bcel.Repository;
@@ -31,6 +32,7 @@ import java.util.List;
 @ComponentScan(basePackageClasses = {
         ETutorGradingController.class,
         ETutorSubmissionController.class,
+        ETutorSQLController.class,
         ModuleManager.class,
         RepositoryManager.class,
         ETutorGradingApplication.class

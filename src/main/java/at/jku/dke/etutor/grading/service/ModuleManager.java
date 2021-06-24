@@ -22,6 +22,8 @@ public class ModuleManager{
 
     public static Evaluator getEvaluator(String tasktype){
         switch (tasktype) {
+            case  "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#SQLTask":
+                return sqlEvaluator;
             case  "sql":
                     return sqlEvaluator;
         }

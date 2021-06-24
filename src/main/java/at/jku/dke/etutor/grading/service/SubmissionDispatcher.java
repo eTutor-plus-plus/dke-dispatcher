@@ -115,7 +115,7 @@ public class SubmissionDispatcher implements Runnable {
             SQLCriterionAnalysis cartesianProduct = sqlAnalysis.getCriterionAnalysis(SQLEvaluationCriterion.CARTESIAN_PRODUCT);
             if(cartesianProduct != null && !cartesianProduct.isCriterionSatisfied()) return null;
 
-            result.append("The result of your query: <br>");
+            result.append("<strong>The result of your query: </strong><br>");
             Iterator it= sqlAnalysis.getQueryResultColumnLabels().iterator();
 
 
