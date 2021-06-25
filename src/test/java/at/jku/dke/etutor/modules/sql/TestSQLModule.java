@@ -32,7 +32,7 @@ public class TestSQLModule {
     List<String> ids = new ArrayList<>();
     final String REST_URL = "http://localhost:8081";
     final String POSTGRES_URL = "jdbc:postgresql://localhost:5433/sql";
-    String exerciseConstraints = "practise_db not in (16) and id not in (13089, 13883, 13884, 13885, 13887) ";
+    String exerciseConstraints = "id = 120006";
 
     @BeforeEach
     void initialize() throws ClassNotFoundException {

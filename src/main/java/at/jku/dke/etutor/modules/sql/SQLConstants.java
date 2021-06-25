@@ -7,7 +7,9 @@ public class SQLConstants {
 
 	public static final String CONN_USER = "sql";
 
-	public static final String CONN_URL = "jdbc:postgresql://localhost:5433/sql";
+	public static final String CONN_URL_BASE = "jdbc:postgresql://localhost:5433";
+
+	public static final String CONN_URL = CONN_URL_BASE+"/sql";
 
 	// USER INTERFACE ETUTOR-CORE CONSTANTS
 	public static final String ATTR_USER_ID = "userID"; // CoreConstants.ATTR_USER_ID
