@@ -11,6 +11,12 @@ public class SQLConstants {
 
 	public static final String CONN_URL = CONN_URL_BASE+"/sql";
 
+	public static final String SUBMISSION_SUFFIX = "_submission";
+
+	public static final String DIAGNOSE_SUFFIX = "_diagnose";
+
+	public static final String EXERCISE_DB = "sql_exercises";
+
 	// USER INTERFACE ETUTOR-CORE CONSTANTS
 	public static final String ATTR_USER_ID = "userID"; // CoreConstants.ATTR_USER_ID
 

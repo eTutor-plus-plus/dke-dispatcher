@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
@@ -27,12 +26,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 //@SpringBootTest(classes= ETutorGradingApplication.class)
 public class TestSQLModule {
-    ObjectMapper mapper = new ObjectMapper();
-    HttpClient client = HttpClient.newHttpClient();
-    List<String> ids = new ArrayList<>();
-    final String REST_URL = "http://localhost:8081";
-    final String POSTGRES_URL = "jdbc:postgresql://localhost:5433/sql";
-    String exerciseConstraints = "id = 120006";
+    private ObjectMapper mapper = new ObjectMapper();
+    private HttpClient client = HttpClient.newHttpClient();
+    private List<String> ids = new ArrayList<>();
+    private final String REST_URL = "http://localhost:8081";
+    private final String CONN_URL = SQLConstants.CONN_URL;
+    private final String CONN_USER = SQLConstants.CONN_USER;
+    private final String CONN_PWD = SQLConstants.CONN_PWD;
+    private final String EXERCISE_CONSTRAINTS = "where id = 120000";
+    private final String ACTION_STRING = "diagnose";
+    private final String DIAGNOSE_LEVEL = "3";
 
     @BeforeEach
     void initialize() throws ClassNotFoundException {
@@ -41,7 +44,8 @@ public class TestSQLModule {
     }
 
     /**
-     * Test that fetches the solutions of the persisted exercises and sends them to the backend for evaluation
+     * Test that fetches the solutions of the persisted exercises and sends them to the dispatcher for evaluation
+     *
      * @throws IOException
      * @throws InterruptedException
      * @throws SQLException
@@ -50,14 +54,14 @@ public class TestSQLModule {
     //@Disabled
     void whenSubmissionIsSolution_thenAllPoints() throws IOException, InterruptedException, SQLException {
         ResultSet exercises = getExercisesResultSet();
-        while(exercises.next()){
+        while (exercises.next()) {
             int id = exercises.getInt("id");
-                String solution = exercises.getString("solution");
-                Submission submission = prepareSubmission(id, solution);
-                assertFalse(submission == null);
-                sendSubmission(submission);
-                //Thread.sleep(350);
+            String solution = exercises.getString("solution");
+            Submission submission = prepareSubmission(id, solution);
+            assertFalse(submission == null);
+            sendSubmission(submission);
         }
+        Thread.sleep(350);
         getGradings();
         System.out.println(ids.size());
     }
@@ -65,7 +69,7 @@ public class TestSQLModule {
     void sendSubmission(Submission submission) throws IOException, InterruptedException {
         String submissionJson = mapper.writeValueAsString(submission);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(REST_URL +"/submission"))
+                .uri(URI.create(REST_URL + "/submission"))
                 .POST(HttpRequest.BodyPublishers.ofString(submissionJson))
                 .setHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                 .build();
@@ -76,14 +80,14 @@ public class TestSQLModule {
     }
 
     void getGradings() throws IOException, InterruptedException {
-        for(String id : ids) {
+        for (String id : ids) {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(REST_URL +"/grading/" + id))
+                    .uri(URI.create(REST_URL + "/grading/" + id))
                     .build();
             HttpResponse<String> response = sendRequest(request);
             GradingDTO grading = extractGrading(response);
             System.out.println(id);
-            System.out.println("Result "+"\n"+grading.getResult());
+            System.out.println("Result " + "\n" + grading.getResult());
             assertEquals(1, grading.getPoints());
 
         }
@@ -94,22 +98,24 @@ public class TestSQLModule {
     }
 
     String getId(HttpResponse<String> response) throws JsonProcessingException {
-        EntityModel<SubmissionId> submissionModel = mapper.readValue(response.body(), new TypeReference<EntityModel<SubmissionId>>(){});
+        EntityModel<SubmissionId> submissionModel = mapper.readValue(response.body(), new TypeReference<EntityModel<SubmissionId>>() {
+        });
         SubmissionId submissionId = submissionModel.getContent();
         String id = submissionId.getSubmissionId();
         return id;
     }
 
     GradingDTO extractGrading(HttpResponse<String> response) throws JsonProcessingException {
-        EntityModel<GradingDTO> entityModel = mapper.readValue(response.body(), new TypeReference<EntityModel<GradingDTO>>(){});
-       return entityModel.getContent();
+        EntityModel<GradingDTO> entityModel = mapper.readValue(response.body(), new TypeReference<EntityModel<GradingDTO>>() {
+        });
+        return entityModel.getContent();
     }
 
-    Submission prepareSubmission(int id, String solution){
+    Submission prepareSubmission(int id, String solution) {
         Submission submission = new Submission();
         HashMap<String, String> attributeMap = new HashMap<>();
-        attributeMap.put("action", "diagnose");
-        attributeMap.put("diagnoseLevel", "3");
+        attributeMap.put("action", ACTION_STRING);
+        attributeMap.put("diagnoseLevel", DIAGNOSE_LEVEL);
         attributeMap.put("submission", solution);
         submission.setPassedAttributes(attributeMap);
         submission.setPassedParameters(new HashMap<String, String>());
@@ -119,11 +125,11 @@ public class TestSQLModule {
         return submission;
     }
 
-    ResultSet getExercisesResultSet(){
+    ResultSet getExercisesResultSet() {
         PreparedStatement stmt;
         ResultSet rs;
-        try (Connection con = DriverManager.getConnection(POSTGRES_URL, "sql", "sql")) {
-            String query = "select id, solution from exercises where "+  exerciseConstraints +" ORDER BY id asc;";
+        try (Connection con = DriverManager.getConnection(CONN_URL, CONN_USER, CONN_PWD)) {
+            String query = "select id, solution from exercises " + EXERCISE_CONSTRAINTS + " ORDER BY id asc;";
             stmt = con.prepareStatement(query);
             return stmt.executeQuery();
         } catch (Exception e) {
@@ -132,7 +138,7 @@ public class TestSQLModule {
         }
     }
 
-    Submission fetchSpecificSQLSubmssionUtil(int exerciseID)throws NoExerciseFoundException{
+    Submission fetchSpecificSQLSubmssionUtil(int exerciseID) throws NoExerciseFoundException {
         Submission submission = new Submission();
         HashMap<String, String> attributeMap = new HashMap<>();
         attributeMap.put("action", "submit");
@@ -147,8 +153,8 @@ public class TestSQLModule {
         String solution;
         int exerciseId;
 
-        try (Connection con = DriverManager.getConnection(POSTGRES_URL, "sql", "sql")) {
-            String query = "select * from exercises where id = "+ exerciseID +";";
+        try (Connection con = DriverManager.getConnection(CONN_URL, "sql", "sql")) {
+            String query = "select * from exercises where id = " + exerciseID + ";";
             stmt = con.prepareStatement(query);
             rs = stmt.executeQuery();
             if (rs.next()) {
@@ -156,7 +162,7 @@ public class TestSQLModule {
                 exerciseId = rs.getInt("id");
                 submission.setExerciseId(exerciseId);
                 attributeMap.put("submission", solution);
-            }else throw new NoExerciseFoundException("No exercise for id: " + exerciseID);
+            } else throw new NoExerciseFoundException("No exercise for id: " + exerciseID);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

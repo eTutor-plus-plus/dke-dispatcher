@@ -3,12 +3,10 @@ package at.jku.dke.etutor.grading;
 
 import at.jku.dke.etutor.grading.rest.ETutorGradingController;
 import at.jku.dke.etutor.grading.rest.ETutorSubmissionController;
-import at.jku.dke.etutor.grading.rest.repositories.ETutorSQLController;
+import at.jku.dke.etutor.grading.rest.ETutorSQLController;
 import at.jku.dke.etutor.grading.service.ModuleManager;
 import at.jku.dke.etutor.grading.service.RepositoryManager;
-import org.aspectj.apache.bcel.Repository;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
