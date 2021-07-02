@@ -19,9 +19,8 @@ public class SQLResourceManager {
     private static final String CONN_SUPER_PWD = ETutorGradingConstants.CONN_PWD;
     private static final String SUBMISSION_SUFFIX = SQLConstants.SUBMISSION_SUFFIX;
     private static final String DIAGNOSE_SUFFIX = SQLConstants.DIAGNOSE_SUFFIX;
+    private static final String JDBC_SCHEMA_OPTION = "?currentSchema=";
 
-
-    private Connection con;
     private Logger logger;
 
     public SQLResourceManager() throws ClassNotFoundException {
@@ -47,6 +46,7 @@ public class SQLResourceManager {
      * @throws DatabaseException if an SQLException occurs
      */
     public void createSchema(String schemaName) throws DatabaseException {
+        Connection con = null;
         try {
             con = DriverManager.getConnection(SQL_EXERCISE_URL, CONN_SUPER_USER, CONN_SUPER_PWD);
             con.setAutoCommit(false);
@@ -94,6 +94,7 @@ public class SQLResourceManager {
      * @throws DatabaseException if an SQLException occurs
      */
     public void deleteSchema(String schemaName) throws DatabaseException {
+        Connection con = null;
         try {
             con = DriverManager.getConnection(SQL_EXERCISE_URL, CONN_SUPER_USER, CONN_SUPER_PWD);
             con.setAutoCommit(false);
@@ -166,8 +167,9 @@ public class SQLResourceManager {
      * @throws DatabaseException
      */
     public void deleteTable(String schemaName, String tableName) throws DatabaseException {
+        Connection con = null;
         try {
-            con = DriverManager.getConnection(SQL_EXERCISE_URL+"?currentSchema=" + schemaName, CONN_SUPER_USER, CONN_SUPER_PWD);
+            con = DriverManager.getConnection(SQL_EXERCISE_URL+ JDBC_SCHEMA_OPTION + schemaName, CONN_SUPER_USER, CONN_SUPER_PWD);
             con.setAutoCommit(false);
 
             String deleteQuery = "DROP TABLE IF EXISTS " + tableName + " CASCADE";
@@ -226,6 +228,7 @@ public class SQLResourceManager {
      */
     public void createExercise(int id, String schemaName, String solution) throws DatabaseException {
         logger.info("Creating exercise in schema with prefix "+schemaName + " and id "+id);
+        Connection con = null;
         try {
             con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD);
             con.setAutoCommit(false);
@@ -346,6 +349,7 @@ public class SQLResourceManager {
      */
     public void deleteExercise(int id) throws DatabaseException {
         logger.info("Deleting exercise with id "+id);
+        Connection con = null;
         try {
             con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD);
             con.setAutoCommit(false);
@@ -376,8 +380,9 @@ public class SQLResourceManager {
      * @throws DatabaseException
      */
     void executeUpdate(String schemaName, String query) throws DatabaseException {
-        try {
-            con = DriverManager.getConnection(SQL_EXERCISE_URL+"?currentSchema=" + schemaName, CONN_SUPER_USER, CONN_SUPER_PWD);
+        Connection con = null;
+        try{
+            con = DriverManager.getConnection(SQL_EXERCISE_URL+ JDBC_SCHEMA_OPTION + schemaName, CONN_SUPER_USER, CONN_SUPER_PWD);
             con.setAutoCommit(false);
 
             PreparedStatement insertStmt = con.prepareStatement(query);

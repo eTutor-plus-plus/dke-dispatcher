@@ -31,10 +31,10 @@ public class ETutorSQLController {
     public ResponseEntity<String> createSchema(@PathVariable String schemaName){
         logger.info("Enter createSchema/"+schemaName);
         try {
-            resourceManager.createSchemas(schemaName);
+            new SQLResourceManager().createSchemas(schemaName);
             logger.info("Exit createSchema with Status Code 200");
             return ResponseEntity.ok("Schema created");
-        } catch (DatabaseException e) {
+        } catch (DatabaseException | ClassNotFoundException e) {
             logger.info("Exit createSchema with Status Code 500");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not create schema");
         }
@@ -47,7 +47,7 @@ public class ETutorSQLController {
     @CrossOrigin(origins="*")
     @DeleteMapping("/schema/{schemaName}")
     public ResponseEntity<String> deleteSchema(@PathVariable String schemaName){
-        logger.info("Enter deleteSchema"+schemaName);
+        logger.info("Enter deleteSchema/"+schemaName);
         try {
             resourceManager.deleteSchemas(schemaName);
             logger.info("Exit deleteSchema with Status Code 200");
@@ -65,18 +65,21 @@ public class ETutorSQLController {
      * @param schemaName the name of the schema where a table has to be created
      * @param query the create table query
      */
+    @CrossOrigin(origins="*")
     @PutMapping("/schema/{schemaName}/table")
-    public ResponseEntity<String> createTable(@PathVariable String schemaName, @RequestParam String query){
+    public ResponseEntity<String> createTables(@PathVariable String schemaName, @RequestBody String queries){
         logger.info("Enter createTable/"+schemaName);
         try {
-            resourceManager.createTables(schemaName, query);
+            String[] queryArray = queries.split(";");
+            for(String s: queryArray){
+                resourceManager.createTables(schemaName, s);
+            }
             logger.info("Exit createTable with Status Code 200");
             return ResponseEntity.ok("Table created");
         } catch (DatabaseException e) {
             logger.info("Exit createTable with Status Code 500");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not create table");
         }
-
     }
 
     /**
@@ -84,6 +87,7 @@ public class ETutorSQLController {
      * @param schemaName the name of the schema where a table has to be deleted
      * @param tableName the name of the table to be deleted
      */
+    @CrossOrigin(origins="*")
     @DeleteMapping("/schema/{schemaName}/table/{tableName}")
     public ResponseEntity<String> deleteTable(@PathVariable String schemaName, @PathVariable String tableName){
         logger.info("Enter "+schemaName+"/deleteTable/"+tableName);
@@ -102,6 +106,7 @@ public class ETutorSQLController {
      * @param schemaName the name of the schema
      * @param query the insert query
      */
+    @CrossOrigin(origins="*")
     @PostMapping("/schema/{schemaName}/submission/data")
     public ResponseEntity<String> insertDataSubmission(@PathVariable String schemaName, @RequestParam String query){
         logger.info("Enter insertData");
@@ -119,6 +124,7 @@ public class ETutorSQLController {
      * @param schemaName the name of the schame
      * @param query the insert query
      */
+    @CrossOrigin(origins="*")
     @PostMapping("/schema/{schemaName}/diagnose/data")
     public ResponseEntity<String> insertDataDiagnose(@PathVariable String schemaName, @RequestParam String query){
         logger.info("Enter insertData");
@@ -135,6 +141,7 @@ public class ETutorSQLController {
     /**
      * Deletes the data in the specified table in the specified schema
      */
+    @CrossOrigin(origins="*")
     @DeleteMapping("/schema/{schemaName}/table/{tableName}/data")
     public void deleteData(@PathVariable String schemaName, @PathVariable String tableName){
 
@@ -147,6 +154,7 @@ public class ETutorSQLController {
      * @param id the id of the exercise to be created
      * @param solution the solution for the exercise
      */
+    @CrossOrigin(origins="*")
     @PutMapping("/exercise/{schemaName}/{id}")
     public ResponseEntity<String> createExercise(@PathVariable int id, @PathVariable String schemaName, @RequestParam String solution) {
         logger.info("Enter createExercise/"+id);
@@ -165,6 +173,7 @@ public class ETutorSQLController {
      * Deletes an exercise
      * @param id the id of the exercise
      */
+    @CrossOrigin(origins="*")
     @DeleteMapping("/exercise/{id}")
     public ResponseEntity<String> deleteExercise(@PathVariable int id)  {
         logger.info("Enter deleteExercise/"+id);

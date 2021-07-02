@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
@@ -51,7 +52,7 @@ public class TestSQLModule {
      * @throws SQLException
      */
     @Test
-    //@Disabled
+    @Disabled
     void whenSubmissionIsSolution_thenAllPoints() throws IOException, InterruptedException, SQLException {
         ResultSet exercises = getExercisesResultSet();
         while (exercises.next()) {
@@ -76,7 +77,6 @@ public class TestSQLModule {
         HttpResponse<String> response = sendRequest(request);
         String id = getId(response);
         ids.add(id);
-
     }
 
     void getGradings() throws IOException, InterruptedException {
@@ -136,38 +136,6 @@ public class TestSQLModule {
             e.printStackTrace();
             return null;
         }
-    }
-
-    Submission fetchSpecificSQLSubmssionUtil(int exerciseID) throws NoExerciseFoundException {
-        Submission submission = new Submission();
-        HashMap<String, String> attributeMap = new HashMap<>();
-        attributeMap.put("action", "submit");
-        attributeMap.put("diagnoseLevel", "3");
-        submission.setPassedAttributes(attributeMap);
-        submission.setPassedParameters(new HashMap<String, String>());
-        submission.setMaxPoints(1);
-        submission.setTaskType("sql");
-
-        PreparedStatement stmt;
-        ResultSet rs;
-        String solution;
-        int exerciseId;
-
-        try (Connection con = DriverManager.getConnection(CONN_URL, "sql", "sql")) {
-            String query = "select * from exercises where id = " + exerciseID + ";";
-            stmt = con.prepareStatement(query);
-            rs = stmt.executeQuery();
-            if (rs.next()) {
-                solution = rs.getString("solution");
-                exerciseId = rs.getInt("id");
-                submission.setExerciseId(exerciseId);
-                attributeMap.put("submission", solution);
-            } else throw new NoExerciseFoundException("No exercise for id: " + exerciseID);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return submission;
     }
 }
 
