@@ -402,6 +402,4 @@ public class SQLResourceManager {
             throw new DatabaseException();
         }
     }
-
-
 }
