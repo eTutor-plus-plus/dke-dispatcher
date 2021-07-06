@@ -99,9 +99,8 @@ public class SQLResourceManager {
             con = DriverManager.getConnection(SQL_EXERCISE_URL, CONN_SUPER_USER, CONN_SUPER_PWD);
             con.setAutoCommit(false);
 
-            String dropSchemaQuery = "DROP SCHEMA IF EXISTS " + schemaName + " CASCADE;";
-
-            PreparedStatement dropStmt = con.prepareStatement(dropSchemaQuery);
+            PreparedStatement dropStmt = con.prepareStatement("DROP SCHEMA IF EXISTS "+schemaName+" CASCADE;");
+            logger.info("Query for dropping schema: "+dropStmt);
             dropStmt.executeUpdate();
 
             dropStmt.close();
@@ -127,24 +126,14 @@ public class SQLResourceManager {
      * @throws DatabaseException if an SQLException occurs or the query does not contain "create table"
      */
     public void createTables(String schemaName, String query) throws DatabaseException {
-        logger.info("Creating tables in schema with prefix "+schemaName);
+        logger.info("Query for creating table: "+query);
         if (!query.toLowerCase().contains("create table")) {
             logger.warning("Not a crate-table-statement");
             throw new DatabaseException();
         }
-        createTable(schemaName + SUBMISSION_SUFFIX, query);
-        createTable(schemaName + DIAGNOSE_SUFFIX, query);
+        executeUpdate(schemaName + SUBMISSION_SUFFIX, query);
+        executeUpdate(schemaName + DIAGNOSE_SUFFIX, query);
         logger.info("Tables in schemas with prefix "+schemaName+" created");
-    }
-
-    /**
-     * executes the query for creating a table
-     * @param schemaName the schema name
-     * @param query the SQL query
-     * @throws DatabaseException if an SQLException occurs
-     */
-    public void createTable(String schemaName, String query) throws DatabaseException {
-            executeUpdate(schemaName, query);
     }
 
     /**
@@ -172,8 +161,8 @@ public class SQLResourceManager {
             con = DriverManager.getConnection(SQL_EXERCISE_URL+ JDBC_SCHEMA_OPTION + schemaName, CONN_SUPER_USER, CONN_SUPER_PWD);
             con.setAutoCommit(false);
 
-            String deleteQuery = "DROP TABLE IF EXISTS " + tableName + " CASCADE";
-            PreparedStatement deleteStmt = con.prepareStatement(deleteQuery);
+            PreparedStatement deleteStmt = con.prepareStatement("DROP TABLE IF EXISTS "+tableName+" CASCADE");
+            logger.info("Query for deleting table: "+deleteStmt);
             deleteStmt.executeUpdate();
 
             con.commit();
@@ -200,13 +189,13 @@ public class SQLResourceManager {
      * @throws DatabaseException if an SQLException occurs or the query does not contain "insert into"
      */
     public void insertDataSubmission(String schemaName, String query) throws DatabaseException {
-        logger.info("Inserting data into submission schema of "+schemaName);
+        logger.info("Query for inserting data: "+query);
         insertData(schemaName + SUBMISSION_SUFFIX, query);
         logger.info("Inserting data into submission schema of "+schemaName+" complete");
     }
 
     public void insertDataDiagnose(String schemaName, String query) throws DatabaseException {
-        logger.info("Inserting data into diagnose schema of "+schemaName);
+        logger.info("Query for inserting data: "+query);
         insertData(schemaName + DIAGNOSE_SUFFIX, query);
         logger.info("Inserting data into diagnose schema of "+schemaName+" complete");
     }
@@ -272,8 +261,9 @@ public class SQLResourceManager {
         logger.info("Fetching connection id for schema "+ schemaName);
         int connID = -1;
 
-        String connectionExistsQuery = "SELECT * FROM CONNECTIONS WHERE conn_string LIKE '%sql_exercises?currentSchema=" + schemaName + "';";
-        PreparedStatement connExistsStmt = con.prepareStatement(connectionExistsQuery);
+        PreparedStatement connExistsStmt = con.prepareStatement("SELECT * FROM CONNECTIONS WHERE conn_string LIKE ?");
+        connExistsStmt.setString(1, "%"+SQL_EXERCISE_DB+JDBC_SCHEMA_OPTION+schemaName+"%");
+        logger.info("Query for fetching connection:" +connExistsStmt);
         ResultSet connectionSet = connExistsStmt.executeQuery();
 
         if (connectionSet.next()) {
@@ -311,10 +301,12 @@ public class SQLResourceManager {
         maxID++;
         connID = maxID;
 
-        String createConnectionString = "INSERT INTO CONNECTIONS VALUES(" + connID + "," + "'" + SQL_BASE_URL + "/sql_exercises?currentSchema=" + schemaName + "'" + ", '" + CONN_SQL_USER + "' , '" + CONN_SQL_PWD + "')";
-        logger.info("Statement for creating connection: "+ createConnectionString);
-
-        PreparedStatement createConnectionStmt = con.prepareStatement(createConnectionString);
+        PreparedStatement createConnectionStmt = con.prepareStatement("INSERT INTO CONNECTIONS VALUES(?,?,?,?)");
+        createConnectionStmt.setInt(1, connID);
+        createConnectionStmt.setString(2, SQL_EXERCISE_URL+"?currentSchema="+schemaName);
+        createConnectionStmt.setString(3, CONN_SQL_USER);
+        createConnectionStmt.setString(4, CONN_SQL_PWD);
+        logger.info("Statement for creating connection: "+ createConnectionStmt);
         createConnectionStmt.executeUpdate();
 
 
@@ -334,12 +326,49 @@ public class SQLResourceManager {
      */
     public void createExerciseUtil(Connection con, int id, int submissionConnID, int diagnoseConnID, String solution) throws SQLException {
         logger.info("Creating exercise");
-        String createExerciseQuery = "INSERT INTO EXERCISES VALUES(" + id + ", " + submissionConnID + ", " + diagnoseConnID + ", '" + solution + "');";
-        logger.info("Statement for creating exercise: "+createExerciseQuery);
-        PreparedStatement createExerciseStmt = con.prepareStatement(createExerciseQuery);
+        PreparedStatement createExerciseStmt = con.prepareStatement("INSERT INTO EXERCISES VALUES(?,?,?,?);");
+        createExerciseStmt.setInt(1, id);
+        createExerciseStmt.setInt(2, submissionConnID);
+        createExerciseStmt.setInt(3, diagnoseConnID);
+        createExerciseStmt.setString(4, solution);
+        logger.info("Statement for creating exercise: "+createExerciseStmt);
         createExerciseStmt.executeUpdate();
-
         createExerciseStmt.close();
+    }
+    public int reserveExerciseID() throws DatabaseException {
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD);
+            con.setAutoCommit(false);
+
+            String fetchMaxIdQuery = "SELECT max(id) as id from exercises";
+            String insertQuery = "INSERT INTO EXERCISES VALUES(?, 1, 1, '-1')";
+            PreparedStatement stmt = con.prepareStatement(fetchMaxIdQuery);
+            ResultSet maxIdSet = stmt.executeQuery();
+            int maxId = -1;
+            if(maxIdSet.next()){
+                maxId = maxIdSet.getInt("id");
+            }else throw new DatabaseException();
+
+            maxId++;
+            stmt = con.prepareStatement(insertQuery);
+            stmt.setInt(1, maxId);
+            stmt.executeUpdate();
+
+            con.commit();
+            stmt.close();
+            con.close();
+            return maxId;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            try {
+                con.rollback();
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            throw new DatabaseException();
+        }
     }
 
     /**

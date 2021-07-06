@@ -4,6 +4,7 @@ import at.jku.dke.etutor.grading.ETutorGradingConstants;
 import at.jku.dke.etutor.grading.rest.dto.HTTPResponseDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceManager;
+import io.swagger.models.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +69,6 @@ public class ETutorSQLController {
     @PutMapping("/schema/{schemaName}/table")
     public ResponseEntity<HTTPResponseDTO> createTables(@PathVariable String schemaName, @RequestBody String queries){
         logger.info("Enter createTable/"+schemaName);
-        logger.info(queries);
         try {
             String[] queryArray = queries.split(";");
             for(String s: queryArray){
@@ -189,10 +189,29 @@ public class ETutorSQLController {
             return ResponseEntity.ok(new HTTPResponseDTO("Exercise deleted"));
         } catch (DatabaseException e) {
             e.printStackTrace();
-            logger.info("Exit deleteExercise with Status Code 200");
+            logger.info("Exit deleteExercise with Status Code 500");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not delete exercise"));
         }
     }
+
+
+    @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
+    @GetMapping("/exercise/reservation")
+    public ResponseEntity<HTTPResponseDTO> reserveExerciseID(){
+        logger.info("Enter exercise/reservation");
+        try {
+            int id = resourceManager.reserveExerciseID();
+            logger.info("Exit exercise/reservation with status 200 and id "+id);
+            return ResponseEntity.ok(new HTTPResponseDTO(""+id));
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            logger.info("Exit exercise/reservation with Status Code 500");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not reserve exercise"));
+        }
+    }
+
+
+
 
 
 
