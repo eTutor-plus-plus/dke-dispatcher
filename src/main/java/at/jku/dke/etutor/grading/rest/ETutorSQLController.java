@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Logger;
 
+/**
+ * Controller that handles requests regarding SQL exercise management
+ */
 @RestController
 @RequestMapping("/sql")
 public class ETutorSQLController {
@@ -182,7 +185,7 @@ public class ETutorSQLController {
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @DeleteMapping("/exercise/{id}")
     public ResponseEntity<HTTPResponseDTO> deleteExercise(@PathVariable int id)  {
-        logger.info("Enter deleteExercise/"+id);
+        logger.info("Enter deleteExercise() "+id);
         try {
             resourceManager.deleteExercise(id);
             logger.info("Exit deleteExercise with Status Code 200");
@@ -194,6 +197,10 @@ public class ETutorSQLController {
         }
     }
 
+    /**
+     * Fetches an available exercise id
+     * @return the exercise id
+     */
 
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @GetMapping("/exercise/reservation")
