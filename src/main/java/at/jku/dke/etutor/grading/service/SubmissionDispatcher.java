@@ -64,7 +64,7 @@ public class SubmissionDispatcher implements Runnable {
                 logger.info("Finished evaluating submission");
 
                 GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading);
-                gradingDTO.setResult(generateHTMLResult(evaluator, grading, analysis, submission));
+                gradingDTO.setResult(generateHTMLResult( analysis, submission));
                 if(grading.getPoints()<grading.getMaxPoints() || grading.getPoints() == 0) {
                     logger.info("Requesting report");
                     DefaultReport report = (DefaultReport) evaluator.report
@@ -103,9 +103,14 @@ public class SubmissionDispatcher implements Runnable {
         }
     }
 
+    /**
+     * Generates a specific Report according to the tasktype
+     * @param analysis
+     * @param submission
+     * @return
+     */
 
-
-    private String generateHTMLResult(Evaluator evaluator, Grading grading, Analysis analysis, Submission submission) {
+    private String generateHTMLResult(Analysis analysis, Submission submission) {
         if (submission.getPassedAttributes().get("action").equalsIgnoreCase("submit"))return null;
 
         StringBuilder result = new StringBuilder();
