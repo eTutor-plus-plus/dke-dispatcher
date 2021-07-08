@@ -118,7 +118,39 @@ public class SQLResourceManager {
             throw new DatabaseException();
         }
     }
+    public void deleteConnection(String schemaName) throws DatabaseException {
+        Connection con = null;
+        try{
+            con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD);
+            con.setAutoCommit(false);
 
+            int connId = fetchConnection(con, schemaName+"_submission");
+            PreparedStatement deleteExercisesStmt = con.prepareStatement("DELETE FROM exercises WHERE submission_db = ?");
+            deleteExercisesStmt.setInt(1, connId);
+            logger.info("Query for deleting exercises: "+deleteExercisesStmt);
+            deleteExercisesStmt.executeUpdate();
+
+
+            PreparedStatement deleteConnStmt = con.prepareStatement("DELETE FROM connections WHERE conn_string LIKE '%"+schemaName+"%'");
+            logger.info("Query for deleting connection: "+deleteConnStmt);
+            deleteConnStmt.executeUpdate();
+
+            con.commit();
+            con.close();
+            deleteConnStmt.close();
+            deleteExercisesStmt.close();
+        }catch (SQLException throwables) {
+            logger.warning("Could not delete connection for "+schemaName);
+            throwables.printStackTrace();
+            try {
+                con.rollback();
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            throw new DatabaseException();
+        }
+    }
     /**
      * Executes a query intended to create a table in the submission and diagnose schema. Checks if the query contains "create table"
      * @param schemaName the prefix identifying the schemas

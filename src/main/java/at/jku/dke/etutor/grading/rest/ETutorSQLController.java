@@ -62,7 +62,20 @@ public class ETutorSQLController {
 
     }
 
-
+    @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
+    @DeleteMapping("/schema/{schemaName}/connection")
+    public ResponseEntity<HTTPResponseDTO> deleteConnection(@PathVariable String schemaName){
+       logger.info("Enter: deleteConnection() "+schemaName);
+        try {
+            resourceManager.deleteConnection(schemaName);
+            logger.info("Exit: deleteConnection() with status 200");
+            return ResponseEntity.ok(new HTTPResponseDTO("Connection deleted"));
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+            logger.info("Exit: deleteConnection() with status 500");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not delete connection"));
+        }
+    }
     /**
      * Creates a table in the submission- and diagnose version of the  specified schema
      * @param schemaName the name of the schema where a table has to be created
