@@ -31,14 +31,14 @@ public class ETutorSQLController {
      */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @PutMapping("/schema/{schemaName}")
-    public ResponseEntity<HTTPResponseDTO> dropSchema(@PathVariable String schemaName){
-        logger.info("Enter: dropSchema()"+schemaName);
+    public ResponseEntity<HTTPResponseDTO> createSchema(@PathVariable String schemaName){
+        logger.info("Enter: createSchema()"+schemaName);
         try {
             new SQLResourceManager().createSchemas(schemaName);
-            logger.info("Exit: dropSchema() with Status Code 200");
+            logger.info("Exit: createSchema() with Status Code 200");
             return ResponseEntity.ok(new HTTPResponseDTO("Schema created"));
         } catch (DatabaseException | ClassNotFoundException e) {
-            logger.info("Exit: dropSchema() with Status Code 500");
+            logger.info("Exit: createSchema() with Status Code 500");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not create Schema"));
         }
     }
@@ -49,14 +49,14 @@ public class ETutorSQLController {
      */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @DeleteMapping("/schema/{schemaName}")
-    public ResponseEntity<HTTPResponseDTO> deleteSchema(@PathVariable String schemaName){
-        logger.info("Enter: deleteSchema()"+schemaName);
+    public ResponseEntity<HTTPResponseDTO> dropSchema(@PathVariable String schemaName){
+        logger.info("Enter: dropSchema()"+schemaName);
         try {
             resourceManager.deleteSchemas(schemaName);
-            logger.info("Exit: deleteSchema() with Status Code 200");
+            logger.info("Exit: dropSchema() with Status Code 200");
             return ResponseEntity.ok(new HTTPResponseDTO("Schema deleted"));
         } catch (DatabaseException e) {
-            logger.info("Exit: delete() with Status Code 500");
+            logger.info("Exit: dropSchema() with Status Code 500");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not delete schema"));
         }
 
