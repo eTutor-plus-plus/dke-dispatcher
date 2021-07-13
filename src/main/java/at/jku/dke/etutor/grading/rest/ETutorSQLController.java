@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.grading.rest;
 
 import at.jku.dke.etutor.grading.ETutorGradingConstants;
+import at.jku.dke.etutor.grading.rest.dto.DataDefinitionDTO;
 import at.jku.dke.etutor.grading.rest.dto.HTTPResponseDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceManager;
@@ -24,8 +25,34 @@ public class ETutorSQLController {
         this.logger= Logger.getLogger("at.jku.dke.etutor.sqlcontroller");
         this.resourceManager=resourceManager;
     }
+
+    @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
+    @PostMapping("/schema")
+    public ResponseEntity<HTTPResponseDTO> executeDDL(@RequestBody DataDefinitionDTO ddl){
+        logger.info("Enter executeDDL() for schema "+ddl.getSchemaName());
+        try {
+            resourceManager.deleteSchemas(ddl.getSchemaName());
+            resourceManager.createSchemas(ddl.getSchemaName());
+            for(String stmt : ddl.getCreateStatements()){
+                resourceManager.createTables(ddl.getSchemaName(), stmt.trim());
+            }
+            for(String stmt : ddl.getInsertStatementsSubmission()){
+                resourceManager.insertDataSubmission(ddl.getSchemaName(), stmt.trim());
+            }
+            for(String stmt : ddl.getInsertStatementsDiagnose()){
+                resourceManager.insertDataDiagnose(ddl.getSchemaName(), stmt.trim());
+            }
+            logger.info("Exit executeDDL() with Status 200");
+            return ResponseEntity.ok(new HTTPResponseDTO("DDL Executed"));
+        } catch (DatabaseException e) {
+            logger.info("Exit executeDDL() with Status 500");
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Execution of DDL failed"));
+        }
+    }
+
     /**
-     * Creates to schemas with the specified name and the submission-suffix and diagnose-suffix respectively
+     * Creates two schemas with the specified name and the submission-suffix and diagnose-suffix respectively
      * @param schemaName the schema to be created
      * @return
      */

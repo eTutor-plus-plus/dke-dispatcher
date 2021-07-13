@@ -106,6 +106,7 @@ public class SQLResourceManager {
             dropStmt.close();
             con.commit();
             con.close();
+
         } catch (SQLException throwables) {
             logger.warning("Could not delete schema "+schemaName);
             throwables.printStackTrace();
@@ -128,10 +129,10 @@ public class SQLResourceManager {
             PreparedStatement deleteExercisesStmt = con.prepareStatement("DELETE FROM exercises WHERE submission_db = ?");
             deleteExercisesStmt.setInt(1, connId);
             logger.info("Query for deleting exercises: "+deleteExercisesStmt);
-            deleteExercisesStmt.executeUpdate();
+            if(connId != -1) deleteExercisesStmt.executeUpdate();
 
 
-            PreparedStatement deleteConnStmt = con.prepareStatement("DELETE FROM connections WHERE conn_string LIKE '%"+schemaName+"%'");
+            PreparedStatement deleteConnStmt = con.prepareStatement("DELETE FROM connections WHERE conn_string LIKE '%?currentSchema="+schemaName+"_%'");
             logger.info("Query for deleting connection: "+deleteConnStmt);
             deleteConnStmt.executeUpdate();
 
@@ -161,7 +162,7 @@ public class SQLResourceManager {
         logger.info("Query for creating table: "+query);
         if (!query.toLowerCase().contains("create table")) {
             logger.warning("Not a crate-table-statement");
-            throw new DatabaseException();
+            return;
         }
         executeUpdate(schemaName + SUBMISSION_SUFFIX, query);
         executeUpdate(schemaName + DIAGNOSE_SUFFIX, query);
@@ -235,7 +236,7 @@ public class SQLResourceManager {
     public void insertData(String schemaName, String query) throws DatabaseException {
         if (!query.toLowerCase().contains("insert into")) {
             logger.warning("Not an insert-into-statement");
-            throw new DatabaseException();
+            return;
         }
         executeUpdate(schemaName, query);
     }
