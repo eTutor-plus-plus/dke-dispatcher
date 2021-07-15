@@ -120,7 +120,7 @@ public class ETutorSQLController {
      */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @PutMapping("/schema/{schemaName}/table")
-    public ResponseEntity<> createTables(@PathVariable String schemaName, @RequestBody String queries){
+    public ResponseEntity<String> createTables(@PathVariable String schemaName, @RequestBody String queries){
         logger.info("Enter: createTable() "+schemaName);
         try {
             String[] queryArray = queries.trim().split(";");
