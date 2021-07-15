@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.logging.Logger;
 
 /**
- * Controller that handles requests regarding SQL exercise management
+ * Controller that handles requests to manage SQL exercises
  */
 @RestController
 @RequestMapping("/sql")
@@ -26,9 +26,14 @@ public class ETutorSQLController {
         this.resourceManager=resourceManager;
     }
 
+    /**
+     * Creates a schema, tables and inserts data
+     * @param ddl the Object containing the statemetns
+     * @return ResponseEntity
+     */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @PostMapping("/schema")
-    public ResponseEntity<HTTPResponseDTO> executeDDL(@RequestBody DataDefinitionDTO ddl){
+    public ResponseEntity<String> executeDDL(@RequestBody DataDefinitionDTO ddl){
         logger.info("Enter executeDDL() for schema "+ddl.getSchemaName());
         try {
             resourceManager.deleteSchemas(ddl.getSchemaName());
@@ -43,11 +48,11 @@ public class ETutorSQLController {
                 resourceManager.insertDataDiagnose(ddl.getSchemaName(), stmt.trim());
             }
             logger.info("Exit executeDDL() with Status 200");
-            return ResponseEntity.ok(new HTTPResponseDTO("DDL Executed"));
+            return ResponseEntity.ok("DDL Executed");
         } catch (DatabaseException e) {
             logger.info("Exit executeDDL() with Status 500");
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Execution of DDL failed"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Execution of DDL failed");
         }
     }
 
@@ -58,15 +63,15 @@ public class ETutorSQLController {
      */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @PutMapping("/schema/{schemaName}")
-    public ResponseEntity<HTTPResponseDTO> createSchema(@PathVariable String schemaName){
+    public ResponseEntity<String> createSchema(@PathVariable String schemaName){
         logger.info("Enter: createSchema()"+schemaName);
         try {
             new SQLResourceManager().createSchemas(schemaName);
             logger.info("Exit: createSchema() with Status Code 200");
-            return ResponseEntity.ok(new HTTPResponseDTO("Schema created"));
+            return ResponseEntity.ok("Schema created");
         } catch (DatabaseException | ClassNotFoundException e) {
             logger.info("Exit: createSchema() with Status Code 500");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not create Schema"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not create Schema");
         }
     }
 
@@ -76,31 +81,36 @@ public class ETutorSQLController {
      */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @DeleteMapping("/schema/{schemaName}")
-    public ResponseEntity<HTTPResponseDTO> dropSchema(@PathVariable String schemaName){
+    public ResponseEntity<String> dropSchema(@PathVariable String schemaName){
         logger.info("Enter: dropSchema()"+schemaName);
         try {
             resourceManager.deleteSchemas(schemaName);
             logger.info("Exit: dropSchema() with Status Code 200");
-            return ResponseEntity.ok(new HTTPResponseDTO("Schema deleted"));
+            return ResponseEntity.ok("Schema deleted");
         } catch (DatabaseException e) {
             logger.info("Exit: dropSchema() with Status Code 500");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not delete schema"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not delete schema");
         }
 
     }
 
+    /**
+     * Deletes a connection
+     * @param schemaName the schemaName
+     * @return an ResponseEntity containing a wrapped message
+     */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @DeleteMapping("/schema/{schemaName}/connection")
-    public ResponseEntity<HTTPResponseDTO> deleteConnection(@PathVariable String schemaName){
+    public ResponseEntity<String> deleteConnection(@PathVariable String schemaName){
        logger.info("Enter: deleteConnection() "+schemaName);
         try {
             resourceManager.deleteConnection(schemaName);
             logger.info("Exit: deleteConnection() with status 200");
-            return ResponseEntity.ok(new HTTPResponseDTO("Connection deleted"));
+            return ResponseEntity.ok("Connection deleted");
         } catch (DatabaseException e) {
             e.printStackTrace();
             logger.info("Exit: deleteConnection() with status 500");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not delete connection"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not delete connection");
         }
     }
     /**
@@ -110,7 +120,7 @@ public class ETutorSQLController {
      */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @PutMapping("/schema/{schemaName}/table")
-    public ResponseEntity<HTTPResponseDTO> createTables(@PathVariable String schemaName, @RequestBody String queries){
+    public ResponseEntity<> createTables(@PathVariable String schemaName, @RequestBody String queries){
         logger.info("Enter: createTable() "+schemaName);
         try {
             String[] queryArray = queries.trim().split(";");
@@ -118,10 +128,10 @@ public class ETutorSQLController {
                 resourceManager.createTables(schemaName, s);
             }
             logger.info("Exit: createTable() with Status Code 200");
-            return ResponseEntity.ok(new HTTPResponseDTO("Tables Created"));
+            return ResponseEntity.ok("Tables Created");
         } catch (DatabaseException e) {
             logger.info("Exit: createTable() with Status Code 500");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not create tables"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not create tables");
         }
     }
 
@@ -151,7 +161,7 @@ public class ETutorSQLController {
      */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @PostMapping("/schema/{schemaName}/submission/data")
-    public ResponseEntity<HTTPResponseDTO> insertDataSubmission(@PathVariable String schemaName, @RequestBody String queries){
+    public ResponseEntity<String> insertDataSubmission(@PathVariable String schemaName, @RequestBody String queries){
         logger.info("Enter: insertDataSubmission()");
         try {
             String[] queryArray = queries.trim().split(";");
@@ -159,10 +169,10 @@ public class ETutorSQLController {
                 resourceManager.insertDataSubmission(schemaName, s);
             }
             logger.info("Exit: insertDataSubmission() with Status Code 200");
-            return ResponseEntity.ok(new HTTPResponseDTO("Data inserted"));
+            return ResponseEntity.ok("Data inserted");
         } catch (DatabaseException e) {
             logger.info("Exit: insertDataSubmission() with Status Code 500");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not insert data"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not insert data");
         }
     }
     /**
@@ -172,7 +182,7 @@ public class ETutorSQLController {
      */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @PostMapping("/schema/{schemaName}/diagnose/data")
-    public ResponseEntity<HTTPResponseDTO> insertDataDiagnose(@PathVariable String schemaName, @RequestBody String queries){
+    public ResponseEntity<String> insertDataDiagnose(@PathVariable String schemaName, @RequestBody String queries){
         logger.info("Enter: insertDataDiagnose()");
         try {
             String[] queryArray = queries.trim().split(";");
@@ -180,10 +190,10 @@ public class ETutorSQLController {
                 resourceManager.insertDataDiagnose(schemaName, s);
             }
             logger.info("Exit: insertDataDiagnose() with Status Code 200");
-            return ResponseEntity.ok(new HTTPResponseDTO("Insert completed"));
+            return ResponseEntity.ok("Insert completed");
         } catch (DatabaseException e) {
             logger.info("Exit: insertDataDiagnose() with Status Code 500");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not insert data"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not insert data");
         }
     }
 
@@ -195,16 +205,16 @@ public class ETutorSQLController {
      */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @PutMapping("/exercise/{schemaName}/{id}")
-    public ResponseEntity<HTTPResponseDTO> createExercise(@PathVariable int id, @PathVariable String schemaName, @RequestBody String solution) {
+    public ResponseEntity<String> createExercise(@PathVariable int id, @PathVariable String schemaName, @RequestBody String solution) {
         logger.info("Enter: createExercise() "+id);
         try {
             resourceManager.createExercise(id, schemaName, solution);
             logger.info("Exit: createExercise() "+id+" with Status Code 200");
-            return ResponseEntity.ok(new HTTPResponseDTO("Exercise created"));
+            return ResponseEntity.ok("Exercise created");
         } catch (DatabaseException e) {
             logger.info("Exit: createExercise() "+id+" with Status Code 500");
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not create exercise"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not create exercise");
         }
     }
 
@@ -214,16 +224,16 @@ public class ETutorSQLController {
      */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @DeleteMapping("/exercise/{id}")
-    public ResponseEntity<HTTPResponseDTO> deleteExercise(@PathVariable int id)  {
+    public ResponseEntity<String> deleteExercise(@PathVariable int id)  {
         logger.info("Enter: deleteExercise(): "+id);
         try {
             resourceManager.deleteExercise(id);
             logger.info("Exit: deleteExercise() with Status Code 200");
-            return ResponseEntity.ok(new HTTPResponseDTO("Exercise deleted"));
+            return ResponseEntity.ok("Exercise deleted");
         } catch (DatabaseException e) {
             e.printStackTrace();
             logger.info("Exit: deleteExercise() with Status Code 500");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not delete exercise"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not delete exercise");
         }
     }
 
@@ -234,16 +244,16 @@ public class ETutorSQLController {
 
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @GetMapping("/exercise/reservation")
-    public ResponseEntity<HTTPResponseDTO> reserveExerciseID(){
+    public ResponseEntity<String> reserveExerciseID(){
         logger.info("Enter: reserveExercise() ");
         try {
             int id = resourceManager.reserveExerciseID();
             logger.info("Exit: reserveExercise() with status 200 and id "+id);
-            return ResponseEntity.ok(new HTTPResponseDTO(""+id));
+            return ResponseEntity.ok(""+id);
         } catch (DatabaseException e) {
             e.printStackTrace();
             logger.info("Exit: reserveExercise() with Status Code 500");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HTTPResponseDTO("Could not reserve exercise"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not reserve exercise");
         }
     }
 }
