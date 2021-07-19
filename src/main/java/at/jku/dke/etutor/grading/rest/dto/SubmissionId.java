@@ -29,21 +29,13 @@ public class SubmissionId {
     }
 
     /**
-     * takes the submission and generates a unique uuid depending on the byte[] of the submission
-     * (same submissions produce same uuid)
+     * takes the submission and generates a unique uuid.
      * sets the submissionId for the Submission-Object and persists it using the corresponding JpaRepository
      * @param submission The submission from the student
      * @return a new SubmissionId Instance which wraps the generated ID
      * @throws IOException
      */
     public static SubmissionId createId(Submission submission) throws IOException {
-        /*
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(bos);
-        oos.writeObject(submission);
-        oos.flush();
-        byte[] data = bos.toByteArray();
-         */
         UUID uuid = UUID.randomUUID();
         submission.setSubmissionId(uuid.toString());
         return new SubmissionId(uuid.toString());

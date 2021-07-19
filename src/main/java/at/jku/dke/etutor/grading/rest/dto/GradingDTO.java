@@ -20,7 +20,7 @@ public class GradingDTO {
     @Column(length = 4192)
     private String result;
 
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL)
     private ReportDTO report;
 
     public GradingDTO(){}

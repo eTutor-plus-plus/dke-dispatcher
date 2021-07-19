@@ -5,6 +5,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 
@@ -12,7 +13,7 @@ import java.util.Locale;
 /**
  * Maps the tasktypes to the modules
  */
-@Component
+@Service
 public class ModuleManager{
     private static SQLEvaluator sqlEvaluator;
 
@@ -20,13 +21,13 @@ public class ModuleManager{
         sqlEvaluator = new SQLEvaluator();
     }
 
-    public static Evaluator getEvaluator(String tasktype){
+    public Evaluator getEvaluator(String tasktype) throws Exception{
         switch (tasktype) {
             case  "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#SQLTask":
                 return sqlEvaluator;
             case  "sql":
                     return sqlEvaluator;
         }
-        return null;
+        throw new Exception("Could not find evaluator");
     }
 }

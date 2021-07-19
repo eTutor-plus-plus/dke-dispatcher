@@ -30,15 +30,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @org.springframework.web.bind.annotation.RestController
 @org.springframework.web.bind.annotation.RequestMapping("/submission")
 public class ETutorSubmissionController {
-    private Logger logger;
-    private SubmissionRepository submissionRepository;
-    private GradingDTORepository gradingDTORepository;
-    private ReportDTORepository reportDTORepository;
-    public ETutorSubmissionController(SubmissionRepository submissionRepository, GradingDTORepository gradingDTORepository, ReportDTORepository reportDTORepository){
+    private final Logger logger;
+    private final SubmissionDispatcher submissionDispatcherService;
+
+    public ETutorSubmissionController(SubmissionDispatcher submissionDispatcherService){
         this.logger = Logger.getLogger("at.jku.dke.etutor.grading");
-        this.submissionRepository=submissionRepository;
-        this.gradingDTORepository = gradingDTORepository;
-        this.reportDTORepository = reportDTORepository;
+        this.submissionDispatcherService = submissionDispatcherService;
     }
 
     /**
@@ -52,15 +49,13 @@ public class ETutorSubmissionController {
     @PostMapping("")
     public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody Submission submission) throws JsonProcessingException {
         logger.info("Submission received");
-        logger.info(new ObjectMapper().writeValueAsString(submission));
         SubmissionId submissionId = new SubmissionId("-1");
         try{
             logger.info("Calculating submission-ID");
             submissionId = SubmissionId.createId(submission);
             logger.info("Finished calculating submission-ID: " + submissionId.getSubmissionId());
 
-            Thread t = new Thread(new SubmissionDispatcher(submission));
-            t.start();
+           submissionDispatcherService.run(submission);
 
             return new ResponseEntity<>(EntityModel.of(submissionId,
                     linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("grading")),

@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.grading.rest.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.stereotype.Component;
 
 
@@ -15,6 +16,7 @@ import java.util.Map;
  *  Parameters are corresponding to the modules implementation of the core-interfaces (see package core/evaluation).
  */
 @Entity
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Submission implements Serializable {
     @Id
     private String submissionId;

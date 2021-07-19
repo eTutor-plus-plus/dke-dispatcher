@@ -1,19 +1,24 @@
 package at.jku.dke.etutor.grading.service;
 
 
+import at.jku.dke.etutor.core.evaluation.Grading;
+import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
+import at.jku.dke.etutor.grading.rest.dto.ReportDTO;
+import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
 import at.jku.dke.etutor.grading.rest.repositories.ReportDTORepository;
 import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  *Manages the repositories for the entities
  */
-@Component
+@Service
 public class RepositoryManager {
-    private static GradingDTORepository gradingRepository;
-    private static SubmissionRepository submissionRepository;
-    private static ReportDTORepository reportRepository;
+    private  GradingDTORepository gradingRepository;
+    private  SubmissionRepository submissionRepository;
+    private  ReportDTORepository reportRepository;
 
     public RepositoryManager(GradingDTORepository gradingRepo,
                              SubmissionRepository submissionRepo, ReportDTORepository reportRepo){
@@ -22,27 +27,39 @@ public class RepositoryManager {
         reportRepository = reportRepo;
     }
 
-    public static GradingDTORepository getGradingRepository() {
+    public  void persistSubmission(Submission submission){
+        submissionRepository.save(submission);
+    }
+
+    public  void persistGrading(GradingDTO grading){
+        gradingRepository.save(grading);
+    }
+
+    public  void persistReport(ReportDTO report){
+        reportRepository.save(report);
+    }
+
+    public  GradingDTORepository getGradingRepository() {
         return gradingRepository;
     }
 
-    public static void setGradingRepository(GradingDTORepository gradingRepository) {
-        RepositoryManager.gradingRepository = gradingRepository;
+    public  void setGradingRepository(GradingDTORepository gradingRepository) {
+        this.gradingRepository = gradingRepository;
     }
 
-    public static SubmissionRepository getSubmissionRepository() {
+    public  SubmissionRepository getSubmissionRepository() {
         return submissionRepository;
     }
 
-    public static void setSubmissionRepository(SubmissionRepository submissionRepository) {
-        RepositoryManager.submissionRepository = submissionRepository;
+    public  void setSubmissionRepository(SubmissionRepository submissionRepository) {
+        this.submissionRepository = submissionRepository;
     }
 
-    public static ReportDTORepository getReportRepository() {
+    public  ReportDTORepository getReportRepository() {
         return reportRepository;
     }
 
-    public static void setReportRepository(ReportDTORepository reportRepository) {
-        RepositoryManager.reportRepository = reportRepository;
+    public  void setReportRepository(ReportDTORepository reportRepository) {
+        this.reportRepository = reportRepository;
     }
 }
