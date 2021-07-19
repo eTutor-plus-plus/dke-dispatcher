@@ -73,7 +73,7 @@ public class SQLResourceManager {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            throw new DatabaseException();
+            throw new DatabaseException(throwables);
         }
     }
 
@@ -116,7 +116,7 @@ public class SQLResourceManager {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            throw new DatabaseException();
+            throw new DatabaseException(throwables);
         }
     }
     public void deleteConnection(String schemaName) throws DatabaseException {
@@ -149,7 +149,7 @@ public class SQLResourceManager {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            throw new DatabaseException();
+            throw new DatabaseException(throwables);
         }
     }
     /**
@@ -210,7 +210,7 @@ public class SQLResourceManager {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            throw new DatabaseException();
+            throw new DatabaseException(throwables);
         }
 
     }
@@ -279,7 +279,7 @@ public class SQLResourceManager {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            throw new DatabaseException();
+            throw new DatabaseException(throwables);
         }
     }
 
@@ -381,7 +381,7 @@ public class SQLResourceManager {
             int maxId = -1;
             if(maxIdSet.next()){
                 maxId = maxIdSet.getInt("id");
-            }else throw new DatabaseException();
+            }else throw new DatabaseException("Internal Error: could not assign exercise id");
 
             maxId++;
             stmt = con.prepareStatement(insertQuery);
@@ -400,7 +400,7 @@ public class SQLResourceManager {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            throw new DatabaseException();
+            throw new DatabaseException(throwables);
         }
     }
 
@@ -430,7 +430,7 @@ public class SQLResourceManager {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            throw new DatabaseException();
+            throw new DatabaseException(throwables);
         }
 
     }
@@ -461,7 +461,7 @@ public class SQLResourceManager {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            throw new DatabaseException();
+            throw new DatabaseException(throwables);
         }
     }
 }
