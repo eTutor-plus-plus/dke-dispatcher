@@ -4,7 +4,6 @@ package at.jku.dke.etutor.grading;
 import at.jku.dke.etutor.grading.rest.ETutorGradingController;
 import at.jku.dke.etutor.grading.rest.ETutorSubmissionController;
 import at.jku.dke.etutor.grading.rest.ETutorSQLController;
-import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.service.ModuleManager;
 import at.jku.dke.etutor.grading.service.RepositoryManager;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
@@ -68,9 +67,9 @@ public class ETutorGradingApplication {
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(10);
-        executor.setMaxPoolSize(10);
+        executor.setMaxPoolSize(100);
         executor.setQueueCapacity(500);
-        executor.setThreadNamePrefix("SubmissionDispatcher-");
+        executor.setThreadNamePrefix("Dispatcher-");
         executor.initialize();
         return executor;
     }
