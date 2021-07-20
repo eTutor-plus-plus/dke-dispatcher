@@ -1,10 +1,6 @@
 package at.jku.dke.etutor.grading.rest.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.UUID;
 
 /**
@@ -29,8 +25,7 @@ public class SubmissionId {
     }
 
     /**
-     * takes the submission and generates a unique uuid.
-     * sets the submissionId for the Submission-Object and persists it using the corresponding JpaRepository
+     * Factory method that takes the submission and generates a unique uuid.
      * @param submission The submission from the student
      * @return a new SubmissionId Instance which wraps the generated ID
      * @throws IOException

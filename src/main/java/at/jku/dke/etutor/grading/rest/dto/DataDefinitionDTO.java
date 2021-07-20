@@ -3,7 +3,7 @@ package at.jku.dke.etutor.grading.rest.dto;
 import java.util.List;
 
 /**
- * Represents the statements required to create schemas, tables and populate them with data
+ * Represents the statements required to create SQL- schemas, tables and populate them with data
  */
 public class DataDefinitionDTO {
     List<String> createStatements;

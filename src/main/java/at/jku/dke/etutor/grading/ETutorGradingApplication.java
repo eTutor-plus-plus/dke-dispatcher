@@ -1,6 +1,9 @@
 package at.jku.dke.etutor.grading;
 
 
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.grading.config.AsyncConfiguration;
+import at.jku.dke.etutor.grading.config.AsyncProperties;
 import at.jku.dke.etutor.grading.rest.ETutorGradingController;
 import at.jku.dke.etutor.grading.rest.ETutorSubmissionController;
 import at.jku.dke.etutor.grading.rest.ETutorSQLController;
@@ -9,6 +12,7 @@ import at.jku.dke.etutor.grading.service.RepositoryManager;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.hateoas.client.LinkDiscoverer;
@@ -38,7 +42,9 @@ import java.util.concurrent.Executor;
         RepositoryManager.class,
         ETutorGradingApplication.class,
         SubmissionDispatcher.class,
+        AsyncConfiguration.class
 })
+@EnableConfigurationProperties({AsyncProperties.class, ApplicationProperties.class})
 @SpringBootApplication
 @EnableAsync
 public class ETutorGradingApplication {
@@ -61,17 +67,6 @@ public class ETutorGradingApplication {
         List<LinkDiscoverer> plugins = new ArrayList<>();
         plugins.add(new CollectionJsonLinkDiscoverer());
         return new LinkDiscoverers(SimplePluginRegistry.create(plugins));
-    }
-
-    @Bean(name="asyncExecutor")
-    public Executor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(10);
-        executor.setMaxPoolSize(100);
-        executor.setQueueCapacity(500);
-        executor.setThreadNamePrefix("Dispatcher-");
-        executor.initialize();
-        return executor;
     }
 
     public void addResourceHandlers(ResourceHandlerRegistry registry)

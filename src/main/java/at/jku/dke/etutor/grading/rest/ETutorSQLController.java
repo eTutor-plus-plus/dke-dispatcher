@@ -1,11 +1,11 @@
 package at.jku.dke.etutor.grading.rest;
 
 import at.jku.dke.etutor.grading.ETutorGradingConstants;
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.dto.DataDefinitionDTO;
-import at.jku.dke.etutor.grading.rest.dto.HTTPResponseDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceManager;
-import io.swagger.models.Response;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +19,17 @@ import java.util.logging.Logger;
 @RequestMapping("/sql")
 public class ETutorSQLController {
     private Logger logger;
-    private SQLResourceManager resourceManager;
+    private  SQLResourceManager resourceManager;
+    private  ApplicationProperties properties;
+    
+    @Value("$(properties.getCorsPolicy()")
+    private  final String CORS_POLICY;
 
-    public ETutorSQLController(SQLResourceManager resourceManager){
+    public ETutorSQLController(SQLResourceManager resourceManager, ApplicationProperties properties){
         this.logger= Logger.getLogger("at.jku.dke.etutor.sqlcontroller");
         this.resourceManager=resourceManager;
+        this.properties=properties;
+        this.CORS_POLICY=properties.getCorsPolicy();
     }
 
     /**
