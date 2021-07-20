@@ -22,14 +22,10 @@ public class ETutorSQLController {
     private  SQLResourceManager resourceManager;
     private  ApplicationProperties properties;
     
-    @Value("$(properties.getCorsPolicy()")
-    private  final String CORS_POLICY;
-
     public ETutorSQLController(SQLResourceManager resourceManager, ApplicationProperties properties){
         this.logger= Logger.getLogger("at.jku.dke.etutor.sqlcontroller");
         this.resourceManager=resourceManager;
         this.properties=properties;
-        this.CORS_POLICY=properties.getCorsPolicy();
     }
 
     /**
@@ -72,10 +68,10 @@ public class ETutorSQLController {
     public ResponseEntity<String> createSchema(@PathVariable String schemaName){
         logger.info("Enter: createSchema()"+schemaName);
         try {
-            new SQLResourceManager().createSchemas(schemaName);
+           resourceManager.createSchemas(schemaName);
             logger.info("Exit: createSchema() with Status Code 200");
             return ResponseEntity.ok("Schema created");
-        } catch (DatabaseException | ClassNotFoundException e) {
+        } catch (DatabaseException  e) {
             logger.info("Exit: createSchema() with Status Code 500");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }

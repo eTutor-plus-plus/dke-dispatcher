@@ -1,21 +1,44 @@
 package at.jku.dke.etutor.modules.sql;
 
 
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import org.springframework.stereotype.Service;
+
+@Service
 public class SQLConstants {
-	
-	public static final String CONN_PWD = "sql";
+	public static ApplicationProperties properties;
 
-	public static final String CONN_USER = "sql";
+	public SQLConstants(ApplicationProperties properties){
+		SQLConstants.properties = properties;
+		CONN_PWD=properties.getSql().getConnPwd();
+		CONN_USER=properties.getSql().getConnUser();
+		CONN_URL_BASE=properties.getSql().getConnBaseUrl();
+		CONN_URL=properties.getSql().getConnUrl();
+		SUBMISSION_SUFFIX=properties.getSql().getSubmissionSuffix();
+		DIAGNOSE_SUFFIX=properties.getSql().getDiagnoseSuffix();
+		EXERCISE_DB=properties.getSql().getExerciseDatabase();
+		JDBC_DRIVER=properties.getGrading().getJDBCDriver();
+	}
 
-	public static final String CONN_URL_BASE = "jdbc:postgresql://localhost:5433";
+	public static   String CONN_PWD;
 
-	public static final String CONN_URL = CONN_URL_BASE+"/sql";
+	public static  String CONN_USER;
 
-	public static final String SUBMISSION_SUFFIX = "_submission";
+	public static  String CONN_URL_BASE;
 
-	public static final String DIAGNOSE_SUFFIX = "_diagnose";
+	public static  String CONN_URL;
 
-	public static final String EXERCISE_DB = "sql_exercises";
+	public static  String SUBMISSION_SUFFIX;
+
+	public static  String DIAGNOSE_SUFFIX;
+
+	public static  String EXERCISE_DB;
+
+	public static String JDBC_DRIVER;
+
+
+
+
 
 	// USER INTERFACE ETUTOR-CORE CONSTANTS
 	public static final String ATTR_USER_ID = "userID"; // CoreConstants.ATTR_USER_ID

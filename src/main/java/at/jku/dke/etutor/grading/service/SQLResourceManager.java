@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.ETutorGradingConstants;
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
 import org.springframework.stereotype.Service;
 
@@ -9,23 +10,37 @@ import java.util.logging.Logger;
 
 @Service
 public class SQLResourceManager {
-    private static final String SQL_BASE_URL = SQLConstants.CONN_URL_BASE;
-    private static final String SQL_ADMINISTRATION_URL = SQLConstants.CONN_URL;
-    private static final String SQL_EXERCISE_DB = SQLConstants.EXERCISE_DB;
-    private static final String SQL_EXERCISE_URL = SQL_BASE_URL+"/"+SQL_EXERCISE_DB;
-    private static final String CONN_SQL_USER = SQLConstants.CONN_USER;
-    private static final String CONN_SQL_PWD = SQLConstants.CONN_PWD;
-    private static final String CONN_SUPER_USER = ETutorGradingConstants.CONN_USER;
-    private static final String CONN_SUPER_PWD = ETutorGradingConstants.CONN_PWD;
-    private static final String SUBMISSION_SUFFIX = SQLConstants.SUBMISSION_SUFFIX;
-    private static final String DIAGNOSE_SUFFIX = SQLConstants.DIAGNOSE_SUFFIX;
-    private static final String JDBC_SCHEMA_OPTION = "?currentSchema=";
+    private final ApplicationProperties properties;
+
+    private String SQL_BASE_URL;
+    private String SQL_ADMINISTRATION_URL;
+    private String SQL_EXERCISE_DB;
+    private String SQL_EXERCISE_URL;
+    private String CONN_SQL_USER;
+    private String CONN_SQL_PWD;
+    private String CONN_SUPER_USER;
+    private String CONN_SUPER_PWD;
+    private String SUBMISSION_SUFFIX;
+    private String DIAGNOSE_SUFFIX;
+    private String JDBC_SCHEMA_OPTION = "?currentSchema=";
 
     private Logger logger;
 
-    public SQLResourceManager() throws ClassNotFoundException {
-        Class.forName("org.postgresql.Driver");
+    public SQLResourceManager(ApplicationProperties properties) throws ClassNotFoundException {
+        Class.forName(properties.getGrading().getJDBCDriver());
         this.logger= Logger.getLogger("at.jku.dke.etutor.sqlexercisemanager");
+        this.properties=properties;
+
+        SQL_BASE_URL=properties.getSql().getConnBaseUrl();
+        SQL_ADMINISTRATION_URL=properties.getSql().getConnUrl();
+        SQL_EXERCISE_DB=properties.getSql().getExerciseDatabase();
+        SQL_EXERCISE_URL= SQL_BASE_URL+"/"+SQL_EXERCISE_DB;
+        CONN_SQL_USER=properties.getSql().getConnUser();
+        CONN_SQL_PWD=properties.getSql().getConnPwd();
+        SUBMISSION_SUFFIX=properties.getSql().getSubmissionSuffix();
+        DIAGNOSE_SUFFIX=properties.getSql().getDiagnoseSuffix();
+        CONN_SUPER_USER=properties.getGrading().getConnSuperUser();
+        CONN_SUPER_PWD=properties.getGrading().getConnSuperPwd();
     }
 
     /**

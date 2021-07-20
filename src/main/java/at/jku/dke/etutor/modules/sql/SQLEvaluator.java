@@ -132,7 +132,7 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 		try{
 			//ESTABLISHING CONNECTION TO SQL DATABASE
 			//ks java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-			Class.forName("org.postgresql.Driver");
+			Class.forName(SQLConstants.JDBC_DRIVER);
 			conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
 			conn.setAutoCommit(true);
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE

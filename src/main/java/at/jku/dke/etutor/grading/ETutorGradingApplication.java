@@ -3,13 +3,13 @@ package at.jku.dke.etutor.grading;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.config.AsyncConfiguration;
-import at.jku.dke.etutor.grading.config.AsyncProperties;
 import at.jku.dke.etutor.grading.rest.ETutorGradingController;
 import at.jku.dke.etutor.grading.rest.ETutorSubmissionController;
 import at.jku.dke.etutor.grading.rest.ETutorSQLController;
 import at.jku.dke.etutor.grading.service.ModuleManager;
 import at.jku.dke.etutor.grading.service.RepositoryManager;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
+import at.jku.dke.etutor.modules.sql.SQLConstants;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -20,7 +20,6 @@ import org.springframework.hateoas.client.LinkDiscoverers;
 import org.springframework.hateoas.mediatype.collectionjson.CollectionJsonLinkDiscoverer;
 import org.springframework.plugin.core.SimplePluginRegistry;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -30,7 +29,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 
 
 @EnableSwagger2
@@ -42,9 +40,10 @@ import java.util.concurrent.Executor;
         RepositoryManager.class,
         ETutorGradingApplication.class,
         SubmissionDispatcher.class,
-        AsyncConfiguration.class
+        AsyncConfiguration.class,
+        SQLConstants.class
 })
-@EnableConfigurationProperties({AsyncProperties.class, ApplicationProperties.class})
+@EnableConfigurationProperties({ApplicationProperties.class})
 @SpringBootApplication
 @EnableAsync
 public class ETutorGradingApplication {

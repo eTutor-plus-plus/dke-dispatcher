@@ -9,20 +9,19 @@ import java.util.concurrent.Executor;
 
 @Configuration
 public class AsyncConfiguration {
+    private ApplicationProperties applicationProperties;
 
-    private AsyncProperties properties;
-
-    public AsyncConfiguration(AsyncProperties properties){
-        this.properties=properties;
+    public AsyncConfiguration( ApplicationProperties applicationProperties){
+        this.applicationProperties=applicationProperties;
     }
 
     @Bean(name="asyncExecutor")
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(properties.getCorePoolSize());
-        executor.setMaxPoolSize(properties.getMaxPoolSize());
-        executor.setQueueCapacity(properties.getQueueCapacity());
-        executor.setThreadNamePrefix(properties.getThreadNamePrefix());
+        executor.setCorePoolSize(applicationProperties.getAsync().getCorePoolSize());
+        executor.setMaxPoolSize(applicationProperties.getAsync().getMaxPoolSize());
+        executor.setQueueCapacity(applicationProperties.getAsync().getQueueCapacity());
+        executor.setThreadNamePrefix(applicationProperties.getAsync().getThreadNamePrefix());
         executor.initialize();
         return executor;
     }

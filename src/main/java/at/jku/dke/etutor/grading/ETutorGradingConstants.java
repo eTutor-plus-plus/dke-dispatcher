@@ -1,7 +1,12 @@
 package at.jku.dke.etutor.grading;
 
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
+
 public class ETutorGradingConstants {
-    public static final String CONN_USER = "etutor";
-    public static final String CONN_PWD = "etutor";
+    private ApplicationProperties properties;
+    public ETutorGradingConstants(ApplicationProperties properties){
+        this.properties=properties;
+       // ETutorGradingConstants.CORS_POLICY=properties.getGrading().getCorsPolicy();
+    }
     public static final String CORS_POLICY = "*";
 }
