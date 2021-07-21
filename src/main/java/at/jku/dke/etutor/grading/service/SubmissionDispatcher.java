@@ -125,10 +125,8 @@ public class SubmissionDispatcher  {
             logger.info("Saving grading to database");
             repositoryManager.persistGrading(gradingDTO);
             logger.info("Finished saving grading to database");
-            return;
         }catch(Exception e){
             logger.log(Level.SEVERE, "Could not save grading");
-            return;
         }
     }
     /**

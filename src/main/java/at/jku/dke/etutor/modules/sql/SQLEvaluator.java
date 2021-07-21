@@ -26,6 +26,9 @@ import at.jku.dke.etutor.modules.sql.report.SQLReporter;
 import at.jku.dke.etutor.modules.sql.report.SQLReporterConfig;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementation of the Evaluator Interface for SQL Submissions
+ */
 @Service
 public class SQLEvaluator implements Evaluator {
 
@@ -42,20 +45,21 @@ public class SQLEvaluator implements Evaluator {
 		}
 	}
 
+	/**
+	 * Analyzes the submission
+	 * @param exerciseID the exercise id
+	 * @param userID the user id
+	 * @param passedAttributes the passed attributes
+	 * @param passedParameters the passed parameters
+	 * @return the Analysis
+	 * @throws Exception if an error occurs
+	 */
 	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
 		logger.info("exerciseID: " + exerciseID);
-		logger.info("passedAttributes (" + passedAttributes.size() + ")");
-		for (String key: passedAttributes.keySet()) {
-			logger.info("  key: "+key+" value: " + passedAttributes.get(key));
-		}
-		logger.info("passedParameters (" + passedParameters.size() + ")");
-		for (String key: passedParameters.keySet()) {
-			logger.info("  key: "+key+" value: " + passedParameters.get(key));
-		}
+		logPassedAttributes(passedAttributes, passedParameters);
 		
 		String action;
 		String message;
-		String submission;
 		SQLAnalysis analysis;
 		SQLAnalyzerConfig analyzerConfig;
 		Iterator<SQLCriterionAnalysis> criterionAnalysesIterator;
@@ -86,16 +90,17 @@ public class SQLEvaluator implements Evaluator {
 		ResultSet rset = null;
 		Connection conn = null;
 
-		String correctQuery = null;
-		String referenceConnPwd = null;
-		String referenceConnString = null;
-		String referenceConnUser = null;
+		String correctQuery = "";
+		String referenceConnPwd = "";
+		String referenceConnString = "";
+		String referenceConnUser = "";
 
 		try{
 			//ESTABLISHING CONNECTION TO SQL DATABASE
 			Class.forName(SQLConstants.JDBC_DRIVER);
 			conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
 			conn.setAutoCommit(true);
+
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE
 			query = "";
 
@@ -125,6 +130,7 @@ public class SQLEvaluator implements Evaluator {
 				referenceConnPwd = rset.getString("conn_pwd");				
 				referenceConnString = rset.getString("conn_string");
 			}
+
 			//ESTABLISHING CONNECTION TO EXERCISE SPECIFIC REFERENCE DATABASE
 
 			this.logger.log(Level.INFO,referenceConnString + " - " + referenceConnUser + " - " + referenceConnPwd);
@@ -166,7 +172,7 @@ public class SQLEvaluator implements Evaluator {
 					conn.close();
 				}
 			} catch (SQLException e){
-				message = new String();
+				message ="";
 				message = message.concat("Stopped analysis due to errors. ");
 				this.logger.log(Level.SEVERE, message);
 				throw e;
@@ -201,12 +207,14 @@ public class SQLEvaluator implements Evaluator {
 		analyzerConfig.setConnection(referenceConn);
 		analyzerConfig.setCorrectQuery(correctQuery.replaceAll(";"," "));
 
+		// Analyzing the submission
 		SQLAnalysis sqlAnalysis;
 		SQLAnalyzer analyzer = new SQLAnalyzer();
 		sqlAnalysis = analyzer.analyze(analysis.getSubmission(), analyzerConfig);
 		sqlAnalysis.setSubmission(analysis.getSubmission());
 		sqlAnalysis.setSubmissionSuitsSolution(true);
-		//code copied from SQLReporter (2005-10-24, g.n.)
+
+		// Iterating over SQlCriterionAnalyses to determine of submission is correct
 		criterionAnalysesIterator = sqlAnalysis.iterCriterionAnalyses();
 		while (criterionAnalysesIterator.hasNext()) {
 			criterionAnalysis = criterionAnalysesIterator.next();
@@ -218,17 +226,19 @@ public class SQLEvaluator implements Evaluator {
 		return sqlAnalysis;
 	}
 
-	public Grading grade(Analysis analysis, int maxPoints, Map passedAttributes, Map passedParameters) throws Exception {
+	/**
+	 * Grades the submission according to the analysis
+	 * @param analysis the analysis
+	 * @param maxPoints the maxPoints
+	 * @param passedAttributes the passed attributes
+	 * @param passedParameters the passed parameters
+	 * @return the Grading
+	 * @throws Exception if an error occurs
+	 */
+	public Grading grade(Analysis analysis, int maxPoints, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
 		logger.info("analysis: " + analysis);
 		logger.info("maxPoints: " + maxPoints);
-		logger.info("passedAttributes (" + passedAttributes.size() + ")");
-		for (Object key: passedAttributes.keySet()) {
-			logger.info("  key: "+key+" value: " + passedAttributes.get(key));
-		}
-		logger.info("passedParameters (" + passedParameters.size() + ")");
-		for (Object key: passedParameters.keySet()) {
-			logger.info("  key: "+key+" value: " + passedParameters.get(key));
-		}
+		logPassedAttributes(passedAttributes, passedParameters);
 		
 		SQLGrader grader;
 		DefaultGrading grading;
@@ -237,23 +247,14 @@ public class SQLEvaluator implements Evaluator {
 
 		String action;
 		String message;
-		Object action_Param;
+		String action_Param;
 
 		grader = new SQLGrader();
 		grading = new DefaultGrading();
 		graderConfig = new SQLGraderConfig();
 		action_Param = passedAttributes.get("action");
 
-		if ((action_Param == null) || (!(action_Param instanceof String))){
-			message = new String();
-			message = message.concat("Stopped grading due to errors. ");
-			message = message.concat("Can not utilize evaluation action parameter.");
-			
-			this.logger.log(Level.SEVERE, message);
-			throw new IllegalArgumentException(message);
-		}
-		
-		action = (String)action_Param;
+		action = action_Param;
 
 		//syntax
 		criterionGradingConfig = new SQLCriterionGradingConfig();
@@ -304,131 +305,37 @@ public class SQLEvaluator implements Evaluator {
 		}
 		
 		graderConfig.setMaximumPoints(maxPoints);
-		
-		//Fetching maximum number of points
-		/*
-		String query;
-		int maxPoints = 0;
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rset = null;
-
-		//TODO: do not use points defined in task declaration; calculation is done in CoreManagerServlet
-		try{
-			query = new String();
-			query = query.concat("SELECT	points " + LINE_SEP);
-			query = query.concat("FROM 		taskdeclaration " + LINE_SEP);
-			query = query.concat("WHERE 	task_ID = " + taskID + LINE_SEP);
-			
-			conn = CoreManager.newConnection();
-			stmt = conn.createStatement();
-			rset = stmt.executeQuery(query);
-			while (rset.next()){
-				maxPoints = rset.getInt("points");				
-			}
-			graderConfig.setMaximumPoints(maxPoints);
-		} catch (InternalConfigurationException e){
-			message = new String();
-			message = message.concat("Stopped analysis due to errors. ");
-			message = message.concat("Problems fetching maximum number of points.");
-			
-			this.logger.log(Level.SEVERE, message);
-			throw e;
-		} catch (SQLException e){
-			message = new String();
-			message = message.concat("Stopped analysis due to errors. ");
-			message = message.concat("Problems fetching maximum number of points.");
-			
-			this.logger.log(Level.SEVERE, message);
-			throw e;
-		} finally {
-			SQLException exc = null;
-			if (rset != null){
-			    try {
-			        rset.close();
-			    } catch (SQLException e){
-					message = new String();
-					message = message.concat("Stopped analysis due to errors. ");
-					message = message.concat("Problems closing resultset.");
-				
-					this.logger.log(Level.SEVERE, message);
-					exc = e;
-				}
-			}
-			if (stmt != null){
-			    try {
-			        stmt.close();
-			    } catch (SQLException e){
-					message = new String();
-					message = message.concat("Stopped analysis due to errors. ");
-					message = message.concat("Problems closing statement.");
-				
-					this.logger.log(Level.SEVERE, message);
-					exc = e;
-				}
-			}
-			if (conn != null){
-			    try {
-			        conn.close();
-			    } catch (SQLException e){
-					message = new String();
-					message = message.concat("Stopped analysis due to errors. ");
-					message = message.concat("Problems closing connection.");
-				
-					this.logger.log(Level.SEVERE, message);
-					exc = e;
-				}
-			}
-			if (exc != null) {
-			    throw exc;
-			}		    
-		}*/
 
 		return grader.grade((SQLAnalysis)analysis, graderConfig);
 	}
 
-	public Report report(Analysis analysis, Grading grading, Map passedAttributes, Map passedParameters, Locale locale) {
+	/**
+	 * Creates a report according to the Analysis and the Grading
+	 * @param analysis the analysis
+	 * @param grading the grading
+	 * @param passedAttributes the passed attributes
+	 * @param passedParameters the passed parameters
+	 * @param locale the locale --> TO BE IMPLEMENTeD
+	 * @return the report
+	 */
+	public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String ,String> passedParameters, Locale locale) {
 		logger.info("analysis: " + analysis);
 		logger.info("grading: " + grading);
-		logger.info("passedAttributes (" + passedAttributes.size() + ")");
-		for (Object key: passedAttributes.keySet()) {
-			logger.info("  key: "+key+" value: " + passedAttributes.get(key));
-		}
-		logger.info("passedParameters (" + passedParameters.size() + ")");
-		for (Object key: passedParameters.keySet()) {
-			logger.info("  key: "+key+" value: " + passedParameters.get(key));
-		}
-		SQLReport report = new SQLReport();
+		logPassedAttributes(passedAttributes, passedParameters);
+
 		SQLReporter reporter = new SQLReporter();
 		SQLReporterConfig reporterConfig = new SQLReporterConfig();
 
 		String action;
-		String message;
 		String diagnoseLevel;
-		Object action_Param = passedAttributes.get("action");
-		Object diagnoseLevel_Param = passedAttributes.get("diagnoseLevel");
+		String action_Param = passedAttributes.get("action");
+		String diagnoseLevel_Param = passedAttributes.get("diagnoseLevel");
 
-		if ((action_Param == null) || (!(action_Param instanceof String))){
-			message = new String();
-			message = message.concat("Stopped reporting due to errors. ");
-			message = message.concat("Can not utilize evaluation action parameter.");
-			
-			this.logger.log(Level.SEVERE, message);
-			throw new IllegalArgumentException(message);
-		}
 
-		if ((diagnoseLevel_Param == null) || (!(diagnoseLevel_Param instanceof String))){
-			message = new String();
-			message = message.concat("Stopped reporting due to errors. ");
-			message = message.concat("Can not utilize diagnose level parameter.");
-			
-			this.logger.log(Level.SEVERE, message);
-			throw new IllegalArgumentException(message);
-		}
-		
-		action = (String)action_Param;
-		diagnoseLevel = (String)diagnoseLevel_Param;
-		
+		action = action_Param;
+		diagnoseLevel = diagnoseLevel_Param;
+
+		// Setting action and diagnose level in the SQLReporterConfig
 		if (action.toUpperCase().equals(SQLEvaluationAction.RUN.toString())){
 			reporterConfig.setAction(SQLEvaluationAction.RUN);
 			reporterConfig.setDiagnoseLevel(1);
@@ -447,5 +354,21 @@ public class SQLEvaluator implements Evaluator {
 		}
 
 		return reporter.createReport((SQLAnalysis)analysis, (DefaultGrading)grading, reporterConfig, locale);
+	}
+
+	/**
+	 * Logs the passedAttributes and passedParameters
+	 * @param passedAttributes the passedAttributes
+	 * @param passedParameters the passedParameters
+	 */
+	public void logPassedAttributes(Map<String, String> passedAttributes, Map<String, String> passedParameters){
+		logger.info("passedAttributes (" + passedAttributes.size() + ")");
+		for (String key: passedAttributes.keySet()) {
+			logger.info("  key: "+key+" value: " + passedAttributes.get(key));
+		}
+		logger.info("passedParameters (" + passedParameters.size() + ")");
+		for (String key: passedParameters.keySet()) {
+			logger.info("  key: "+key+" value: " + passedParameters.get(key));
+		}
 	}
 }

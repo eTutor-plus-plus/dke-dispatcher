@@ -11,52 +11,54 @@ import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 
 
-
+/**
+ * Represents the result of the SQLAnalysis
+ */
 public class SQLAnalysis extends DefaultAnalysis implements Analysis {
 
-	private Vector queryResultTuples;
-	private HashMap criterionAnalyses;
+	private Vector<Collection<String>> queryResultTuples;
+	private final HashMap<SQLEvaluationCriterion, SQLCriterionAnalysis> criterionAnalyses;
 	private AnalysisException exception;
-	private Vector queryResultColumnLabels;
+	private Vector<String> queryResultColumnLabels;
 
 	public SQLAnalysis(){
 		super();
 
 		this.exception = null;
-		this.queryResultTuples = new Vector();
-		this.criterionAnalyses = new HashMap();
-		this.queryResultColumnLabels = new Vector();
+		this.queryResultTuples = new Vector<>();
+		this.criterionAnalyses = new HashMap<>();
+		this.queryResultColumnLabels = new Vector<>();
 	}
 
 	public void addQueryResultColumnLabel(String columnLabel){
 		this.queryResultColumnLabels.add(columnLabel);
 	}
 	
-	public void addQueryResultTuple(Collection tuple) {
+	public void addQueryResultTuple(Collection<String> tuple) {
 		this.queryResultTuples.add(tuple);
 	}
 
-	public Iterator iterQueryResultTuples(){
+	public Iterator<Collection<String>> iterQueryResultTuples(){
 		return this.queryResultTuples.iterator();
 	}
 
-	public Vector getQueryResultTuples() {
-		return (Vector)this.queryResultTuples.clone();
+	public Vector<Collection<String>> getQueryResultTuples() {
+		return (Vector<Collection<String>>)this.queryResultTuples.clone();
 	}
 
-	public Vector getQueryResultColumnLabels() {
-		return (Vector)this.queryResultColumnLabels.clone();
+	public Vector<String> getQueryResultColumnLabels() {
+		return (Vector<String>)this.queryResultColumnLabels.clone();
 	}
 
-	public void setQueryResultTuples(Vector queryResultTuples) {
+	public void setQueryResultTuples(Vector<Collection<String>> queryResultTuples) {
 		this.queryResultTuples = queryResultTuples;
 	}
 
-	public Iterator iterQueryResultColumnLabels(){
+	public Iterator<String> iterQueryResultColumnLabels(){
 		return this.queryResultColumnLabels.iterator();
 	}
 	
-	public void setQueryResultColumnLabels(Vector queryResultColumnLabels) {
+	public void setQueryResultColumnLabels(Vector<String> queryResultColumnLabels) {
 		this.queryResultColumnLabels = queryResultColumnLabels;
 	}
 	
@@ -68,7 +70,7 @@ public class SQLAnalysis extends DefaultAnalysis implements Analysis {
 		this.criterionAnalyses.put(criterion, analysis);
 	}
 	
-	public Iterator iterCriterionAnalyses(){
+	public Iterator<SQLCriterionAnalysis> iterCriterionAnalyses(){
 		return this.criterionAnalyses.values().iterator();
 	}
 	
@@ -77,13 +79,7 @@ public class SQLAnalysis extends DefaultAnalysis implements Analysis {
 	}
 	
 	public SQLCriterionAnalysis getCriterionAnalysis(SQLEvaluationCriterion criterion){
-		Object criterionAnalysis = this.criterionAnalyses.get(criterion);
-		
-		if (criterionAnalysis == null){
-			return null;
-		} else {
-			return (SQLCriterionAnalysis)criterionAnalysis;
-		}
+		return this.criterionAnalyses.get(criterion);
 	}
 	
 	public boolean isCriterionAnalyzed(SQLEvaluationCriterion criterion){
