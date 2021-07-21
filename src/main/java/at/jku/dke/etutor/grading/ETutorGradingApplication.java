@@ -10,6 +10,7 @@ import at.jku.dke.etutor.grading.service.ModuleManager;
 import at.jku.dke.etutor.grading.service.RepositoryManager;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
+import at.jku.dke.etutor.modules.sql.SQLEvaluator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -41,7 +42,8 @@ import java.util.List;
         ETutorGradingApplication.class,
         SubmissionDispatcher.class,
         AsyncConfiguration.class,
-        SQLConstants.class
+        SQLConstants.class,
+        SQLEvaluator.class
 })
 @EnableConfigurationProperties({ApplicationProperties.class})
 @SpringBootApplication

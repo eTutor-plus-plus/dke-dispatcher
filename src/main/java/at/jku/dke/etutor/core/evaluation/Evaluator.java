@@ -4,7 +4,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public interface Evaluator {
-    public Analysis analyze(int exerciseID, int userID, Map passedAttributes, Map passedParameters) throws Exception;
+    public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception;
 
     public Grading grade(Analysis analysis, int maxPoints, Map passedAttributes, Map passedParameters) throws Exception;
 

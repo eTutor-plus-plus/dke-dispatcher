@@ -66,12 +66,10 @@ public class SubmissionDispatcher  {
                 persistGrading(gradingDTO);
             }else{
                 logger.log(Level.SEVERE, "Could not find evaluator for tasktype: " + submission.getTaskType());
-                return;
             }
         } catch(Exception e){
             logger.log(Level.SEVERE, "Stopped Evaluation due to errors");
             e.printStackTrace();
-            return;
         }
     }
 
@@ -156,7 +154,7 @@ public class SubmissionDispatcher  {
             result.append("<table border=1 frame=void rules=rows>");
             result.append("<tr>");
             while(it.hasNext()){
-                result.append("<th>" + it.next().toString() + "</th>");
+                result.append("<th>").append(it.next().toString()).append("</th>");
             }
             result.append("</tr>");
 
@@ -169,7 +167,7 @@ public class SubmissionDispatcher  {
                 tupleAttributesIterator = tuple.iterator();
                 while(tupleAttributesIterator.hasNext()){
                     Object next = tupleAttributesIterator.next();
-                    if(next != null)    result.append("<td>"+next.toString()+"</td>");
+                    if(next != null)    result.append("<td>").append(next.toString()).append("</td>");
                 }
                 result.append("</tr>");
             }

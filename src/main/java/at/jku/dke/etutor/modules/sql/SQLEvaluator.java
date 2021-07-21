@@ -11,10 +11,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-import org.springframework.beans.factory.annotation.Required;
-
-
 import at.jku.dke.etutor.core.evaluation.*;
 
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
@@ -28,15 +24,13 @@ import at.jku.dke.etutor.modules.sql.grading.SQLGraderConfig;
 import at.jku.dke.etutor.modules.sql.report.SQLReport;
 import at.jku.dke.etutor.modules.sql.report.SQLReporter;
 import at.jku.dke.etutor.modules.sql.report.SQLReporterConfig;
-import org.springframework.context.MessageSource;
-import org.springframework.context.MessageSourceAware;
+import org.springframework.stereotype.Service;
 
-
-public class SQLEvaluator implements Evaluator, MessageSourceAware {
+@Service
+public class SQLEvaluator implements Evaluator {
 
 	private Logger logger;
-	private static String LINE_SEP = System.getProperty("line.separator", "\n");
-	private MessageSource messageSource;
+	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
 
 	public SQLEvaluator() {
 		super();
@@ -47,20 +41,15 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 			e.printStackTrace();
 		}
 	}
-	
-	@Required
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
 
-	public Analysis analyze(int exerciseID, int userID, Map passedAttributes, Map passedParameters) throws Exception {
+	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
 		logger.info("exerciseID: " + exerciseID);
 		logger.info("passedAttributes (" + passedAttributes.size() + ")");
-		for (Object key: passedAttributes.keySet()) {
+		for (String key: passedAttributes.keySet()) {
 			logger.info("  key: "+key+" value: " + passedAttributes.get(key));
 		}
 		logger.info("passedParameters (" + passedParameters.size() + ")");
-		for (Object key: passedParameters.keySet()) {
+		for (String key: passedParameters.keySet()) {
 			logger.info("  key: "+key+" value: " + passedParameters.get(key));
 		}
 		
@@ -69,13 +58,13 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 		String submission;
 		SQLAnalysis analysis;
 		SQLAnalyzerConfig analyzerConfig;
-		Iterator criterionAnalysesIterator;
+		Iterator<SQLCriterionAnalysis> criterionAnalysesIterator;
 		SQLCriterionAnalysis criterionAnalysis;
 		
 		int diagnoseLevel;
-		Object action_Param;
-		Object submission_Param;
-		Object diagnoseLevel_Param;
+		String action_Param;
+		String submission_Param;
+		String diagnoseLevel_Param;
 
 		analysis = new SQLAnalysis();
 		analyzerConfig = new SQLAnalyzerConfig();
@@ -84,38 +73,11 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 		submission_Param = passedAttributes.get("submission");
 		diagnoseLevel_Param = passedAttributes.get("diagnoseLevel");
 
-		if ((submission_Param == null) || (!(submission_Param instanceof String))){
-			message = new String();
-			message = message.concat("Stopped analysis due to errors. ");
-			message = message.concat("Can not utilize submission parameter.");
-			
-			this.logger.log(Level.SEVERE, message);
-			throw new IllegalArgumentException(message);
-		}
-
-		if ((action_Param == null) || (!(action_Param instanceof String))){
-			message = new String();
-			message = message.concat("Stopped analysis due to errors. ");
-			message = message.concat("Can not utilize evaluation action parameter.");
-			
-			this.logger.log(Level.SEVERE, message);
-			throw new IllegalArgumentException(message);
-		}
-
-		if ((diagnoseLevel_Param == null) || (!(diagnoseLevel_Param instanceof String))){
-			message = new String();
-			message = message.concat("Stopped analysis due to errors. ");
-			message = message.concat("Can not utilize diagnose level parameter.");
-			
-			this.logger.log(Level.SEVERE, message);
-			throw new IllegalArgumentException(message);
-		}
-		
-		action = (String)action_Param;
-		diagnoseLevel = Integer.parseInt((String)diagnoseLevel_Param);
+		action = action_Param;
+		diagnoseLevel = Integer.parseInt(diagnoseLevel_Param);
 		
 		//SETTING THE SUBMISSION
-		analysis.setSubmission(((String)submission_Param).replaceAll(";",""));
+		analysis.setSubmission((submission_Param).replaceAll(";",""));
 
 		String query;
 		Connection referenceConn;
@@ -131,12 +93,11 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 
 		try{
 			//ESTABLISHING CONNECTION TO SQL DATABASE
-			//ks java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 			Class.forName(SQLConstants.JDBC_DRIVER);
 			conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
 			conn.setAutoCommit(true);
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE
-			query = new String();
+			query = "";
 
 			if (action.equalsIgnoreCase("test")){
 				query = query.concat("SELECT	c.conn_string, c.conn_user, c.conn_pwd " + LINE_SEP);
@@ -164,27 +125,18 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 				referenceConnPwd = rset.getString("conn_pwd");				
 				referenceConnString = rset.getString("conn_string");
 			}
-
-
-			//ks referenceConnString = "mond.dke.uni-linz.ac.at:1521:etutor"; transformiert die IP-Adressen von Table Connections der Live Oracle DB auf String, der von Roman auf localhost gemapped werden kann
-
 			//ESTABLISHING CONNECTION TO EXERCISE SPECIFIC REFERENCE DATABASE
-
-			//ks original: java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 
 			this.logger.log(Level.INFO,referenceConnString + " - " + referenceConnUser + " - " + referenceConnPwd);
 
-			//ks original referenceConn = DriverManager.getConnection("jdbc:oracle:thin:@" + referenceConnString, referenceConnUser, referenceConnPwd);
-
-
 			referenceConn = DriverManager.getConnection(referenceConnString, referenceConnUser, referenceConnPwd);
 			referenceConn.setAutoCommit(true);
-			
+
 			//DETERMINING CORRECT QUERY
 			if ((action.equalsIgnoreCase("test")) || (action.equalsIgnoreCase("run"))){
 				correctQuery = analysis.getSubmission().toString();
 			} else {
-				query = new String();
+				query = "";
 				query = query.concat("SELECT	solution " + LINE_SEP);
 				query = query.concat("FROM 		exercises " + LINE_SEP);
 				query = query.concat("WHERE 	id = " + exerciseID + LINE_SEP);
@@ -195,11 +147,10 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 				rset = stmt.executeQuery(query);
 				if (rset.next()){
 					correctQuery = rset.getString("solution");
-
 				}
 			}
 		} catch (SQLException e){
-			message = new String();
+			message = "";
 			message = message.concat("Stopped analysis due to errors. ");
 			this.logger.log(Level.SEVERE, message, e);
 			throw e;
@@ -258,10 +209,9 @@ public class SQLEvaluator implements Evaluator, MessageSourceAware {
 		//code copied from SQLReporter (2005-10-24, g.n.)
 		criterionAnalysesIterator = sqlAnalysis.iterCriterionAnalyses();
 		while (criterionAnalysesIterator.hasNext()) {
-			criterionAnalysis = (SQLCriterionAnalysis)criterionAnalysesIterator.next();
+			criterionAnalysis = criterionAnalysesIterator.next();
 			if (!criterionAnalysis.isCriterionSatisfied()) {
 				sqlAnalysis.setSubmissionSuitsSolution(false);
-
 			}
 		}
 

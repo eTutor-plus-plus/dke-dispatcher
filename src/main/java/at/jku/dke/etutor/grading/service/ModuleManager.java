@@ -15,10 +15,10 @@ import java.util.Locale;
  */
 @Service
 public class ModuleManager{
-    private static SQLEvaluator sqlEvaluator;
+    private final SQLEvaluator sqlEvaluator;
 
-    public ModuleManager(){
-        sqlEvaluator = new SQLEvaluator();
+    public ModuleManager(SQLEvaluator sqlEvaluator){
+       this.sqlEvaluator = sqlEvaluator;
     }
 
     public Evaluator getEvaluator(String tasktype) throws Exception{
