@@ -56,6 +56,7 @@ public class ETutorSubmissionController {
             return new ResponseEntity<>(EntityModel.of(submissionId,
                     linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("grading")),
                     HttpStatus.ACCEPTED);
+
         } catch (IOException e){
             logger.log(Level.SEVERE, "Request processing stopped due to errors");
             e.printStackTrace();

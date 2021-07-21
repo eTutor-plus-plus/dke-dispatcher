@@ -5,7 +5,6 @@ import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.dto.DataDefinitionDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceManager;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +17,11 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/sql")
 public class ETutorSQLController {
-    private Logger logger;
-    private  SQLResourceManager resourceManager;
-    private  ApplicationProperties properties;
+    private final Logger logger;
+    private final SQLResourceManager resourceManager;
+    private final ApplicationProperties properties;
+
+
     
     public ETutorSQLController(SQLResourceManager resourceManager, ApplicationProperties properties){
         this.logger= Logger.getLogger("at.jku.dke.etutor.sqlcontroller");
