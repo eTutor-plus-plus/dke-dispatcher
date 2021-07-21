@@ -11,21 +11,21 @@ public class SQLAnalyzerConfig {
 	private int diagnoseLevel;
 	private String correctQuery;
 	private Connection connection;
-	private HashSet criteriaToAnalyze;
+	private HashSet<SQLEvaluationCriterion> criteriaToAnalyze;
 
 	public SQLAnalyzerConfig() {
 		super();
 		this.diagnoseLevel = 0;
-		this.correctQuery = new String();
+		this.correctQuery = "";
 		this.connection = null;
-		this.criteriaToAnalyze = new HashSet();
+		this.criteriaToAnalyze = new HashSet<>();
 	}
 	
 	public boolean isCriterionToAnalyze(SQLEvaluationCriterion criterion){
 		return this.criteriaToAnalyze.contains(criterion);
 	}
 
-	public Iterator iterCriteriaToAnalyze(){
+	public Iterator<SQLEvaluationCriterion> iterCriteriaToAnalyze(){
 		return this.criteriaToAnalyze.iterator();
 	}
 	

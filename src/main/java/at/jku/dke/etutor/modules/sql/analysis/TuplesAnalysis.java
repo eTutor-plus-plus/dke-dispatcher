@@ -8,32 +8,32 @@ import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 
 public class TuplesAnalysis extends AbstractSQLCriterionAnalysis implements SQLCriterionAnalysis{
 
-	private Vector missingTuples;
-	private Vector surplusTuples;
-	private Vector columnLabels;
+	private final Vector<Collection<String>> missingTuples;
+	private final Vector<Collection<String>> surplusTuples;
+	private Vector<String> columnLabels;
 	
 
 	public TuplesAnalysis() {
 		super();
-		this.missingTuples = new Vector();
-		this.surplusTuples = new Vector();
-		this.columnLabels = new Vector();
+		this.missingTuples = new Vector<>();
+		this.surplusTuples = new Vector<>();
+		this.columnLabels = new Vector<>();
 	}
 	
 	public void addColumnLabel(String columnLabel){
 		this.columnLabels.add(columnLabel);
 	}
 
-	public Iterator iterColumnLabels(){
+	public Iterator<String> iterColumnLabels(){
 		return this.columnLabels.iterator();
 	}
 	
-	public void setColumnLabels(Vector queryResultColumnLabels) {
+	public void setColumnLabels(Vector<String> queryResultColumnLabels) {
 		this.columnLabels = queryResultColumnLabels;
 	}
 
-	public Vector getColumnLabels() {
-		return (Vector)this.columnLabels.clone();
+	public Vector<String> getColumnLabels() {
+		return (Vector<String>)this.columnLabels.clone();
 	}
 
 	public boolean hasSurplusTuples(){
@@ -48,33 +48,33 @@ public class TuplesAnalysis extends AbstractSQLCriterionAnalysis implements SQLC
 		return (this.missingTuples.size() > 0 || this.surplusTuples.size() > 0);
 	}
 	
-	public void setMissingTuples(Collection missingTuples){
+	public void setMissingTuples(Collection<Collection<String>> missingTuples){
 		this.missingTuples.clear();
 		this.missingTuples.addAll(missingTuples);
 	}
 
-	public void addMissingTuple(Collection tupleAttributes){
+	public void addMissingTuple(Collection<String> tupleAttributes){
 		this.missingTuples.add(tupleAttributes);
 	}
 	
-	public void setSurplusTuples(Collection surplusTuples){
+	public void setSurplusTuples(Collection<Collection<String>> surplusTuples){
 		this.surplusTuples.clear();
 		this.surplusTuples.addAll(surplusTuples);
 	}
 
-	public void addSurplusTuple(Collection tupleAttributes){
+	public void addSurplusTuple(Collection<String> tupleAttributes){
 		this.surplusTuples.add(tupleAttributes);
 	}
 	
-	public void removeAllMissingTuples(Collection missingTuplesToRemove){
+	public void removeAllMissingTuples(Collection<Collection<String>> missingTuplesToRemove){
 		this.missingTuples.removeAll(missingTuplesToRemove);
 	}
 
-	public void removeMissingTuple(Collection tupleAttributes){
+	public void removeMissingTuple(Collection<String> tupleAttributes){
 		this.missingTuples.remove(tupleAttributes);
 	}
 
-	public void removeAllSurplusTuples(Collection surplusTuplesToRemove){
+	public void removeAllSurplusTuples(Collection<Collection<String>> surplusTuplesToRemove){
 		this.surplusTuples.removeAll(surplusTuplesToRemove);
 	}
 
@@ -82,19 +82,19 @@ public class TuplesAnalysis extends AbstractSQLCriterionAnalysis implements SQLC
 		this.surplusTuples.remove(tupleAttributes);
 	}
 	
-	public Iterator iterMissingTuples(){
+	public Iterator<Collection<String>> iterMissingTuples(){
 		return this.missingTuples.iterator();
 	}
 	
-	public Iterator iterSurplusTuples(){
+	public Iterator<Collection<String>> iterSurplusTuples(){
 		return this.surplusTuples.iterator();
 	}
 	
-	public Vector getMissingTuples(){
+	public Vector<Collection<String>> getMissingTuples(){
 		return (Vector)this.missingTuples.clone();
 	}
 
-	public Vector getSurplusTuples(){
+	public Vector<Collection<String>> getSurplusTuples(){
 		return (Vector)this.surplusTuples.clone();
 	}
 

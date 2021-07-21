@@ -10,7 +10,7 @@ public class SyntaxAnalysis extends AbstractSQLCriterionAnalysis implements SQLC
 	public SyntaxAnalysis() {
 		super();
 		this.foundSyntaxError = false;
-		this.syntaxErrorDescription = new String();
+		this.syntaxErrorDescription = "";
 	}
 
 	public boolean foundSyntaxError(){

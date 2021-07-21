@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,8 +21,8 @@ public class SQLAnalyzer {
 
 		try {
 			this.logger = Logger.getLogger("at.jku.dke.etutor.modules.sql");
-		} catch (Exception ignore) {
-			ignore.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -35,7 +36,7 @@ public class SQLAnalyzer {
 		analysis.setSubmission(submission);
 
 		if (submission == null) {
-			message = new String();
+			message ="";
 			message = message.concat("Analsis stopped with errors. ");
 			message = message.concat("Submission is empty. ");
 			message = message.concat("This is an internal system error. ");
@@ -49,7 +50,7 @@ public class SQLAnalyzer {
 		if (submission instanceof String) {
 			submittedQuery = (String)submission;
 		} else {
-			message = new String();
+			message = "";
 			message = message.concat("Analysis stopped with errors. ");
 			message = message.concat("Submission is not utilizable. ");
 			message = message.concat("This is an internal system error. ");
@@ -61,7 +62,7 @@ public class SQLAnalyzer {
 		}
 
 		if (config == null) {
-			message = new String();
+			message = "";
 			message = message.concat("Analysis stopped with errors. ");
 			message = message.concat("No configuration found. ");
 			message = message.concat("This is an internal system error. ");
@@ -72,18 +73,6 @@ public class SQLAnalyzer {
 			return analysis;
 		}
 		
-		if (!this.isConfigurationValid(config)){
-			message = new String();
-			message = message.concat("Analysis stopped with errors. ");
-			message = message.concat("Invalid configuration found. ");
-			message = message.concat("This is an internal system error. ");
-			message = message.concat("Please inform the system administrator");
-
-			this.logger.log(Level.SEVERE, message);
-			analysis.setAnalysisException(new AnalysisException(message));
-			return analysis;
-		}
-
 		if (config.isCriterionToAnalyze(SQLEvaluationCriterion.CORRECT_SYNTAX)) {
 			criterionAnalysis = this.analyzeSyntax(config, submittedQuery, analysis);
 			analysis.addCriterionAnalysis(SQLEvaluationCriterion.CORRECT_SYNTAX, criterionAnalysis);
@@ -132,27 +121,9 @@ public class SQLAnalyzer {
 		return analysis;
 	}
 	
-	private boolean isConfigurationValid(SQLAnalyzerConfig config){
-		return true;
-		/*
-		if (!config.isCriterionToAnalyze(SQLEvaluationCriterion.CORRECT_SYNTAX)) {
-			return false;
-		} else {
-			if (!config.isCriterionToAnalyze(SQLEvaluationCriterion.CARTESIAN_PRODUCT)) {
-				return false;
-			} else {
-				if ((config.isCriterionToAnalyze(SQLEvaluationCriterion.CORRECT_TUPLES))
-					&& (!config.isCriterionToAnalyze(SQLEvaluationCriterion.CORRECT_COLUMNS))) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-		}*/
-	}
 
 	private SQLCriterionAnalysis analyzeSyntax(SQLAnalyzerConfig config, String submittedQuery, SQLAnalysis analysis) {
-		Vector tuple;
+		Vector<String> tuple;
 		ResultSet rset;
 		Statement stmt;
 		ResultSetMetaData rsmd;
@@ -166,7 +137,6 @@ public class SQLAnalyzer {
 
 		try {
 			stmt = config.getConnection().createStatement();
-			//ks original stmt.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			rset = stmt.executeQuery(submittedQuery);
 			rsmd = rset.getMetaData();
 			for (int i=1; i<=rsmd.getColumnCount(); i++){
@@ -174,7 +144,7 @@ public class SQLAnalyzer {
 			}
 
 			while (rset.next()){
-				tuple = new Vector();
+				tuple = new Vector<>();
 				for (int i=1; i<=rsmd.getColumnCount(); i++){
 					tuple.add(rset.getString(i));
 				}
@@ -193,8 +163,8 @@ public class SQLAnalyzer {
 				if (stmt != null) {
 					stmt.close();
 				}
-			} catch (SQLException ignore) {
-				this.logger.log(Level.SEVERE, "Could not close result set.", ignore);
+			} catch (SQLException e) {
+				this.logger.log(Level.SEVERE, "Could not close result set.", e);
 			}
 		}
 
@@ -223,14 +193,11 @@ public class SQLAnalyzer {
 		if (this.usesOrderByStatement(config.getCorrectQuery())) {
 			try {
 				correctQuery_STMT = config.getConnection().createStatement();
-				//ks original , in PSQL nicht möglich: correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
-
 				correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery());
 				correctQuery_RSMD = correctQuery_RSET.getMetaData();
 				columnsCount = correctQuery_RSMD.getColumnCount();
 
 				submittedQuery_STMT = config.getConnection().createStatement();
-				//ks original , in PSQL nicht möglich: submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 
 				submittedQuery_RSET = submittedQuery_STMT.executeQuery(submittedQuery);
 
@@ -257,7 +224,7 @@ public class SQLAnalyzer {
 				this.logger.log(Level.INFO, "Finished checking order of query.");
 				
 			} catch (SQLException e) {
-				message = new String();
+				message = "";
 				message = message.concat("Error occured while analyzing order. ");
 				message = message.concat("This is an internal system error. ");
 				message = message.concat("Please inform the system administrator.");
@@ -279,8 +246,8 @@ public class SQLAnalyzer {
 					if (submittedQuery_STMT != null) {
 						submittedQuery_STMT.close();
 					}
-				} catch (SQLException ignore) {
-					this.logger.log(Level.SEVERE, "Could not close result set.", ignore);
+				} catch (SQLException e) {
+					this.logger.log(Level.SEVERE, "Could not close result set.", e);
 				}
 			}
 		} else {
@@ -345,14 +312,12 @@ public class SQLAnalyzer {
 
 		try {
 			correctQuery_STMT = config.getConnection().createStatement();
-			//ks original , in PSQL nicht möglich: correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery());
 			rsmd = correctQuery_RSET.getMetaData();
 
 			submittedQuery_STMT = config.getConnection().createStatement();
-			//ks original , in PSQL nicht möglich: submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 
-			columns = new String();
+			columns = "";
 			for (int i = 1; i <= rsmd.getColumnCount(); i++) {
 				tuplesAnalysis.addColumnLabel(rsmd.getColumnName(i));
 				if (columns.length() > 0) {
@@ -363,22 +328,20 @@ public class SQLAnalyzer {
 
 			this.logger.log(Level.INFO, "COLUMN LABELS: " + columns);
 			
-			checkQuery = new String();
+			checkQuery = "";
 			checkQuery = checkQuery.concat("SELECT " + columns + " ");
-			//ks original , in PSQL Alias für Unterabfrage: checkQuery = checkQuery.concat("FROM (" + config.getCorrectQuery() + ")");
 			checkQuery = checkQuery.concat("FROM (" + config.getCorrectQuery() + ") AS correctQuery ");
 			checkQuery = checkQuery.concat("ORDER BY " + columns);
 			
 			this.logger.log(Level.INFO, "CORRECT QUERY:\n" + checkQuery);
 
-			//ks original , in PSQL nicht möglich: correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			checkQuery_RSET = correctQuery_STMT.executeQuery(checkQuery);
 
 			rsmd = checkQuery_RSET.getMetaData();
 			columnCount = rsmd.getColumnCount();
 
 			while (checkQuery_RSET.next()) {
-				tuple = new Vector();
+				tuple = new Vector<String>();
 
 				for (int i = 1; i <= columnCount; i++) {
 					if (checkQuery_RSET.getString(i) != null) {
@@ -390,19 +353,17 @@ public class SQLAnalyzer {
 				correctQueryTuples.addElement(tuple);
 			}
 
-			checkQuery = new String();
+			checkQuery = "";
 			checkQuery = checkQuery.concat("SELECT " + columns + " ");
-			//ks original , in PSQL Alias für Unteranfrage Pflicht : checkQuery = checkQuery.concat("FROM (" + submittedQuery + ") ");
 			checkQuery = checkQuery.concat("FROM (" + submittedQuery + ") AS submittedQuery ");
 			checkQuery = checkQuery.concat("ORDER BY " + columns);
 
 			this.logger.log(Level.INFO, "SUBMITTED QUERY:\n" + checkQuery);
 
-			//ks original , in PSQL nicht möglich: submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			checkQuery_RSET = submittedQuery_STMT.executeQuery(checkQuery);
 
 			while (checkQuery_RSET.next()) {
-				tuple = new Vector();
+				tuple = new Vector<String>();
 				for (int i = 1; i <= columnCount; i++) {
 					if (checkQuery_RSET.getString(i) != null) {
 						tuple.add(checkQuery_RSET.getString(i).toUpperCase());
@@ -428,7 +389,7 @@ public class SQLAnalyzer {
 			this.logger.log(Level.INFO, "Finished checking tuples of query.");
 
 		} catch (SQLException e) {
-			message = new String();
+			message = "";
 			message = message.concat("Error encounted while analyzing tuples. ");
 			message = message.concat("This is an internal system error. ");
 			message = message.concat("Please inform the system administrator.");
@@ -449,8 +410,8 @@ public class SQLAnalyzer {
 				if (submittedQuery_STMT != null) {
 					submittedQuery_STMT.close();
 				}
-			} catch (SQLException ignore) {
-				this.logger.log(Level.SEVERE, "Could not close result set.", ignore);
+			} catch (SQLException e) {
+				this.logger.log(Level.SEVERE, "Could not close result set.", e);
 			}
 		}
 
@@ -487,34 +448,27 @@ public class SQLAnalyzer {
 		try {
 
 			correctQuery_STMT = config.getConnection().createStatement();
-			//ks original , in PSQL nicht möglich: correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery());
 
 			correctQueryMetaData = correctQuery_RSET.getMetaData();
 
 			submittedQuery_STMT = config.getConnection().createStatement();
-			//ks original , in PSQL nicht möglich: submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			submittedQuery_RSET = submittedQuery_STMT.executeQuery(submittedQuery);
 			submittedQueryMetaData = submittedQuery_RSET.getMetaData();
 
 			correctQueryColumnCount = correctQueryMetaData.getColumnCount();
 			submittedQueryColumnCount = submittedQueryMetaData.getColumnCount();
 
-			correctQueryColumns = new Vector(correctQueryColumnCount);
-			submittedQueryColumns = new Vector(submittedQueryColumnCount);
+			correctQueryColumns = new Vector<String>(correctQueryColumnCount);
+			submittedQueryColumns = new Vector<String>(submittedQueryColumnCount);
 
-			//System.out.println("Columns of submitted query: ");
 			for (int i = 1; i <= submittedQueryColumnCount; i++) {
-				//System.out.print(submittedQueryMetaData.getColumnName(i) + ", ");
 				submittedQueryColumns.add(submittedQueryMetaData.getColumnName(i));
 			}
 
-			//System.out.println("\nColumns of correct query: ");
 			for (int i = 1; i <= correctQueryColumnCount; i++) {
-				//System.out.print(correctQueryMetaData.getColumnName(i) + ", ");
 				correctQueryColumns.add(correctQueryMetaData.getColumnName(i));
 			}
-			//System.out.println("\n");
 
 			for (int i = 0; i < correctQueryColumnCount; i++) {
 				if (!submittedQueryColumns.contains(correctQueryColumns.get(i))) {
@@ -537,7 +491,7 @@ public class SQLAnalyzer {
 			this.logger.log(Level.INFO, "Finished checking columns of query.");
 
 		} catch (SQLException e) {
-			message = new String();
+			message = "";
 			message = message.concat("Error occured while analyzing columns. ");
 			message = message.concat("This is an system error. ");
 			message = message.concat("Please inform the system administrator.");
@@ -558,8 +512,8 @@ public class SQLAnalyzer {
 				if (submittedQuery_STMT != null) {
 					submittedQuery_STMT.close();
 				}
-			} catch (SQLException ignore) {
-				this.logger.log(Level.SEVERE, "Could not close result set.", ignore);
+			} catch (SQLException e) {
+				this.logger.log(Level.SEVERE, "Could not close result set.", e);
 			}
 		}
 
@@ -591,20 +545,15 @@ public class SQLAnalyzer {
 		this.logger.log(Level.INFO, "Checking for cartesian product.");
 
 		try {
-			//
-			//ks original query = "SELECT COUNT(*) FROM (" + submittedQuery + ")";
-			query = "SELECT COUNT(*) FROM (" + submittedQuery + ") AS submittedQuery"; // in PostgreSQL muss Unteranfrage Aliasnamen erhalten
+			query = "SELECT COUNT(*) FROM (" + submittedQuery + ") AS submittedQuery";
 			submittedQuery_STMT = config.getConnection().createStatement();
-			//ks original submittedQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			submittedQuery_RSET = submittedQuery_STMT.executeQuery(query);
 			if (submittedQuery_RSET.next()) {
 				countSubmittedQuery = submittedQuery_RSET.getInt(1);
 			}
 
-			//ks original , in PostgreSQL muss Unterabfrage Alias erhalten: query = "SELECT COUNT(*) FROM (" + config.getCorrectQuery() + ")";
 			query = "SELECT COUNT(*) FROM (" + config.getCorrectQuery() + ") AS correctQuery";
 			correctQuery_STMT = config.getConnection().createStatement();
-			//ks original in PostgreSQL nicht möglich: correctQuery_STMT.execute("ALTER SESSION SET NLS_LANGUAGE = AMERICAN");
 			correctQuery_RSET = correctQuery_STMT.executeQuery(query);
 			if (correctQuery_RSET.next()) {
 				countCorrectQuery = correctQuery_RSET.getInt(1);
@@ -618,7 +567,7 @@ public class SQLAnalyzer {
 			this.logger.log(Level.INFO, "Finsihed checking for cartesian product.");
 
 		} catch (SQLException e) {
-			message = new String();
+			message = "";
 			message = message.concat("Error occured while analyzing cartesian product. ");
 			message = message.concat("This is an system error. ");
 			message = message.concat("Please inform the system administrator.");
@@ -639,8 +588,8 @@ public class SQLAnalyzer {
 				if (submittedQuery_STMT != null) {
 					submittedQuery_STMT.close();
 				}
-			} catch (SQLException ignore) {
-				this.logger.log(Level.SEVERE, "Could not close result set.", ignore);
+			} catch (SQLException e) {
+				this.logger.log(Level.SEVERE, "Could not close result set.", e);
 			}
 		}
 		return cartesianProductAnalysis;
