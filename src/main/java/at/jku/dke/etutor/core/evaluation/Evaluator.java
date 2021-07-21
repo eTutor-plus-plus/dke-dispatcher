@@ -10,5 +10,5 @@ public interface Evaluator {
 
     public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception;
 
-
+    public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes);
 }

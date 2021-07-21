@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -356,6 +357,7 @@ public class SQLEvaluator implements Evaluator {
 		return reporter.createReport((SQLAnalysis)analysis, (DefaultGrading)grading, reporterConfig, locale);
 	}
 
+
 	/**
 	 * Logs the passedAttributes and passedParameters
 	 * @param passedAttributes the passedAttributes
@@ -371,4 +373,46 @@ public class SQLEvaluator implements Evaluator {
 			logger.info("  key: "+key+" value: " + passedParameters.get(key));
 		}
 	}
+	@Override
+	public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes) {
+		if (passedAttributes.get("action").equalsIgnoreCase("submit")) return null;
+
+		StringBuilder result = new StringBuilder();
+
+		if (analysis instanceof SQLAnalysis) {
+			SQLAnalysis sqlAnalysis = (SQLAnalysis)analysis;
+			SQLCriterionAnalysis cartesianProduct = sqlAnalysis.getCriterionAnalysis(SQLEvaluationCriterion.CARTESIAN_PRODUCT);
+			if(cartesianProduct != null && !cartesianProduct.isCriterionSatisfied()) return null;
+
+			result.append("<strong>The result of your query: </strong><br>");
+			Iterator<String> columnIterator= sqlAnalysis.getQueryResultColumnLabels().iterator();
+
+
+			result.append("<table border=1 frame=void rules=rows>");
+			result.append("<tr>");
+			while(columnIterator.hasNext()){
+				result.append("<th>").append(columnIterator.next()).append("</th>");
+			}
+			result.append("</tr>");
+
+			Iterator<Collection<String>> tuplesIterator = sqlAnalysis.getQueryResultTuples().iterator();
+			Collection<String> tuple;
+			Iterator<String> tupleAttributesIterator;
+			while(tuplesIterator.hasNext()){
+				result.append("<tr>");
+				tuple = tuplesIterator.next();
+				tupleAttributesIterator = tuple.iterator();
+				while(tupleAttributesIterator.hasNext()){
+					String next = tupleAttributesIterator.next();
+					if(next != null)    result.append("<td>").append(next).append("</td>");
+				}
+				result.append("</tr>");
+			}
+			result.append("</table>");
+
+			return result.toString();
+		}
+		return null;
+	}
+
 }
