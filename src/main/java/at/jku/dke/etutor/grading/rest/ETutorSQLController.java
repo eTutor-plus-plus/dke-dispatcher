@@ -62,7 +62,7 @@ public class ETutorSQLController {
     /**
      * Creates two schemas with the specified name and the submission-suffix and diagnose-suffix respectively
      * @param schemaName the schema to be created
-     * @return
+     * @return ResponseEntity
      */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @PutMapping("/schema/{schemaName}")
