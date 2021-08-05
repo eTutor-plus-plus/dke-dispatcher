@@ -23,6 +23,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ETutorGradingController {
     private Logger logger;
     private GradingDTORepository gradingDTORepository;
+
+    /**
+     * The construcotr
+     * @param gradingDTORepository the injected repository
+     */
     public ETutorGradingController(GradingDTORepository gradingDTORepository) {
         this.logger = Logger.getLogger("at.jku.dke.etutor.grading");
         this.gradingDTORepository = gradingDTORepository;

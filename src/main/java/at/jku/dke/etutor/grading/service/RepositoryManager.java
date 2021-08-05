@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
- *Manages the repositories for the entities
+ *Service for handling entities
  */
 @Service
 public class RepositoryManager {
@@ -20,6 +20,12 @@ public class RepositoryManager {
     private  SubmissionRepository submissionRepository;
     private  ReportDTORepository reportRepository;
 
+    /**
+     * The constructor
+     * @param gradingRepo the injected JPARepository for GradingDTO´s
+     * @param submissionRepo the injected JPARepository for Submissions
+     * @param reportRepo the injected JPARepository for ReportDTO´s
+     */
     public RepositoryManager(GradingDTORepository gradingRepo,
                              SubmissionRepository submissionRepo, ReportDTORepository reportRepo){
         gradingRepository = gradingRepo;
@@ -27,39 +33,29 @@ public class RepositoryManager {
         reportRepository = reportRepo;
     }
 
+    /**
+     * Persists a submission
+     * @param submission the submission
+     */
     public  void persistSubmission(Submission submission){
         submissionRepository.save(submission);
     }
 
+    /**
+     * Persists a GradingDTO
+     * @param grading the grading
+     */
     public  void persistGrading(GradingDTO grading){
         gradingRepository.save(grading);
     }
 
+    /**
+     * Persists a ReportDTO
+     * @param report the report
+     */
     public  void persistReport(ReportDTO report){
         reportRepository.save(report);
     }
 
-    public  GradingDTORepository getGradingRepository() {
-        return gradingRepository;
-    }
 
-    public  void setGradingRepository(GradingDTORepository gradingRepository) {
-        this.gradingRepository = gradingRepository;
-    }
-
-    public  SubmissionRepository getSubmissionRepository() {
-        return submissionRepository;
-    }
-
-    public  void setSubmissionRepository(SubmissionRepository submissionRepository) {
-        this.submissionRepository = submissionRepository;
-    }
-
-    public  ReportDTORepository getReportRepository() {
-        return reportRepository;
-    }
-
-    public  void setReportRepository(ReportDTORepository reportRepository) {
-        this.reportRepository = reportRepository;
-    }
 }

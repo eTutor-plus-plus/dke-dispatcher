@@ -2,6 +2,9 @@ package at.jku.dke.etutor.grading;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 
+/**
+ * Provides static constants for the application
+ */
 public class ETutorGradingConstants {
     private ApplicationProperties properties;
     public ETutorGradingConstants(ApplicationProperties properties){

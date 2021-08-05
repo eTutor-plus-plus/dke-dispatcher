@@ -31,7 +31,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * The SpringApplication
+ */
 @EnableSwagger2
 @ComponentScan(basePackageClasses = {
         ETutorGradingController.class,
@@ -54,6 +56,10 @@ public class ETutorGradingApplication {
         SpringApplication.run(ETutorGradingApplication.class, args);
     }
 
+    /**
+     * The configuration for Swagger
+     * @return a Docket
+     */
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)

@@ -22,7 +22,11 @@ public class ETutorSQLController {
     private final ApplicationProperties properties;
 
 
-    
+    /**
+     * The constructor
+      * @param resourceManager the injected SQLResourceManager providing methods for manipulating data related to the SQL module
+     * @param properties the injected ApplicationProperties
+     */
     public ETutorSQLController(SQLResourceManager resourceManager, ApplicationProperties properties){
         this.logger= Logger.getLogger("at.jku.dke.etutor.sqlcontroller");
         this.resourceManager=resourceManager;

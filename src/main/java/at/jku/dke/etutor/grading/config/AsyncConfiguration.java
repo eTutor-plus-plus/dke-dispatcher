@@ -7,6 +7,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
 
+/**
+ * The Configuration to enable async handling of requests
+ */
 @Configuration
 public class AsyncConfiguration {
     private ApplicationProperties applicationProperties;
@@ -15,6 +18,10 @@ public class AsyncConfiguration {
         this.applicationProperties=applicationProperties;
     }
 
+    /**
+     * A Bean representing the configuration
+     * @return an Executor instance
+     */
     @Bean(name="asyncExecutor")
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

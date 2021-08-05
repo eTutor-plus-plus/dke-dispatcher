@@ -29,13 +29,17 @@ public class ETutorSubmissionController {
     private final Logger logger;
     private final SubmissionDispatcher submissionDispatcherService;
 
+    /**
+     * The constructor
+     * @param submissionDispatcherService the injected SubmissionDispatcher service that handles the evaluation of a submission
+     */
     public ETutorSubmissionController(SubmissionDispatcher submissionDispatcherService){
         this.logger = Logger.getLogger("at.jku.dke.etutor.grading");
         this.submissionDispatcherService = submissionDispatcherService;
     }
 
     /**
-     * Takes a submission as parameter, calculates a unique submissionId, initializes SubmissionDispatcher and returns the generated ID
+     * Takes a submission as parameter, calculates a unique submissionId, asynchronously initializes a SubmissionDispatcher and returns the generated ID
      * @param submission : the submission from the student
      * @return : ResponseEntity containing EntityModel with the generated submissionId and a link under which the grading can be requested
      *          - HttpStatus.INTERNAL_SERVER_ERROR if exception occurs

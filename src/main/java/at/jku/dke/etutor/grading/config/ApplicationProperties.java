@@ -2,6 +2,9 @@ package at.jku.dke.etutor.grading.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * Used to retrieve the application properties
+ */
 @ConfigurationProperties(value = "application")
 public class ApplicationProperties {
     private Async async = new Async();
@@ -34,6 +37,9 @@ public class ApplicationProperties {
         this.grading = grading;
     }
 
+    /**
+     * The properties needed to configure the async TaskExecutor
+     */
     public static class Async{
         private int maxPoolSize;
         private int corePoolSize;
@@ -73,6 +79,9 @@ public class ApplicationProperties {
         }
     }
 
+    /**
+     * The properties for the SQL module
+     */
     public static class SQL{
         private String connPwd;
         private String connUser;
@@ -139,6 +148,9 @@ public class ApplicationProperties {
         }
     }
 
+    /**
+     * The properties for the grading package
+     */
     public static class Grading{
         private String connSuperUser;
         private String connSuperPwd;

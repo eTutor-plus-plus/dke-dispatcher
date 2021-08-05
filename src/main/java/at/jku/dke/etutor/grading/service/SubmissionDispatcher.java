@@ -45,28 +45,28 @@ public class SubmissionDispatcher  {
         try {
             logger.info("Evaluating submission");
             Evaluator evaluator = moduleManager.getEvaluator(submission.getTaskType());
-            if (evaluator != null) {
-                logger.info("Analyzing submission");
-                Analysis analysis = getAnalysis(evaluator, submission);
-                logger.info("Finished analyzing submission");
-                logger.info("Grading submission");
-                Grading grading = getGrading(evaluator, analysis, submission);
-                logger.info("Finished grading submission");
-                logger.info("Finished evaluating submission");
+            if (evaluator == null) {
+                logger.log(Level.SEVERE, "Could not find evaluator for tasktype: " + submission.getTaskType());
+                return;
+            }
+            logger.info("Analyzing submission");
+            Analysis analysis = getAnalysis(evaluator, submission);
+            logger.info("Finished analyzing submission");
+            logger.info("Grading submission");
+            Grading grading = getGrading(evaluator, analysis, submission);
+            logger.info("Finished grading submission");
+            logger.info("Finished evaluating submission");
 
-                GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading);
-                gradingDTO.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes()));
+            GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading);
+            gradingDTO.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes()));
 
-                if(grading.getPoints()<grading.getMaxPoints() || grading.getPoints() == 0) {
+            if(grading.getPoints()<grading.getMaxPoints() || grading.getPoints() == 0) {
                     logger.info("Requesting report");
                     DefaultReport report = getReport(evaluator, grading, analysis, submission, Locale.GERMAN);
                     logger.info("Received report");
                     gradingDTO.setReport(new ReportDTO(submission.getSubmissionId(), report));
-                }
-                persistGrading(gradingDTO);
-            }else{
-                logger.log(Level.SEVERE, "Could not find evaluator for tasktype: " + submission.getTaskType());
             }
+            persistGrading(gradingDTO);
         } catch(Exception e){
             logger.log(Level.SEVERE, "Stopped Evaluation due to errors");
             e.printStackTrace();

@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import java.sql.*;
 import java.util.logging.Logger;
 
+/**
+ * Service used to manipulate schemas and exercises for the SQL module
+ */
 @Service
 public class SQLResourceManager {
     private final ApplicationProperties properties;
@@ -26,6 +29,11 @@ public class SQLResourceManager {
 
     private Logger logger;
 
+    /**
+     * The construcotr
+     * @param properties the injected application properties
+     * @throws ClassNotFoundException
+     */
     public SQLResourceManager(ApplicationProperties properties) throws ClassNotFoundException {
         Class.forName(properties.getGrading().getJDBCDriver());
         this.logger= Logger.getLogger("at.jku.dke.etutor.sqlexercisemanager");
@@ -83,8 +91,10 @@ public class SQLResourceManager {
             logger.warning("Could not create schema "+schemaName);
             throwables.printStackTrace();
             try {
-                con.rollback();
-                con.close();
+                if (con != null) {
+                    con.rollback();
+                    con.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -126,8 +136,10 @@ public class SQLResourceManager {
             logger.warning("Could not delete schema "+schemaName);
             throwables.printStackTrace();
             try {
-                con.rollback();
-                con.close();
+                if (con != null) {
+                    con.rollback();
+                    con.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -159,8 +171,10 @@ public class SQLResourceManager {
             logger.warning("Could not delete connection for "+schemaName);
             throwables.printStackTrace();
             try {
-                con.rollback();
-                con.close();
+                if (con != null) {
+                    con.rollback();
+                    con.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -199,9 +213,9 @@ public class SQLResourceManager {
 
     /**
      * deletes a table
-     * @param schemaName
-     * @param tableName
-     * @throws DatabaseException
+     * @param schemaName the schema name
+     * @param tableName the table name
+     * @throws DatabaseException if an SQLException occurs
      */
     public void deleteTable(String schemaName, String tableName) throws DatabaseException {
         Connection con = null;
@@ -220,8 +234,10 @@ public class SQLResourceManager {
             logger.warning("Could not delete table "+tableName + " in schema "+schemaName);
             throwables.printStackTrace();
             try {
-                con.rollback();
-                con.close();
+                if (con != null) {
+                    con.rollback();
+                    con.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -242,6 +258,12 @@ public class SQLResourceManager {
         logger.info("Inserting data into submission schema of "+schemaName+" complete");
     }
 
+    /**
+     * Inserts data into the diagnose-version of schema
+     * @param schemaName the schema
+     * @param query the query
+     * @throws DatabaseException if an SQLException occurs
+     */
     public void insertDataDiagnose(String schemaName, String query) throws DatabaseException {
         logger.info("Query for inserting data: "+query);
         insertData(schemaName + DIAGNOSE_SUFFIX, query);
@@ -261,7 +283,7 @@ public class SQLResourceManager {
      * @param id the id of the exercise to be created
      * @param schemaName the prefix of the schema where the data for the exercise are persisted
      * @param solution the solution of the exercise
-     * @throws DatabaseException
+     * @throws DatabaseException if an SQLExcption occurs
      */
     public void createExercise(int id, String schemaName, String solution) throws DatabaseException {
         logger.info("Creating exercise in schema with prefix "+schemaName + " and id "+id);
@@ -300,10 +322,10 @@ public class SQLResourceManager {
 
     /**
      * Fetches the connection id for the schema
-     * @param con
+     * @param con the Connection
      * @param schemaName the schema name
      * @return -1 if no connection for the specified schmema could be found or the id of the connection otherwise
-     * @throws SQLException
+     * @throws SQLException if an error occurs
      */
     public int fetchConnection(Connection con, String schemaName) throws SQLException {
         logger.info("Fetching connection id for schema "+ schemaName);
@@ -327,10 +349,10 @@ public class SQLResourceManager {
 
     /**
      * creates a new connection for the specified schema by incrementing the max(id) of the existing connections by 1
-     * @param con
+     * @param con the connection
      * @param schemaName the schema name for the connection
-     * @return
-     * @throws SQLException
+     * @return the connection id
+     * @throws SQLException if an error occurs
      */
     public int createConnection(Connection con, String schemaName) throws SQLException {
         logger.info("Creating connection for schema "+schemaName);
@@ -365,12 +387,12 @@ public class SQLResourceManager {
 
     /**
      * Persists the exercise
-     * @param con
-     * @param id
-     * @param submissionConnID
-     * @param diagnoseConnID
-     * @param solution
-     * @throws SQLException
+     * @param con the Connection
+     * @param id the exercise id
+     * @param submissionConnID the connection id for submissions
+     * @param diagnoseConnID the connection id for diagnosis
+     * @param solution the solution for the exercise
+     * @throws SQLException if an error occurs
      */
     public void createExerciseUtil(Connection con, int id, int submissionConnID, int diagnoseConnID, String solution) throws SQLException {
         logger.info("Creating exercise");
@@ -383,6 +405,12 @@ public class SQLResourceManager {
         createExerciseStmt.executeUpdate();
         createExerciseStmt.close();
     }
+
+    /**
+     * Fetches an available exercise id and reserves it by inserting default values for the given id
+     * @return the exercise id
+     * @throws DatabaseException if an SQLException occurs
+     */
     public int reserveExerciseID() throws DatabaseException {
         Connection con = null;
         try {
@@ -410,8 +438,10 @@ public class SQLResourceManager {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             try {
-                con.rollback();
-                con.close();
+                if (con != null) {
+                    con.rollback();
+                    con.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -421,8 +451,8 @@ public class SQLResourceManager {
 
     /**
      * deletes an exercise identified by the given id
-     * @param id
-     * @throws DatabaseException
+     * @param id the exercise id
+     * @throws DatabaseException if an SQLException occurs
      */
     public void deleteExercise(int id) throws DatabaseException {
         logger.info("Deleting exercise with id "+id);
@@ -441,7 +471,9 @@ public class SQLResourceManager {
             logger.warning("Could not delete exercise");
             throwables.printStackTrace();
             try {
-                con.rollback();
+                if (con != null) {
+                    con.rollback();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -452,9 +484,9 @@ public class SQLResourceManager {
 
     /**
      * utility method that executes a query on a given schema
-     * @param schemaName
-     * @param query
-     * @throws DatabaseException
+     * @param schemaName the schema
+     * @param query the query
+     * @throws DatabaseException if an SQLException occurs
      */
     void executeUpdate(String schemaName, String query) throws DatabaseException {
         Connection con = null;
@@ -471,8 +503,10 @@ public class SQLResourceManager {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             try {
-                con.rollback();
-                con.close();
+                if (con != null) {
+                    con.rollback();
+                    con.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }

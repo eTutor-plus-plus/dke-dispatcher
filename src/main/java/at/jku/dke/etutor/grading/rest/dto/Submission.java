@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Represents the students submission which hast to be distributed to and evaluated by the corresponding module,
  *  depending on the tasktype.
- *  Parameters are corresponding to the modules implementation of the core-interfaces (see package core/evaluation).
+ *  Fields are corresponding to the core-interfaces (see package core/evaluation).
  */
 @Entity
 @JsonIgnoreProperties(ignoreUnknown=true)

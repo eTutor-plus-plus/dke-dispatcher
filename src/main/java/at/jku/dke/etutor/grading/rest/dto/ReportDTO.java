@@ -7,13 +7,28 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * The report dto as entity
+ */
 @Entity
 @Table(name= "report")
 public class ReportDTO {
+    /**
+     * The submission id identifying the report
+     */
     @Id
     private String submissionId;
+    /**
+     * The hint
+     */
     private String hint;
+    /**
+     * The error message
+     */
     private String error;
+    /**
+     * The description
+     */
     @Column(length = 4192)
     private String description;
 
