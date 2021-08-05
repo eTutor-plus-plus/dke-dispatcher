@@ -2,6 +2,9 @@ package at.jku.dke.etutor.modules.sql.analysis;
 
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 
+/**
+ * The SQLCriterionAnalysis with regards to the SQLEvaluationCriterion.CORRECT_ORDER
+ */
 public class OrderingAnalysis extends AbstractSQLCriterionAnalysis implements SQLCriterionAnalysis{
 
 	public boolean foundIncorrectOrdering;

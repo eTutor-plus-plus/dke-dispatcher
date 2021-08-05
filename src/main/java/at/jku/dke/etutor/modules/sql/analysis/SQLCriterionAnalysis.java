@@ -2,6 +2,9 @@ package at.jku.dke.etutor.modules.sql.analysis;
 
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 
+/**
+ * Interface defining methods for an analysis with regards to an SQlEvaluationCriterion
+ */
 public interface SQLCriterionAnalysis {
 
 	public boolean isCriterionSatisfied();

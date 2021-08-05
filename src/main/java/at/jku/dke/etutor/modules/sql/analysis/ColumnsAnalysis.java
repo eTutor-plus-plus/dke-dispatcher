@@ -5,6 +5,9 @@ import java.util.Vector;
 
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 
+/**
+ * The SQLCriterionAnalysis with regards to the SQLEvaluationCriterion.CORRECT_COLUMNS
+ */
 public class ColumnsAnalysis extends AbstractSQLCriterionAnalysis implements SQLCriterionAnalysis{
 
 	private final Vector<String> missingColumns;

@@ -1,5 +1,8 @@
 package at.jku.dke.etutor.modules.sql.analysis;
 
+/**
+ * Represents an exception that gets thrown during the analysis
+ */
 public class AnalysisException extends Exception {
 
 	public AnalysisException() {

@@ -2,6 +2,9 @@ package at.jku.dke.etutor.modules.sql.analysis;
 
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 
+/**
+ * The SQLCriterionAnalysis for the SQlEvaluationCriterion.CORRECT_SYNTAX
+ */
 public class SyntaxAnalysis extends AbstractSQLCriterionAnalysis implements SQLCriterionAnalysis{
 
 	private boolean foundSyntaxError;

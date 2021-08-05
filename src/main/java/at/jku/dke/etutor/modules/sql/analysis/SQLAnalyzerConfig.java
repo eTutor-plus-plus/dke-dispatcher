@@ -6,6 +6,9 @@ import java.util.Iterator;
 
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 
+/**
+ * The configuration for the SQLAnalysis
+ */
 public class SQLAnalyzerConfig {
 
 	private int diagnoseLevel;

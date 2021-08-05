@@ -12,6 +12,9 @@ import java.util.logging.Logger;
 
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 
+/**
+ * The Analyzer that takes an SQLAnalyzerConfig configuration and performs the analysis according to it
+ */
 public class SQLAnalyzer {
 
 	private Logger logger;
@@ -25,7 +28,15 @@ public class SQLAnalyzer {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Analyzes the submission according to the configuration and returns the SQLAnalysis containing the analyzed
+	 * SQLEvaluationCriterion´s.
+	 * Calls isCriterionToAnalyze() from the config for every EvaluationCriterion and analyzes the submisison if needed
+	 * @param submission the submission to be analyzed
+	 * @param config the configuration
+	 * @return the SQLAnalysis
+	 */
 	public SQLAnalysis analyze(Serializable submission, SQLAnalyzerConfig config) {
 		String message;
 		SQLAnalysis analysis;
@@ -120,8 +131,15 @@ public class SQLAnalyzer {
 		
 		return analysis;
 	}
-	
 
+	/**
+	 * Analyzes the correctness of the submission´s syntax by trying to execute the it.
+	 * Adds the result columns and tuples to the analysis
+	 * @param config the configuration
+	 * @param submittedQuery the submission
+	 * @param analysis the analysis
+	 * @return the SQLCriterionAnalysis for the SQLEvaluationCriterion.CORRECT_SYNTAX
+	 */
 	private SQLCriterionAnalysis analyzeSyntax(SQLAnalyzerConfig config, String submittedQuery, SQLAnalysis analysis) {
 		Vector<String> tuple;
 		ResultSet rset;
@@ -171,6 +189,15 @@ public class SQLAnalyzer {
 		return syntaxAnalysis;
 	}
 
+	/**
+	 * Analyzes the submission according to the SQlEvaluationCriterion.CORRECT_ORDER,
+	 * if the solution-query for the exercise uses an ORDER BY-statement,
+	 * by iterating over the tuples and comparing the columns of the solution´s result set
+	 * with the columns of the submission´s result set.
+	 * @param config the configuration
+	 * @param submittedQuery the submission
+	 * @return the analysis
+	 */
 	private OrderingAnalysis analyzeOrder(SQLAnalyzerConfig config, String submittedQuery) {
 		String message;
 		int columnsCount;
@@ -258,6 +285,11 @@ public class SQLAnalyzer {
 		return orderingAnalysis;
 	}
 
+	/**
+	 * Returns whether a given query contains an ORDER BY-statement
+	 * @param query the query
+	 * @return a boolean indicating if an order-by statement has been found
+	 */
 	private boolean usesOrderByStatement(String query) {
 		int lastOrderIndex;
 		int afterOrderIndex;
@@ -282,6 +314,12 @@ public class SQLAnalyzer {
 		return (lastOrderIndex > afterOrderIndex);
 	}
 
+	/**
+	 * Analyzes the submission according to the SQlEvaluationCriterion_CORRECT_TUPLES
+	 * @param config the configuration
+	 * @param submittedQuery the submitted query
+	 * @return the TuplesAnalysis
+	 */
 	private TuplesAnalysis analyzeTuples(SQLAnalyzerConfig config, String submittedQuery) {
 		int columnCount;
 
@@ -291,12 +329,12 @@ public class SQLAnalyzer {
 		ResultSet correctQuery_RSET;
 		Statement submittedQuery_STMT;
 
-		Vector tuple;
+		Vector<String> tuple;
 		String columns;
 		String message;
 		String checkQuery;
-		Vector correctQueryTuples;
-		Vector submittedQueryTuples;
+		Vector<Collection<String>> correctQueryTuples;
+		Vector<Collection<String>> submittedQueryTuples;
 		TuplesAnalysis tuplesAnalysis;
 
 		checkQuery_RSET = null;
@@ -304,8 +342,8 @@ public class SQLAnalyzer {
 		correctQuery_STMT = null;
 		submittedQuery_STMT = null;
 
-		correctQueryTuples = new Vector();
-		submittedQueryTuples = new Vector();
+		correctQueryTuples = new Vector<>();
+		submittedQueryTuples = new Vector<>();
 		tuplesAnalysis = new TuplesAnalysis();
 
 		this.logger.log(Level.INFO, "Checking tuples of query.");
@@ -341,7 +379,7 @@ public class SQLAnalyzer {
 			columnCount = rsmd.getColumnCount();
 
 			while (checkQuery_RSET.next()) {
-				tuple = new Vector<String>();
+				tuple = new Vector<>();
 
 				for (int i = 1; i <= columnCount; i++) {
 					if (checkQuery_RSET.getString(i) != null) {
@@ -379,12 +417,8 @@ public class SQLAnalyzer {
 
 			tuplesAnalysis.setSurplusTuples(submittedQueryTuples);
 			tuplesAnalysis.removeAllSurplusTuples(correctQueryTuples);
-			
-			if ((tuplesAnalysis.getSurplusTuples().size() == 0) && (tuplesAnalysis.getMissingTuples().size() == 0)){
-				tuplesAnalysis.setCriterionIsSatisfied(true);
-			} else {
-				tuplesAnalysis.setCriterionIsSatisfied(false);
-			}
+
+			tuplesAnalysis.setCriterionIsSatisfied((tuplesAnalysis.getSurplusTuples().size() == 0) && (tuplesAnalysis.getMissingTuples().size() == 0));
 
 			this.logger.log(Level.INFO, "Finished checking tuples of query.");
 
@@ -418,6 +452,12 @@ public class SQLAnalyzer {
 		return tuplesAnalysis;
 	}
 
+	/**
+	 * Analyzes the columns of the submitted query
+	 * @param config the configuration
+	 * @param submittedQuery the submitted query
+	 * @return the analysis
+	 */
 	private ColumnsAnalysis analyzeColumns(SQLAnalyzerConfig config, String submittedQuery) {
 		String message;
 
@@ -426,8 +466,8 @@ public class SQLAnalyzer {
 		ResultSet submittedQuery_RSET;
 		Statement submittedQuery_STMT;
 
-		Vector correctQueryColumns;
-		Vector submittedQueryColumns;
+		Vector<String> correctQueryColumns;
+		Vector<String> submittedQueryColumns;
 
 		int correctQueryColumnCount;
 		int submittedQueryColumnCount;
@@ -472,13 +512,13 @@ public class SQLAnalyzer {
 
 			for (int i = 0; i < correctQueryColumnCount; i++) {
 				if (!submittedQueryColumns.contains(correctQueryColumns.get(i))) {
-					columnsAnalysis.addMissingColumn((String)correctQueryColumns.get(i));
+					columnsAnalysis.addMissingColumn(correctQueryColumns.get(i));
 				}
 			}
 
 			for (int i = 0; i < submittedQueryColumnCount; i++) {
 				if (!correctQueryColumns.contains(submittedQueryColumns.get(i))) {
-					columnsAnalysis.addSurplusColumn((String)submittedQueryColumns.get(i));
+					columnsAnalysis.addSurplusColumn(submittedQueryColumns.get(i));
 				}
 			}
 
@@ -520,6 +560,12 @@ public class SQLAnalyzer {
 		return columnsAnalysis;
 	}
 
+	/**
+	 * Analyzes if the submitted query calculates a cartesian product
+	 * @param config the configuration
+	 * @param submittedQuery the submission
+	 * @return the analysis representing the SQLEvaluationCriterion.CARTESIAN_PRODUCT
+	 */
 	private CartesianProductAnalysis analyzeCartesianProduct(SQLAnalyzerConfig config, String submittedQuery) {
 		String query;
 		String message;

@@ -6,6 +6,9 @@ import java.util.Vector;
 
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 
+/**
+ * The SQLCriterionAnalysis for the SQLEvaluationCriterion.CORRECT_TUPLES
+ */
 public class TuplesAnalysis extends AbstractSQLCriterionAnalysis implements SQLCriterionAnalysis{
 
 	private final Vector<Collection<String>> missingTuples;
@@ -91,11 +94,11 @@ public class TuplesAnalysis extends AbstractSQLCriterionAnalysis implements SQLC
 	}
 	
 	public Vector<Collection<String>> getMissingTuples(){
-		return (Vector)this.missingTuples.clone();
+		return (Vector<Collection<String>>)this.missingTuples.clone();
 	}
 
 	public Vector<Collection<String>> getSurplusTuples(){
-		return (Vector)this.surplusTuples.clone();
+		return (Vector<Collection<String>>)this.surplusTuples.clone();
 	}
 
 	public SQLEvaluationCriterion getEvaluationCriterion(){
