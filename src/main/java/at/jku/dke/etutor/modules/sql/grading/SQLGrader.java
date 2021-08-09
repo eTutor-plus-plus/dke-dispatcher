@@ -72,7 +72,7 @@ public class SQLGrader {
 						//nicht analysiert wurde.
 					}
 				} else {
-					message = new String();
+					message = "";
 					message = message.concat("Could not grade criterion '"  + criterion +  "'. ");
 
 					this.logger.log(Level.INFO, message);
