@@ -6,6 +6,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -141,7 +142,7 @@ public class SQLAnalyzer {
 	 * @return the SQLCriterionAnalysis for the SQLEvaluationCriterion.CORRECT_SYNTAX
 	 */
 	private SQLCriterionAnalysis analyzeSyntax(SQLAnalyzerConfig config, String submittedQuery, SQLAnalysis analysis) {
-		Vector<String> tuple;
+		List<String> tuple;
 		ResultSet rset;
 		Statement stmt;
 		ResultSetMetaData rsmd;
@@ -295,7 +296,7 @@ public class SQLAnalyzer {
 		int afterOrderIndex;
 		String normalizedQuery;
 
-		normalizedQuery = query.toLowerCase().replaceAll(" ", "");
+		normalizedQuery = query.toLowerCase().replace(" ", "");
 		lastOrderIndex = normalizedQuery.lastIndexOf("orderby");
 		afterOrderIndex = normalizedQuery.lastIndexOf("select", lastOrderIndex);
 
@@ -329,12 +330,12 @@ public class SQLAnalyzer {
 		ResultSet correctQuery_RSET;
 		Statement submittedQuery_STMT;
 
-		Vector<String> tuple;
+		List<String> tuple;
 		String columns;
 		String message;
 		String checkQuery;
-		Vector<Collection<String>> correctQueryTuples;
-		Vector<Collection<String>> submittedQueryTuples;
+		List<Collection<String>> correctQueryTuples;
+		List<Collection<String>> submittedQueryTuples;
 		TuplesAnalysis tuplesAnalysis;
 
 		checkQuery_RSET = null;
@@ -364,14 +365,14 @@ public class SQLAnalyzer {
 				columns = columns.concat(rsmd.getColumnName(i));
 			}
 
-			this.logger.log(Level.INFO, "COLUMN LABELS: " + columns);
+			this.logger.log(Level.INFO, "COLUMN LABELS: {0}", columns);
 			
 			checkQuery = "";
 			checkQuery = checkQuery.concat("SELECT " + columns + " ");
 			checkQuery = checkQuery.concat("FROM (" + config.getCorrectQuery() + ") AS correctQuery ");
 			checkQuery = checkQuery.concat("ORDER BY " + columns);
 			
-			this.logger.log(Level.INFO, "CORRECT QUERY:\n" + checkQuery);
+			this.logger.log(Level.INFO, "CORRECT QUERY:\n {0}", checkQuery);
 
 			checkQuery_RSET = correctQuery_STMT.executeQuery(checkQuery);
 
@@ -388,7 +389,7 @@ public class SQLAnalyzer {
 						tuple.add("null");
 					}
 				}
-				correctQueryTuples.addElement(tuple);
+				correctQueryTuples.add(tuple);
 			}
 
 			checkQuery = "";
@@ -396,7 +397,7 @@ public class SQLAnalyzer {
 			checkQuery = checkQuery.concat("FROM (" + submittedQuery + ") AS submittedQuery ");
 			checkQuery = checkQuery.concat("ORDER BY " + columns);
 
-			this.logger.log(Level.INFO, "SUBMITTED QUERY:\n" + checkQuery);
+			this.logger.log(Level.INFO, "SUBMITTED QUERY:\n {0}", checkQuery);
 
 			checkQuery_RSET = submittedQuery_STMT.executeQuery(checkQuery);
 
@@ -409,7 +410,7 @@ public class SQLAnalyzer {
 						tuple.add("null");
 					}
 				}
-				submittedQueryTuples.addElement(tuple);
+				submittedQueryTuples.add(tuple);
 			}
 
 			tuplesAnalysis.setMissingTuples(correctQueryTuples);
@@ -418,7 +419,7 @@ public class SQLAnalyzer {
 			tuplesAnalysis.setSurplusTuples(submittedQueryTuples);
 			tuplesAnalysis.removeAllSurplusTuples(correctQueryTuples);
 
-			tuplesAnalysis.setCriterionIsSatisfied((tuplesAnalysis.getSurplusTuples().size() == 0) && (tuplesAnalysis.getMissingTuples().size() == 0));
+			tuplesAnalysis.setCriterionIsSatisfied((tuplesAnalysis.getSurplusTuples().isEmpty()) && (tuplesAnalysis.getMissingTuples().isEmpty()));
 
 			this.logger.log(Level.INFO, "Finished checking tuples of query.");
 
@@ -466,8 +467,8 @@ public class SQLAnalyzer {
 		ResultSet submittedQuery_RSET;
 		Statement submittedQuery_STMT;
 
-		Vector<String> correctQueryColumns;
-		Vector<String> submittedQueryColumns;
+		List<String> correctQueryColumns;
+		List<String> submittedQueryColumns;
 
 		int correctQueryColumnCount;
 		int submittedQueryColumnCount;
@@ -522,11 +523,7 @@ public class SQLAnalyzer {
 				}
 			}
 
-			if ((columnsAnalysis.getSurplusColumns().size() == 0) && (columnsAnalysis.getMissingColumns().size() == 0)){
-				columnsAnalysis.setCriterionIsSatisfied(true);
-			} else {
-				columnsAnalysis.setCriterionIsSatisfied(false);
-			}
+			columnsAnalysis.setCriterionIsSatisfied((columnsAnalysis.getSurplusColumns().isEmpty()) && (columnsAnalysis.getMissingColumns().isEmpty()));
 
 			this.logger.log(Level.INFO, "Finished checking columns of query.");
 

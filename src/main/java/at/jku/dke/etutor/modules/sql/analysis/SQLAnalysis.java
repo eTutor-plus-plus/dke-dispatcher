@@ -1,9 +1,6 @@
 package at.jku.dke.etutor.modules.sql.analysis;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.*;
 
 
 import at.jku.dke.etutor.core.evaluation.Analysis;
@@ -18,7 +15,7 @@ public class SQLAnalysis extends DefaultAnalysis implements Analysis {
 	/**
 	 * The result tuples
 	 */
-	private Vector<Collection<String>> queryResultTuples;
+	private List<Collection<String>> queryResultTuples;
 	/**
 	 * Maps the SQLEvaluationCriterion´s to the SQLCriterionAnalysis´
 	 */
@@ -27,15 +24,15 @@ public class SQLAnalysis extends DefaultAnalysis implements Analysis {
 	/**
 	 * The result columns
 	 */
-	private Vector<String> queryResultColumnLabels;
+	private List<String> queryResultColumnLabels;
 
 	public SQLAnalysis(){
 		super();
 
 		this.exception = null;
-		this.queryResultTuples = new Vector<>();
+		this.queryResultTuples = new ArrayList<>();
 		this.criterionAnalyses = new HashMap<>();
-		this.queryResultColumnLabels = new Vector<>();
+		this.queryResultColumnLabels = new ArrayList<>();
 	}
 
 	/**
@@ -66,23 +63,23 @@ public class SQLAnalysis extends DefaultAnalysis implements Analysis {
 	 * Returns the queryResultTuples
 	 * @return the tuples
 	 */
-	public Vector<Collection<String>> getQueryResultTuples() {
-		return (Vector<Collection<String>>)this.queryResultTuples.clone();
+	public List<Collection<String>> getQueryResultTuples() {
+		return new ArrayList<>(queryResultTuples);
 	}
 
 	/**
 	 * Returns the queryResultColumnLabels
 	 * @return the column labels
 	 */
-	public Vector<String> getQueryResultColumnLabels() {
-		return (Vector<String>)this.queryResultColumnLabels.clone();
+	public List<String> getQueryResultColumnLabels() {
+		return new ArrayList<>(queryResultColumnLabels);
 	}
 
 	/**
 	 * Sets the queryResultTuples
 	 * @param queryResultTuples the tuples
 	 */
-	public void setQueryResultTuples(Vector<Collection<String>> queryResultTuples) {
+	public void setQueryResultTuples(List<Collection<String>> queryResultTuples) {
 		this.queryResultTuples = queryResultTuples;
 	}
 
@@ -98,7 +95,7 @@ public class SQLAnalysis extends DefaultAnalysis implements Analysis {
 	 * Sets the queryResultColumnLabels
 	 * @param queryResultColumnLabels the column labels
 	 */
-	public void setQueryResultColumnLabels(Vector<String> queryResultColumnLabels) {
+	public void setQueryResultColumnLabels(List<String> queryResultColumnLabels) {
 		this.queryResultColumnLabels = queryResultColumnLabels;
 	}
 

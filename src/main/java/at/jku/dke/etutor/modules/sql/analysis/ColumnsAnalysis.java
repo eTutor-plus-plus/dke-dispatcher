@@ -1,7 +1,8 @@
 package at.jku.dke.etutor.modules.sql.analysis;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 
@@ -10,23 +11,23 @@ import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
  */
 public class ColumnsAnalysis extends AbstractSQLCriterionAnalysis implements SQLCriterionAnalysis{
 
-	private final Vector<String> missingColumns;
-	private final Vector<String> surplusColumns;
+	private final List<String> missingColumns;
+	private final List<String> surplusColumns;
 	private boolean foundIncorrectColumns;
 
 	public ColumnsAnalysis() {
 		super();
 		this.foundIncorrectColumns = false;
-		this.missingColumns = new Vector<>();
-		this.surplusColumns = new Vector<>();
+		this.missingColumns = new ArrayList<>();
+		this.surplusColumns = new ArrayList<>();
 	}
 	
 	public boolean hasMissingColumns(){
-		return this.missingColumns.size() > 0;
+		return !this.missingColumns.isEmpty();
 	}
 	
 	public boolean hasSurplusColumns(){
-		return this.surplusColumns.size() > 0;
+		return !this.surplusColumns.isEmpty();
 	}
 	
 	public boolean foundIncorrectColumns(){
@@ -61,12 +62,12 @@ public class ColumnsAnalysis extends AbstractSQLCriterionAnalysis implements SQL
 		return this.surplusColumns.iterator();
 	}
 	
-	public Vector<String> getMissingColumns(){
-		return (Vector<String>)this.missingColumns.clone();
+	public List<String> getMissingColumns(){
+		return new ArrayList<>(missingColumns);
 	}
 
-	public Vector<String> getSurplusColumns(){
-		return (Vector<String>)this.surplusColumns.clone();
+	public List<String> getSurplusColumns(){
+		return new ArrayList<>(surplusColumns);
 	}
 	
 	public SQLEvaluationCriterion getEvaluationCriterion(){

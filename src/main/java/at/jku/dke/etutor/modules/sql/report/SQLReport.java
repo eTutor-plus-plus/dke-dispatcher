@@ -5,10 +5,7 @@ import at.jku.dke.etutor.core.evaluation.DefaultReport;
 import at.jku.dke.etutor.core.evaluation.Report;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Vector;
-
+import java.util.*;
 
 
 public class SQLReport extends DefaultReport implements Report, Serializable{
@@ -16,11 +13,11 @@ public class SQLReport extends DefaultReport implements Report, Serializable{
 	private String prologue;
 	private String exceptionText;
 
-	private Vector queryResultTuples;
-	private Vector errorReports;
-	private Vector queryResultColumnLabels;
-	private Vector missingTuples;
-	private Vector surplusTuples;
+	private List<Collection<String>> queryResultTuples;
+	private List<SQLErrorReport> errorReports;
+	private List<String> queryResultColumnLabels;
+	private List<Collection<String>> missingTuples;
+	private List<Collection<String>> surplusTuples;
 
 	private boolean showHints;
 	private boolean showPrologue;
@@ -39,41 +36,41 @@ public class SQLReport extends DefaultReport implements Report, Serializable{
 		this.showErrorReports = false;
 		this.showErrorDescriptions = false;
 
-		this.prologue = new String();
-		this.exceptionText = new String();
+		this.prologue = "";
+		this.exceptionText = "";
 
-		this.errorReports = new Vector();
-		this.queryResultTuples = new Vector();
-		this.queryResultColumnLabels = new Vector();
-		this.missingTuples = new Vector();
-		this.surplusTuples=new Vector();
+		this.errorReports = new ArrayList<>();
+		this.queryResultTuples = new ArrayList<>();
+		this.queryResultColumnLabels = new ArrayList<>();
+		this.missingTuples = new ArrayList<>();
+		this.surplusTuples=new ArrayList<>();
 	}
 
-	public Vector getMissingTuples() {
+	public List<Collection<String>> getMissingTuples() {
 		return missingTuples;
 	}
 
-	public void setMissingTuples(Vector missingTuples) {
+	public void setMissingTuples(List<Collection<String>> missingTuples) {
 		this.missingTuples = missingTuples;
 	}
 
-	public Vector getSurplusTuples() {
+	public List<Collection<String>> getSurplusTuples() {
 		return surplusTuples;
 	}
 
-	public void setSurplusTuples(Vector surplusTuples) {
+	public void setSurplusTuples(List<Collection<String>> surplusTuples) {
 		this.surplusTuples = surplusTuples;
 	}
 
 	public boolean hasErrorReports(){
-		return this.errorReports.size() > 0;
+		return !this.errorReports.isEmpty();
 	}
 
 	public void addQueryResultColumnLabel(String columnLabel){
 		this.queryResultColumnLabels.add(columnLabel);
 	}
 	
-	public void addQueryResultTuple(Collection tuple) {
+	public void addQueryResultTuple(Collection<String> tuple) {
 		this.queryResultTuples.add(tuple);
 	}
 
@@ -89,31 +86,31 @@ public class SQLReport extends DefaultReport implements Report, Serializable{
 		this.errorReports.add(errorReport);
 	}
 	
-	public Iterator iterErrorReports(){
+	public Iterator<SQLErrorReport> iterErrorReports(){
 		return this.errorReports.iterator();
 	}
 
-	public Iterator iterQueryResultTuples(){
+	public Iterator<Collection<String>> iterQueryResultTuples(){
 		return this.queryResultTuples.iterator();
 	}
 
-	public Vector getQueryResultTuples() {
-		return (Vector)this.queryResultTuples.clone();
+	public List<Collection<String>> getQueryResultTuples() {
+		return new ArrayList<>(queryResultTuples);
 	}
 
-	public Vector getQueryResultColumnLabels() {
-		return (Vector)this.queryResultColumnLabels.clone();
+	public List<String> getQueryResultColumnLabels() {
+		return new ArrayList<>(queryResultColumnLabels);
 	}
 
-	public void setQueryResultTuples(Vector queryResultTuples) {
+	public void setQueryResultTuples(List<Collection<String>> queryResultTuples) {
 		this.queryResultTuples = queryResultTuples;
 	}
 
-	public Iterator iterQueryResultColumnLabels(){
+	public Iterator<String> iterQueryResultColumnLabels(){
 		return this.queryResultColumnLabels.iterator();
 	}
 
-	public void setQueryResultColumnLabels(Vector queryResultColumnLabels) {
+	public void setQueryResultColumnLabels(List<String> queryResultColumnLabels) {
 		this.queryResultColumnLabels = queryResultColumnLabels;
 	}
 

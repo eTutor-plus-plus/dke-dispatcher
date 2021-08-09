@@ -7,7 +7,7 @@ import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
  */
 public class OrderingAnalysis extends AbstractSQLCriterionAnalysis implements SQLCriterionAnalysis{
 
-	public boolean foundIncorrectOrdering;
+	private boolean foundIncorrectOrdering;
 
 	public OrderingAnalysis() {
 		super();

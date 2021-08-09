@@ -50,23 +50,16 @@ public class ETutorSubmissionController {
     public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody SubmissionDTO submissionDto) {
         Submission submission = new Submission(submissionDto);
         logger.info("Submission received");
-        SubmissionId submissionId = new SubmissionId("-1");
-        try{
-            logger.info("Calculating submission-ID");
-            submissionId = SubmissionId.createId(submission);
-            logger.info("Finished calculating submission-ID: " + submissionId.getSubmissionId());
+        SubmissionId submissionId;
 
-            submissionDispatcherService.run(submission);
+        logger.info("Calculating submission-ID");
+        submissionId = SubmissionId.createId(submission);
+        logger.info("Finished calculating submission-ID: " + submissionId.getSubmissionId());
 
-            return new ResponseEntity<>(EntityModel.of(submissionId,
-                    linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("grading")),
-                    HttpStatus.ACCEPTED);
+        submissionDispatcherService.run(submission);
 
-        } catch (IOException e){
-            logger.log(Level.SEVERE, "Request processing stopped due to errors");
-            e.printStackTrace();
-            return new ResponseEntity<>(EntityModel.of(submissionId),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(EntityModel.of(submissionId,
+                linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("grading")),
+                HttpStatus.ACCEPTED);
     }
 }
