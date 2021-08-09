@@ -19,7 +19,7 @@ public abstract class AbstractSQLCriterionAnalysis implements SQLCriterionAnalys
 	/**
 	 * The constructor
 	 */
-	public AbstractSQLCriterionAnalysis() {
+	protected AbstractSQLCriterionAnalysis() {
 		super();
 		this.exception = null;
 		this.isSatisfied = true;

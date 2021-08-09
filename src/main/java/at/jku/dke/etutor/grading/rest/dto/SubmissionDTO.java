@@ -2,6 +2,9 @@ package at.jku.dke.etutor.grading.rest.dto;
 
 import java.util.Map;
 
+/**
+ * DTO for Submission-entities
+ */
 public class SubmissionDTO {
     private String submissionId;
     private String taskType;

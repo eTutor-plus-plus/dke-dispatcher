@@ -11,7 +11,10 @@ import java.util.UUID;
 public class SubmissionId {
     private String submissionId;
 
-    public SubmissionId(){};
+    public SubmissionId(){
+        // empty constructor
+    }
+
     public SubmissionId(String value){
         this.submissionId=value;
     }
@@ -28,9 +31,8 @@ public class SubmissionId {
      * Factory method that takes the submission and generates a unique uuid.
      * @param submission The submission from the student
      * @return a new SubmissionId Instance which wraps the generated ID
-     * @throws IOException
      */
-    public static SubmissionId createId(Submission submission) throws IOException {
+    public static SubmissionId createId(Submission submission)  {
         UUID uuid = UUID.randomUUID();
         submission.setSubmissionId(uuid.toString());
         return new SubmissionId(uuid.toString());

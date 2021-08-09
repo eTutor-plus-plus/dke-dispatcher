@@ -2,16 +2,10 @@ package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.core.evaluation.*;
 import at.jku.dke.etutor.grading.rest.dto.*;
-import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
-import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
-import at.jku.dke.etutor.modules.sql.analysis.SQLCriterionAnalysis;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
