@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.grading.rest;
 
 
+import at.jku.dke.etutor.grading.rest.dto.SubmissionDTO;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
@@ -40,14 +41,15 @@ public class ETutorSubmissionController {
 
     /**
      * Takes a submission as parameter, calculates a unique submissionId, asynchronously initializes a SubmissionDispatcher and returns the generated ID
-     * @param submission : the submission from the student
+     * @param submissionDto : the submission from the student
      * @return : ResponseEntity containing EntityModel with the generated submissionId and a link under which the grading can be requested
      *          - HttpStatus.INTERNAL_SERVER_ERROR if exception occurs
      *          - HttpStatus.ACCEPTED if submission is accepted for processing
      */
     @CrossOrigin(origins="*")
     @PostMapping("")
-    public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody Submission submission) throws JsonProcessingException {
+    public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody SubmissionDTO submissionDto) {
+        Submission submission = new Submission(submissionDto);
         logger.info("Submission received");
         SubmissionId submissionId = new SubmissionId("-1");
         try{
@@ -55,7 +57,7 @@ public class ETutorSubmissionController {
             submissionId = SubmissionId.createId(submission);
             logger.info("Finished calculating submission-ID: " + submissionId.getSubmissionId());
 
-           submissionDispatcherService.run(submission);
+            submissionDispatcherService.run(submission);
 
             return new ResponseEntity<>(EntityModel.of(submissionId,
                     linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("grading")),

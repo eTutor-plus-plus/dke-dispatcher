@@ -9,11 +9,7 @@ import at.jku.dke.etutor.modules.sql.analysis.*;
 import org.springframework.context.MessageSource;
 
 
-import at.jku.dke.etutor.modules.sql.SQLConstants;
-import at.jku.dke.etutor.modules.sql.SQLEvaluationAction;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
-import org.springframework.context.MessageSourceResolvable;
-import org.springframework.context.NoSuchMessageException;
 
 
 public class SQLReporter {
@@ -28,9 +24,9 @@ public class SQLReporter {
 
     public SQLReport createReport(SQLAnalysis analysis, DefaultGrading grading, SQLReporterConfig config, Locale locale) {
         final String LS ="<br>";
-        String tab;
+        final String tab = " \t";
         SQLReport report;
-        Collection tuple;
+        Collection<String> tuple;
         ResultSetMetaData rsmd;
         SQLErrorReport errorReport;
         TuplesAnalysis tuplesAnalysis;
@@ -39,17 +35,17 @@ public class SQLReporter {
 
         boolean queryIsCorrect;
 
-        Iterator tuplesIterator;
-        Iterator columnsIterator;
-        Iterator columnLabelsIterator;
-        Iterator tupleAttributesIterator;
-        Iterator criterionAnalysesIterator;
+        Iterator<Collection<String>> tuplesIterator;
+        Iterator<String> columnsIterator;
+        Iterator<String> columnLabelsIterator;
+        Iterator<String> tupleAttributesIterator;
+        Iterator<SQLCriterionAnalysis> criterionAnalysesIterator;
 
-        StringBuffer hint;
-        StringBuffer error;
-        StringBuffer description;
+        StringBuilder hint;
+        StringBuilder error;
+        StringBuilder description;
 
-        tab = " \t";
+
 
         report = new SQLReport();
 
@@ -63,7 +59,7 @@ public class SQLReporter {
         queryIsCorrect = true;
         criterionAnalysesIterator = analysis.iterCriterionAnalyses();
         while (criterionAnalysesIterator.hasNext()) {
-            criterionAnalysis = (SQLCriterionAnalysis) criterionAnalysesIterator.next();
+            criterionAnalysis = criterionAnalysesIterator.next();
             if (!criterionAnalysis.isCriterionSatisfied()) {
                 queryIsCorrect = false;
             }
@@ -72,12 +68,12 @@ public class SQLReporter {
         //Creating error reports
         criterionAnalysesIterator = analysis.iterCriterionAnalyses();
         while (criterionAnalysesIterator.hasNext()) {
-            criterionAnalysis = (SQLCriterionAnalysis) criterionAnalysesIterator.next();
+            criterionAnalysis = criterionAnalysesIterator.next();
 
             if (!criterionAnalysis.isCriterionSatisfied()) {
-                hint = new StringBuffer();
-                error = new StringBuffer();
-                description = new StringBuffer();
+                hint = new StringBuilder();
+                error = new StringBuilder();
+                description = new StringBuilder();
                 errorReport = new SQLErrorReport();
 
                 if ((criterionAnalysis instanceof SyntaxAnalysis) && (config.getDiagnoseLevel() > 0)) {
@@ -141,7 +137,7 @@ public class SQLReporter {
                             tuplesIterator = tuplesAnalysis.iterMissingTuples();
                             while (tuplesIterator.hasNext()) {
 
-                                tuple = (Collection) tuplesIterator.next();
+                                tuple = (Collection<String>) tuplesIterator.next();
 
                                 tupleAttributesIterator = tuple.iterator();
                                 description.append("<tr>");
@@ -173,11 +169,11 @@ public class SQLReporter {
                             tuplesIterator = tuplesAnalysis.iterSurplusTuples();
                             while (tuplesIterator.hasNext()) {
                                 description.append("<tr>");
-                                tuple = (Collection) tuplesIterator.next();
+                                tuple = (Collection<String>) tuplesIterator.next();
 
                                 tupleAttributesIterator = tuple.iterator();
                                 while (tupleAttributesIterator.hasNext()) {
-                                    description.append("<td>"+tupleAttributesIterator.next() + "</td>");
+                                    description.append("<td>").append(tupleAttributesIterator.next()).append("</td>");
                                 }
                                 description.append("</tr>");
                             }
@@ -214,7 +210,7 @@ public class SQLReporter {
                     if (config.getDiagnoseLevel() == 2) {
 
                         if (columnsAnalysis.hasMissingColumns()) {
-                            description = description.append("There are ").append(missingColumnsCount).append(" columns missing ").append(LS);
+                            description.append("There are ").append(missingColumnsCount).append(" columns missing ").append(LS);
 
 
                             if ((columnsAnalysis.hasMissingColumns()) && (columnsAnalysis.hasSurplusColumns())) {
@@ -222,7 +218,7 @@ public class SQLReporter {
                             }
 
                             if (columnsAnalysis.hasSurplusColumns()) {
-                                description = description.append("There are ").append(surplusColumnsCount).append(" too much ").append(LS);
+                                description.append("There are ").append(surplusColumnsCount).append(" too much ").append(LS);
 
                             }
                         }
@@ -230,7 +226,7 @@ public class SQLReporter {
 
                     if (config.getDiagnoseLevel() == 3) {
 
-                        if (columnsAnalysis.getMissingColumns().size() > 0) {
+                        if (columnsAnalysis.hasMissingColumns()) {
                             description.append("The following columns are missing: ").append(LS);
 
                             columnsIterator = columnsAnalysis.iterMissingColumns();
@@ -242,7 +238,7 @@ public class SQLReporter {
                             description.append(LS);
                         }
 
-                        if (columnsAnalysis.getSurplusColumns().size() > 0) {
+                        if (columnsAnalysis.hasSurplusColumns()) {
                             description.append("The following columns are too much: ").append(LS);
                             columnsIterator = columnsAnalysis.iterSurplusColumns();
                             description.append("<strong>");

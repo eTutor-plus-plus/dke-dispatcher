@@ -1,14 +1,7 @@
 package at.jku.dke.etutor.grading.service;
 import at.jku.dke.etutor.core.evaluation.Evaluator;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
-import org.springframework.context.MessageSource;
-import org.springframework.context.MessageSourceResolvable;
-import org.springframework.context.NoSuchMessageException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
-import java.util.Locale;
-
 
 /**
  * Maps the task-types to the modules implementation of the Evaluator interface
@@ -31,13 +24,11 @@ public class ModuleManager{
      * @return the evaluator
      * @throws Exception if no evaluator for the given task type has been found
      */
-    public Evaluator getEvaluator(String tasktype) throws Exception{
-        switch (tasktype) {
-            case  "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#SQLTask":
-                return sqlEvaluator;
-            case  "sql":
-                    return sqlEvaluator;
-        }
-        throw new Exception("Could not find evaluator");
+    public Evaluator getEvaluator(String tasktype) {
+        return switch (tasktype) {
+            case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#SQLTask" -> sqlEvaluator;
+            case "sql" -> sqlEvaluator;
+            default -> null;
+        };
     }
 }

@@ -1,7 +1,5 @@
 package at.jku.dke.etutor.grading.rest.dto;
 
-import at.jku.dke.etutor.core.evaluation.DefaultGrading;
-import at.jku.dke.etutor.core.evaluation.DefaultReport;
 import at.jku.dke.etutor.core.evaluation.Grading;
 
 import javax.persistence.*;

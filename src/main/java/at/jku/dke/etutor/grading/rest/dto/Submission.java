@@ -2,7 +2,6 @@ package at.jku.dke.etutor.grading.rest.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.springframework.stereotype.Component;
 
 
 import javax.persistence.*;
@@ -45,6 +44,16 @@ public class Submission implements Serializable {
         passedParameters= new HashMap<>();
         passedAttributes=new HashMap<>();
     }
+
+    public Submission(SubmissionDTO submissionDTO){
+        this.maxPoints=submissionDTO.getMaxPoints();
+        this.submissionId=submissionDTO.getSubmissionId();
+        this.passedAttributes=submissionDTO.getPassedAttributes();
+        this.passedParameters=submissionDTO.getPassedParameters();
+        this.taskType=submissionDTO.getTaskType();
+        this.exerciseId=submissionDTO.getExerciseId();
+    }
+
 
     public int getMaxPoints() {
         return maxPoints;

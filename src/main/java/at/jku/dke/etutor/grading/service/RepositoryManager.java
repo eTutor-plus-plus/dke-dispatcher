@@ -1,14 +1,12 @@
 package at.jku.dke.etutor.grading.service;
 
 
-import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.dto.ReportDTO;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
 import at.jku.dke.etutor.grading.rest.repositories.ReportDTORepository;
 import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,9 +14,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RepositoryManager {
-    private  GradingDTORepository gradingRepository;
-    private  SubmissionRepository submissionRepository;
-    private  ReportDTORepository reportRepository;
+    private  final GradingDTORepository gradingRepository;
+    private  final SubmissionRepository submissionRepository;
+    private  final ReportDTORepository reportRepository;
 
     /**
      * The constructor
