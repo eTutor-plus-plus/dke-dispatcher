@@ -4,7 +4,7 @@ import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 
 public class MissingGradingCriterionConfigException extends Exception {
 
-	private SQLEvaluationCriterion criterion;
+	private final SQLEvaluationCriterion criterion;
 
 	public MissingGradingCriterionConfigException() {
 		super();

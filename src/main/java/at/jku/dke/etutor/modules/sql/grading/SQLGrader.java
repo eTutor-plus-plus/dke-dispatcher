@@ -20,8 +20,8 @@ public class SQLGrader {
 
 		try {
 			this.logger = Logger.getLogger("at.jku.dke.etutor.modules.sql");
-		} catch (Exception ignore) {
-			ignore.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -31,7 +31,7 @@ public class SQLGrader {
 		int points;
 		String message;
 		DefaultGrading grading;
-		Iterator criterions;
+		Iterator<SQLEvaluationCriterion> criterions;
 		SQLEvaluationCriterion criterion;
 		SQLCriterionAnalysis criterionAnalysis;
 		SQLCriterionGradingConfig criterionGradingConfig;
@@ -41,7 +41,7 @@ public class SQLGrader {
 		criterions = gradingConfig.iterCriterionsToGrade();
 
 		while (criterions.hasNext()) {
-			criterion = (SQLEvaluationCriterion)criterions.next();
+			criterion = criterions.next();
 			criterionGradingConfig = gradingConfig.getCriterionGradingConfig(criterion);
 
 			if (criterionGradingConfig != null) {
@@ -72,7 +72,7 @@ public class SQLGrader {
 						//nicht analysiert wurde.
 					}
 				} else {
-					message = new String();
+					message = "";
 					message = message.concat("Could not grade criterion '"  + criterion +  "'. ");
 
 					this.logger.log(Level.INFO, message);
@@ -80,7 +80,7 @@ public class SQLGrader {
 					//return grading;
 				}
 			} else {
-				message = new String();
+				message = "";
 				message = message.concat("Stopped grading due to errors. ");
 				message = message.concat("No config for grading criterion' " + criterion + "' available. ");
 				message = message.concat("This is an internal system error. ");
@@ -91,17 +91,14 @@ public class SQLGrader {
 			}
 		}
 		
-		Object next;
+		SQLCriterionAnalysis next;
 		boolean isAllRight = true;
 		SQLCriterionAnalysis ca;
-		Iterator i = analysis.iterCriterionAnalyses();
+		Iterator<SQLCriterionAnalysis> i = analysis.iterCriterionAnalyses();
 		while (i.hasNext()){
 			next = i.next();
-			if (next != null){
-				ca = (SQLCriterionAnalysis)next;
-				if (!ca.isCriterionSatisfied()){
-					isAllRight = false;
-				}
+			if (next != null && !next.isCriterionSatisfied()){
+				isAllRight = false;
 			}
 		}
 
@@ -115,79 +112,4 @@ public class SQLGrader {
 		
 		return grading;
 	}
-	
-	/*
-	public DefaultGrading grade(SQLAnalysis analysis, SQLGraderConfig gradingConfig) {
-		int points;
-		String message;
-		DefaultGrading grading;
-		Iterator criterions;
-		SQLEvaluationCriterion criterion;
-		SQLCriterionAnalysis criterionAnalysis;
-		SQLCriterionGradingConfig criterionGradingConfig;
-
-		points = 0;
-		grading = new DefaultGrading();
-		criterions = gradingConfig.iterCriterionsToGrade();
-
-		while (criterions.hasNext()) {
-			criterion = (SQLEvaluationCriterion)criterions.next();
-			criterionGradingConfig = gradingConfig.getCriterionGradingConfig(criterion);
-
-			if (criterionGradingConfig != null) {
-
-				if (analysis.isCriterionAnalyzed(criterion)) {
-					criterionAnalysis = analysis.getCriterionAnalysis(criterion);
-
-					if (criterionAnalysis.getAnalysisException() == null) {
-						if (criterionAnalysis.isCriterionSatisfied()) {
-							if (criterionGradingConfig.getPositiveScope().equals(GradingScope.EXAMPLE)){
-								points = criterionGradingConfig.getPositivePoints();
-								grading.setTotalPoints(points);
-								return grading;
-							} else {
-								points = points + criterionGradingConfig.getPositivePoints();					
-							}
-						} else {
-							if (criterionGradingConfig.getNegativeScope().equals(GradingScope.EXAMPLE)){
-								points = criterionGradingConfig.getNegativePoints();
-								grading.setTotalPoints(points);
-								return grading;
-							} else {
-								points = points - criterionGradingConfig.getNegativePoints();
-							}
-						}
-					} else {
-						//noch unsicher, was passieren soll, wenn kriterium aufgrund von exception in analyzer
-						//nicht analysiert wurde.
-					}
-				} else {
-					message = new String();
-					message = message.concat("Could not grade criterion '"  + criterion +  "'. ");
-
-					this.logger.log(Level.INFO, message);
-					//grading.setGradingException(new GradingException(message));
-					//return grading;
-				}
-			} else {
-				message = new String();
-				message = message.concat("Stopped grading due to errors. ");
-				message = message.concat("No config for grading criterion' " + criterion + "' available. ");
-				message = message.concat("This is an internal system error. ");
-				message = message.concat("Please inform the system administrator.");
-
-				this.logger.log(Level.SEVERE, message);
-				grading.setGradingException(new GradingException(message));
-				return grading;
-			}
-		}
-		
-		if (points != 0){
-			grading.setTotalPoints(gradingConfig.getMaximumPoints());
-		} else {
-			grading.setTotalPoints(0);
-		}
-		return grading;
-	}
-	 */
 }

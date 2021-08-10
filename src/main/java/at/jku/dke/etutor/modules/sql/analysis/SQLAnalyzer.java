@@ -5,9 +5,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +17,8 @@ import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
  * The Analyzer that takes an SQLAnalyzerConfig configuration and performs the analysis according to it
  */
 public class SQLAnalyzer {
+	private final String INTERNAL_ERROR = "This is an internal system error.";
+	private final String CONTACT_ADMIN = "Please contact the system administrator.";
 
 	private Logger logger;
 
@@ -51,8 +53,8 @@ public class SQLAnalyzer {
 			message ="";
 			message = message.concat("Analsis stopped with errors. ");
 			message = message.concat("Submission is empty. ");
-			message = message.concat("This is an internal system error. ");
-			message = message.concat("Please inform the system administrator.");
+			message = message.concat(INTERNAL_ERROR);
+			message = message.concat(CONTACT_ADMIN);
 
 			this.logger.log(Level.SEVERE, message);
 			analysis.setAnalysisException(new AnalysisException(message));
@@ -65,8 +67,8 @@ public class SQLAnalyzer {
 			message = "";
 			message = message.concat("Analysis stopped with errors. ");
 			message = message.concat("Submission is not utilizable. ");
-			message = message.concat("This is an internal system error. ");
-			message = message.concat("Please inform the system administrator.");
+			message = message.concat(INTERNAL_ERROR);
+			message = message.concat(CONTACT_ADMIN);
 
 			this.logger.log(Level.SEVERE, message);
 			analysis.setAnalysisException(new AnalysisException(message));
@@ -77,21 +79,21 @@ public class SQLAnalyzer {
 			message = "";
 			message = message.concat("Analysis stopped with errors. ");
 			message = message.concat("No configuration found. ");
-			message = message.concat("This is an internal system error. ");
-			message = message.concat("Please inform the system administrator");
+			message = message.concat(INTERNAL_ERROR);
+			message = message.concat(CONTACT_ADMIN);
 
 			this.logger.log(Level.SEVERE, message);
 			analysis.setAnalysisException(new AnalysisException(message));
 			return analysis;
 		}
-		
+
 		if (config.isCriterionToAnalyze(SQLEvaluationCriterion.CORRECT_SYNTAX)) {
 			criterionAnalysis = this.analyzeSyntax(config, submittedQuery, analysis);
 			analysis.addCriterionAnalysis(SQLEvaluationCriterion.CORRECT_SYNTAX, criterionAnalysis);
 			if ((criterionAnalysis.getAnalysisException() != null) || (!criterionAnalysis.isCriterionSatisfied())) {
 				analysis.setAnalysisException(criterionAnalysis.getAnalysisException());
 				return analysis;
-			} 
+			}
 		}
 
 		if (config.isCriterionToAnalyze(SQLEvaluationCriterion.CARTESIAN_PRODUCT)) {
@@ -100,7 +102,7 @@ public class SQLAnalyzer {
 			if ((criterionAnalysis.getAnalysisException() != null) || (!criterionAnalysis.isCriterionSatisfied())) {
 				analysis.setAnalysisException(criterionAnalysis.getAnalysisException());
 				return analysis;
-			} 
+			}
 		}
 
 		if (config.isCriterionToAnalyze(SQLEvaluationCriterion.CORRECT_COLUMNS)) {
@@ -109,7 +111,7 @@ public class SQLAnalyzer {
 			if ((criterionAnalysis.getAnalysisException() != null) || (!criterionAnalysis.isCriterionSatisfied())) {
 				analysis.setAnalysisException(criterionAnalysis.getAnalysisException());
 				return analysis;
-			} 
+			}
 		}
 
 		if (config.isCriterionToAnalyze(SQLEvaluationCriterion.CORRECT_TUPLES)) {
@@ -118,7 +120,7 @@ public class SQLAnalyzer {
 			if ((criterionAnalysis.getAnalysisException() != null) || (!criterionAnalysis.isCriterionSatisfied())) {
 				analysis.setAnalysisException(criterionAnalysis.getAnalysisException());
 				return analysis;
-			} 
+			}
 		}
 
 		if (config.isCriterionToAnalyze(SQLEvaluationCriterion.CORRECT_ORDER)) {
@@ -127,9 +129,9 @@ public class SQLAnalyzer {
 			if ((criterionAnalysis.getAnalysisException() != null) || (!criterionAnalysis.isCriterionSatisfied())) {
 				analysis.setAnalysisException(criterionAnalysis.getAnalysisException());
 				return analysis;
-			} 
+			}
 		}
-		
+
 		return analysis;
 	}
 
@@ -143,27 +145,22 @@ public class SQLAnalyzer {
 	 */
 	private SQLCriterionAnalysis analyzeSyntax(SQLAnalyzerConfig config, String submittedQuery, SQLAnalysis analysis) {
 		List<String> tuple;
-		ResultSet rset;
-		Statement stmt;
 		ResultSetMetaData rsmd;
 		SyntaxAnalysis syntaxAnalysis;
 
-		rset = null;
-		stmt = null;
 		syntaxAnalysis = new SyntaxAnalysis();
 
 		this.logger.log(Level.INFO, "Analyzing syntax");
 
-		try {
-			stmt = config.getConnection().createStatement();
-			rset = stmt.executeQuery(submittedQuery);
+		try (Statement stmt = config.getConnection().createStatement();
+		ResultSet rset = stmt.executeQuery(submittedQuery)){
 			rsmd = rset.getMetaData();
 			for (int i=1; i<=rsmd.getColumnCount(); i++){
 				analysis.addQueryResultColumnLabel(rsmd.getColumnLabel(i));
 			}
 
 			while (rset.next()){
-				tuple = new Vector<>();
+				tuple = new ArrayList<>();
 				for (int i=1; i<=rsmd.getColumnCount(); i++){
 					tuple.add(rset.getString(i));
 				}
@@ -174,17 +171,6 @@ public class SQLAnalyzer {
 			syntaxAnalysis.setFoundSyntaxError(true);
 			syntaxAnalysis.setCriterionIsSatisfied(false);
 			syntaxAnalysis.setSyntaxErrorDescription(e.toString());
-		} finally {
-			try {
-				if (rset != null) {
-					rset.close();
-				}
-				if (stmt != null) {
-					stmt.close();
-				}
-			} catch (SQLException e) {
-				this.logger.log(Level.SEVERE, "Could not close result set.", e);
-			}
 		}
 
 		return syntaxAnalysis;
@@ -204,30 +190,20 @@ public class SQLAnalyzer {
 		int columnsCount;
 		OrderingAnalysis orderingAnalysis;
 
-		ResultSet correctQuery_RSET;
-		Statement correctQuery_STMT;
-		ResultSet submittedQuery_RSET;
-		Statement submittedQuery_STMT;
 		ResultSetMetaData correctQuery_RSMD;
 
-		correctQuery_RSET = null;
-		correctQuery_STMT = null;
-		submittedQuery_RSET = null;
-		submittedQuery_STMT = null;
 		orderingAnalysis = new OrderingAnalysis();
 
 		this.logger.log(Level.INFO, "Checking order of query.");
 
 		if (this.usesOrderByStatement(config.getCorrectQuery())) {
-			try {
-				correctQuery_STMT = config.getConnection().createStatement();
-				correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery());
+			try (Statement correctQuery_STMT = config.getConnection().createStatement();
+				Statement submittedQuery_STMT = config.getConnection().createStatement();
+				ResultSet submittedQuery_RSET = submittedQuery_STMT.executeQuery(submittedQuery);
+				ResultSet correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery())){
+
 				correctQuery_RSMD = correctQuery_RSET.getMetaData();
 				columnsCount = correctQuery_RSMD.getColumnCount();
-
-				submittedQuery_STMT = config.getConnection().createStatement();
-
-				submittedQuery_RSET = submittedQuery_STMT.executeQuery(submittedQuery);
 
 				while (correctQuery_RSET.next()) {
 					submittedQuery_RSET.next();
@@ -254,29 +230,12 @@ public class SQLAnalyzer {
 			} catch (SQLException e) {
 				message = "";
 				message = message.concat("Error occured while analyzing order. ");
-				message = message.concat("This is an internal system error. ");
-				message = message.concat("Please inform the system administrator.");
+				message = message.concat(INTERNAL_ERROR);
+				message = message.concat(CONTACT_ADMIN);
 
 				this.logger.log(Level.SEVERE, message, e);
 				orderingAnalysis.setCriterionIsSatisfied(false);
 				orderingAnalysis.setAnalysisException(new AnalysisException(message, e));
-			} finally {
-				try {
-					if (correctQuery_RSET != null) {
-						correctQuery_RSET.close();
-					}
-					if (submittedQuery_RSET != null) {
-						submittedQuery_RSET.close();
-					}
-					if (correctQuery_STMT != null) {
-						correctQuery_STMT.close();
-					}
-					if (submittedQuery_STMT != null) {
-						submittedQuery_STMT.close();
-					}
-				} catch (SQLException e) {
-					this.logger.log(Level.SEVERE, "Could not close result set.", e);
-				}
 			}
 		} else {
 			orderingAnalysis.setFoundIncorrectOrdering(false);
@@ -326,9 +285,6 @@ public class SQLAnalyzer {
 
 		ResultSetMetaData rsmd;
 		ResultSet checkQuery_RSET;
-		Statement correctQuery_STMT;
-		ResultSet correctQuery_RSET;
-		Statement submittedQuery_STMT;
 
 		List<String> tuple;
 		String columns;
@@ -339,22 +295,18 @@ public class SQLAnalyzer {
 		TuplesAnalysis tuplesAnalysis;
 
 		checkQuery_RSET = null;
-		correctQuery_RSET = null;
-		correctQuery_STMT = null;
-		submittedQuery_STMT = null;
 
-		correctQueryTuples = new Vector<>();
-		submittedQueryTuples = new Vector<>();
+		correctQueryTuples = new ArrayList<>();
+		submittedQueryTuples = new ArrayList<>();
 		tuplesAnalysis = new TuplesAnalysis();
 
 		this.logger.log(Level.INFO, "Checking tuples of query.");
 
-		try {
-			correctQuery_STMT = config.getConnection().createStatement();
-			correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery());
+		try (Statement correctQuery_STMT = config.getConnection().createStatement();
+             ResultSet correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery());
+             Statement submittedQuery_STMT = config.getConnection().createStatement()
+		){
 			rsmd = correctQuery_RSET.getMetaData();
-
-			submittedQuery_STMT = config.getConnection().createStatement();
 
 			columns = "";
 			for (int i = 1; i <= rsmd.getColumnCount(); i++) {
@@ -379,18 +331,7 @@ public class SQLAnalyzer {
 			rsmd = checkQuery_RSET.getMetaData();
 			columnCount = rsmd.getColumnCount();
 
-			while (checkQuery_RSET.next()) {
-				tuple = new Vector<>();
-
-				for (int i = 1; i <= columnCount; i++) {
-					if (checkQuery_RSET.getString(i) != null) {
-						tuple.add(checkQuery_RSET.getString(i).toUpperCase());
-					} else {
-						tuple.add("null");
-					}
-				}
-				correctQueryTuples.add(tuple);
-			}
+			addTuplesToList(columnCount, checkQuery_RSET, correctQueryTuples);
 
 			checkQuery = "";
 			checkQuery = checkQuery.concat("SELECT " + columns + " ");
@@ -401,17 +342,7 @@ public class SQLAnalyzer {
 
 			checkQuery_RSET = submittedQuery_STMT.executeQuery(checkQuery);
 
-			while (checkQuery_RSET.next()) {
-				tuple = new Vector<String>();
-				for (int i = 1; i <= columnCount; i++) {
-					if (checkQuery_RSET.getString(i) != null) {
-						tuple.add(checkQuery_RSET.getString(i).toUpperCase());
-					} else {
-						tuple.add("null");
-					}
-				}
-				submittedQueryTuples.add(tuple);
-			}
+			addTuplesToList(columnCount, checkQuery_RSET, submittedQueryTuples);
 
 			tuplesAnalysis.setMissingTuples(correctQueryTuples);
 			tuplesAnalysis.removeAllMissingTuples(submittedQueryTuples);
@@ -426,24 +357,15 @@ public class SQLAnalyzer {
 		} catch (SQLException e) {
 			message = "";
 			message = message.concat("Error encounted while analyzing tuples. ");
-			message = message.concat("This is an internal system error. ");
-			message = message.concat("Please inform the system administrator.");
+			message = message.concat(INTERNAL_ERROR);
+			message = message.concat(CONTACT_ADMIN);
 
 			this.logger.log(Level.SEVERE, message, e);
 			tuplesAnalysis.setAnalysisException(new AnalysisException(message, e));
 		} finally {
 			try {
-				if (correctQuery_RSET != null) {
-					correctQuery_RSET.close();
-				}
 				if (checkQuery_RSET != null) {
 					checkQuery_RSET.close();
-				}
-				if (correctQuery_STMT != null) {
-					correctQuery_STMT.close();
-				}
-				if (submittedQuery_STMT != null) {
-					submittedQuery_STMT.close();
 				}
 			} catch (SQLException e) {
 				this.logger.log(Level.SEVERE, "Could not close result set.", e);
@@ -451,6 +373,22 @@ public class SQLAnalyzer {
 		}
 
 		return tuplesAnalysis;
+	}
+
+	private void addTuplesToList(int columnCount, ResultSet checkQuery_RSET, List<Collection<String>> correctQueryTuples) throws SQLException {
+		List<String> tuple;
+		while (checkQuery_RSET.next()) {
+			tuple = new ArrayList<>();
+
+			for (int i = 1; i <= columnCount; i++) {
+				if (checkQuery_RSET.getString(i) != null) {
+					tuple.add(checkQuery_RSET.getString(i).toUpperCase());
+				} else {
+					tuple.add("null");
+				}
+			}
+			correctQueryTuples.add(tuple);
+		}
 	}
 
 	/**
@@ -462,10 +400,6 @@ public class SQLAnalyzer {
 	private ColumnsAnalysis analyzeColumns(SQLAnalyzerConfig config, String submittedQuery) {
 		String message;
 
-		ResultSet correctQuery_RSET;
-		Statement correctQuery_STMT;
-		ResultSet submittedQuery_RSET;
-		Statement submittedQuery_STMT;
 
 		List<String> correctQueryColumns;
 		List<String> submittedQueryColumns;
@@ -478,30 +412,25 @@ public class SQLAnalyzer {
 		ResultSetMetaData correctQueryMetaData;
 		ResultSetMetaData submittedQueryMetaData;
 
-		correctQuery_RSET = null;
-		correctQuery_STMT = null;
-		submittedQuery_RSET = null;
-		submittedQuery_STMT = null;
 		columnsAnalysis = new ColumnsAnalysis();
 
 		this.logger.log(Level.INFO, "Checking columns of query.");
 
-		try {
-
-			correctQuery_STMT = config.getConnection().createStatement();
-			correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery());
+		try (Statement correctQuery_STMT = config.getConnection().createStatement();
+             ResultSet correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery());
+             Statement submittedQuery_STMT = config.getConnection().createStatement();
+             ResultSet submittedQuery_RSET = submittedQuery_STMT.executeQuery(submittedQuery)
+		){
 
 			correctQueryMetaData = correctQuery_RSET.getMetaData();
 
-			submittedQuery_STMT = config.getConnection().createStatement();
-			submittedQuery_RSET = submittedQuery_STMT.executeQuery(submittedQuery);
 			submittedQueryMetaData = submittedQuery_RSET.getMetaData();
 
 			correctQueryColumnCount = correctQueryMetaData.getColumnCount();
 			submittedQueryColumnCount = submittedQueryMetaData.getColumnCount();
 
-			correctQueryColumns = new Vector<String>(correctQueryColumnCount);
-			submittedQueryColumns = new Vector<String>(submittedQueryColumnCount);
+			correctQueryColumns = new ArrayList<>(correctQueryColumnCount);
+			submittedQueryColumns = new ArrayList<>(submittedQueryColumnCount);
 
 			for (int i = 1; i <= submittedQueryColumnCount; i++) {
 				submittedQueryColumns.add(submittedQueryMetaData.getColumnName(i));
@@ -530,28 +459,11 @@ public class SQLAnalyzer {
 		} catch (SQLException e) {
 			message = "";
 			message = message.concat("Error occured while analyzing columns. ");
-			message = message.concat("This is an system error. ");
-			message = message.concat("Please inform the system administrator.");
+			message = message.concat(INTERNAL_ERROR);
+			message = message.concat(CONTACT_ADMIN);
 
 			this.logger.log(Level.SEVERE, message, e);
 			columnsAnalysis.setAnalysisException(new AnalysisException(message, e));
-		} finally {
-			try {
-				if (correctQuery_RSET != null) {
-					correctQuery_RSET.close();
-				}
-				if (submittedQuery_RSET != null) {
-					submittedQuery_RSET.close();
-				}
-				if (correctQuery_STMT != null) {
-					correctQuery_STMT.close();
-				}
-				if (submittedQuery_STMT != null) {
-					submittedQuery_STMT.close();
-				}
-			} catch (SQLException e) {
-				this.logger.log(Level.SEVERE, "Could not close result set.", e);
-			}
 		}
 
 		return columnsAnalysis;
@@ -564,21 +476,10 @@ public class SQLAnalyzer {
 	 * @return the analysis representing the SQLEvaluationCriterion.CARTESIAN_PRODUCT
 	 */
 	private CartesianProductAnalysis analyzeCartesianProduct(SQLAnalyzerConfig config, String submittedQuery) {
-		String query;
 		String message;
 		int countCorrectQuery;
 		int countSubmittedQuery;
 		CartesianProductAnalysis cartesianProductAnalysis;
-
-		Statement correctQuery_STMT;
-		ResultSet correctQuery_RSET;
-		Statement submittedQuery_STMT;
-		ResultSet submittedQuery_RSET;
-
-		correctQuery_STMT = null;
-		correctQuery_RSET = null;
-		submittedQuery_STMT = null;
-		submittedQuery_RSET = null;
 
 		countCorrectQuery = -1;
 		countSubmittedQuery = -1;
@@ -587,17 +488,16 @@ public class SQLAnalyzer {
 
 		this.logger.log(Level.INFO, "Checking for cartesian product.");
 
-		try {
-			query = "SELECT COUNT(*) FROM (" + submittedQuery + ") AS submittedQuery";
-			submittedQuery_STMT = config.getConnection().createStatement();
-			submittedQuery_RSET = submittedQuery_STMT.executeQuery(query);
+		String querySub = "SELECT COUNT(*) FROM (" + submittedQuery + ") AS submittedQuery";
+		String queryCorr =  "SELECT COUNT(*) FROM (" + config.getCorrectQuery() + ") AS correctQuery";
+		try (Statement submittedQuery_STMT= config.getConnection().createStatement();
+			ResultSet submittedQuery_RSET= submittedQuery_STMT.executeQuery(querySub);
+			Statement correctQuery_STMT = config.getConnection().createStatement();
+			ResultSet correctQuery_RSET = correctQuery_STMT.executeQuery(queryCorr)){
 			if (submittedQuery_RSET.next()) {
 				countSubmittedQuery = submittedQuery_RSET.getInt(1);
 			}
 
-			query = "SELECT COUNT(*) FROM (" + config.getCorrectQuery() + ") AS correctQuery";
-			correctQuery_STMT = config.getConnection().createStatement();
-			correctQuery_RSET = correctQuery_STMT.executeQuery(query);
 			if (correctQuery_RSET.next()) {
 				countCorrectQuery = correctQuery_RSET.getInt(1);
 			}
@@ -612,29 +512,13 @@ public class SQLAnalyzer {
 		} catch (SQLException e) {
 			message = "";
 			message = message.concat("Error occured while analyzing cartesian product. ");
-			message = message.concat("This is an system error. ");
-			message = message.concat("Please inform the system administrator.");
+			message = message.concat(INTERNAL_ERROR);
+			message = message.concat(CONTACT_ADMIN);
 
 			this.logger.log(Level.SEVERE, message, e);
 			cartesianProductAnalysis.setAnalysisException(new AnalysisException(message, e));
-		} finally {
-			try {
-				if (correctQuery_RSET != null) {
-					correctQuery_RSET.close();
-				}
-				if (submittedQuery_RSET != null) {
-					submittedQuery_RSET.close();
-				}
-				if (correctQuery_STMT != null) {
-					correctQuery_STMT.close();
-				}
-				if (submittedQuery_STMT != null) {
-					submittedQuery_STMT.close();
-				}
-			} catch (SQLException e) {
-				this.logger.log(Level.SEVERE, "Could not close result set.", e);
-			}
 		}
 		return cartesianProductAnalysis;
+
 	}
 }

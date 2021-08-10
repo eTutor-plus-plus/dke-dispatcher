@@ -40,7 +40,7 @@ public class SubmissionDispatcher  {
             logger.info("Evaluating submission");
             Evaluator evaluator = moduleManager.getEvaluator(submission.getTaskType());
             if (evaluator == null) {
-                logger.log(Level.SEVERE, "Could not find evaluator for tasktype: " + submission.getTaskType());
+                logger.log(Level.SEVERE, "Could not find evaluator for tasktype: {0}", submission.getTaskType());
                 return;
             }
             logger.info("Analyzing submission");
