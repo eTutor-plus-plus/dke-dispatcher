@@ -77,7 +77,7 @@ public class SQLGrader {
 
 					this.logger.log(Level.INFO, message);
 					//grading.setGradingException(new GradingException(message));
-					//return grading;
+					return grading;
 				}
 			} else {
 				message = "";
@@ -93,7 +93,6 @@ public class SQLGrader {
 		
 		SQLCriterionAnalysis next;
 		boolean isAllRight = true;
-		SQLCriterionAnalysis ca;
 		Iterator<SQLCriterionAnalysis> i = analysis.iterCriterionAnalyses();
 		while (i.hasNext()){
 			next = i.next();

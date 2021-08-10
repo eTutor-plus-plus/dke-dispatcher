@@ -22,7 +22,6 @@ import at.jku.dke.etutor.modules.sql.grading.GradingScope;
 import at.jku.dke.etutor.modules.sql.grading.SQLCriterionGradingConfig;
 import at.jku.dke.etutor.modules.sql.grading.SQLGrader;
 import at.jku.dke.etutor.modules.sql.grading.SQLGraderConfig;
-import at.jku.dke.etutor.modules.sql.report.SQLReport;
 import at.jku.dke.etutor.modules.sql.report.SQLReporter;
 import at.jku.dke.etutor.modules.sql.report.SQLReporterConfig;
 import org.springframework.stereotype.Service;
@@ -82,24 +81,22 @@ public class SQLEvaluator implements Evaluator {
 		diagnoseLevel = Integer.parseInt(diagnoseLevel_Param);
 		
 		//SETTING THE SUBMISSION
-		analysis.setSubmission((submission_Param).replaceAll(";",""));
+		analysis.setSubmission((submission_Param).replace(";",""));
 
 		String query;
 		Connection referenceConn;
 
 		Statement stmt = null;
 		ResultSet rset = null;
-		Connection conn = null;
 
 		String correctQuery = "";
 		String referenceConnPwd = "";
 		String referenceConnString = "";
 		String referenceConnUser = "";
 
-		try{
-			//ESTABLISHING CONNECTION TO SQL DATABASE
+		//ESTABLISHING CONNECTION TO SQL DATABASE
+		try(Connection conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD)){
 			Class.forName(SQLConstants.JDBC_DRIVER);
-			conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
 			conn.setAutoCommit(true);
 
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE
@@ -127,8 +124,8 @@ public class SQLEvaluator implements Evaluator {
 			rset = stmt.executeQuery(query);
 
 			if (rset.next()){
-				referenceConnUser = rset.getString("conn_user");				
-				referenceConnPwd = rset.getString("conn_pwd");				
+				referenceConnUser = rset.getString("conn_user");
+				referenceConnPwd = rset.getString("conn_pwd");
 				referenceConnString = rset.getString("conn_string");
 			}
 
@@ -147,7 +144,7 @@ public class SQLEvaluator implements Evaluator {
 				query = query.concat("SELECT	solution " + LINE_SEP);
 				query = query.concat("FROM 		exercises " + LINE_SEP);
 				query = query.concat("WHERE 	id = " + exerciseID + LINE_SEP);
-			
+
 				rset.close();
 				stmt.close();
 				stmt = conn.createStatement();
@@ -168,9 +165,6 @@ public class SQLEvaluator implements Evaluator {
 				}
 				if (stmt != null){
 					stmt.close();
-				}
-				if (conn != null){
-					conn.close();
 				}
 			} catch (SQLException e){
 				message ="";
@@ -206,7 +200,7 @@ public class SQLEvaluator implements Evaluator {
 		}
 		
 		analyzerConfig.setConnection(referenceConn);
-		analyzerConfig.setCorrectQuery(correctQuery.replaceAll(";"," "));
+		analyzerConfig.setCorrectQuery(correctQuery.replace(";"," "));
 
 		// Analyzing the submission
 		SQLAnalysis sqlAnalysis;

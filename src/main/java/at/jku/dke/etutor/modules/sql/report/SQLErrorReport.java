@@ -11,9 +11,9 @@ public class SQLErrorReport implements Serializable{
 	public SQLErrorReport() {
 		super();
 
-		this.hint = new String();
-		this.error = new String();
-		this.description = new String();
+		this.hint = "";
+		this.error = "";
+		this.description = "";
 	}
 
 	public String getDescription() {

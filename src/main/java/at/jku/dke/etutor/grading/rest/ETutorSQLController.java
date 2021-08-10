@@ -19,18 +19,15 @@ import java.util.logging.Logger;
 public class ETutorSQLController {
     private final Logger logger;
     private final SQLResourceManager resourceManager;
-    private final ApplicationProperties properties;
 
 
     /**
      * The constructor
       * @param resourceManager the injected SQLResourceManager providing methods for manipulating data related to the SQL module
-     * @param properties the injected ApplicationProperties
      */
-    public ETutorSQLController(SQLResourceManager resourceManager, ApplicationProperties properties){
+    public ETutorSQLController(SQLResourceManager resourceManager){
         this.logger= Logger.getLogger("at.jku.dke.etutor.sqlcontroller");
         this.resourceManager=resourceManager;
-        this.properties=properties;
     }
 
     /**

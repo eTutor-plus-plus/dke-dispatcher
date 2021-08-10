@@ -1,21 +1,16 @@
 package at.jku.dke.etutor.modules.sql.report;
 
-import java.sql.ResultSetMetaData;
 import java.util.*;
 
 
 import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.sql.analysis.*;
-import org.springframework.context.MessageSource;
 
 
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 
 
 public class SQLReporter {
-
-    java.util.Properties props;
-    private MessageSource messageSource;
 
     public SQLReporter() {
         super();
@@ -24,16 +19,12 @@ public class SQLReporter {
 
     public SQLReport createReport(SQLAnalysis analysis, DefaultGrading grading, SQLReporterConfig config, Locale locale) {
         final String LS ="<br>";
-        final String tab = " \t";
         SQLReport report;
         Collection<String> tuple;
-        ResultSetMetaData rsmd;
         SQLErrorReport errorReport;
         TuplesAnalysis tuplesAnalysis;
         ColumnsAnalysis columnsAnalysis;
         SQLCriterionAnalysis criterionAnalysis;
-
-        boolean queryIsCorrect;
 
         Iterator<Collection<String>> tuplesIterator;
         Iterator<String> columnsIterator;
@@ -53,17 +44,6 @@ public class SQLReporter {
         //Setting the query result tuples and query result column labels
         report.setQueryResultTuples(analysis.getQueryResultTuples());
         report.setQueryResultColumnLabels(analysis.getQueryResultColumnLabels());
-        //report.setMissingOrSurplusColumnLabels(analysis.get)
-
-        //Checking overall correctness of query
-        queryIsCorrect = true;
-        criterionAnalysesIterator = analysis.iterCriterionAnalyses();
-        while (criterionAnalysesIterator.hasNext()) {
-            criterionAnalysis = criterionAnalysesIterator.next();
-            if (!criterionAnalysis.isCriterionSatisfied()) {
-                queryIsCorrect = false;
-            }
-        }
 
         //Creating error reports
         criterionAnalysesIterator = analysis.iterCriterionAnalyses();
@@ -137,7 +117,7 @@ public class SQLReporter {
                             tuplesIterator = tuplesAnalysis.iterMissingTuples();
                             while (tuplesIterator.hasNext()) {
 
-                                tuple = (Collection<String>) tuplesIterator.next();
+                                tuple =  tuplesIterator.next();
 
                                 tupleAttributesIterator = tuple.iterator();
                                 description.append("<tr>");
@@ -169,7 +149,7 @@ public class SQLReporter {
                             tuplesIterator = tuplesAnalysis.iterSurplusTuples();
                             while (tuplesIterator.hasNext()) {
                                 description.append("<tr>");
-                                tuple = (Collection<String>) tuplesIterator.next();
+                                tuple = tuplesIterator.next();
 
                                 tupleAttributesIterator = tuple.iterator();
                                 while (tupleAttributesIterator.hasNext()) {
@@ -207,11 +187,10 @@ public class SQLReporter {
                     }
 
 
-                    if (config.getDiagnoseLevel() == 2) {
-
-                        if (columnsAnalysis.hasMissingColumns()) {
-                            description.append("There are ").append(missingColumnsCount).append(" columns missing ").append(LS);
-
+                    if (config.getDiagnoseLevel() == 2 ) {
+                            if(columnsAnalysis.hasMissingColumns()){
+                                description.append("There are ").append(missingColumnsCount).append(" columns missing ").append(LS);
+                            }
 
                             if ((columnsAnalysis.hasMissingColumns()) && (columnsAnalysis.hasSurplusColumns())) {
                                 description.append(LS);
@@ -219,9 +198,7 @@ public class SQLReporter {
 
                             if (columnsAnalysis.hasSurplusColumns()) {
                                 description.append("There are ").append(surplusColumnsCount).append(" too much ").append(LS);
-
                             }
-                        }
                     }
 
                     if (config.getDiagnoseLevel() == 3) {
