@@ -1,14 +1,15 @@
 package at.jku.dke.etutor.modules.sql;
 
+import at.jku.dke.etutor.grading.ETutorGradingApplication;
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 
@@ -25,18 +26,30 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-//@SpringBootTest(classes= ETutorGradingApplication.class)
+@SpringBootTest(classes= ETutorGradingApplication.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestSQLModule {
     private ObjectMapper mapper = new ObjectMapper();
     private HttpClient client = HttpClient.newHttpClient();
     private List<String> ids = new ArrayList<>();
     private final String REST_URL = "http://localhost:8081";
-    private final String CONN_URL = SQLConstants.CONN_URL;
-    private final String CONN_USER = SQLConstants.CONN_USER;
-    private final String CONN_PWD = SQLConstants.CONN_PWD;
+
+    @Autowired
+    private SQLConstants sqlConstants;
+
+    private String CONN_URL;
+    private String CONN_USER;
+    private String CONN_PWD;
     private final String EXERCISE_CONSTRAINTS = "where id = 120000";
     private final String ACTION_STRING = "diagnose";
     private final String DIAGNOSE_LEVEL = "3";
+
+    @BeforeAll
+    void setup() {
+        CONN_URL = sqlConstants.getConnURL();
+        CONN_USER = sqlConstants.getConnUser();
+        CONN_PWD = sqlConstants.getConnPwd();
+    }
 
     @BeforeEach
     void initialize() throws ClassNotFoundException {
@@ -52,7 +65,7 @@ public class TestSQLModule {
      * @throws SQLException
      */
     @Test
-    @Disabled
+    //@Disabled
     void whenSubmissionIsSolution_thenAllPoints() throws IOException, InterruptedException, SQLException {
         ResultSet exercises = getExercisesResultSet();
         while (exercises.next()) {
