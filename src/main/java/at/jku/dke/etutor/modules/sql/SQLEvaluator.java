@@ -34,11 +34,13 @@ import org.springframework.stereotype.Service;
 public class SQLEvaluator implements Evaluator {
 
 	private Logger logger;
+	private final SQLConstants sqlConstants;
 	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
 
-	public SQLEvaluator() {
+	public SQLEvaluator(SQLConstants sqlConstants) {
 		super();
 
+		this.sqlConstants = sqlConstants;
 		try {
 			this.logger = Logger.getLogger("at.jku.dke.etutor.modules.sql");
 		} catch (Exception e) {
@@ -98,8 +100,8 @@ public class SQLEvaluator implements Evaluator {
 
 		try{
 			//ESTABLISHING CONNECTION TO SQL DATABASE
-			Class.forName(SQLConstants.JDBC_DRIVER);
-			conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
+			Class.forName(sqlConstants.getJdbcDriver());
+			conn = DriverManager.getConnection(sqlConstants.getConnURL(), sqlConstants.getConnUser(),sqlConstants.getConnPwd());
 			conn.setAutoCommit(true);
 
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE
