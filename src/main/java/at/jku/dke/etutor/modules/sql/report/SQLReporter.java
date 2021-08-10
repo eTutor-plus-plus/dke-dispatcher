@@ -253,13 +253,11 @@ public class SQLReporter {
                 }
 
                 if ((criterionAnalysis instanceof OrderingAnalysis) && (config.getDiagnoseLevel() > 0)) {
-                    //hint.append(messageSource.getMessage("sqlreporter.orderbymanual", new Object[]{props.getProperty("hint_sql_order_by")}, locale));
                     error.append("<strong>The order of your tuples is not correct</strong>");
                     description.append("The order of your tuples is not correct");
                 }
 
                 if ((criterionAnalysis instanceof CartesianProductAnalysis) && (config.getDiagnoseLevel() > 0)) {
-                    //hint.append(messageSource.getMessage("sqlreporter.wheremanual", new Object[]{props.getProperty("hint_sql_where")}, locale));
                     error.append("<strong>There are too many tuples in the result of your query</strong>");
                     description.append("Your result may be a cartesian product");
                 }
