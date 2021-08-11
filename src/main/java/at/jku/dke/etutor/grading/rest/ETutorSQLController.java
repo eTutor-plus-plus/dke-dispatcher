@@ -242,10 +242,30 @@ public class ETutorSQLController {
     }
 
     /**
+     * Updates the solution for an existing exercise
+     * @param id the id of the exercise
+     * @param newSolution the solution
+     * @return a response entity
+     */
+    @CrossOrigin(ETutorGradingConstants.CORS_POLICY)
+    @PostMapping("/exercise/{id}")
+    public ResponseEntity<String> updateExerciseSolution(@PathVariable int id, @RequestParam String newSolution){
+        logger.info(()->"Enter: updateExerciseSolution(): "+id);
+        try{
+            resourceManager.updateExerciseSolution(id, newSolution);
+            logger.info("Exit: updateExerciseSolution() with Status Code 200");
+            return ResponseEntity.ok("Solution updated");
+        }catch(DatabaseException e){
+            e.printStackTrace();
+            logger.info("Exit: updateExerciseSolution() with Status Code 500");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+        }
+    }
+
+    /**
      * Fetches an available exercise id
      * @return the exercise id
      */
-
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @GetMapping("/exercise/reservation")
     public ResponseEntity<String> reserveExerciseID(){

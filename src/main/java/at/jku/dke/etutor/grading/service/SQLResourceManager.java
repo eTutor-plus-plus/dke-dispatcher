@@ -466,6 +466,28 @@ public class SQLResourceManager {
         }
     }
 
+    public void updateExerciseSolution(int id, String newSolution) throws DatabaseException {
+        logger.info(()->"Updating solution of exercise "+id);
+        try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
+            con.setAutoCommit(false);
+            updateExerciseSolutionUtil(con, id, newSolution);
+            logger.info(()->"Solution updated");
+        }catch(SQLException throwables){
+            throwables.printStackTrace();
+            throw new DatabaseException(throwables);
+        }
+    }
+
+    public void updateExerciseSolutionUtil(Connection con, int id, String newSolution) throws DatabaseException {
+        String updateQuery = "UPDATE EXERCISES SET SOLUTION = '" + newSolution +"' WHERE ID = " + id;
+        try(PreparedStatement updateStatement = con.prepareStatement(updateQuery)){
+            updateStatement.executeUpdate();
+            con.commit();
+        }catch(SQLException throwables){
+            handleThrowables(con, "Could not update solution", throwables);
+        }
+    }
+
     /**
      * Utility method for deleting a exercise
      * @param con the Connection

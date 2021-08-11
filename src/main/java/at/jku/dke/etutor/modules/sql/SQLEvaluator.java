@@ -34,8 +34,9 @@ public class SQLEvaluator implements Evaluator {
 
 	private Logger logger;
 	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
+	private SQLConstants constants;
 
-	public SQLEvaluator() {
+	public SQLEvaluator(SQLConstants constants) {
 		super();
 
 		try {
@@ -43,6 +44,8 @@ public class SQLEvaluator implements Evaluator {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		this.constants=constants;
 	}
 
 	/**
@@ -95,8 +98,8 @@ public class SQLEvaluator implements Evaluator {
 		String referenceConnUser = "";
 
 		//ESTABLISHING CONNECTION TO SQL DATABASE
-		try(Connection conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD)){
-			Class.forName(SQLConstants.JDBC_DRIVER);
+		try(Connection conn = DriverManager.getConnection(constants.getConnURL(), constants.getConnUser(), constants.getConnPwd())){
+			Class.forName(constants.getJdbcDriver());
 			conn.setAutoCommit(true);
 
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE
@@ -118,7 +121,7 @@ public class SQLEvaluator implements Evaluator {
 				}
 			}
 
-			this.logger.log(Level.INFO,"QUERY for reading connection data:\n" + query);
+			this.logger.log(Level.INFO,"QUERY for reading connection data:\n {0}", query);
 
 			stmt = conn.createStatement();
 			rset = stmt.executeQuery(query);
@@ -131,7 +134,7 @@ public class SQLEvaluator implements Evaluator {
 
 			//ESTABLISHING CONNECTION TO EXERCISE SPECIFIC REFERENCE DATABASE
 
-			this.logger.log(Level.INFO,referenceConnString + " - " + referenceConnUser + " - " + referenceConnPwd);
+			this.logger.log(Level.INFO,"{0}",referenceConnString + " - " + referenceConnUser + " - " + referenceConnPwd);
 
 			referenceConn = DriverManager.getConnection(referenceConnString, referenceConnUser, referenceConnPwd);
 			referenceConn.setAutoCommit(true);
@@ -265,7 +268,10 @@ public class SQLEvaluator implements Evaluator {
 		criterionGradingConfig.setNegativePoints(0);
 		criterionGradingConfig.setPositiveScope(GradingScope.CRITERION);
 		criterionGradingConfig.setNegativeScope(GradingScope.CRITERION);
-		if (!action.toUpperCase().equals(SQLEvaluationAction.RUN.toString())){
+
+		final var isNotRunAction = !action.toUpperCase().equals(SQLEvaluationAction.RUN.toString());
+
+		if (isNotRunAction){
 			graderConfig.addCriteriaGradingConfig(SQLEvaluationCriterion.CARTESIAN_PRODUCT, criterionGradingConfig);
 		}
 
@@ -275,7 +281,7 @@ public class SQLEvaluator implements Evaluator {
 		criterionGradingConfig.setNegativePoints(0);
 		criterionGradingConfig.setPositiveScope(GradingScope.CRITERION);
 		criterionGradingConfig.setNegativeScope(GradingScope.CRITERION);
-		if (!action.toUpperCase().equals(SQLEvaluationAction.RUN.toString())){
+		if (isNotRunAction){
 			graderConfig.addCriteriaGradingConfig(SQLEvaluationCriterion.CORRECT_COLUMNS, criterionGradingConfig);
 		}
 		
@@ -285,7 +291,7 @@ public class SQLEvaluator implements Evaluator {
 		criterionGradingConfig.setNegativePoints(0);
 		criterionGradingConfig.setPositiveScope(GradingScope.CRITERION);
 		criterionGradingConfig.setNegativeScope(GradingScope.CRITERION);
-		if (!action.toUpperCase().equals(SQLEvaluationAction.RUN.toString())){
+		if (isNotRunAction){
 			graderConfig.addCriteriaGradingConfig(SQLEvaluationCriterion.CORRECT_TUPLES, criterionGradingConfig);
 		}
 		
@@ -295,7 +301,7 @@ public class SQLEvaluator implements Evaluator {
 		criterionGradingConfig.setNegativePoints(0);
 		criterionGradingConfig.setPositiveScope(GradingScope.CRITERION);
 		criterionGradingConfig.setNegativeScope(GradingScope.CRITERION);
-		if (!action.toUpperCase().equals(SQLEvaluationAction.RUN.toString())){
+		if (isNotRunAction){
 			graderConfig.addCriteriaGradingConfig(SQLEvaluationCriterion.CORRECT_ORDER, criterionGradingConfig);
 		}
 		
