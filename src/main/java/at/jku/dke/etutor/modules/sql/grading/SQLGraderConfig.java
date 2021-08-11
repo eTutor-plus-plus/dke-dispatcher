@@ -9,11 +9,11 @@ import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 public class SQLGraderConfig {
 
 	private int maximumPoints;
-	private HashMap criteriaGradingConfigs;
+	private final HashMap<SQLEvaluationCriterion, SQLCriterionGradingConfig> criteriaGradingConfigs;
 
 	public SQLGraderConfig() {
 		super();
-		this.criteriaGradingConfigs = new HashMap();
+		this.criteriaGradingConfigs = new HashMap<>();
 	}
 	
 	public void addCriteriaGradingConfig(SQLEvaluationCriterion criterion, SQLCriterionGradingConfig config){
@@ -21,22 +21,17 @@ public class SQLGraderConfig {
 	}
 	
 	public boolean isCriterionToGrade(SQLEvaluationCriterion criterion){
-		return this.criteriaGradingConfigs.keySet().contains(criterion);
+		return this.criteriaGradingConfigs.containsKey(criterion);
 	}
 	
-	public Iterator iterCriterionsToGrade(){
+	public Iterator<SQLEvaluationCriterion> iterCriterionsToGrade(){
 		return this.criteriaGradingConfigs.keySet().iterator();
 	}
 	
 	public SQLCriterionGradingConfig getCriterionGradingConfig(SQLEvaluationCriterion criterion){
-		Object gradingConfig = this.criteriaGradingConfigs.get(criterion);
-
-		if (gradingConfig == null){
-			return null;
-		} else {
-			return (SQLCriterionGradingConfig)gradingConfig;
-		}
+		return this.criteriaGradingConfigs.get(criterion);
 	}
+
 	public int getMaximumPoints() {
 		return this.maximumPoints;
 	}

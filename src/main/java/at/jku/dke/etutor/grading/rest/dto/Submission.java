@@ -91,7 +91,7 @@ public class Submission implements Serializable {
         return passedAttributes;
     }
 
-    public void setPassedAttributes(Map passedAttributes) {
+    public void setPassedAttributes(Map<String,String> passedAttributes) {
         this.passedAttributes = passedAttributes;
     }
 
@@ -99,7 +99,7 @@ public class Submission implements Serializable {
         return passedParameters;
     }
 
-    public void setPassedParameters(Map passedParameters) {
+    public void setPassedParameters(Map<String, String> passedParameters) {
         this.passedParameters = passedParameters;
     }
 }

@@ -20,11 +20,14 @@ import java.util.logging.Logger;
 
 
 public class SQLExerciseManager implements ModuleExerciseManager {
-	
+
+	private final SQLConstants sqlConstants;
 	private Logger logger;
 
-	public SQLExerciseManager() { 
+	public SQLExerciseManager(SQLConstants sqlConstants) {
 		super();
+
+		this.sqlConstants = sqlConstants;
 
 		try {
 			//java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
@@ -115,7 +118,7 @@ public class SQLExerciseManager implements ModuleExerciseManager {
 			msg = msg.concat("QUERY for select max id value:\n" + sql);
 			this.logger.log(Level.INFO, msg);
 			
-			conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
+			conn = DriverManager.getConnection(sqlConstants.getConnURL(),sqlConstants.getConnUser(), sqlConstants.getConnPwd());
 			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			conn.setAutoCommit(false);
 			stmt = conn.createStatement();
@@ -204,7 +207,7 @@ public class SQLExerciseManager implements ModuleExerciseManager {
 			//DELETING SQL EXERCISE FROM DATABASE
 			java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		
-			conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
+			conn = DriverManager.getConnection(sqlConstants.getConnURL(), sqlConstants.getConnUser(),sqlConstants.getConnPwd());
 			stmt = conn.createStatement();
 			delExercisesCount = stmt.executeUpdate(sql);
 			conn.commit();
@@ -268,7 +271,7 @@ public class SQLExerciseManager implements ModuleExerciseManager {
 			sql = sql.concat("WHERE id = " + exerciseID);
 									
 			java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-			conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
+			conn = DriverManager.getConnection(sqlConstants.getConnURL(),sqlConstants.getConnUser(),sqlConstants.getConnPwd());
 			stmt = conn.createStatement();
 			rset = stmt.executeQuery(sql);
 			
@@ -353,7 +356,9 @@ public class SQLExerciseManager implements ModuleExerciseManager {
 		
 		try {
 			java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-			conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
+
+
+			conn = DriverManager.getConnection(sqlConstants.getConnURL(),sqlConstants.getConnUser(),sqlConstants.getConnPwd());
 			stmt = conn.createStatement();
 			rset = stmt.executeQuery("SELECT id, conn_user FROM connections ORDER BY id");
 			while (rset.next()){
@@ -466,7 +471,7 @@ public class SQLExerciseManager implements ModuleExerciseManager {
 			//INSERTING SQL EXERCISE INTO DATABASE
 			java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		
-			conn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
+			conn = DriverManager.getConnection(sqlConstants.getConnURL(),sqlConstants.getConnUser(),sqlConstants.getConnPwd());
 			pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, solution.toString());
 			pStmt.executeUpdate();
@@ -509,7 +514,7 @@ public class SQLExerciseManager implements ModuleExerciseManager {
 		return false;
 	}
 	
-	private static SQLExerciseComparison compareExercises(String[] exerciseIDs, Connection conn1, Connection conn2){
+	private static SQLExerciseComparison compareExercises(String[] exerciseIDs, Connection conn1, Connection conn2, SQLConstants sqlConstants){
 		String row1;
 		String row2;
 		
@@ -541,7 +546,7 @@ public class SQLExerciseManager implements ModuleExerciseManager {
 			comparison.setConn2Name(conn2.getCatalog());
 
 			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-			exercisesConn = DriverManager.getConnection(SQLConstants.CONN_URL, SQLConstants.CONN_USER, SQLConstants.CONN_PWD);
+			exercisesConn = DriverManager.getConnection(sqlConstants.getConnURL(), sqlConstants.getConnUser(),sqlConstants.getConnPwd());
 			exercisesStmt = exercisesConn.createStatement();
 			exercisesRset = exercisesStmt.executeQuery("SELECT id, solution FROM exercises WHERE id IN " + Arrays.asList(exerciseIDs).toString().replaceFirst("\\[", "(").replaceFirst("\\]", ")"));
 			
@@ -636,17 +641,17 @@ public class SQLExerciseManager implements ModuleExerciseManager {
 		Connection conn1 = null;
 		Connection conn2 = null;
 		FileWriter writer = null;
-		SQLExerciseComparison comp;		
+		SQLExerciseComparison comp;
 		
 		try {
 			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 			
 			path = "D:/comparison.html";
 			exerciseIDs = new String[]{"69", "70", "71", "72"};
-			conn1 = DriverManager.getConnection(SQLConstants.CONN_URL, "SQL_TRIAL_BEGIN", "TRIAL");
-			conn2 = DriverManager.getConnection(SQLConstants.CONN_URL, "SQL_SUBMISSION_BEGIN", "SUBMISSION");
+			conn1 = DriverManager.getConnection("", "SQL_TRIAL_BEGIN", "TRIAL");
+			conn2 = DriverManager.getConnection("", "SQL_SUBMISSION_BEGIN", "SUBMISSION");
 
-			comp = compareExercises(exerciseIDs, conn1, conn2);
+			comp = compareExercises(exerciseIDs, conn1, conn2, null);
 			writer = new FileWriter(path);
 			writer.write(comp.printHTML());
 			

@@ -6,87 +6,105 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SQLConstants {
-	public static ApplicationProperties properties;
 
-	public SQLConstants(ApplicationProperties properties){
-		SQLConstants.properties = properties;
-		CONN_PWD=properties.getSql().getConnPwd();
-		CONN_USER=properties.getSql().getConnUser();
-		CONN_URL_BASE=properties.getSql().getConnBaseUrl();
-		CONN_URL=properties.getSql().getConnUrl();
-		SUBMISSION_SUFFIX=properties.getSql().getSubmissionSuffix();
-		DIAGNOSE_SUFFIX=properties.getSql().getDiagnoseSuffix();
-		EXERCISE_DB=properties.getSql().getExerciseDatabase();
-		JDBC_DRIVER=properties.getGrading().getJDBCDriver();
-	}
+    // USER INTERFACE ETUTOR-CORE CONSTANTS
+    public static final String ATTR_USER_ID = "userID"; // CoreConstants.ATTR_USER_ID
 
-	public static   String CONN_PWD;
+    public static final String ATTR_TASK_ID = "taskID"; // CoreConstants.ATTR_TASK_ID
 
-	public static  String CONN_USER;
+    public static final String ATTR_EXERCISE_ID = "exerciseID"; // CoreConstants.ATTR_EXERCISE_ID
 
-	public static  String CONN_URL_BASE;
+    public static final String ATTR_REPORT = "report"; // CoreConstants.ATTR_EVALUATION_REPORT;
 
-	public static  String CONN_URL;
+    public static final String ATTR_ACTIONS = "actions"; // CoreConstants.ATTR_ACTIONS;
 
-	public static  String SUBMISSION_SUFFIX;
+    public static final String ATTR_SUBMISSION_TO_VIEW = "submissionToView";
 
-	public static  String DIAGNOSE_SUFFIX;
+    public final static String ATTR_EXERCISE_SPEC_MODULE = "moduleExercise";
 
-	public static  String EXERCISE_DB;
+    public final static String ATTR_EXERCISE_SPEC_CMD = "coreExerciseMgrCmd";
 
-	public static String JDBC_DRIVER;
+    public final static String ATTR_EXERCISE_SPEC_STATUS = "coreExerciseMgrStatus";
 
+    public final static String EXERCISE_SPEC_STATUS_MODULE_SETTINGS = "moduleSettings";
 
+    public final static String EXERCISE_SPEC_CMD_BACK = "back";
 
+    public final static String EXERCISE_SPEC_CMD_NEXT = "next";
 
+    public final static String EXERCISE_SPEC_CMD_CANCEL = "cancel";
 
-	// USER INTERFACE ETUTOR-CORE CONSTANTS
-	public static final String ATTR_USER_ID = "userID"; // CoreConstants.ATTR_USER_ID
+    public final static String ACTION_SUBMIT = "submit"; // CoreConstants.ACTION_SUBMIT
 
-	public static final String ATTR_TASK_ID = "taskID"; // CoreConstants.ATTR_TASK_ID
+    public final static String ACTION_DIAGNOSE = "diagnose"; // CoreConstants.ACTION_DIAGNOSE
 
-	public static final String ATTR_EXERCISE_ID = "exerciseID"; // CoreConstants.ATTR_EXERCISE_ID
+    public final static String ACTION_CHECK = "check"; // CoreConstants.ACTION_CHECK
 
-	public static final String ATTR_REPORT = "report"; // CoreConstants.ATTR_EVALUATION_REPORT;
+    public final static String ACTION_RUN = "run"; // CoreConstants.ACTION_RUN
 
-	public static final String ATTR_ACTIONS = "actions"; // CoreConstants.ATTR_ACTIONS;
+    public static final String UPLOAD_DIR = "/upload";
 
-	public static final String ATTR_SUBMISSION_TO_VIEW = "submissionToView";
+    public static final String SERVLET_COREMANAGER = "/core/CoreManager";
 
-	public final static String ATTR_EXERCISE_SPEC_MODULE = "moduleExercise";
+    public final static String SERVLET_EXERCISE_CORE = "/assistant/ExercisesManager";
 
-	public final static String ATTR_EXERCISE_SPEC_CMD = "coreExerciseMgrCmd";
+    public final static String SERVLET_EXERCISE = "/modules/sql/SQLExercisesManager";
 
-	public final static String ATTR_EXERCISE_SPEC_STATUS = "coreExerciseMgrStatus";
+    public static final String PAGE_EXERCISE = "/modules/sql/exerciseSetting.jsp";
 
-	public final static String EXERCISE_SPEC_STATUS_MODULE_SETTINGS = "moduleSettings";
+    public final static String PAGE_EDITOR = "/modules/sql/showEditor.jsp";
 
-	public final static String EXERCISE_SPEC_CMD_BACK = "back";
+    public static final String PROPERTIES_PATH = "/etutor/resources/modules/sql/sql.properties";
 
-	public final static String EXERCISE_SPEC_CMD_NEXT = "next";
+    private final String connPwd;
+    private final String connUser;
+    private final String connURLBase;
+    private final String connURL;
+    private final String submissionSuffix;
+    private final String diagnoseSuffix;
+    private final String exerciseDB;
+    private final String jdbcDriver;
 
-	public final static String EXERCISE_SPEC_CMD_CANCEL = "cancel";
+    public SQLConstants(ApplicationProperties properties) {
+        connPwd = properties.getSql().getConnPwd();
+        connUser = properties.getSql().getConnUser();
+        connURLBase = properties.getSql().getConnBaseUrl();
+        connURL = properties.getSql().getConnUrl();
+        submissionSuffix = properties.getSql().getSubmissionSuffix();
+        diagnoseSuffix = properties.getSql().getDiagnoseSuffix();
+        exerciseDB = properties.getSql().getExerciseDatabase();
+        jdbcDriver = properties.getGrading().getJDBCDriver();
+    }
+    
+    public String getConnPwd() {
+        return connPwd;
+    }
 
-	public final static String ACTION_SUBMIT = "submit"; // CoreConstants.ACTION_SUBMIT
+    public String getConnUser() {
+        return connUser;
+    }
 
-	public final static String ACTION_DIAGNOSE = "diagnose"; // CoreConstants.ACTION_DIAGNOSE
+    public String getConnURLBase() {
+        return connURLBase;
+    }
 
-	public final static String ACTION_CHECK = "check"; // CoreConstants.ACTION_CHECK
+    public String getConnURL() {
+        return connURL;
+    }
 
-	public final static String ACTION_RUN = "run"; // CoreConstants.ACTION_RUN
+    public String getSubmissionSuffix() {
+        return submissionSuffix;
+    }
 
-	public static final String UPLOAD_DIR = "/upload";
+    public String getDiagnoseSuffix() {
+        return diagnoseSuffix;
+    }
 
-	public static final String SERVLET_COREMANAGER = "/core/CoreManager";
+    public String getExerciseDB() {
+        return exerciseDB;
+    }
 
-	public final static String SERVLET_EXERCISE_CORE = "/assistant/ExercisesManager";
-
-	public final static String SERVLET_EXERCISE = "/modules/sql/SQLExercisesManager";
-
-	public static final String PAGE_EXERCISE = "/modules/sql/exerciseSetting.jsp";
-
-	public final static String PAGE_EDITOR = "/modules/sql/showEditor.jsp";
-	
-	public static final String PROPERTIES_PATH ="/etutor/resources/modules/sql/sql.properties";
-
+    public String getJdbcDriver() {
+        return jdbcDriver;
+    }
 }

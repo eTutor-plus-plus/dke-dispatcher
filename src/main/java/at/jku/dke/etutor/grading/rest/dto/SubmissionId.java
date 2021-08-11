@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.grading.rest.dto;
 
-import java.io.IOException;
 import java.util.UUID;
 
 /**

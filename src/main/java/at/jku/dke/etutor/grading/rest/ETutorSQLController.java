@@ -19,18 +19,15 @@ import java.util.logging.Logger;
 public class ETutorSQLController {
     private final Logger logger;
     private final SQLResourceManager resourceManager;
-    private final ApplicationProperties properties;
 
 
     /**
      * The constructor
       * @param resourceManager the injected SQLResourceManager providing methods for manipulating data related to the SQL module
-     * @param properties the injected ApplicationProperties
      */
-    public ETutorSQLController(SQLResourceManager resourceManager, ApplicationProperties properties){
+    public ETutorSQLController(SQLResourceManager resourceManager){
         this.logger= Logger.getLogger("at.jku.dke.etutor.sqlcontroller");
         this.resourceManager=resourceManager;
-        this.properties=properties;
     }
 
     /**
@@ -71,7 +68,7 @@ public class ETutorSQLController {
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @PutMapping("/schema/{schemaName}")
     public ResponseEntity<String> createSchema(@PathVariable String schemaName){
-        logger.info("Enter: createSchema()"+schemaName);
+        logger.info(()->"Enter: createSchema() {}"+schemaName);
         try {
            resourceManager.createSchemas(schemaName);
             logger.info("Exit: createSchema() with Status Code 200");
@@ -89,7 +86,7 @@ public class ETutorSQLController {
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @DeleteMapping("/schema/{schemaName}")
     public ResponseEntity<String> dropSchema(@PathVariable String schemaName){
-        logger.info("Enter: dropSchema()"+schemaName);
+        logger.info(()->"Enter: dropSchema()"+schemaName);
         try {
             resourceManager.deleteSchemas(schemaName);
             logger.info("Exit: dropSchema() with Status Code 200");
@@ -109,7 +106,7 @@ public class ETutorSQLController {
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @DeleteMapping("/schema/{schemaName}/connection")
     public ResponseEntity<String> deleteConnection(@PathVariable String schemaName){
-       logger.info("Enter: deleteConnection() "+schemaName);
+       logger.info(()->"Enter: deleteConnection() "+schemaName);
         try {
             resourceManager.deleteConnection(schemaName);
             logger.info("Exit: deleteConnection() with status 200");
@@ -128,7 +125,7 @@ public class ETutorSQLController {
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @PutMapping("/schema/{schemaName}/table")
     public ResponseEntity<String> createTables(@PathVariable String schemaName, @RequestBody String queries){
-        logger.info("Enter: createTable() "+schemaName);
+        logger.info(()->"Enter: createTable() "+schemaName);
         try {
             String[] queryArray = queries.trim().split(";");
             for(String s: queryArray){
@@ -150,7 +147,7 @@ public class ETutorSQLController {
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @DeleteMapping("/schema/{schemaName}/table/{tableName}")
     public ResponseEntity<String> dropTable(@PathVariable String schemaName, @PathVariable String tableName){
-        logger.info("Enter: dropTable() "+tableName);
+        logger.info(()->"Enter: dropTable() "+tableName);
         try {
             resourceManager.deleteTables(schemaName, tableName);
             logger.info("Exit: dropTable() with Status Code 200");
@@ -213,10 +210,10 @@ public class ETutorSQLController {
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @PutMapping("/exercise/{schemaName}/{id}")
     public ResponseEntity<String> createExercise(@PathVariable int id, @PathVariable String schemaName, @RequestBody String solution) {
-        logger.info("Enter: createExercise() "+id);
+        logger.info(()->"Enter: createExercise() "+id);
         try {
             resourceManager.createExercise(id, schemaName, solution);
-            logger.info("Exit: createExercise() "+id+" with Status Code 200");
+            logger.info(()->"Exit: createExercise() "+id+" with Status Code 200");
             return ResponseEntity.ok("Exercise created");
         } catch (DatabaseException e) {
             logger.info("Exit: createExercise() "+id+" with Status Code 500");
@@ -232,7 +229,7 @@ public class ETutorSQLController {
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
     @DeleteMapping("/exercise/{id}")
     public ResponseEntity<String> deleteExercise(@PathVariable int id)  {
-        logger.info("Enter: deleteExercise(): "+id);
+        logger.info(()->"Enter: deleteExercise(): "+id);
         try {
             resourceManager.deleteExercise(id);
             logger.info("Exit: deleteExercise() with Status Code 200");
@@ -255,7 +252,7 @@ public class ETutorSQLController {
         logger.info("Enter: reserveExercise() ");
         try {
             int id = resourceManager.reserveExerciseID();
-            logger.info("Exit: reserveExercise() with status 200 and id "+id);
+            logger.info(()->"Exit: reserveExercise() with status 200 and id "+id);
             return ResponseEntity.ok(""+id);
         } catch (DatabaseException e) {
             e.printStackTrace();
