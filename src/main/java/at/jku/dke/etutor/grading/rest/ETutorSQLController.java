@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.grading.rest;
 
+import antlr.StringUtils;
 import at.jku.dke.etutor.grading.ETutorGradingConstants;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.dto.DataDefinitionDTO;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 /**
@@ -249,7 +251,7 @@ public class ETutorSQLController {
      */
     @CrossOrigin(ETutorGradingConstants.CORS_POLICY)
     @PostMapping("/exercise/{id}")
-    public ResponseEntity<String> updateExerciseSolution(@PathVariable int id, @RequestParam String newSolution){
+    public ResponseEntity<String> updateExerciseSolution(@PathVariable int id, @RequestBody String newSolution){
         logger.info(()->"Enter: updateExerciseSolution(): "+id);
         try{
             resourceManager.updateExerciseSolution(id, newSolution);
@@ -278,6 +280,54 @@ public class ETutorSQLController {
             e.printStackTrace();
             logger.info("Exit: reserveExercise() with Status Code 500");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+        }
+    }
+
+    /**
+     * Returns the persisted solution for a given exercise
+     * @param id the id
+     * @return the solution
+     */
+    @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
+    @GetMapping("/exercise/{id}/solution")
+    public ResponseEntity<String> getSolution(@PathVariable int id){
+        logger.info("Enter: getSolution()");
+        try{
+            String solution = resourceManager.getSolution(id);
+            logger.info("Exit: getSolution() with status 200");
+            return ResponseEntity.ok(solution);
+        }catch(DatabaseException e){
+            e.printStackTrace();
+            logger.info("Exit: getSolution() with status 500");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+        }
+    }
+
+    /**
+     * Returns an HTML-Table for a given table in the database
+     * @param tableName the name of the table
+     * @param taskGroup optional taskGroup
+     * @param exerciseId optional exerciseId
+     * @return the HTML-table
+     */
+    @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
+    @GetMapping("/table/{tableName}")
+    public ResponseEntity<String> getHTMLTable(@PathVariable String tableName, @RequestParam(defaultValue = "") String taskGroup, @RequestParam(defaultValue = "-1") int exerciseId){
+       logger.info("Enter: getHTMLTable() for table "+tableName);
+       String table = "";
+       try{
+            if(exerciseId != -1){
+                table = resourceManager.getHTMLTableByExerciseID(exerciseId, tableName);
+            }else if(!taskGroup.equals("")){
+
+            }else{
+                table = resourceManager.getHTMLTable(tableName, taskGroup);
+            }
+           logger.info("Exit: getHTMLTable() with status 200");
+           return ResponseEntity.ok(table);
+       }catch(DatabaseException e){
+           logger.info("Exit: getHTMLTable() with status 500");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not find table");
         }
     }
 }

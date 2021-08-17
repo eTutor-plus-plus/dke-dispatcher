@@ -4,6 +4,8 @@ import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -159,19 +161,26 @@ public class SQLResourceManager {
      * @throws DatabaseException to leverage exception handling
      */
     private void deleteConnectionUtil(Connection con, String schemaName) throws DatabaseException {
-        final String deleteExercisesQuery = "DELETE FROM exercises WHERE submission_db = ?";
+        final String deleteExercisesQuery = "DELETE FROM exercises WHERE practise_db = ?";
         final String deleteConnQuery = "DELETE FROM connections WHERE conn_string LIKE '%?currentSchema="+schemaName+"_%'";
+        final String deleteConnMappingQuery = "DELETE FROM connectionmapping WHERE connection = ?";
 
         try(PreparedStatement deleteExercisesStmt = con.prepareStatement(deleteExercisesQuery);
-            PreparedStatement deleteConnStmt = con.prepareStatement(deleteConnQuery)){
+            PreparedStatement deleteConnStmt = con.prepareStatement(deleteConnQuery);
+            PreparedStatement deleteConnMappingStmt = con.prepareStatement(deleteConnMappingQuery)){
 
-            int connId = fetchConnection(con, schemaName+"_submission");
+            int connId = fetchConnection(con, schemaName+"_diagnose");
             if(connId != -1) {
-                logger.info(()->"Query for deleting exercises: "+deleteExercisesStmt);
                 deleteExercisesStmt.setInt(1, connId);
+                logger.info(()->"Query for deleting exercises: "+deleteExercisesStmt);
                 deleteExercisesStmt.executeUpdate();
+
                 logger.info(()->"Query for deleting connection: "+deleteConnStmt);
                 deleteConnStmt.executeUpdate();
+
+                deleteConnMappingStmt.setInt(1, connId);
+                logger.info(()->"Query for deleting connection-mapping " + deleteConnMappingStmt);
+                deleteConnMappingStmt.executeUpdate();
                 con.commit();
             }else{
                 logger.info(()->"No connections found for schema "+schemaName);
@@ -310,6 +319,7 @@ public class SQLResourceManager {
                 logger.warning("Could not fetch / create connection id");
                 throw new SQLException();
             }
+            addConnectionMapping(schemaName, diagnoseConnID);
             createExerciseUtil(con, id, submissionConnID, diagnoseConnID, solution);
             con.commit();
             logger.info("Exercise created");
@@ -466,6 +476,12 @@ public class SQLResourceManager {
         }
     }
 
+    /**
+     * Updates the solution of an existing exercise
+     * @param id the id
+     * @param newSolution the solution to be updated
+     * @throws DatabaseException if an error occurs
+     */
     public void updateExerciseSolution(int id, String newSolution) throws DatabaseException {
         logger.info(()->"Updating solution of exercise "+id);
         try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
@@ -478,9 +494,18 @@ public class SQLResourceManager {
         }
     }
 
+    /**
+     * Utility methods to update the exercise solution
+     * @param con the Connection
+     * @param id the id
+     * @param newSolution the solution
+     * @throws DatabaseException if an error occurs
+     */
     public void updateExerciseSolutionUtil(Connection con, int id, String newSolution) throws DatabaseException {
-        String updateQuery = "UPDATE EXERCISES SET SOLUTION = '" + newSolution +"' WHERE ID = " + id;
+        String updateQuery = "UPDATE EXERCISES SET SOLUTION = ? WHERE ID = ?";
         try(PreparedStatement updateStatement = con.prepareStatement(updateQuery)){
+            updateStatement.setString(1, newSolution);
+            updateStatement.setInt(2, id);
             updateStatement.executeUpdate();
             con.commit();
         }catch(SQLException throwables){
@@ -521,6 +546,12 @@ public class SQLResourceManager {
         }
     }
 
+    /**
+     * Updates a given query on a given Conection
+     * @param con the connection
+     * @param query the query
+     * @throws DatabaseException if an error occurs
+     */
     private void executeUpdateUtil(Connection con, String query) throws DatabaseException {
         try(PreparedStatement stmt = con.prepareStatement(query)){
             stmt.executeUpdate();
@@ -530,4 +561,248 @@ public class SQLResourceManager {
         }
     }
 
+    /**
+     * Returns the solution for a given exercise
+     * @param id the id
+     */
+    public String getSolution(int id) throws DatabaseException{
+        try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD);){
+            con.setAutoCommit(false);
+            return getSolutionUtil(con, id);
+        }catch(SQLException throwables){
+            throwables.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
+     * Utility method for fetching the solution of a given exercise
+     * @param con the Connection
+     * @param id the id
+     * @return the solution
+     * @throws DatabaseException if no solution found or SQlException gets thrown
+     */
+    private String getSolutionUtil(Connection con, int id) throws DatabaseException {
+        String query = "SELECT solution FROM exercises where id = "+id;
+        try(PreparedStatement stmt = con.prepareStatement(query);
+        ResultSet rs = stmt.executeQuery()){
+            if(rs.next()){
+                logger.info("Solution found: ");
+                logger.info(rs.getString("solution"));
+                return rs.getString("solution");
+            }else throw new DatabaseException("No solution found");
+        } catch (SQLException throwables) {
+            handleThrowables(con, "Could not execute query "+query, throwables);
+        }
+        return "";
+    }
+
+    /**
+     * Searches for a given table in the available database connections according to the connectionmapping table in the sql-administration-database.
+     * Returns an HTML representation of the table if found.
+     * @param tableName the table
+     * @param taskGroup the optional taskgroup
+     * @return the table as HTML-table
+     * @throws DatabaseException if an error occurs
+     */
+    public String getHTMLTable(String tableName, String taskGroup) throws DatabaseException {
+        logger.info("Searching for table "+tableName);
+        try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD);){
+            con.setAutoCommit(false);
+            var connections = getConnectionsForHTMLTable(con);
+            return getHTMLTableUtil(con, connections, tableName);
+        }catch(SQLException throwables){
+            throwables.printStackTrace();
+            throw new DatabaseException(throwables);
+        }
+    }
+
+    /**
+     * Returns an HTML-Table of a given table-name in the context of a given exercise.
+     * @param exerciseId the id of the exercise
+     * @param tableName the name of the table
+     * @return the HTML-Table
+     * @throws DatabaseException if an error occurs
+     */
+    public String getHTMLTableByExerciseID(int exerciseId, String tableName) throws DatabaseException {
+        try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
+            int id = getDiagnoseConnectionFromExerciseID(con, exerciseId);
+            if(id == -1) return "";
+
+            var tmpList = new ArrayList<Integer>();
+            tmpList.add(id);
+            return getHTMLTableUtil(con, tmpList, tableName);
+        }catch(SQLException e){
+            e.printStackTrace();
+            throw new DatabaseException(e);
+        }
+    }
+
+    /**
+     * Fetches the ID of the connection for diagnose submission of the given exercise
+     * @param con the Connection
+     * @param exerciseId the id
+     * @return the connection-id
+     * @throws DatabaseException if an error occurs
+     */
+    public int getDiagnoseConnectionFromExerciseID(Connection con, int exerciseId) throws DatabaseException {
+        String query = "SELECT * FROM exercises WHERE id = "+exerciseId;
+        try(PreparedStatement stmt = con.prepareStatement(query);
+        ResultSet rset = stmt.executeQuery()){
+            if(rset.next()){
+                return rset.getInt("practise_db");
+            }
+        }catch(SQLException throwables){
+            throw new DatabaseException(throwables);
+        }
+        return -1;
+    }
+
+    /**
+     * Searches the provided connection-ids for a given table. Returns an HTML-table if found
+     * @param con the Connection
+     * @param connections the connection-id´s to be searched
+     * @param tableName the name of the table
+     * @return the table as HTML-table
+     * @throws SQLException if an error occurs
+     */
+    private String getHTMLTableUtil(Connection con, List<Integer> connections, String tableName) throws SQLException {
+        var conQuery = "SELECT * FROM connections WHERE id = ?";
+        var tableQuery = "SELECT * FROM "+tableName;
+        PreparedStatement conStmt = con.prepareStatement(conQuery );
+
+
+        var url = "";
+        var pwd = "";
+        var user = "";
+
+        ResultSet conRset;
+        for(var id : connections){
+            conStmt.setInt(1, id);
+            conRset = conStmt.executeQuery();
+            if(conRset.next()){
+                url = conRset.getString("conn_string");
+                pwd = conRset.getString("conn_user");
+                user = conRset.getString("conn_pwd");
+                try(var tmpCon = DriverManager.getConnection(url, user, pwd)){
+                    try(PreparedStatement tableStmt = tmpCon.prepareStatement(tableQuery);
+                    ResultSet tableRset = tableStmt.executeQuery()){
+                        logger.info(()->"Table found in connection with id "+id);
+                        return generateHTMLTable(tableRset);
+                    }catch(SQLException ignore){
+                    }
+                }catch(SQLException ignore){
+                    ignore.printStackTrace();
+                }
+            }
+        }
+
+        conStmt.close();
+        return "";
+    }
+
+    /**
+     * Takes a ResultSet and generates an HTML-Table
+     * @param tableRset the ResultSet
+     * @return the table as HTML-table
+     * @throws SQLException if an error occurs
+     */
+    private String generateHTMLTable(ResultSet tableRset) throws SQLException {
+        logger.info("Generating HTML table from ResultSet");
+        ResultSetMetaData metaData = tableRset.getMetaData();
+        var columnCount = metaData.getColumnCount();
+        var tableStart = "<table>";
+        var tableEnd = "</table>";
+        var tableRowStart = "<tr>";
+        var tableRowEnd = "</tr>";
+        var headerStart = "<th>";
+        var headerEnd = "</th>";
+        var dataStart = "<td>";
+        var dataEnd = "</td>";
+
+
+        StringBuilder table = new StringBuilder();
+
+        table.append(tableStart);
+        table.append(tableRowStart);
+        for(var i = 1; i<=columnCount; i++){
+            table.append(headerStart);
+            table.append(metaData.getColumnLabel(i));
+            table.append(headerEnd);
+        }
+        table.append(tableRowEnd);
+
+        while(tableRset.next()){
+            table.append(tableRowStart);
+            for(var j = 1; j<=columnCount; j++){
+                table.append(dataStart);
+                table.append(tableRset.getObject(j));
+                table.append(dataEnd);
+            }
+            table.append(tableRowEnd);
+        }
+        table.append(tableEnd);
+
+        logger.info("Table generated");
+        return table.toString();
+    }
+
+    /**
+     * Fetches the connection ids from the diagnose-connections that are available
+     * @param con the Connection
+     * @return a list with all the available id´s
+     * @throws DatabaseException if an error occurs
+     */
+    public List<Integer> getConnectionsForHTMLTable(Connection con) throws DatabaseException {
+        logger.info("Fetching available connections to search for table");
+        var connectionIds = new ArrayList<Integer>();
+        var query = "SELECT connection FROM connectionmapping";
+        try(PreparedStatement stmt = con.prepareStatement(query);
+        ResultSet rset = stmt.executeQuery()){
+            while(rset.next()){
+                connectionIds.add(rset.getInt("connection"));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new DatabaseException(throwables);
+        }
+
+        logger.info("Connections fetched");
+        return connectionIds;
+    }
+
+    /**
+     * Adds a newly crated schema to the mapping of the schema and database-name to the connection id
+     * @param schema the schema
+     * @param id the id
+     */
+    public void addConnectionMapping(String schema, int id) throws DatabaseException {
+        logger.info("Adding connection to mapping-table");
+        try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
+            addConnectionMappingUtil(con, schema, id);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new DatabaseException(throwables);
+        }
+        logger.info("Mapping added");
+    }
+
+    /**
+     * Adds the connection mapping
+     * @param con the Connection
+     * @param schema the schema
+     * @param id the id
+     * @throws DatabaseException if an error occurs
+     */
+    private void addConnectionMappingUtil(Connection con, String schema, int id) throws DatabaseException {
+        String query = "INSERT INTO connectionmapping VALUES(?,?,?)";
+        try(PreparedStatement stmt = con.prepareStatement(query)){
+            stmt.setString(1, "exercises");
+            stmt.setString(2, schema);
+            stmt.setInt(3, id);
+            stmt.executeUpdate();
+        }catch(SQLException throwables){
+            handleThrowables(con, "Could not add mapping", throwables);
+        }
+    }
 }

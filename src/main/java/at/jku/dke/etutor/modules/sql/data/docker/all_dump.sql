@@ -385,6 +385,19 @@ CREATE TABLE public.connections (
 ALTER TABLE public.connections OWNER TO etutor;
 
 --
+-- Name: connectionmapping; Type: TABLE; Schema: public; Owner: etutor
+--
+
+CREATE TABLE public.connectionmapping (
+    database character varying(100),
+    schema character varying(100),
+    connection integer NOT NULL
+);
+
+ALTER TABLE public.connectionmapping OWNER TO etutor;
+
+
+--
 -- Name: exercises; Type: TABLE; Schema: public; Owner: etutor
 --
 
@@ -697,7 +710,13 @@ COPY public.exercises (id, submission_db, practise_db, solution) FROM stdin;
 13899	15	15	select s.*\nfrom stock_exchange s\nwhere (select sum(share_price * share_cnt) \n              from listed_at \n              where stock_exchange_code = s.code \n                and date_valid = to_date('2015-12-04', 'yyyy-mm-dd')) >\n      (select avg(sum)\n\t   from\n\t   (\n\t   select sum(share_price * share_cnt)\n              from listed_at \n              where date_valid = to_date('2015-12-04', 'yyyy-mm-dd')\n              group by stock_exchange_code\n\t  \t)as subquery \n\t   );
 \.
 
-
+COPY public.connectionmapping(database, schema, connection) from stdin;
+begin	public	1
+stock_exchange	public	15
+wohnungen	public	7
+pruefungen	public	11
+auftraege	public	13
+\.
 
 --
 -- Name: connections CONNECTIONS_PK; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -715,6 +734,8 @@ ALTER TABLE ONLY public.exercises
     ADD CONSTRAINT "EXERCISES_PK" PRIMARY KEY (id);
 
 
+ALTER TABLE ONLY public.connectionmapping
+    ADD CONSTRAINT "CONNECTIONMAPPING_PK" PRIMARY KEY(database, schema);
 --
 -- Name: exercises EXERCISES_FK1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
@@ -723,6 +744,8 @@ ALTER TABLE ONLY public.exercises
     ADD CONSTRAINT "EXERCISES_FK1" FOREIGN KEY (practise_db) REFERENCES public.connections(id);
 
 
+ALTER TABLE ONLY public.connectionmapping
+    ADD CONSTRAINT "CONNECTIONMAPPING_FK1" FOREIGN KEY(connection) REFERENCES public.connections(id);
 --
 -- Name: exercises EXERCISES_FK2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
