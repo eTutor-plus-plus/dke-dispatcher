@@ -40,7 +40,7 @@ public class TestSQLModule {
     private String CONN_URL;
     private String CONN_USER;
     private String CONN_PWD;
-    private final String EXERCISE_CONSTRAINTS = "where id = 120000";
+    private final String EXERCISE_CONSTRAINTS = "";
     private final String ACTION_STRING = "diagnose";
     private final String DIAGNOSE_LEVEL = "3";
 
