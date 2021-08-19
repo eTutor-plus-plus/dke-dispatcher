@@ -175,12 +175,14 @@ public class SQLResourceManager {
                 logger.info(()->"Query for deleting exercises: "+deleteExercisesStmt);
                 deleteExercisesStmt.executeUpdate();
 
-                logger.info(()->"Query for deleting connection: "+deleteConnStmt);
-                deleteConnStmt.executeUpdate();
-
                 deleteConnMappingStmt.setInt(1, connId);
                 logger.info(()->"Query for deleting connection-mapping " + deleteConnMappingStmt);
                 deleteConnMappingStmt.executeUpdate();
+
+                logger.info(()->"Query for deleting connection: "+deleteConnStmt);
+                deleteConnStmt.executeUpdate();
+
+
                 con.commit();
             }else{
                 logger.info(()->"No connections found for schema "+schemaName);
@@ -319,9 +321,9 @@ public class SQLResourceManager {
                 logger.warning("Could not fetch / create connection id");
                 throw new SQLException();
             }
-            addConnectionMapping(schemaName, diagnoseConnID);
             createExerciseUtil(con, id, submissionConnID, diagnoseConnID, solution);
             con.commit();
+            addConnectionMapping(schemaName, diagnoseConnID);
             logger.info("Exercise created");
         }catch(SQLException throwables){
             throwables.printStackTrace();
@@ -779,6 +781,7 @@ public class SQLResourceManager {
     public void addConnectionMapping(String schema, int id) throws DatabaseException {
         logger.info("Adding connection to mapping-table");
         try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
+            con.setAutoCommit(false);
             addConnectionMappingUtil(con, schema, id);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -798,11 +801,11 @@ public class SQLResourceManager {
         String query = "INSERT INTO connectionmapping VALUES(?,?,?)";
         try(PreparedStatement stmt = con.prepareStatement(query)){
             stmt.setString(1, "exercises");
-            stmt.setString(2, schema);
+            stmt.setString(2, schema.toLowerCase());
             stmt.setInt(3, id);
             stmt.executeUpdate();
-        }catch(SQLException throwables){
-            handleThrowables(con, "Could not add mapping", throwables);
+            con.commit();
+        }catch(SQLException ignore){
         }
     }
 }

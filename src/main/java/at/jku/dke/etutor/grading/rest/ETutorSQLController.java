@@ -34,7 +34,7 @@ public class ETutorSQLController {
 
     /**
      * Creates a schema, tables and inserts data
-     * @param ddl the Object containing the statemetns
+     * @param ddl the Object containing the statements
      * @return ResponseEntity
      */
     @CrossOrigin(origins= ETutorGradingConstants.CORS_POLICY)
@@ -250,7 +250,7 @@ public class ETutorSQLController {
      * @return a response entity
      */
     @CrossOrigin(ETutorGradingConstants.CORS_POLICY)
-    @PostMapping("/exercise/{id}")
+    @PostMapping("/exercise/{id}/solution")
     public ResponseEntity<String> updateExerciseSolution(@PathVariable int id, @RequestBody String newSolution){
         logger.info(()->"Enter: updateExerciseSolution(): "+id);
         try{
