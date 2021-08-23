@@ -1,8 +1,6 @@
 package at.jku.dke.etutor.grading.rest;
 
-import antlr.StringUtils;
 import at.jku.dke.etutor.grading.ETutorGradingConstants;
-import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.dto.DataDefinitionDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceManager;
@@ -10,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.logging.Logger;
+
 
 /**
  * Controller that handles requests to manage SQL exercises
@@ -28,6 +26,7 @@ public class ETutorSQLController {
       * @param resourceManager the injected SQLResourceManager providing methods for manipulating data related to the SQL module
      */
     public ETutorSQLController(SQLResourceManager resourceManager){
+
         this.logger= Logger.getLogger("at.jku.dke.etutor.sqlcontroller");
         this.resourceManager=resourceManager;
     }
