@@ -32,7 +32,7 @@ public class SubmissionDispatcher  {
      * Persists the entities (submission, report, grading)
      */
     @Async("asyncExecutor")
-    public void run(Submission submission) {
+    public void run(Submission submission, Locale locale) {
         logger.info("Saving submission to database");
         repositoryManager.persistSubmission(submission);
         logger.info("Finished saving submission to database");
@@ -52,11 +52,11 @@ public class SubmissionDispatcher  {
             logger.info("Finished evaluating submission");
 
             GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading);
-            gradingDTO.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes()));
+            gradingDTO.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes(), locale));
 
             if(grading.getPoints()<grading.getMaxPoints() || grading.getPoints() == 0) {
                     logger.info("Requesting report");
-                    DefaultReport report = getReport(evaluator, grading, analysis, submission, Locale.GERMAN);
+                    DefaultReport report = getReport(evaluator, grading, analysis, submission, locale);
                     logger.info("Received report");
                     gradingDTO.setReport(new ReportDTO(submission.getSubmissionId(), report));
             }

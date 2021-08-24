@@ -47,5 +47,5 @@ public interface Evaluator {
      * @param passedAttributes the passed attributes
      * @return an HTML String
      */
-    public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes);
+    public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale);
 }

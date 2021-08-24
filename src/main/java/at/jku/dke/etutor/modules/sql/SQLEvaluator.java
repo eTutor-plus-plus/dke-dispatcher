@@ -374,7 +374,7 @@ public class SQLEvaluator implements Evaluator {
 		}
 	}
 	@Override
-	public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes) {
+	public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
 		if (passedAttributes.get("action").equalsIgnoreCase("submit")) return null;
 
 		StringBuilder result = new StringBuilder();
@@ -384,7 +384,8 @@ public class SQLEvaluator implements Evaluator {
 			SQLCriterionAnalysis cartesianProduct = sqlAnalysis.getCriterionAnalysis(SQLEvaluationCriterion.CARTESIAN_PRODUCT);
 			if(cartesianProduct != null && !cartesianProduct.isCriterionSatisfied()) return null;
 
-			result.append("<strong>The result of your query: </strong><br>");
+			if(locale == Locale.GERMAN) result.append("<strong> Das Ergebnis Ihrer Abfrage: </strong><br>");
+			else result.append("<strong>The result of your query: </strong><br>");
 			Iterator<String> columnIterator= sqlAnalysis.getQueryResultColumnLabels().iterator();
 
 

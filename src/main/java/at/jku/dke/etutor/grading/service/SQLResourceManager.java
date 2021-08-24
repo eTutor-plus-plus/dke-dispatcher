@@ -713,7 +713,7 @@ public class SQLResourceManager {
         logger.info("Generating HTML table from ResultSet");
         ResultSetMetaData metaData = tableRset.getMetaData();
         var columnCount = metaData.getColumnCount();
-        var tableStart = "<table>";
+        var tableStart = "<table border=1 frame=void rules=rows>";
         var tableEnd = "</table>";
         var tableRowStart = "<tr>";
         var tableRowEnd = "</tr>";

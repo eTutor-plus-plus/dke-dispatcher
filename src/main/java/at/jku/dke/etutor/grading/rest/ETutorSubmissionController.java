@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 
+import java.util.Locale;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -46,7 +48,7 @@ public class ETutorSubmissionController {
      */
     @CrossOrigin(origins="*")
     @PostMapping("")
-    public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody SubmissionDTO submissionDto) {
+    public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody SubmissionDTO submissionDto, @RequestHeader("Accept-Language") String language) {
         Submission submission = new Submission(submissionDto);
         logger.info("Submission received");
         SubmissionId submissionId;
@@ -55,10 +57,20 @@ public class ETutorSubmissionController {
         submissionId = SubmissionId.createId(submission);
         logger.info("Finished calculating submission-ID: " + submissionId.getSubmissionId());
 
-        submissionDispatcherService.run(submission);
+        submissionDispatcherService.run(submission, mapLangToLocale(language));
 
         return new ResponseEntity<>(EntityModel.of(submissionId,
                 linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("grading")),
                 HttpStatus.ACCEPTED);
+    }
+
+    /**
+     * Maps a String to a Locale
+     * @param language the language
+     * @return the Locale
+     */
+    private Locale mapLangToLocale(String language){
+        if(language.equalsIgnoreCase("de")) return Locale.GERMAN;
+        else return Locale.ENGLISH;
     }
 }

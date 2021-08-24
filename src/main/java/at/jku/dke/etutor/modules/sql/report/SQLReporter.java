@@ -62,14 +62,16 @@ public class SQLReporter {
 
                 if ((criterionAnalysis instanceof TuplesAnalysis) && (config.getDiagnoseLevel() > 0)) {
                     tuplesAnalysis = (TuplesAnalysis) criterionAnalysis;
-                    error.append("<strong>The tuples of your query are not correct</strong>");
+                    if(isGermanLocale(locale)) error.append("<strong>Die Tupel der Ergebnistabelle sind nicht richtig</strong>").append(LS);
+                    else error.append("<strong>The tuples of your query are not correct</strong>");
 
                     int missingTuplesCount = tuplesAnalysis.getMissingTuples().size();
                     int surplusTuplesCount = tuplesAnalysis.getSurplusTuples().size();
 
                     if (config.getDiagnoseLevel() == 1) {
                         if (tuplesAnalysis.hasMissingTuples()) {
-                            description.append("There are missing tuples in the result of your query");
+                            if(isGermanLocale(locale)) description.append("Es fehlen Tupel.");
+                            else description.append("There are missing tuples in the result of your query.");
                         }
 
                         if ((tuplesAnalysis.hasSurplusTuples()) && (tuplesAnalysis.hasMissingTuples())) {
@@ -77,7 +79,8 @@ public class SQLReporter {
                         }
 
                         if (tuplesAnalysis.hasSurplusTuples()) {
-                            description.append("There are too much tuples in the result of your query");
+                            if(isGermanLocale(locale)) description.append("Es sind zu viele Tupel.");
+                            description.append("There are too much tuples in the result of your query.");
                         }
                     }
 
@@ -85,7 +88,8 @@ public class SQLReporter {
                     if (config.getDiagnoseLevel() == 2) {
 
                         if (tuplesAnalysis.hasMissingTuples()) {
-                            description.append("There are ").append(missingTuplesCount).append(" missing tuples in the result of your query");
+                            if (isGermanLocale(locale)) description.append("Es fehlen " ).append(missingTuplesCount).append(" Tupel.");
+                            else description.append("There are ").append(missingTuplesCount).append(" missing tuples in the result of your query.");
                         }
 
 
@@ -94,7 +98,9 @@ public class SQLReporter {
                         }
 
                         if (tuplesAnalysis.hasSurplusTuples()) {
-                            description.append("There are ").append(surplusTuplesCount).append("  surplus tuples in the result of your query");
+                            if(isGermanLocale(locale)) description.append("Es sind ").append(surplusTuplesCount).append(" Tupel zu viel.");
+                            else description.append("There are ").append(surplusTuplesCount).append("  surplus tuples in the result of your query.");
+
 
                         }
                     }
@@ -102,7 +108,8 @@ public class SQLReporter {
                     if (config.getDiagnoseLevel() == 3) {
 
                         if (tuplesAnalysis.hasMissingTuples()) {
-                            description.append("The following ").append(missingTuplesCount).append(" tuples are missing in the result of your query: ").append(LS);
+                            if(isGermanLocale(locale)) description.append("Die folgenden ").append(missingTuplesCount).append(" Tupel fehlen:").append(LS);
+                            else description.append("The following ").append(missingTuplesCount).append(" tuples are missing in the result of your query: ").append(LS);
 
                             report.setMissingTuples(tuplesAnalysis.getMissingTuples());
 
@@ -134,8 +141,9 @@ public class SQLReporter {
                         }
 
                         if (tuplesAnalysis.hasSurplusTuples()) {
+                            if(isGermanLocale(locale))description.append("Die folgenden ").append(surplusTuplesCount).append(" Tupel sind zu viel: ").append(LS);
+                            else description.append("The following ").append(surplusTuplesCount).append(" tuples are too much in the result of your query: ").append(LS);
 
-                            description.append("The following ").append(surplusTuplesCount).append(" tuples are too much in the result of your query: ").append(LS);
                             description.append("<table border=1 frame=void rules=rows>");
                             report.setSurplusTuples(tuplesAnalysis.getSurplusTuples());
 
@@ -167,14 +175,16 @@ public class SQLReporter {
                 if ((criterionAnalysis instanceof ColumnsAnalysis) && (config.getDiagnoseLevel() > 0)) {
                     columnsAnalysis = (ColumnsAnalysis) criterionAnalysis;
 
-                    error.append("<strong>The columns of your result are not correct<strong><br>");
+                    if(isGermanLocale(locale))error.append("<strong> Die Spalten der Ergebnistabelle sind nicht richtig! </strong>");
+                    else error.append("<strong>The columns of your result are not correct!<strong><br>");
 
                     int missingColumnsCount = columnsAnalysis.getMissingColumns().size();
                     int surplusColumnsCount = columnsAnalysis.getSurplusColumns().size();
 
                     if (config.getDiagnoseLevel() == 1) {
                         if (columnsAnalysis.hasMissingColumns()) {
-                            description.append("There are missing columns ").append(LS);
+                            if(isGermanLocale(locale)) description.append("Es fehlen Spalten.");
+                            else description.append("There are missing columns ").append(LS);
                         }
 
                         if ((columnsAnalysis.hasMissingColumns()) && (columnsAnalysis.hasSurplusColumns())) {
@@ -182,14 +192,16 @@ public class SQLReporter {
                         }
 
                         if (columnsAnalysis.hasSurplusColumns()) {
-                            description.append("There are surplus columns").append(LS);
+                            if(isGermanLocale(locale))description.append("Es sind zu viele Spalten.");
+                            else description.append("There are surplus columns").append(LS);
                         }
                     }
 
 
                     if (config.getDiagnoseLevel() == 2 ) {
                             if(columnsAnalysis.hasMissingColumns()){
-                                description.append("There are ").append(missingColumnsCount).append(" columns missing ").append(LS);
+                                if(isGermanLocale(locale))description.append("Es fehlen ").append(missingColumnsCount).append(" Spalten.").append(LS);
+                                else description.append("There are ").append(missingColumnsCount).append(" columns missing. ").append(LS);
                             }
 
                             if ((columnsAnalysis.hasMissingColumns()) && (columnsAnalysis.hasSurplusColumns())) {
@@ -197,14 +209,16 @@ public class SQLReporter {
                             }
 
                             if (columnsAnalysis.hasSurplusColumns()) {
-                                description.append("There are ").append(surplusColumnsCount).append(" too much ").append(LS);
+                                if(isGermanLocale(locale)) description.append("Es sind ").append(surplusColumnsCount).append(" Spalten zu viel.").append(LS);
+                                description.append("There are ").append(surplusColumnsCount).append(" too much. ").append(LS);
                             }
                     }
 
                     if (config.getDiagnoseLevel() == 3) {
 
                         if (columnsAnalysis.hasMissingColumns()) {
-                            description.append("The following columns are missing: ").append(LS);
+                            if(isGermanLocale(locale))description.append("Die folgenden Spalten fehlen: ").append(LS);
+                            else description.append("The following columns are missing: ").append(LS);
 
                             columnsIterator = columnsAnalysis.iterMissingColumns();
                             description.append("<strong>");
@@ -216,7 +230,9 @@ public class SQLReporter {
                         }
 
                         if (columnsAnalysis.hasSurplusColumns()) {
-                            description.append("The following columns are too much: ").append(LS);
+                            if(isGermanLocale(locale)) description.append("Die folgenden Spalten sind zu viel: ").append(LS);
+                            else description.append("The following columns are too much: ").append(LS);
+
                             columnsIterator = columnsAnalysis.iterSurplusColumns();
                             description.append("<strong>");
                             while (columnsIterator.hasNext()) {
@@ -230,13 +246,23 @@ public class SQLReporter {
                 }
 
                 if ((criterionAnalysis instanceof OrderingAnalysis) && (config.getDiagnoseLevel() > 0)) {
-                    error.append("<strong>The order of your tuples is not correct</strong>");
-                    description.append("The order of your tuples is not correct");
+                    if(isGermanLocale(locale)){
+                        error.append("<strong>Die Sortierung der Ergebnistabelle ist nicht richtig!</strong>");
+                        description.append("Die Sortierung der Ergebnistabelle ist nicht richtig.");
+                    }else{
+                        error.append("<strong>The order of your tuples is not correct!</strong>");
+                        description.append("The order of your tuples is not correct");
+                    }
                 }
 
                 if ((criterionAnalysis instanceof CartesianProductAnalysis) && (config.getDiagnoseLevel() > 0)) {
-                    error.append("<strong>There are too many tuples in the result of your query</strong>");
-                    description.append("Your result may be a cartesian product");
+                    if(isGermanLocale(locale)){
+                        error.append("<strong> Es sind viel zu viele Tupel in der Ergebnistabelle!</strong>");
+                        description.append("Es handelt sich eventuell um ein kartesisches Produkt.");
+                    }else{
+                        error.append("<strong>There are way too many tuples in the result of your query</strong>");
+                        description.append("Your result may be a cartesian product.");
+                    }
                 }
 
                 if ((hint.toString().length() != 0) || (error.toString().length() != 0) || (description.toString().length() != 0)) {
@@ -272,5 +298,14 @@ public class SQLReporter {
         }
 
         return report;
+    }
+
+    /**
+     * Returns wheter the locale equals Locale.GERMAN
+     * @param locale the locale
+     * @return a boolean
+     */
+    private boolean isGermanLocale(Locale locale){
+        return locale == Locale.GERMAN;
     }
 }
