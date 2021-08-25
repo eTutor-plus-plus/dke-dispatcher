@@ -1,14 +1,13 @@
 package at.jku.dke.etutor.modules.sql.grading;
 
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 
 import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
 import at.jku.dke.etutor.modules.sql.analysis.SQLCriterionAnalysis;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class SQLGrader {
@@ -19,7 +18,7 @@ public class SQLGrader {
 		super();
 
 		try {
-			this.logger = Logger.getLogger("at.jku.dke.etutor.modules.sql");
+			this.logger = (Logger) LoggerFactory.getLogger(SQLGrader.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -75,7 +74,7 @@ public class SQLGrader {
 					message = "";
 					message = message.concat("Could not grade criterion '"  + criterion +  "'. ");
 
-					this.logger.log(Level.INFO, message);
+					this.logger.info(message);
 					//grading.setGradingException(new GradingException(message));
 					return grading;
 				}
@@ -86,7 +85,7 @@ public class SQLGrader {
 				message = message.concat("This is an internal system error. ");
 				message = message.concat("Please inform the system administrator.");
 
-				this.logger.log(Level.SEVERE, message);
+				this.logger.error(message);
 				throw new MissingGradingCriterionConfigException(criterion, message);
 			}
 		}

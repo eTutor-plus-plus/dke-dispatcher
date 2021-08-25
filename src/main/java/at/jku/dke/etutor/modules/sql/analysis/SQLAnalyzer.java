@@ -8,10 +8,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Analyzer that takes an SQLAnalyzerConfig configuration and performs the analysis according to it
@@ -26,7 +26,7 @@ public class SQLAnalyzer {
 		super();
 
 		try {
-			this.logger = Logger.getLogger("at.jku.dke.etutor.modules.sql");
+			this.logger = (Logger) LoggerFactory.getLogger(SQLAnalyzer.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -56,7 +56,7 @@ public class SQLAnalyzer {
 			message = message.concat(INTERNAL_ERROR);
 			message = message.concat(CONTACT_ADMIN);
 
-			this.logger.log(Level.SEVERE, message);
+			this.logger.error(message);
 			analysis.setAnalysisException(new AnalysisException(message));
 			return analysis;
 		}
@@ -70,7 +70,7 @@ public class SQLAnalyzer {
 			message = message.concat(INTERNAL_ERROR);
 			message = message.concat(CONTACT_ADMIN);
 
-			this.logger.log(Level.SEVERE, message);
+			this.logger.error( message);
 			analysis.setAnalysisException(new AnalysisException(message));
 			return analysis;
 		}
@@ -82,7 +82,7 @@ public class SQLAnalyzer {
 			message = message.concat(INTERNAL_ERROR);
 			message = message.concat(CONTACT_ADMIN);
 
-			this.logger.log(Level.SEVERE, message);
+			this.logger.error(message);
 			analysis.setAnalysisException(new AnalysisException(message));
 			return analysis;
 		}
@@ -150,7 +150,7 @@ public class SQLAnalyzer {
 
 		syntaxAnalysis = new SyntaxAnalysis();
 
-		this.logger.log(Level.INFO, "Analyzing syntax");
+		this.logger.info("Analyzing syntax");
 
 		try (Statement stmt = config.getConnection().createStatement();
 		ResultSet rset = stmt.executeQuery(submittedQuery)){
@@ -166,7 +166,7 @@ public class SQLAnalyzer {
 				}
 				analysis.addQueryResultTuple(tuple);				
 			}
-			this.logger.log(Level.INFO, "Finished analyzing syntax");			
+			this.logger.info("Finished analyzing syntax");
 		} catch (SQLException e) {
 			syntaxAnalysis.setFoundSyntaxError(true);
 			syntaxAnalysis.setCriterionIsSatisfied(false);
@@ -194,7 +194,7 @@ public class SQLAnalyzer {
 
 		orderingAnalysis = new OrderingAnalysis();
 
-		this.logger.log(Level.INFO, "Checking order of query.");
+		this.logger.info("Checking order of query.");
 
 		if (this.usesOrderByStatement(config.getCorrectQuery())) {
 			try (Statement correctQuery_STMT = config.getConnection().createStatement();
@@ -225,7 +225,7 @@ public class SQLAnalyzer {
 					}
 				}
 
-				this.logger.log(Level.INFO, "Finished checking order of query.");
+				this.logger.info("Finished checking order of query.");
 				
 			} catch (SQLException e) {
 				message = "";
@@ -233,7 +233,7 @@ public class SQLAnalyzer {
 				message = message.concat(INTERNAL_ERROR);
 				message = message.concat(CONTACT_ADMIN);
 
-				this.logger.log(Level.SEVERE, message, e);
+				this.logger.error(message, e);
 				orderingAnalysis.setCriterionIsSatisfied(false);
 				orderingAnalysis.setAnalysisException(new AnalysisException(message, e));
 			}
@@ -300,7 +300,7 @@ public class SQLAnalyzer {
 		submittedQueryTuples = new ArrayList<>();
 		tuplesAnalysis = new TuplesAnalysis();
 
-		this.logger.log(Level.INFO, "Checking tuples of query.");
+		this.logger.info("Checking tuples of query.");
 
 		try (Statement correctQuery_STMT = config.getConnection().createStatement();
              ResultSet correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery());
@@ -317,14 +317,14 @@ public class SQLAnalyzer {
 				columns = columns.concat(rsmd.getColumnName(i));
 			}
 
-			this.logger.log(Level.INFO, "COLUMN LABELS: {0}", columns);
+			this.logger.info("COLUMN LABELS: {0}", columns);
 			
 			checkQuery = "";
 			checkQuery = checkQuery.concat("SELECT " + columns + " ");
 			checkQuery = checkQuery.concat("FROM (" + config.getCorrectQuery() + ") AS correctQuery ");
 			checkQuery = checkQuery.concat("ORDER BY " + columns);
 			
-			this.logger.log(Level.INFO, "CORRECT QUERY:\n {0}", checkQuery);
+			this.logger.info("CORRECT QUERY:\n {}", checkQuery);
 
 			checkQuery_RSET = correctQuery_STMT.executeQuery(checkQuery);
 
@@ -338,7 +338,7 @@ public class SQLAnalyzer {
 			checkQuery = checkQuery.concat("FROM (" + submittedQuery + ") AS submittedQuery ");
 			checkQuery = checkQuery.concat("ORDER BY " + columns);
 
-			this.logger.log(Level.INFO, "SUBMITTED QUERY:\n {0}", checkQuery);
+			this.logger.info("SUBMITTED QUERY:\n {}", checkQuery);
 
 			checkQuery_RSET = submittedQuery_STMT.executeQuery(checkQuery);
 
@@ -352,7 +352,7 @@ public class SQLAnalyzer {
 
 			tuplesAnalysis.setCriterionIsSatisfied((tuplesAnalysis.getSurplusTuples().isEmpty()) && (tuplesAnalysis.getMissingTuples().isEmpty()));
 
-			this.logger.log(Level.INFO, "Finished checking tuples of query.");
+			this.logger.info("Finished checking tuples of query.");
 
 		} catch (SQLException e) {
 			message = "";
@@ -360,7 +360,7 @@ public class SQLAnalyzer {
 			message = message.concat(INTERNAL_ERROR);
 			message = message.concat(CONTACT_ADMIN);
 
-			this.logger.log(Level.SEVERE, message, e);
+			this.logger.error(message, e);
 			tuplesAnalysis.setAnalysisException(new AnalysisException(message, e));
 		} finally {
 			try {
@@ -368,7 +368,7 @@ public class SQLAnalyzer {
 					checkQuery_RSET.close();
 				}
 			} catch (SQLException e) {
-				this.logger.log(Level.SEVERE, "Could not close result set.", e);
+				this.logger.error("Could not close result set.", e);
 			}
 		}
 
@@ -414,7 +414,7 @@ public class SQLAnalyzer {
 
 		columnsAnalysis = new ColumnsAnalysis();
 
-		this.logger.log(Level.INFO, "Checking columns of query.");
+		this.logger.info("Checking columns of query.");
 
 		try (Statement correctQuery_STMT = config.getConnection().createStatement();
              ResultSet correctQuery_RSET = correctQuery_STMT.executeQuery(config.getCorrectQuery());
@@ -454,7 +454,7 @@ public class SQLAnalyzer {
 
 			columnsAnalysis.setCriterionIsSatisfied((columnsAnalysis.getSurplusColumns().isEmpty()) && (columnsAnalysis.getMissingColumns().isEmpty()));
 
-			this.logger.log(Level.INFO, "Finished checking columns of query.");
+			this.logger.info("Finished checking columns of query.");
 
 		} catch (SQLException e) {
 			message = "";
@@ -462,7 +462,7 @@ public class SQLAnalyzer {
 			message = message.concat(INTERNAL_ERROR);
 			message = message.concat(CONTACT_ADMIN);
 
-			this.logger.log(Level.SEVERE, message, e);
+			this.logger.error(message, e);
 			columnsAnalysis.setAnalysisException(new AnalysisException(message, e));
 		}
 
@@ -486,7 +486,7 @@ public class SQLAnalyzer {
 
 		cartesianProductAnalysis = new CartesianProductAnalysis();
 
-		this.logger.log(Level.INFO, "Checking for cartesian product.");
+		this.logger.info("Checking for cartesian product.");
 
 		String querySub = "SELECT COUNT(*) FROM (" + submittedQuery + ") AS submittedQuery";
 		String queryCorr =  "SELECT COUNT(*) FROM (" + config.getCorrectQuery() + ") AS correctQuery";
@@ -507,7 +507,7 @@ public class SQLAnalyzer {
 				cartesianProductAnalysis.setCriterionIsSatisfied(false);
 			}
 
-			this.logger.log(Level.INFO, "Finsihed checking for cartesian product.");
+			this.logger.info("Finsihed checking for cartesian product.");
 
 		} catch (SQLException e) {
 			message = "";
@@ -515,7 +515,7 @@ public class SQLAnalyzer {
 			message = message.concat(INTERNAL_ERROR);
 			message = message.concat(CONTACT_ADMIN);
 
-			this.logger.log(Level.SEVERE, message, e);
+			this.logger.error(message, e);
 			cartesianProductAnalysis.setAnalysisException(new AnalysisException(message, e));
 		}
 		return cartesianProductAnalysis;

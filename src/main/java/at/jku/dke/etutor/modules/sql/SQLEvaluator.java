@@ -9,8 +9,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import at.jku.dke.etutor.core.evaluation.*;
 
@@ -24,6 +22,8 @@ import at.jku.dke.etutor.modules.sql.grading.SQLGrader;
 import at.jku.dke.etutor.modules.sql.grading.SQLGraderConfig;
 import at.jku.dke.etutor.modules.sql.report.SQLReporter;
 import at.jku.dke.etutor.modules.sql.report.SQLReporterConfig;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,13 +34,13 @@ public class SQLEvaluator implements Evaluator {
 
 	private Logger logger;
 	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
-	private SQLConstants constants;
+	private final SQLConstants constants;
 
 	public SQLEvaluator(SQLConstants constants) {
 		super();
 
 		try {
-			this.logger = Logger.getLogger("at.jku.dke.etutor.modules.sql");
+			this.logger = (Logger) LoggerFactory.getLogger("at.jku.dke.etutor.modules.sql");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -58,7 +58,7 @@ public class SQLEvaluator implements Evaluator {
 	 * @throws Exception if an error occurs
 	 */
 	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
-		logger.info("exerciseID: " + exerciseID);
+		logger.info("exerciseID: {}", exerciseID);
 		logPassedAttributes(passedAttributes, passedParameters);
 		
 		String action;
@@ -121,7 +121,7 @@ public class SQLEvaluator implements Evaluator {
 				}
 			}
 
-			this.logger.log(Level.INFO,"QUERY for reading connection data:\n {0}", query);
+			this.logger.info("QUERY for reading connection data:\n {}", query);
 
 			stmt = conn.createStatement();
 			rset = stmt.executeQuery(query);
@@ -134,7 +134,7 @@ public class SQLEvaluator implements Evaluator {
 
 			//ESTABLISHING CONNECTION TO EXERCISE SPECIFIC REFERENCE DATABASE
 
-			this.logger.log(Level.INFO,"{0}",referenceConnString + " - " + referenceConnUser + " - " + referenceConnPwd);
+			this.logger.info("{} - {} - {}",referenceConnString , referenceConnUser ,referenceConnPwd);
 
 			referenceConn = DriverManager.getConnection(referenceConnString, referenceConnUser, referenceConnPwd);
 			referenceConn.setAutoCommit(true);
@@ -159,7 +159,7 @@ public class SQLEvaluator implements Evaluator {
 		} catch (SQLException e){
 			message = "";
 			message = message.concat("Stopped analysis due to errors. ");
-			this.logger.log(Level.SEVERE, message, e);
+			this.logger.error(message, e);
 			throw e;
 		} finally {
 			try { 
@@ -172,7 +172,7 @@ public class SQLEvaluator implements Evaluator {
 			} catch (SQLException e){
 				message ="";
 				message = message.concat("Stopped analysis due to errors. ");
-				this.logger.log(Level.SEVERE, message);
+				this.logger.error(message);
 				throw e;
 			}
 		}
@@ -234,8 +234,8 @@ public class SQLEvaluator implements Evaluator {
 	 * @throws Exception if an error occurs
 	 */
 	public Grading grade(Analysis analysis, int maxPoints, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
-		logger.info("analysis: " + analysis);
-		logger.info("maxPoints: " + maxPoints);
+		logger.info("analysis: {}" , analysis);
+		logger.info("maxPoints: {}" ,  maxPoints);
 		logPassedAttributes(passedAttributes, passedParameters);
 		
 		SQLGrader grader;
@@ -320,8 +320,8 @@ public class SQLEvaluator implements Evaluator {
 	 * @return the report
 	 */
 	public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String ,String> passedParameters, Locale locale) {
-		logger.info("analysis: " + analysis);
-		logger.info("grading: " + grading);
+		logger.info("analysis: {}" , analysis);
+		logger.info("grading: {}" , grading);
 		logPassedAttributes(passedAttributes, passedParameters);
 
 		SQLReporter reporter = new SQLReporter();
