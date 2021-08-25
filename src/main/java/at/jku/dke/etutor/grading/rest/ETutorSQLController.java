@@ -5,6 +5,7 @@ import at.jku.dke.etutor.grading.rest.dto.DataDefinitionDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceManager;
 import ch.qos.logback.classic.Logger;
+import io.swagger.models.Response;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -291,8 +292,13 @@ public class ETutorSQLController {
         logger.info("Enter: getSolution()");
         try{
             String solution = resourceManager.getSolution(id);
-            logger.info("Exit: getSolution() with status 200");
-            return ResponseEntity.ok(solution);
+            if(!solution.equals("")){
+                logger.info("Exit: getSolution() with status 200");
+                return ResponseEntity.ok(solution);
+            }else{
+                logger.info("Exit: getSolution() with status 404");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find solution for exercise "+id);
+            }
         }catch(DatabaseException e){
             logger.info("Exit: getSolution() with status 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
@@ -319,11 +325,17 @@ public class ETutorSQLController {
             }else{
                 table = resourceManager.getHTMLTable(tableName, taskGroup);
             }
-           logger.info("Exit: getHTMLTable() with status 200");
-           return ResponseEntity.ok(table);
+
+            if(!table.equals("")){
+                logger.info("Exit: getHTMLTable() with status 200");
+                return ResponseEntity.ok(table);
+            }else{
+                logger.info("Exit: getHTMLTable() with status 404");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find table");
+            }
        }catch(DatabaseException e){
            logger.info("Exit: getHTMLTable() with status 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not find table");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
 }

@@ -598,7 +598,7 @@ public class SQLResourceManager {
                 logger.debug("Solution found: ");
                 logger.debug(rs.getString("solution"));
                 return rs.getString("solution");
-            }else throw new DatabaseException("No solution found");
+            }
         } catch (SQLException throwables) {
             handleThrowables(con, "Could not execute query "+query, throwables);
         }
