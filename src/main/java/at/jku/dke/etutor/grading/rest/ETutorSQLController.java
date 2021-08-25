@@ -5,7 +5,6 @@ import at.jku.dke.etutor.grading.rest.dto.DataDefinitionDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceManager;
 import ch.qos.logback.classic.Logger;
-import io.swagger.models.Response;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,8 +57,7 @@ public class ETutorSQLController {
             logger.info("Exit executeDDL() with Status 200");
             return ResponseEntity.ok("DDL Executed");
         } catch (DatabaseException e) {
-            logger.info("Exit executeDDL() with Status 500");
-            logger.error(e.getMessage(), e);
+            logger.error("Exit executeDDL() with Status 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
@@ -78,7 +76,7 @@ public class ETutorSQLController {
             logger.info("Exit: createSchema() with Status Code 200");
             return ResponseEntity.ok("Schema created");
         } catch (DatabaseException  e) {
-            logger.info("Exit: createSchema() with Status Code 500 ", e);
+            logger.error("Exit: createSchema() with Status Code 500 ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
@@ -96,7 +94,7 @@ public class ETutorSQLController {
             logger.info("Exit: dropSchema() with Status Code 200");
             return ResponseEntity.ok("Schema deleted");
         } catch (DatabaseException e) {
-            logger.info("Exit: dropSchema() with Status Code 500", e);
+            logger.error("Exit: dropSchema() with Status Code 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
 
@@ -116,7 +114,7 @@ public class ETutorSQLController {
             logger.info("Exit: deleteConnection() with status 200");
             return ResponseEntity.ok("Connection deleted");
         } catch (DatabaseException e) {
-            logger.info("Exit: deleteConnection() with status 500", e);
+            logger.error("Exit: deleteConnection() with status 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
@@ -137,7 +135,7 @@ public class ETutorSQLController {
             logger.info("Exit: createTable() with Status Code 200");
             return ResponseEntity.ok("Tables Created");
         } catch (DatabaseException e) {
-            logger.info("Exit: createTable() with Status Code 500", e);
+            logger.error("Exit: createTable() with Status Code 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
@@ -156,7 +154,7 @@ public class ETutorSQLController {
             logger.info("Exit: dropTable() with Status Code 200");
             return ResponseEntity.ok("Table deleted");
         } catch (DatabaseException e) {
-            logger.info("Exit: dropTable() with Status Code 500", e);
+            logger.error("Exit: dropTable() with Status Code 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
@@ -178,7 +176,7 @@ public class ETutorSQLController {
             logger.info("Exit: insertDataSubmission() with Status Code 200");
             return ResponseEntity.ok("Data inserted");
         } catch (DatabaseException e) {
-            logger.info("Exit: insertDataSubmission() with Status Code 500", e);
+            logger.error("Exit: insertDataSubmission() with Status Code 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
@@ -199,7 +197,7 @@ public class ETutorSQLController {
             logger.info("Exit: insertDataDiagnose() with Status Code 200");
             return ResponseEntity.ok("Insert completed");
         } catch (DatabaseException e) {
-            logger.info("Exit: insertDataDiagnose() with Status Code 500", e);
+            logger.error("Exit: insertDataDiagnose() with Status Code 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
@@ -219,8 +217,7 @@ public class ETutorSQLController {
             logger.info("Exit: createExercise() {} with Status Code 200", id);
             return ResponseEntity.ok("Exercise created");
         } catch (DatabaseException e) {
-            logger.error(e.getMessage(), e);
-            logger.info("Exit: createExercise() {} with Status Code 500", id, e);
+            logger.error("Exit: createExercise() {} with Status Code 500", id, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
@@ -238,7 +235,7 @@ public class ETutorSQLController {
             logger.info("Exit: deleteExercise() with Status Code 200");
             return ResponseEntity.ok("Exercise deleted");
         } catch (DatabaseException e) {
-            logger.info("Exit: deleteExercise() with Status Code 500", e);
+            logger.error("Exit: deleteExercise() with Status Code 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
@@ -258,7 +255,7 @@ public class ETutorSQLController {
             logger.info("Exit: updateExerciseSolution() with Status Code 200");
             return ResponseEntity.ok("Solution updated");
         }catch(DatabaseException e){
-            logger.info("Exit: updateExerciseSolution() with Status Code 500", e);
+            logger.error("Exit: updateExerciseSolution() with Status Code 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
@@ -276,7 +273,7 @@ public class ETutorSQLController {
             logger.info("Exit: reserveExercise() with status 200 and id {}",id);
             return ResponseEntity.ok(""+id);
         } catch (DatabaseException e) {
-            logger.info("Exit: reserveExercise() with Status Code 500", e);
+            logger.error("Exit: reserveExercise() with Status Code 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
@@ -300,7 +297,7 @@ public class ETutorSQLController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find solution for exercise "+id);
             }
         }catch(DatabaseException e){
-            logger.info("Exit: getSolution() with status 500", e);
+            logger.error("Exit: getSolution() with status 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
@@ -334,7 +331,7 @@ public class ETutorSQLController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find table");
             }
        }catch(DatabaseException e){
-           logger.info("Exit: getHTMLTable() with status 500", e);
+           logger.error("Exit: getHTMLTable() with status 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
