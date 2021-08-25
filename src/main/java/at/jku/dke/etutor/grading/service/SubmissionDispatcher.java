@@ -2,12 +2,12 @@ package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.core.evaluation.*;
 import at.jku.dke.etutor.grading.rest.dto.*;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -21,7 +21,7 @@ public class SubmissionDispatcher  {
     private final ModuleManager moduleManager;
 
     public SubmissionDispatcher(RepositoryManager repositoryManager, ModuleManager moduleManager) {
-        this.logger = Logger.getLogger("at.jku.dke.etutor.grading");
+        this.logger = (Logger) LoggerFactory.getLogger(SubmissionDispatcher.class);
         this.repositoryManager=repositoryManager;
         this.moduleManager=moduleManager;
     }
@@ -33,23 +33,23 @@ public class SubmissionDispatcher  {
      */
     @Async("asyncExecutor")
     public void run(Submission submission, Locale locale) {
-        logger.info("Saving submission to database");
+        logger.debug("Saving submission to database");
         repositoryManager.persistSubmission(submission);
-        logger.info("Finished saving submission to database");
+        logger.debug("Finished saving submission to database");
         try {
-            logger.info("Evaluating submission");
+            logger.debug("Evaluating submission");
             Evaluator evaluator = moduleManager.getEvaluator(submission.getTaskType());
             if (evaluator == null) {
-                logger.log(Level.SEVERE, "Could not find evaluator for tasktype: {0}", submission.getTaskType());
+                logger.warn("Could not find evaluator for tasktype: {}", submission.getTaskType());
                 return;
             }
-            logger.info("Analyzing submission");
+            logger.debug("Analyzing submission");
             Analysis analysis = getAnalysis(evaluator, submission);
-            logger.info("Finished analyzing submission");
-            logger.info("Grading submission");
+            logger.debug("Finished analyzing submission");
+            logger.debug("Grading submission");
             Grading grading = getGrading(evaluator, analysis, submission);
-            logger.info("Finished grading submission");
-            logger.info("Finished evaluating submission");
+            logger.debug("Finished grading submission");
+            logger.debug("Finished evaluating submission");
 
             GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading);
             gradingDTO.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes(), locale));
@@ -57,13 +57,12 @@ public class SubmissionDispatcher  {
             if(grading.getPoints()<grading.getMaxPoints() || grading.getPoints() == 0) {
                     logger.info("Requesting report");
                     DefaultReport report = getReport(evaluator, grading, analysis, submission, locale);
-                    logger.info("Received report");
+                    logger.debug("Received report");
                     gradingDTO.setReport(new ReportDTO(submission.getSubmissionId(), report));
             }
             persistGrading(gradingDTO);
         } catch(Exception e){
-            logger.log(Level.SEVERE, "Stopped Evaluation due to errors");
-            e.printStackTrace();
+            logger.warn("Stopped Evaluation due to errors", e);
         }
     }
 
@@ -116,11 +115,11 @@ public class SubmissionDispatcher  {
      */
     public void persistGrading(GradingDTO gradingDTO){
         try{
-            logger.info("Saving grading to database");
+            logger.debug("Saving grading to database");
             repositoryManager.persistGrading(gradingDTO);
-            logger.info("Finished saving grading to database");
+            logger.debug("Finished saving grading to database");
         }catch(Exception e){
-            logger.log(Level.SEVERE, "Could not save grading");
+            logger.error("Could not save grading");
         }
     }
 }

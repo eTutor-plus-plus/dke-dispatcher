@@ -34,3 +34,6 @@ build/
 
 ###Http Client to test controller locally###
 src/main/java/at/jku/dke/etutor/grading//rest/TestApp.java 
+
+### Log File ###
+ETutorGradingLogFile.log

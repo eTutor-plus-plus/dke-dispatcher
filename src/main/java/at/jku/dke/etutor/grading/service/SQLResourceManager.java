@@ -1,12 +1,13 @@
 package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Service used to manipulate schemas and exercises for the SQL module
@@ -35,7 +36,7 @@ public class SQLResourceManager {
      */
     public SQLResourceManager(ApplicationProperties properties) throws ClassNotFoundException {
         Class.forName(properties.getGrading().getJDBCDriver());
-        this.logger= Logger.getLogger("at.jku.dke.etutor.sqlexercisemanager");
+        this.logger= (Logger) LoggerFactory.getLogger("at.jku.dke.etutor.sqlexercisemanager");
 
         SQL_BASE_URL=properties.getSql().getConnBaseUrl();
         SQL_ADMINISTRATION_URL=properties.getSql().getConnUrl();
@@ -55,10 +56,10 @@ public class SQLResourceManager {
      * @throws DatabaseException if an SQLException occurs
      */
     public void createSchemas(String schemaName) throws DatabaseException {
-        logger.info(()->"Creating schemas with prefix "+schemaName);
+        logger.debug("Creating schemas with prefix {}", schemaName);
         createSchema(schemaName + SUBMISSION_SUFFIX);
         createSchema(schemaName + DIAGNOSE_SUFFIX);
-        logger.info(()->"Schemas with prefix "+schemaName+" created");
+        logger.debug("Schemas with prefix {} created", schemaName);
     }
 
     /**
@@ -102,7 +103,7 @@ public class SQLResourceManager {
      * @throws DatabaseException if an error occurs
      */
     public void deleteSchemas(String schemaName) throws DatabaseException {
-        logger.info(()->"Deleting schmemas with prefix "+schemaName);
+        logger.debug("Deleting schmemas with prefix {}",schemaName);
         deleteSchema(schemaName + SUBMISSION_SUFFIX);
         deleteSchema(schemaName + DIAGNOSE_SUFFIX);
     }
@@ -131,7 +132,7 @@ public class SQLResourceManager {
         final String dropQuery = "DROP SCHEMA IF EXISTS "+schemaName+" CASCADE;";
 
         try(PreparedStatement dropStmt = con.prepareStatement(dropQuery)) {
-            logger.info(()->"Query for dropping schema: "+dropStmt);
+            logger.debug("Query for dropping schema: {}",dropStmt);
             dropStmt.executeUpdate();
             con.commit();
         } catch (SQLException throwables) {
@@ -172,20 +173,20 @@ public class SQLResourceManager {
             int connId = fetchConnection(con, schemaName+"_diagnose");
             if(connId != -1) {
                 deleteExercisesStmt.setInt(1, connId);
-                logger.info(()->"Query for deleting exercises: "+deleteExercisesStmt);
+                logger.debug("Query for deleting exercises: {}",deleteExercisesStmt);
                 deleteExercisesStmt.executeUpdate();
 
                 deleteConnMappingStmt.setInt(1, connId);
-                logger.info(()->"Query for deleting connection-mapping " + deleteConnMappingStmt);
+                logger.debug("Query for deleting connection-mapping {}", deleteConnMappingStmt);
                 deleteConnMappingStmt.executeUpdate();
 
-                logger.info(()->"Query for deleting connection: "+deleteConnStmt);
+                logger.debug("Query for deleting connection: {}", deleteConnStmt);
                 deleteConnStmt.executeUpdate();
 
 
                 con.commit();
             }else{
-                logger.info(()->"No connections found for schema "+schemaName);
+                logger.info("No connections found for schema {}", schemaName);
             }
         }catch (SQLException throwables) {
             handleThrowables(con, "Could not delete connection for "+schemaName, throwables);
@@ -200,12 +201,11 @@ public class SQLResourceManager {
      * @throws DatabaseException to leverage exception handling
      */
     private void handleThrowables(Connection con, String message, Exception throwables) throws DatabaseException {
-        logger.warning(message);
-        throwables.printStackTrace();
+        logger.warn(message, throwables);
         try {
             con.rollback();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         throw new DatabaseException(throwables);
     }
@@ -217,14 +217,18 @@ public class SQLResourceManager {
      * @throws DatabaseException if an SQLException occurs or the query does not contain "create table"
      */
     public void createTables(String schemaName, String query) throws DatabaseException {
-        logger.info(()->"Query for creating table: "+query);
+        logger.debug("Query for creating table: {}", query);
         if (!query.replace(" ", "").toLowerCase().contains("createtable")) {
-            logger.warning("Not a crate-table-statement");
+            logger.warn("Not a crate-table-statement");
+            return;
+        }
+        if(query.contains("--") || query.contains("/*")){
+            logger.warn("No comments allowed");
             return;
         }
         executeUpdate(schemaName + SUBMISSION_SUFFIX, query);
         executeUpdate(schemaName + DIAGNOSE_SUFFIX, query);
-        logger.info(()->"Tables in schemas with prefix "+schemaName+" created");
+        logger.debug("Tables in schemas with prefix {} created", schemaName);
     }
 
     /**
@@ -234,10 +238,10 @@ public class SQLResourceManager {
      * @throws DatabaseException if an SQLException occurs
      */
     public void deleteTables(String schemaName, String tableName) throws DatabaseException {
-        logger.info(()->"Deleting table "+tableName+" in schemas with prefix "+schemaName);
+        logger.debug("Deleting table {} in schemas with prefix {}", tableName, schemaName);
         deleteTable(schemaName + SUBMISSION_SUFFIX, tableName);
         deleteTable(schemaName + DIAGNOSE_SUFFIX, tableName);
-        logger.info(()->"Tables in schema with prefix "+schemaName+" deleted");
+        logger.debug("Tables in schema with prefix {} deleted", schemaName);
     }
 
     /**
@@ -260,9 +264,8 @@ public class SQLResourceManager {
     private void deleteTableUtil(Connection con, String tableName, String schemaName) throws DatabaseException {
         final String deleteQuery = "DROP TABLE IF EXISTS "+tableName+" CASCADE";
         try(PreparedStatement deleteStmt = con.prepareStatement(deleteQuery);) {
-            logger.info(()->"Query for deleting table: "+deleteStmt);
+            logger.debug("Query for deleting table: {}", deleteStmt);
             deleteStmt.executeUpdate();
-
             con.commit();
         } catch (SQLException throwables) {
             handleThrowables(con, "Could not delete table "+tableName + " in schema "+schemaName, throwables);
@@ -275,9 +278,9 @@ public class SQLResourceManager {
      * @throws DatabaseException if an SQLException occurs or the query does not contain "insert into"
      */
     public void insertDataSubmission(String schemaName, String query) throws DatabaseException {
-        logger.info(()->"Query for inserting data: "+query);
+        logger.debug("Query for inserting data: {}", query);
         insertData(schemaName + SUBMISSION_SUFFIX, query);
-        logger.info(()->"Inserting data into submission schema of "+schemaName+" complete");
+        logger.debug("Inserting data into submission schema of {} complete", schemaName);
     }
 
     /**
@@ -287,15 +290,18 @@ public class SQLResourceManager {
      * @throws DatabaseException if an SQLException occurs
      */
     public void insertDataDiagnose(String schemaName, String query) throws DatabaseException {
-        logger.info(()->"Query for inserting data: "+query);
+        logger.debug("Query for inserting data: {}", query);
         insertData(schemaName + DIAGNOSE_SUFFIX, query);
-        logger.info(()->"Inserting data into diagnose schema of "+schemaName+" complete");
+        logger.debug("Inserting data into diagnose schema of {} complete", schemaName);
     }
 
     public void insertData(String schemaName, String query) throws DatabaseException {
         if (!query.replace(" ", "").toLowerCase().contains("insertinto")) {
-
-            logger.warning("Not an insert-into-statement " + query);
+            logger.warn("Not an insert-into-statement: {}", query);
+            return;
+        }
+        if(query.contains("--") || query.contains("/*")){
+            logger.warn("No comments allowed");
             return;
         }
         executeUpdate(schemaName, query);
@@ -309,7 +315,7 @@ public class SQLResourceManager {
      * @throws DatabaseException if an SQLExcption occurs
      */
     public void createExercise(int id, String schemaName, String solution) throws DatabaseException {
-        logger.info(()->"Creating exercise in schema with prefix "+schemaName + " and id "+id);
+        logger.debug("Creating exercise in schema with prefix {} and id {} " , schemaName, id);
         try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
             con.setAutoCommit(false);
             int diagnoseConnID = fetchConnection(con, schemaName + DIAGNOSE_SUFFIX);
@@ -318,15 +324,15 @@ public class SQLResourceManager {
             if (submissionConnID == -1) submissionConnID = createConnection(con, schemaName + SUBMISSION_SUFFIX);
 
             if (diagnoseConnID == -1 || submissionConnID == -1) {
-                logger.warning("Could not fetch / create connection id");
+                logger.error("Could not fetch / create connection id");
                 throw new SQLException();
             }
             createExerciseUtil(con, id, submissionConnID, diagnoseConnID, solution);
             con.commit();
             addConnectionMapping(schemaName, diagnoseConnID);
-            logger.info("Exercise created");
+            logger.debug("Exercise created");
         }catch(SQLException throwables){
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
             throw new DatabaseException(throwables);
         }
 
@@ -346,8 +352,8 @@ public class SQLResourceManager {
        int connID = -1;
        try(PreparedStatement connExistsStmt = con.prepareStatement(connExistsQuery)){
             connExistsStmt.setString(1, "%"+SQL_EXERCISE_DB+JDBC_SCHEMA_OPTION+schemaName+"%");
-            logger.info(()->"Query for fetching connection:" +connExistsStmt);
-            logger.info(()->"Fetching connection id for schema "+ schemaName);
+            logger.debug("Query for fetching connection: {}", connExistsStmt);
+            logger.debug("Fetching connection id for schema {}",  schemaName);
 
             try(ResultSet connectionSet = connExistsStmt.executeQuery()){
                 if (connectionSet.next()) {
@@ -371,7 +377,7 @@ public class SQLResourceManager {
      * @throws DatabaseException if an error occurs
      */
     public int createConnection(Connection con, String schemaName) throws DatabaseException {
-        logger.info(()->"Creating connection for schema "+schemaName);
+        logger.info("Creating connection for schema {}", schemaName);
         final String maxIDQuery = "SELECT max(ID) as max_id FROM CONNECTIONS;";
         final String createConnectionQuery = "INSERT INTO CONNECTIONS VALUES(?,?,?,?)";
         int connID = -1;
@@ -392,7 +398,7 @@ public class SQLResourceManager {
             createConnectionStmt.setString(3, CONN_SQL_USER);
             createConnectionStmt.setString(4, CONN_SQL_PWD);
 
-            logger.info(()->"Statement for creating connection: "+ createConnectionStmt);
+            logger.debug("Statement for creating connection: {}",  createConnectionStmt);
             createConnectionStmt.executeUpdate();
         }catch(SQLException throwables){
             handleThrowables(con, "Could not create connection", throwables);
@@ -410,14 +416,14 @@ public class SQLResourceManager {
      * @throws DatabaseException if an error occurs
      */
     public void createExerciseUtil(Connection con, int id, int submissionConnID, int diagnoseConnID, String solution) throws DatabaseException {
-        logger.info("Creating exercise");
+        logger.debug("Creating exercise");
 
         try(PreparedStatement createExerciseStmt = con.prepareStatement("INSERT INTO EXERCISES VALUES(?,?,?,?);")){
             createExerciseStmt.setInt(1, id);
             createExerciseStmt.setInt(2, submissionConnID);
             createExerciseStmt.setInt(3, diagnoseConnID);
             createExerciseStmt.setString(4, solution);
-            logger.info(()->"Statement for creating exercise: "+createExerciseStmt);
+            logger.debug("Statement for creating exercise: {} ", createExerciseStmt);
             createExerciseStmt.executeUpdate();
         }catch(SQLException throwables){
             handleThrowables(con, "Could not create exercise "+id, throwables);
@@ -468,7 +474,7 @@ public class SQLResourceManager {
      * @throws DatabaseException if an SQLException occurs
      */
     public void deleteExercise(int id) throws DatabaseException {
-        logger.info(()->"Deleting exercise with id "+id);
+        logger.debug("Deleting exercise with id {}", id);
         try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
             con.setAutoCommit(false);
             deleteExerciseUtil(con , id);
@@ -485,13 +491,13 @@ public class SQLResourceManager {
      * @throws DatabaseException if an error occurs
      */
     public void updateExerciseSolution(int id, String newSolution) throws DatabaseException {
-        logger.info(()->"Updating solution of exercise "+id);
+        logger.debug("Updating solution of exercise {}", id);
         try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
             con.setAutoCommit(false);
             updateExerciseSolutionUtil(con, id, newSolution);
-            logger.info(()->"Solution updated");
+            logger.debug("Solution updated");
         }catch(SQLException throwables){
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
             throw new DatabaseException(throwables);
         }
     }
@@ -528,7 +534,7 @@ public class SQLResourceManager {
             deleteStmt.setInt(1, id);
             deleteStmt.executeUpdate();
             con.commit();
-            logger.info("Exercise deleted");
+            logger.debug("Exercise deleted");
         } catch (SQLException throwables) {
             handleThrowables(con, "Could not delete exercise", throwables);
         }
@@ -589,8 +595,8 @@ public class SQLResourceManager {
         try(PreparedStatement stmt = con.prepareStatement(query);
         ResultSet rs = stmt.executeQuery()){
             if(rs.next()){
-                logger.info("Solution found: ");
-                logger.info(rs.getString("solution"));
+                logger.debug("Solution found: ");
+                logger.debug(rs.getString("solution"));
                 return rs.getString("solution");
             }else throw new DatabaseException("No solution found");
         } catch (SQLException throwables) {
@@ -608,7 +614,7 @@ public class SQLResourceManager {
      * @throws DatabaseException if an error occurs
      */
     public String getHTMLTable(String tableName, String taskGroup) throws DatabaseException {
-        logger.info("Searching for table "+tableName);
+        logger.debug("Searching for table {}",tableName);
         try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD);){
             con.setAutoCommit(false);
             var connections = getConnectionsForHTMLTable(con);
@@ -689,7 +695,7 @@ public class SQLResourceManager {
                 try(var tmpCon = DriverManager.getConnection(url, user, pwd)){
                     try(PreparedStatement tableStmt = tmpCon.prepareStatement(tableQuery);
                     ResultSet tableRset = tableStmt.executeQuery()){
-                        logger.info(()->"Table found in connection with id "+id);
+                        logger.debug("Table found in connection with id "+id);
                         return generateHTMLTable(tableRset);
                     }catch(SQLException ignore){
                     }
@@ -710,7 +716,7 @@ public class SQLResourceManager {
      * @throws SQLException if an error occurs
      */
     private String generateHTMLTable(ResultSet tableRset) throws SQLException {
-        logger.info("Generating HTML table from ResultSet");
+        logger.debug("Generating HTML table from ResultSet");
         ResultSetMetaData metaData = tableRset.getMetaData();
         var columnCount = metaData.getColumnCount();
         var tableStart = "<table border=1 frame=void rules=rows>";
@@ -745,7 +751,7 @@ public class SQLResourceManager {
         }
         table.append(tableEnd);
 
-        logger.info("Table generated");
+        logger.debug("Table generated");
         return table.toString();
     }
 
@@ -756,7 +762,7 @@ public class SQLResourceManager {
      * @throws DatabaseException if an error occurs
      */
     public List<Integer> getConnectionsForHTMLTable(Connection con) throws DatabaseException {
-        logger.info("Fetching available connections to search for table");
+        logger.debug("Fetching available connections to search for table");
         var connectionIds = new ArrayList<Integer>();
         var query = "SELECT connection FROM connectionmapping";
         try(PreparedStatement stmt = con.prepareStatement(query);
@@ -769,7 +775,7 @@ public class SQLResourceManager {
             throw new DatabaseException(throwables);
         }
 
-        logger.info("Connections fetched");
+        logger.debug("Connections fetched");
         return connectionIds;
     }
 
@@ -779,15 +785,15 @@ public class SQLResourceManager {
      * @param id the id
      */
     public void addConnectionMapping(String schema, int id) throws DatabaseException {
-        logger.info("Adding connection to mapping-table");
+        logger.debug("Adding connection to mapping-table");
         try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
             con.setAutoCommit(false);
             addConnectionMappingUtil(con, schema, id);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
             throw new DatabaseException(throwables);
         }
-        logger.info("Mapping added");
+        logger.debug("Mapping added");
     }
 
     /**
