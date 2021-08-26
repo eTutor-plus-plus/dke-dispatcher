@@ -30,7 +30,7 @@ public class SQLResourceManager {
     private final Logger logger;
 
     /**
-     * The construcotr
+     * The constructor
      * @param properties the injected application properties
      * @throws ClassNotFoundException if class not found
      */
@@ -609,11 +609,10 @@ public class SQLResourceManager {
      * Searches for a given table in the available database connections according to the connectionmapping table in the sql-administration-database.
      * Returns an HTML representation of the table if found.
      * @param tableName the table
-     * @param taskGroup the optional taskgroup
      * @return the table as HTML-table
      * @throws DatabaseException if an error occurs
      */
-    public String getHTMLTable(String tableName, String taskGroup) throws DatabaseException {
+    public String getHTMLTable(String tableName) throws DatabaseException {
         logger.debug("Searching for table {}",tableName);
         try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD);){
             con.setAutoCommit(false);
@@ -626,7 +625,7 @@ public class SQLResourceManager {
     }
 
     /**
-     * Returns an HTML-Table of a given table-name in the context of a given exercise.
+     * Returns an HTML-Table in the context of a given exercise.
      * @param exerciseId the id of the exercise
      * @param tableName the name of the table
      * @return the HTML-Table
@@ -641,9 +640,57 @@ public class SQLResourceManager {
             tmpList.add(id);
             return getHTMLTableUtil(con, tmpList, tableName);
         }catch(SQLException e){
-            e.printStackTrace();
+            logger.error("SQLException while getHTMLTableByExerciseID()", e);
             throw new DatabaseException(e);
         }
+    }
+
+    /**
+     * Returns an HTML-Table in the context of a given task-group
+     * @param taskGroup the task group
+     * @param tableName the table
+     * @return the table as HTML-Table
+     */
+    public String getHTMLTableByTaskGroup(String taskGroup, String tableName) throws DatabaseException {
+        logger.debug("Trying to find table according to task group");
+        try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
+            var ids = getConnectionsForTaskGroup(con, taskGroup);
+            if (ids.isEmpty()) return "";
+
+            return getHTMLTableUtil(con, ids, tableName);
+        }catch(SQLException e){
+            logger.error("SQLException while getHTMLTableByTaskGroup()", e);
+            throw new DatabaseException(e);
+        }
+    }
+
+    /**
+     * Fetches the available connections for a given task group
+     * @param con the Connection
+     * @param taskGroup the task group
+     * @return a list containing the connection ids
+     * @throws DatabaseException if an SQLException occurs
+     */
+    private List<Integer> getConnectionsForTaskGroup(Connection con, String taskGroup) throws DatabaseException {
+        logger.debug("Getting connections for task group");
+        var ids = new ArrayList<Integer>();
+        var query = "SELECT connection " +
+                "FROM connectionmapping " +
+                "WHERE schema = '"+taskGroup.toLowerCase() +
+                "' OR database = '"+taskGroup.toLowerCase() + "'";
+
+        try(PreparedStatement stmt = con.prepareStatement(query);
+        ResultSet rset = stmt.executeQuery()){
+            while(rset.next()){
+                var id = rset.getInt("connection");
+                logger.debug("Found connection {}",id);
+                ids.add(id);
+            }
+        }catch(SQLException e){
+            logger.error("SQLException in getConnectionsForTaskGroup()", e);
+            throw new DatabaseException(e);
+        }
+        return ids;
     }
 
     /**

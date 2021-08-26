@@ -318,9 +318,9 @@ public class ETutorSQLController {
             if(exerciseId != -1){
                 table = resourceManager.getHTMLTableByExerciseID(exerciseId, tableName);
             }else if(!taskGroup.equals("")){
-                // To be implemented
+                table = resourceManager.getHTMLTableByTaskGroup(taskGroup, tableName);
             }else{
-                table = resourceManager.getHTMLTable(tableName, taskGroup);
+                table = resourceManager.getHTMLTable(tableName);
             }
 
             if(!table.equals("")){
