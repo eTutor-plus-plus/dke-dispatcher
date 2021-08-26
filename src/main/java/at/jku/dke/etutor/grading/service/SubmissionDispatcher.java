@@ -44,7 +44,7 @@ public class SubmissionDispatcher  {
                 return;
             }
             logger.debug("Analyzing submission");
-            Analysis analysis = getAnalysis(evaluator, submission);
+            Analysis analysis = getAnalysis(evaluator, submission, locale);
             logger.debug("Finished analyzing submission");
             logger.debug("Grading submission");
             Grading grading = getGrading(evaluator, analysis, submission);
@@ -87,10 +87,10 @@ public class SubmissionDispatcher  {
      * @return the Analysis
      * @throws Exception if an error occurs
      */
-    public Analysis getAnalysis(Evaluator evaluator, Submission submission) throws Exception {
+    public Analysis getAnalysis(Evaluator evaluator, Submission submission, Locale locale) throws Exception {
            return evaluator
                     .analyze(submission.getExerciseId(),
-                            -1, submission.getPassedAttributes(), submission.getPassedParameters());
+                            -1, submission.getPassedAttributes(), submission.getPassedParameters(), locale);
     }
 
     /**

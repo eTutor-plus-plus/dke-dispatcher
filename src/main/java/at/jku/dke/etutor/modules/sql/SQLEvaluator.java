@@ -57,7 +57,7 @@ public class SQLEvaluator implements Evaluator {
 	 * @return the Analysis
 	 * @throws Exception if an error occurs
 	 */
-	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
+	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
 		logger.info("exerciseID: {}", exerciseID);
 		logPassedAttributes(passedAttributes, passedParameters);
 		

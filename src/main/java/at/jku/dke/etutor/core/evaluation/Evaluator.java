@@ -16,7 +16,7 @@ public interface Evaluator {
      * @return an Analysis instance
      * @throws Exception if an error occurs
      */
-    public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception;
+    public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception;
 
     /**
      * Grades the submission
