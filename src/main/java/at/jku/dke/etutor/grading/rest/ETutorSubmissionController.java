@@ -4,19 +4,19 @@ package at.jku.dke.etutor.grading.rest;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionDTO;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
+import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
 import ch.qos.logback.classic.Logger;
+import io.swagger.models.Response;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 
 import java.util.Locale;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -29,14 +29,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ETutorSubmissionController {
     private final Logger logger;
     private final SubmissionDispatcher submissionDispatcherService;
+    private final SubmissionRepository submissionRepository;
 
     /**
      * The constructor
      * @param submissionDispatcherService the injected SubmissionDispatcher service that handles the evaluation of a submission
      */
-    public ETutorSubmissionController(SubmissionDispatcher submissionDispatcherService){
+    public ETutorSubmissionController(SubmissionDispatcher submissionDispatcherService, SubmissionRepository submissionRepository){
         this.logger = (Logger) LoggerFactory.getLogger(ETutorSubmissionController.class);
         this.submissionDispatcherService = submissionDispatcherService;
+        this.submissionRepository = submissionRepository;
     }
 
     /**
@@ -63,6 +65,21 @@ public class ETutorSubmissionController {
                 linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("grading")),
                 HttpStatus.ACCEPTED);
     }
+
+    /**
+     * Returns a submission
+     * @param submissionUUID the UUID identifying the submission
+     * @return a ResponseEntity containing the submission
+     */
+    @CrossOrigin(origins="*")
+    @GetMapping("/{submissionUUID}")
+    public ResponseEntity<Submission> getSubmission(@PathVariable String submissionUUID){
+        Optional<Submission> optionalSubmission = this.submissionRepository.findById(submissionUUID);
+        Submission submission = optionalSubmission.orElse(null);
+        if(submission != null) return ResponseEntity.ok(submission);
+        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(submission);
+    }
+
 
     /**
      * Maps a String to a Locale
