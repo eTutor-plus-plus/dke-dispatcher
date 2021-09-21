@@ -29,7 +29,7 @@ public class ReportDTO {
     /**
      * The description
      */
-    @Column(length = 4192)
+    @Column(length = 8192)
     private String description;
 
     public ReportDTO(){

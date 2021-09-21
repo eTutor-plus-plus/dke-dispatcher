@@ -30,7 +30,7 @@ public class GradingDTO {
     /**
      * The result
      */
-    @Column(length = 4192)
+    @Column(length = 16384)
     private String result;
 
     /**
