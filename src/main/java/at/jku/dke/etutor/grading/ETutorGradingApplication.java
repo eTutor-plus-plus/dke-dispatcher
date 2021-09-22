@@ -12,6 +12,7 @@ import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
 import at.jku.dke.etutor.modules.ra2sql.RAEvaluator;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
+import at.jku.dke.etutor.modules.sql.report.SQLReporter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -47,7 +48,8 @@ import java.util.List;
         AsyncConfiguration.class,
         SQLConstants.class,
         SQLEvaluator.class,
-        RAEvaluator.class
+        RAEvaluator.class,
+        SQLReporter.class
 })
 @EnableConfigurationProperties({ApplicationProperties.class})
 @SpringBootApplication

@@ -38,7 +38,7 @@ public class Relation extends ExpressionImpl implements Expression {
 
 		dbmd = conn.getMetaData();
 		
-		rs = dbmd.getColumns(null, null, this.getName().toUpperCase(), null);
+		rs = dbmd.getColumns(null, null, this.getName().toLowerCase(), null);
 
 		while (rs.next()) {
 			validTable = true;

@@ -23,6 +23,7 @@ public class SQLBuilder {
 				query = query.concat("FROM (");
 				query = query.concat(this.printSQLQuery(exp));
 				query = query.concat(")");
+				query = query.concat(" AS subquery");
 			} else {
 				throw new NullPointerException("Connection is null");
 			}
@@ -48,7 +49,7 @@ public class SQLBuilder {
 					query = query.concat("SELECT " + this.printSchema(sel) + " ");
 					query = query.concat("FROM (");
 					query = query.concat(leftQuery);
-					query = query.concat(") ");
+					query = query.concat(") AS selectionSubquery");
 					query = query.concat("WHERE ");
 
 					first = true;
@@ -63,14 +64,19 @@ public class SQLBuilder {
 					}
 				} else if (exp instanceof Projection) {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
-					query = query.concat("FROM (");
-					query = query.concat(leftQuery);
-					query = query.concat(")");
+					if(leftQuery.contains(" ")){
+						query = query.concat("FROM (");
+						query = query.concat(leftQuery);
+						query = query.concat(") AS projectionSubquery");
+					}else {
+						query = query.concat("FROM");
+						query = query.concat(leftQuery);
+					}
 				} else if (exp instanceof Renaming) {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
 					query = query.concat("FROM (");
 					query = query.concat(leftQuery);
-					query = query.concat(")");
+					query = query.concat(") AS renamingSubquery");
 				}
 			}
 			if (exp instanceof BinaryOperator) {
@@ -82,68 +88,68 @@ public class SQLBuilder {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
 					query = query.concat("FROM (");
 					query = query.concat(leftQuery);
-					query = query.concat(") NATURAL JOIN (");
+					query = query.concat(") AS joinLeftSideSubquery NATURAL JOIN (");
 					query = query.concat(rightQuery);
-					query = query.concat(")");
+					query = query.concat(") AS joinRightSideSubquery");
 				}
 				if (exp instanceof Minus) {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
 					query = query.concat("FROM (");
 					query = query.concat(leftQuery);
-					query = query.concat(") MINUS (");
+					query = query.concat(") AS minusLeftSideSubquery MINUS (");
 					query = query.concat(rightQuery);
-					query = query.concat(")");
+					query = query.concat(") AS minusRightSideSubquery");
 				}
 				if (exp instanceof Division) {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
 					query = query.concat("FROM (");
 					query = query.concat(leftQuery);
-					query = query.concat(") NATURAL JOIN (");
+					query = query.concat(") AS naJoinLeftSideSubquery NATURAL JOIN (");
 					query = query.concat(rightQuery);
-					query = query.concat(") ");
+					query = query.concat(") AS naJoinRightSideSubquery");
 					query = query.concat("GROUP BY " + this.printSchema(exp) + " ");
 					query = query.concat("HAVING COUNT(*) = (SELECT COUNT(*) FROM (");
-					query = query.concat(rightQuery + "))");
+					query = query.concat(rightQuery + ") AS havingSubquery ) AS divisionSubquery");
 				}
 				if (exp instanceof OuterJoin) {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
 					query = query.concat("FROM (");
 					query = query.concat(leftQuery);
-					query = query.concat(") NATURAL FULL OUTER JOIN (");
+					query = query.concat(") AS naFullJoinLeftSideSubquery NATURAL FULL OUTER JOIN (");
 					query = query.concat(rightQuery);
-					query = query.concat(")");
+					query = query.concat(") AS naFullJoinRightSideSubquery");
 				}
 
 			}
 			if (exp instanceof Relation) {
 				query = query.concat("SELECT " + this.printSchema(exp) + " ");
-				query = query.concat("FROM (");
+				query = query.concat("FROM ");
 				query = query.concat(((Relation)exp).getName());
-				query = query.concat(")");
+				query = query.concat("");
 			}
 			if (exp instanceof CartesianProduct) {
 				query = query.concat("SELECT " + this.printSchema(exp) + " ");
 				query = query.concat("FROM (");
 				query = query.concat(leftQuery);
-				query = query.concat(") NATURAL FULL OUTER JOIN (");
+				query = query.concat(") AS naFullOuterLeftSideSubQu NATURAL FULL OUTER JOIN (");
 				query = query.concat(rightQuery);
-				query = query.concat(")");
+				query = query.concat(") AS naFullOuterRightSideSubQu");
 			}
 			if (exp instanceof Intersection) {
 				query = query.concat("SELECT " + this.printSchema(exp) + " ");
 				query = query.concat("FROM (");
 				query = query.concat(leftQuery);
-				query = query.concat(") INTERSECT (");
+				query = query.concat(") AS intersectLeftSubQu INTERSECT (");
 				query = query.concat(rightQuery);
-				query = query.concat(")");
+				query = query.concat(") AS intersectRightSubQu");
 			}
 			if (exp instanceof Union) {
 				query = query.concat("SELECT " + this.printSchema(exp) + " ");
 				query = query.concat("FROM (");
 				query = query.concat(leftQuery);
-				query = query.concat(") UNION (");
+				query = query.concat(") AS unionLeftSubQu UNION (");
 				query = query.concat(rightQuery);
-				query = query.concat(")");
+				query = query.concat(") AS unionRightSubQu");
 			}
 			if (exp instanceof ThetaJoin) {
 				ThetaJoin thetaJoin = (ThetaJoin)exp;
@@ -151,9 +157,9 @@ public class SQLBuilder {
 				query = query.concat("SELECT " + this.printSchema(exp) + " ");
 				query = query.concat("FROM (");
 				query = query.concat(leftQuery);
-				query = query.concat(") LS, (");
+				query = query.concat(") AS thetaLeftSubQu LS, (");
 				query = query.concat(rightQuery);
-				query = query.concat(") RS ");
+				query = query.concat(") AS thetaRightSubQu RS ");
 				query = query.concat("WHERE ");
 				first = true;
 				iter = thetaJoin.iterComparisons();

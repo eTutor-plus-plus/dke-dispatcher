@@ -8,8 +8,9 @@ import at.jku.dke.etutor.modules.sql.analysis.*;
 
 
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class SQLReporter {
 
     public SQLReporter() {

@@ -1,10 +1,6 @@
 package at.jku.dke.etutor.modules.sql;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
@@ -414,6 +410,14 @@ public class SQLEvaluator implements Evaluator {
 			return result.toString();
 		}
 		return null;
+	}
+
+	public Connection getConnectionToSqlDatabase() throws SQLException {
+		return DriverManager.getConnection(constants.getConnURL(), constants.getConnUser(), constants.getConnPwd());
+	}
+
+	public Connection getConnectionToSQLDatabase(String connUrl, String connUser, String connPwd) throws SQLException{
+		return DriverManager.getConnection(connUrl, connUser, connPwd);
 	}
 
 }

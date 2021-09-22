@@ -7,32 +7,28 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import at.jku.dke.etutor.core.evaluation.*;
 import at.jku.dke.etutor.modules.ra2sql.model.Expression;
+import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationAction;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
-import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
-import at.jku.dke.etutor.modules.sql.analysis.SQLAnalyzer;
-import at.jku.dke.etutor.modules.sql.analysis.SQLAnalyzerConfig;
-import at.jku.dke.etutor.modules.sql.analysis.SyntaxAnalysis;
+import at.jku.dke.etutor.modules.sql.SQLEvaluator;
+import at.jku.dke.etutor.modules.sql.analysis.*;
 import at.jku.dke.etutor.modules.sql.grading.GradingScope;
 import at.jku.dke.etutor.modules.sql.grading.SQLCriterionGradingConfig;
 import at.jku.dke.etutor.modules.sql.grading.SQLGrader;
 import at.jku.dke.etutor.modules.sql.grading.SQLGraderConfig;
 import at.jku.dke.etutor.modules.sql.report.SQLReport;
+import at.jku.dke.etutor.modules.sql.report.SQLReporter;
 import at.jku.dke.etutor.modules.sql.report.SQLReporterConfig;
-import org.springframework.context.MessageSource;
-import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RAEvaluator implements Evaluator, MessageSourceAware {
+public class RAEvaluator implements Evaluator{
 
 	private Logger logger;
 
@@ -41,11 +37,16 @@ public class RAEvaluator implements Evaluator, MessageSourceAware {
 	private static Properties ruleAliasesProps = null;
 	private static Properties atomAliasesProps = null;
 	private static Properties sqlMsgMappingProps = null;
-	private MessageSource messageSource;
 
-	public RAEvaluator() {
+	private final SQLEvaluator sqlEvaluator;
+	private final SQLReporter sqlReporter;
+
+	public RAEvaluator(SQLEvaluator evaluator, SQLReporter reporter) {
 		super();
-		
+
+		this.sqlEvaluator = evaluator;
+		this.sqlReporter = reporter;
+
 		try {
 			this.logger = Logger.getLogger("etutor.modules.ra2sql");
 		} catch (Exception e) {
@@ -246,8 +247,9 @@ public class RAEvaluator implements Evaluator, MessageSourceAware {
 		//ANALYZING SEMANTICS
 		try{
 			//ESTABLISHING CONNECTION TO RA DATABASE
-			java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-			conn = DriverManager.getConnection(RAConstants.CONN_URL, RAConstants.CONN_USER, RAConstants.CONN_PWD);
+			java.sql.DriverManager.registerDriver(new org.postgresql.Driver());
+			conn = sqlEvaluator.getConnectionToSqlDatabase();
+			//conn = DriverManager.getConnection(RAConstants.CONN_URL, RAConstants.CONN_USER, RAConstants.CONN_PWD);
 			conn.setAutoCommit(true);
 
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE
@@ -278,10 +280,10 @@ public class RAEvaluator implements Evaluator, MessageSourceAware {
 			}
 			
 			//ESTABLISHING CONNECTION TO EXERCISE SPECIFIC REFERENCE DATABASE
-			java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+			java.sql.DriverManager.registerDriver(new org.postgresql.Driver());
 			this.logger.log(Level.INFO,referenceConnString + " - " + referenceConnUser + " - " + referenceConnPwd);
 			
-			referenceConn = DriverManager.getConnection("jdbc:oracle:thin:@" + referenceConnString, referenceConnUser, referenceConnPwd);
+			referenceConn = sqlEvaluator.getConnectionToSQLDatabase(referenceConnString, referenceConnUser, referenceConnPwd);
 			referenceConn.setAutoCommit(true);
 			
 			//BUILDING SQL QUERY FROM SUBMITTED RA QUERY
@@ -515,7 +517,7 @@ public class RAEvaluator implements Evaluator, MessageSourceAware {
 	
 	public Report report(Analysis analysis, Grading grading, Map passedAttributes, Map passedParameters, Locale locale) throws Exception{
 		SQLReport report = new SQLReport();
-		RAReporter reporter = new RAReporter(messageSource);
+		RAReporter reporter = new RAReporter(sqlReporter);
 		SQLReporterConfig reporterConfig = new SQLReporterConfig();
 
 		String action;
@@ -700,12 +702,7 @@ public class RAEvaluator implements Evaluator, MessageSourceAware {
 	}
 
 	@Override
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-
-	@Override
 	public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
-		return null;
+		return sqlEvaluator.generateHTMLResult(analysis, passedAttributes, locale);
 	}
 }
