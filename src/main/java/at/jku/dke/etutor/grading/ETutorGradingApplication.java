@@ -9,6 +9,7 @@ import at.jku.dke.etutor.grading.rest.ETutorSQLController;
 import at.jku.dke.etutor.grading.service.ModuleManager;
 import at.jku.dke.etutor.grading.service.RepositoryManager;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
+import at.jku.dke.etutor.modules.ra2sql.RAEvaluator;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
 import org.springframework.boot.SpringApplication;
@@ -45,7 +46,8 @@ import java.util.List;
         SubmissionDispatcher.class,
         AsyncConfiguration.class,
         SQLConstants.class,
-        SQLEvaluator.class
+        SQLEvaluator.class,
+        RAEvaluator.class
 })
 @EnableConfigurationProperties({ApplicationProperties.class})
 @SpringBootApplication

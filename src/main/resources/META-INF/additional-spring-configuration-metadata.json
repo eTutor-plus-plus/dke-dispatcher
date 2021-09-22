@@ -1,8 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "application.async.maxPoolSize",
-      "type": "java.lang.String",
-      "description": "Description for application.async.maxPoolSize."
-  }
-] }
