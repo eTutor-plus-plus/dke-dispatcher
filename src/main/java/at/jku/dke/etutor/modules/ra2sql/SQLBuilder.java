@@ -157,9 +157,9 @@ public class SQLBuilder {
 				query = query.concat("SELECT " + this.printSchema(exp) + " ");
 				query = query.concat("FROM (");
 				query = query.concat(leftQuery);
-				query = query.concat(") AS thetaLeftSubQu LS, (");
+				query = query.concat(") AS LS, (");
 				query = query.concat(rightQuery);
-				query = query.concat(") AS thetaRightSubQu RS ");
+				query = query.concat(") AS RS ");
 				query = query.concat("WHERE ");
 				first = true;
 				iter = thetaJoin.iterComparisons();
