@@ -51,6 +51,7 @@ public class Relation extends ExpressionImpl implements Expression {
 		}
 	}
 
+	@Override
 	public Element createElement(Document root) {
 		Element element;
 
@@ -64,6 +65,7 @@ public class Relation extends ExpressionImpl implements Expression {
 		}
 	}
 
+	@Override
 	public void initElement(Element element, Document root) {
 		if ((element != null) && (root != null)) {
 			super.initElement(element, root);

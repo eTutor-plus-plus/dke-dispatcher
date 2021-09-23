@@ -5,13 +5,13 @@ import antlr.MismatchedTokenException;
 
 public class MismatchedAtomException extends RAParserException {
 
-	private String foundAtom;
-	private String expectedAtom;
+	private  String foundAtom;
+	private  String expectedAtom;
 
 	public MismatchedAtomException() {
 		super();
-		this.foundAtom = new String();
-		this.expectedAtom = new String();
+		this.foundAtom = "";
+		this.expectedAtom = "";
 	}
 	
 	public MismatchedAtomException(String rule, MismatchedCharException mce) {
@@ -38,7 +38,7 @@ public class MismatchedAtomException extends RAParserException {
 
 	public void setExpectedAtom(String expectedAtom) {
 		if (expectedAtom != null){
-			this.expectedAtom = expectedAtom.replaceAll("\"", "").replaceAll("'", "");
+			this.expectedAtom = expectedAtom.replace("\"", "").replace("'", "");
 		} else {
 			this.expectedAtom = "EOF";
 		}
@@ -50,14 +50,15 @@ public class MismatchedAtomException extends RAParserException {
 
 	public void setFoundAtom(String foundAtom) {
 		if (foundAtom != null){
-			this.foundAtom = foundAtom.replaceAll("\"", "").replaceAll("'", "");
+			this.foundAtom = foundAtom.replace("\"", "").replace("'", "");
 		} else {
 			this.foundAtom = "EOF";
 		}
 	}
-	
+
+	@Override
 	public String getMessage(){
-		String message = new String();
+		String message = "";
 		message = message.concat("Atom mismatch in rule \"" + this.getRule() + "\"");
 		message = message.concat(" at line " + this.getLine());
 		message = message.concat(" column " + this.getColumn() + ".\n");

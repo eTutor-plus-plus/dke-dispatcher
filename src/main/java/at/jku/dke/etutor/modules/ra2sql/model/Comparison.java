@@ -10,8 +10,8 @@ public class Comparison {
 
 	public Comparison() {
 		super();
-		this.leftValue = new String();
-		this.rightValue = new String();
+		this.leftValue = "";
+		this.rightValue = "";
 		this.operator = ComparisonOperator.EQUAL;
 		this.rightValueType = ComparisonValueType.LITERAL;
 		this.leftValueType = ComparisonValueType.LITERAL;

@@ -9,6 +9,7 @@ public class OuterJoin extends BinaryOperatorImpl implements BinaryOperator {
 		super();
 	}
 
+	@Override
 	public Element createElement(Document root) {
 		Element element;
 
@@ -21,6 +22,7 @@ public class OuterJoin extends BinaryOperatorImpl implements BinaryOperator {
 		}
 	}
 
+	@Override
 	public void initElement(Element element, Document root) {
 		if ((element != null) && (root != null)) {
 			super.initElement(element, root);

@@ -1,6 +1,11 @@
 package at.jku.dke.etutor.modules.ra2sql;
 
 public class RAConstants {
+
+	private RAConstants(){
+		throw new IllegalStateException("Utility class");
+	}
+
 	public static final String CONN_PWD = "sql";
 	public static final String CONN_USER = "sql";
 	public static final String CONN_URL = "jdbc:postgresql://localhost:5433";

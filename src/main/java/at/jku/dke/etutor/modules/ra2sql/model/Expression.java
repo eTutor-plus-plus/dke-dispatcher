@@ -10,11 +10,11 @@ import org.w3c.dom.Element;
 
 public interface Expression {
 
-	public Iterator iterSchemaAttributes();
+	public Iterator<String> iterSchemaAttributes();
 
 	public boolean addSchemaAttribute(String schemaAttributeName);
 
-	public void setSchemaAttributes(Vector v);
+	public void setSchemaAttributes(Vector<String> v);
 
 	public boolean removeSchemaAttribute(String attributeName);
 	

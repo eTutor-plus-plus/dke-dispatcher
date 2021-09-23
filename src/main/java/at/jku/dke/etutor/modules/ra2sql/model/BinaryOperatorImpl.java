@@ -39,7 +39,7 @@ public abstract class BinaryOperatorImpl extends ExpressionImpl implements Binar
 	}
 
 	public void calculateSchema(Connection conn) throws SQLException {
-		Iterator iter;
+		Iterator<String> iter;
 		
 		this.removeAllSchemaAttributes();
 
@@ -47,7 +47,7 @@ public abstract class BinaryOperatorImpl extends ExpressionImpl implements Binar
 			this.leftExpression.calculateSchema(conn);
 			iter = this.leftExpression.iterSchemaAttributes();
 			while (iter.hasNext()) {
-				this.addSchemaAttribute(iter.next().toString().toUpperCase().trim());
+				this.addSchemaAttribute(iter.next().toUpperCase().trim());
 			}
 		}
 
@@ -55,11 +55,12 @@ public abstract class BinaryOperatorImpl extends ExpressionImpl implements Binar
 			this.rightExpression.calculateSchema(conn);
 			iter = this.rightExpression.iterSchemaAttributes();
 			while (iter.hasNext()) {
-				this.addSchemaAttribute(iter.next().toString().toUpperCase().trim());
+				this.addSchemaAttribute(iter.next().toUpperCase().trim());
 			}
 		}
 	}
 
+	@Override
 	public Element createElement(Document root) {
 		Element element;
 
@@ -72,6 +73,7 @@ public abstract class BinaryOperatorImpl extends ExpressionImpl implements Binar
 		}
 	}
 
+	@Override
 	public void initElement(Element element, Document root) {
 		if ((element != null) && (root != null)) {
 			super.initElement(element, root);
@@ -80,20 +82,20 @@ public abstract class BinaryOperatorImpl extends ExpressionImpl implements Binar
 	}
 
 	private void initExpressions(Element element, Document root) {
-		Element leftExpression;
-		Element rightExpression;
+		Element leftExpr;
+		Element rightExpr;
 
 		if ((element != null) && (root != null)) {
 			if (this.getLeftExpression() != null) {
-				leftExpression = root.createElement("LeftExpression");
-				this.getLeftExpression().initElement(leftExpression, root);
-				element.appendChild(leftExpression);
+				leftExpr = root.createElement("LeftExpression");
+				this.getLeftExpression().initElement(leftExpr, root);
+				element.appendChild(leftExpr);
 			}
 
 			if (this.getRightExpression() != null) {
-				rightExpression = root.createElement("RightExpression");
-				this.getRightExpression().initElement(rightExpression, root);
-				element.appendChild(rightExpression);
+				rightExpr = root.createElement("RightExpression");
+				this.getRightExpression().initElement(rightExpr, root);
+				element.appendChild(rightExpr);
 			}
 		}
 	}

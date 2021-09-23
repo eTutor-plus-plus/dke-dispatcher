@@ -118,7 +118,7 @@ public class RAEvaluator implements Evaluator{
 		}
 
 		if ((submission_Param == null) || (!(submission_Param instanceof String))){
-			message = new String();
+			message = "";
 			message = message.concat("Stopped analysis due to errors. ");
 			message = message.concat("Can not utilize submission parameter.");
 			
@@ -127,7 +127,7 @@ public class RAEvaluator implements Evaluator{
 		}
 
 		if ((action_Param == null) || (!(action_Param instanceof String))){
-			message = new String();
+			message = "";
 			message = message.concat("Stopped analysis due to errors. ");
 			message = message.concat("Can not utilize evaluation action parameter.");
 			
@@ -169,7 +169,7 @@ public class RAEvaluator implements Evaluator{
 			parser = new RAParser(lexer);
 			expression = parser.parse();
 		} catch (UnexpectedAtomException e) {
-			exceptionText = new String();
+			exceptionText = "";
 			exceptionText = exceptionText.concat("<p class='ra_syntax_error'>");
 			exceptionText = exceptionText.concat("Invalid \"" + this.getRuleAlias(e.getRule()));
 			exceptionText = exceptionText.concat("\".<br>");
@@ -184,7 +184,7 @@ public class RAEvaluator implements Evaluator{
 			analysis.addCriterionAnalysis(SQLEvaluationCriterion.CORRECT_SYNTAX, syntaxAnalysis);
 			return analysis;
 		} catch (MismatchedAtomException e) {
-			exceptionText = new String();
+			exceptionText = "";
 			exceptionText = exceptionText.concat("<p class='ra_syntax_error'>");
 			exceptionText = exceptionText.concat("Invalid \"" + this.getRuleAlias(e.getRule()) + "\".\n");
 			exceptionText =	exceptionText.concat("Expected character \"");

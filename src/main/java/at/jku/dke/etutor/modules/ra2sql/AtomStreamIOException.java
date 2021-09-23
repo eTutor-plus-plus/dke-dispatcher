@@ -11,7 +11,8 @@ public class AtomStreamIOException extends RAParserException {
 	public AtomStreamIOException(String rule, TokenStreamIOException tsioe){
 		this();
 	}
-	
+
+	@Override
 	public String getMessage(){
 		return "An IO Exception at the atom stream occured!";
 	}

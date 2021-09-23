@@ -49,7 +49,7 @@ public class SQLBuilder {
 					query = query.concat("SELECT " + this.printSchema(sel) + " ");
 					query = query.concat("FROM (");
 					query = query.concat(leftQuery);
-					query = query.concat(") AS selectionSubquery");
+					query = query.concat(") AS selectionSubquery ");
 					query = query.concat("WHERE ");
 
 					first = true;
@@ -67,7 +67,7 @@ public class SQLBuilder {
 					if(leftQuery.contains(" ")){
 						query = query.concat("FROM (");
 						query = query.concat(leftQuery);
-						query = query.concat(") AS projectionSubquery");
+						query = query.concat(") AS projectionSubquery ");
 					}else {
 						query = query.concat("FROM");
 						query = query.concat(leftQuery);
@@ -76,7 +76,7 @@ public class SQLBuilder {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
 					query = query.concat("FROM (");
 					query = query.concat(leftQuery);
-					query = query.concat(") AS renamingSubquery");
+					query = query.concat(") AS renamingSubquery ");
 				}
 			}
 			if (exp instanceof BinaryOperator) {
@@ -90,7 +90,7 @@ public class SQLBuilder {
 					query = query.concat(leftQuery);
 					query = query.concat(") AS joinLeftSideSubquery NATURAL JOIN (");
 					query = query.concat(rightQuery);
-					query = query.concat(") AS joinRightSideSubquery");
+					query = query.concat(") AS joinRightSideSubquery ");
 				}
 				if (exp instanceof Minus) {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
@@ -98,7 +98,7 @@ public class SQLBuilder {
 					query = query.concat(leftQuery);
 					query = query.concat(") AS minusLeftSideSubquery MINUS (");
 					query = query.concat(rightQuery);
-					query = query.concat(") AS minusRightSideSubquery");
+					query = query.concat(") AS minusRightSideSubquery ");
 				}
 				if (exp instanceof Division) {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
@@ -106,10 +106,10 @@ public class SQLBuilder {
 					query = query.concat(leftQuery);
 					query = query.concat(") AS naJoinLeftSideSubquery NATURAL JOIN (");
 					query = query.concat(rightQuery);
-					query = query.concat(") AS naJoinRightSideSubquery");
+					query = query.concat(") AS naJoinRightSideSubquery ");
 					query = query.concat("GROUP BY " + this.printSchema(exp) + " ");
 					query = query.concat("HAVING COUNT(*) = (SELECT COUNT(*) FROM (");
-					query = query.concat(rightQuery + ") AS havingSubquery ) AS divisionSubquery");
+					query = query.concat(rightQuery + ") AS havingSubquery ) AS divisionSubquery ");
 				}
 				if (exp instanceof OuterJoin) {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
@@ -117,7 +117,7 @@ public class SQLBuilder {
 					query = query.concat(leftQuery);
 					query = query.concat(") AS naFullJoinLeftSideSubquery NATURAL FULL OUTER JOIN (");
 					query = query.concat(rightQuery);
-					query = query.concat(") AS naFullJoinRightSideSubquery");
+					query = query.concat(") AS naFullJoinRightSideSubquery ");
 				}
 
 			}
@@ -133,7 +133,7 @@ public class SQLBuilder {
 				query = query.concat(leftQuery);
 				query = query.concat(") AS naFullOuterLeftSideSubQu NATURAL FULL OUTER JOIN (");
 				query = query.concat(rightQuery);
-				query = query.concat(") AS naFullOuterRightSideSubQu");
+				query = query.concat(") AS naFullOuterRightSideSubQu ");
 			}
 			if (exp instanceof Intersection) {
 				query = query.concat("SELECT " + this.printSchema(exp) + " ");
@@ -141,7 +141,7 @@ public class SQLBuilder {
 				query = query.concat(leftQuery);
 				query = query.concat(") AS intersectLeftSubQu INTERSECT (");
 				query = query.concat(rightQuery);
-				query = query.concat(") AS intersectRightSubQu");
+				query = query.concat(") AS intersectRightSubQu ");
 			}
 			if (exp instanceof Union) {
 				query = query.concat("SELECT " + this.printSchema(exp) + " ");

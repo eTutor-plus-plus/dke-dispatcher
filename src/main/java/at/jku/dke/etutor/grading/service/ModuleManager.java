@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.grading.service;
 import at.jku.dke.etutor.core.evaluation.Evaluator;
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.modules.ra2sql.RAEvaluator;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
 import org.springframework.stereotype.Service;
@@ -11,14 +12,16 @@ import org.springframework.stereotype.Service;
 public class ModuleManager{
     private final SQLEvaluator sqlEvaluator;
     private final RAEvaluator raEvaluator;
+    private final ApplicationProperties properties;
 
     /**
      * The constructor
      * @param sqlEvaluator the inejcted SQLEvaluator
      */
-    public ModuleManager(SQLEvaluator sqlEvaluator, RAEvaluator raEvaluator){
+    public ModuleManager(SQLEvaluator sqlEvaluator, RAEvaluator raEvaluator, ApplicationProperties properties){
         this.sqlEvaluator = sqlEvaluator;
         this.raEvaluator = raEvaluator;
+        this.properties = properties;
     }
 
     /**

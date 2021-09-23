@@ -1,5 +1,7 @@
 package at.jku.dke.etutor.modules.ra2sql.model;
 
+import java.util.Objects;
+
 public class ComparisonOperator {
 
 	public static final ComparisonOperator EQUAL = new ComparisonOperator("EQUAL");
@@ -18,8 +20,8 @@ public class ComparisonOperator {
 
 	public boolean equals(Object obj) {
 		if (obj != null) {
-			if (obj instanceof ComparisonOperator) {
-				return this.name.equals(((ComparisonOperator)obj).getName());
+			if (obj instanceof ComparisonOperator compOp) {
+				return this.name.equals((compOp).getName());
 			} else {
 				return false;
 			}
@@ -28,12 +30,17 @@ public class ComparisonOperator {
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(name);
+	}
+
 	public String getName() {
 		return this.name;
 	}
 
 	public String toString() {
-		String toString = new String();
+		String toString = "";
 
 		if (this.name.equals("EQUAL")) {
 			toString = "=";

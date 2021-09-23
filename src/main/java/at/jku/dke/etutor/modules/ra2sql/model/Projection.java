@@ -2,6 +2,7 @@ package at.jku.dke.etutor.modules.ra2sql.model;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -11,11 +12,11 @@ import org.w3c.dom.Text;
 
 public class Projection extends UnaryOperatorImpl implements UnaryOperator {
 
-	private Vector projectionAttributes;
+	private final ArrayList<String> projectionAttributes;
 
 	public Projection() {
 		super();
-		this.projectionAttributes = new Vector();
+		this.projectionAttributes = new ArrayList<>();
 	}
 
 	public boolean addProjectionAttribute(String attributeName) {
@@ -26,7 +27,7 @@ public class Projection extends UnaryOperatorImpl implements UnaryOperator {
 		}
 	}
 
-	public Iterator iterProjectionAttributes() {
+	public Iterator<String> iterProjectionAttributes() {
 		return this.projectionAttributes.iterator();
 	}
 
@@ -38,8 +39,9 @@ public class Projection extends UnaryOperatorImpl implements UnaryOperator {
 		}
 	}
 
+	@Override
 	public void calculateSchema(Connection conn) throws SQLException {
-		Iterator iter;
+		Iterator<String> iter;
 
 		this.removeAllSchemaAttributes();
 
@@ -49,10 +51,11 @@ public class Projection extends UnaryOperatorImpl implements UnaryOperator {
 		
 		iter = this.iterProjectionAttributes();
 		while (iter.hasNext()){
-			this.addSchemaAttribute(iter.next().toString());
+			this.addSchemaAttribute(iter.next());
 		}
 	}
 
+	@Override
 	public Element createElement(Document root) {
 		Element element;
 
@@ -66,6 +69,7 @@ public class Projection extends UnaryOperatorImpl implements UnaryOperator {
 		}
 	}
 
+	@Override
 	public void initElement(Element element, Document root) {
 		if ((element != null) && (root != null)) {
 			super.initElement(element, root);
@@ -75,7 +79,7 @@ public class Projection extends UnaryOperatorImpl implements UnaryOperator {
 	}
 
 	private void initProjectionAttributes(Element element, Document root) {
-		Iterator iter;
+		Iterator<String> iter;
 		Element attribute;
 		Text attributeName;
 
@@ -83,7 +87,7 @@ public class Projection extends UnaryOperatorImpl implements UnaryOperator {
 			iter = this.iterProjectionAttributes();
 			while (iter.hasNext()) {
 				attribute = root.createElement("ProAttribute");
-				attributeName = root.createTextNode(iter.next().toString());
+				attributeName = root.createTextNode(iter.next());
 				attribute.appendChild(attributeName);
 				element.appendChild(attribute);
 			}
