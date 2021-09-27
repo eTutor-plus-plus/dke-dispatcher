@@ -3,17 +3,13 @@ package at.jku.dke.etutor.modules.ra2sql;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import at.jku.dke.etutor.core.evaluation.*;
 import at.jku.dke.etutor.modules.ra2sql.model.Expression;
-import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationAction;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
@@ -25,6 +21,8 @@ import at.jku.dke.etutor.modules.sql.grading.SQLGraderConfig;
 import at.jku.dke.etutor.modules.sql.report.SQLReport;
 import at.jku.dke.etutor.modules.sql.report.SQLReporter;
 import at.jku.dke.etutor.modules.sql.report.SQLReporterConfig;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -48,7 +46,7 @@ public class RAEvaluator implements Evaluator{
 		this.sqlReporter = reporter;
 
 		try {
-			this.logger = Logger.getLogger("etutor.modules.ra2sql");
+			this.logger = (Logger) LoggerFactory.getLogger(RAEvaluator.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -57,9 +55,7 @@ public class RAEvaluator implements Evaluator{
 			sqlMsgMappingProps = new Properties();
 			try {
 				sqlMsgMappingProps.load(this.getClass().getResourceAsStream(RAConstants.SQL_MSG_MAPPING_PATH));
-			} catch (NullPointerException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (NullPointerException | IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -68,9 +64,7 @@ public class RAEvaluator implements Evaluator{
 			ruleAliasesProps = new Properties();
 			try {
 				ruleAliasesProps.load(this.getClass().getResourceAsStream(RAConstants.RULE_ALIASES_PATH));
-			} catch (NullPointerException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (NullPointerException | IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -79,15 +73,14 @@ public class RAEvaluator implements Evaluator{
 			atomAliasesProps = new Properties();
 			try {
 				atomAliasesProps.load(this.getClass().getResourceAsStream(RAConstants.ATOM_ALIASES_PATH));
-			} catch (NullPointerException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (NullPointerException | IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
-	public Analysis analyze(int exerciseID, int userID, Map passedAttributes, Map passedParameters, Locale locale) throws Exception{
+
+
+	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception{
 		String message;
 		String submQuery;
 		SQLAnalysis analysis;
@@ -99,9 +92,9 @@ public class RAEvaluator implements Evaluator{
 		String action;
 		String submission;
 		int diagnoseLevel;
-		Object action_Param;
-		Object submission_Param;
-		Object diagnoseLevel_Param;
+		String action_Param;
+		String submission_Param;
+		String diagnoseLevel_Param;
 
 		sqlBuilder = new SQLBuilder();
 		analysis = new SQLAnalysis();
@@ -113,45 +106,45 @@ public class RAEvaluator implements Evaluator{
 		diagnoseLevel_Param = passedAttributes.get("diagnoseLevel");
 		
 		//VALIDATING PARAMETERS
-		if ((diagnoseLevel_Param==null) || (((String)diagnoseLevel_Param).length()==0)) {
+		if ((diagnoseLevel_Param==null) || ((diagnoseLevel_Param).length()==0)) {
 			diagnoseLevel_Param = "0";		
 		}
 
-		if ((submission_Param == null) || (!(submission_Param instanceof String))){
+		if (submission_Param == null){
 			message = "";
 			message = message.concat("Stopped analysis due to errors. ");
 			message = message.concat("Can not utilize submission parameter.");
-			
-			this.logger.log(Level.SEVERE, message);
+
+			this.logger.warn(message);
 			throw new IllegalArgumentException(message);
 		}
 
-		if ((action_Param == null) || (!(action_Param instanceof String))){
+		if (action_Param == null){
 			message = "";
 			message = message.concat("Stopped analysis due to errors. ");
 			message = message.concat("Can not utilize evaluation action parameter.");
 			
-			this.logger.log(Level.SEVERE, message);
+			this.logger.warn( message);
 			throw new IllegalArgumentException(message);
 		}
 
-		if ((diagnoseLevel_Param == null) || (!(diagnoseLevel_Param instanceof String))){
-			message = new String();
+		if (diagnoseLevel_Param == null){
+			message = "";
 			message = message.concat("Stopped analysis due to errors. ");
 			message = message.concat("Can not utilize diagnose level parameter.");
 			
-			this.logger.log(Level.SEVERE, message);
+			this.logger.warn( message);
 			throw new IllegalArgumentException(message);
 		}
 		
-		action = (String)action_Param;
-		diagnoseLevel = Integer.parseInt((String)diagnoseLevel_Param);
+		action = action_Param;
+		diagnoseLevel = Integer.parseInt(diagnoseLevel_Param);
 		
 		//SETTING SUBMISSION IN ANALYSIS
-		analysis.setSubmission(new String((String)submission_Param));
+		analysis.setSubmission(submission_Param);
 
 		//PREPARING SUBMISSION - REPLACING RA-SPECIFIC SYMBOLS WITH TEXTUAL REPRESENTATIONS
-		submission = prepareSubmission((String)submission_Param);
+		submission = prepareSubmission(submission_Param);
 
 		RALexer lexer;
 		RAParser parser;
@@ -199,7 +192,7 @@ public class RAEvaluator implements Evaluator{
 			analysis.addCriterionAnalysis(SQLEvaluationCriterion.CORRECT_SYNTAX, syntaxAnalysis);
 			return analysis;
 		} catch (InvalidAtomException e) {
-			exceptionText = new String();
+			exceptionText = "";
 			exceptionText = exceptionText.concat("<p class='ra_syntax_error'>");
 			exceptionText = exceptionText.concat("Invalid \"" + this.getRuleAlias(e.getRule()) + "\".\n");
 			exceptionText =	exceptionText.concat("Invalid character \"");
@@ -268,7 +261,7 @@ public class RAEvaluator implements Evaluator{
 					query = query.concat("			c.id = e.practise_db" + LINE_SEP);
 				}
 			}
-			this.logger.log(Level.INFO,"QUERY for reading connection data:\n" + query);
+			this.logger.info("QUERY for reading connection data:\n" + query);
 
 			stmt = conn.createStatement();
 			rset = stmt.executeQuery(query);
@@ -281,7 +274,7 @@ public class RAEvaluator implements Evaluator{
 			
 			//ESTABLISHING CONNECTION TO EXERCISE SPECIFIC REFERENCE DATABASE
 			java.sql.DriverManager.registerDriver(new org.postgresql.Driver());
-			this.logger.log(Level.INFO,referenceConnString + " - " + referenceConnUser + " - " + referenceConnPwd);
+			this.logger.info(referenceConnString + " - " + referenceConnUser + " - " + referenceConnPwd);
 			
 			referenceConn = sqlEvaluator.getConnectionToSQLDatabase(referenceConnString, referenceConnUser, referenceConnPwd);
 			referenceConn.setAutoCommit(true);
@@ -289,7 +282,7 @@ public class RAEvaluator implements Evaluator{
 			//BUILDING SQL QUERY FROM SUBMITTED RA QUERY
 			sqlBuilder = new SQLBuilder();
 			submQuery = sqlBuilder.buildSQLQuery(expression, referenceConn);
-			this.logger.log(Level.INFO,"BUILT QUERY: " + submQuery);
+			this.logger.info("BUILT QUERY: " + submQuery);
 
 			//DETERMINING CORRECT RA QUERY IN TERMS OF SQL
 			if ((action.equalsIgnoreCase("test")) || (action.equalsIgnoreCase("run"))){
@@ -308,7 +301,7 @@ public class RAEvaluator implements Evaluator{
 					correctQuery = rset.getString("solution");
 				}
 			}
-			this.logger.log(Level.INFO, "CORRECT QUERY: " + correctQuery);
+			this.logger.info( "CORRECT QUERY: " + correctQuery);
 
 			//ANALYZING SUBMITTED QUERY IN TERMS OF SQL
 			analyzerConfig.setConnection(referenceConn);
@@ -320,7 +313,7 @@ public class RAEvaluator implements Evaluator{
 			sqlAnalysis = analyzer.analyze(submQuery, analyzerConfig);
 			sqlAnalysis.setSubmission(analysis.getSubmission());
 		
-			this.logger.log(Level.INFO,"Finished RA-Evaluation!");
+			this.logger.info("Finished RA-Evaluation!");
 			return sqlAnalysis;
 
 		} catch (IllegalArgumentException e){
@@ -330,10 +323,10 @@ public class RAEvaluator implements Evaluator{
 			analysis.addCriterionAnalysis(SQLEvaluationCriterion.CORRECT_SYNTAX, syntaxAnalysis);
 			return analysis;
 		} catch (NullPointerException e){
-			this.logger.log(Level.SEVERE, "", e);
+			this.logger.warn("", e);
 			throw e;
 		} catch (SQLException e){
-			this.logger.log(Level.SEVERE, "", e);
+			this.logger.warn("", e);
 			throw e;
 		} finally {
 			try {
@@ -350,13 +343,13 @@ public class RAEvaluator implements Evaluator{
 					referenceConn.close();
 				}
 			} catch (SQLException e){
-				this.logger.log(Level.SEVERE, "", e);
+				this.logger.warn("", e);
 				throw e;
 			}
 		}
 	}
 	
-	public Grading grade(Analysis analysis, int maxPoints, Map passedAttributes, Map passedParameters) throws Exception{
+	public Grading grade(Analysis analysis, int maxPoints, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception{
 		SQLGrader grader;
 		DefaultGrading grading;
 		SQLGraderConfig graderConfig;
@@ -364,23 +357,23 @@ public class RAEvaluator implements Evaluator{
 
 		String action;
 		String message;
-		Object action_Param;
+		String action_Param;
 
 		grader = new SQLGrader();
 		grading = new DefaultGrading();
 		graderConfig = new SQLGraderConfig();
 		action_Param = passedAttributes.get("action");
 
-		if ((action_Param == null) || (!(action_Param instanceof String))){
-			message = new String();
+		if (action_Param == null){
+			message = "";
 			message = message.concat("Stopped grading due to errors. ");
 			message = message.concat("Can not utilize evaluation action parameter.");
 			
-			this.logger.log(Level.SEVERE, message);
+			this.logger.warn( message);
 			throw new IllegalArgumentException(message);
 		}
 		
-		action = (String)action_Param;
+		action = action_Param;
 
 		//syntax
 		criterionGradingConfig =	new SQLCriterionGradingConfig();
@@ -515,7 +508,7 @@ public class RAEvaluator implements Evaluator{
 		return grader.grade((SQLAnalysis)analysis, graderConfig);
 	}
 	
-	public Report report(Analysis analysis, Grading grading, Map passedAttributes, Map passedParameters, Locale locale) throws Exception{
+	public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception{
 		SQLReport report = new SQLReport();
 		RAReporter reporter = new RAReporter(sqlReporter);
 		SQLReporterConfig reporterConfig = new SQLReporterConfig();
@@ -523,29 +516,29 @@ public class RAEvaluator implements Evaluator{
 		String action;
 		String message;
 		String diagnoseLevel;
-		Object action_Param = passedAttributes.get("action");
-		Object diagnoseLevel_Param = passedAttributes.get("diagnoseLevel");
+		String action_Param = passedAttributes.get("action");
+		String diagnoseLevel_Param = passedAttributes.get("diagnoseLevel");
 
-		if ((action_Param == null) || (!(action_Param instanceof String))){
-			message = new String();
+		if (action_Param == null){
+			message = "";
 			message = message.concat("Stopped reporting due to errors. ");
 			message = message.concat("Can not utilize evaluation action parameter.");
 			
-			this.logger.log(Level.SEVERE, message);
+			this.logger.warn( message);
 			throw new IllegalArgumentException(message);
 		}
 
-		if ((diagnoseLevel_Param == null) || (!(diagnoseLevel_Param instanceof String))){
-			message = new String();
+		if (diagnoseLevel_Param == null){
+			message = "";
 			message = message.concat("Stopped reporting due to errors. ");
 			message = message.concat("Can not utilize diagnose level parameter.");
 			
-			this.logger.log(Level.SEVERE, message);
+			this.logger.warn(message);
 			throw new IllegalArgumentException(message);
 		}
 		
-		action = (String)action_Param;
-		diagnoseLevel = (String)diagnoseLevel_Param;
+		action = action_Param;
+		diagnoseLevel = diagnoseLevel_Param;
 		
 		if (action.toUpperCase().equals(SQLEvaluationAction.RUN.toString())){
 			reporterConfig.setAction(SQLEvaluationAction.RUN);
