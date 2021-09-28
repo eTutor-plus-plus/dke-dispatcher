@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery;
+package at.jku.dke.etutor.modules.xquery;
 
 /**
  * An exception which is used to describe the syntax errors of a query. This class provides additional

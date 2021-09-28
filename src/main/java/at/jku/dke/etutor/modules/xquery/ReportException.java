@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery;
+package at.jku.dke.etutor.modules.xquery;
 
 /**
  * Exception used for indicating some serious problem, which occurs

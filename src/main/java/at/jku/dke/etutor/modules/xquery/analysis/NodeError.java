@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.analysis;
+package at.jku.dke.etutor.modules.xquery.analysis;
 
 import java.io.Serializable;
 import java.util.ArrayList;

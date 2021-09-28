@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.exercise;
+package at.jku.dke.etutor.modules.xquery.exercise;
 
 import java.io.FileReader;
 import java.io.IOException;

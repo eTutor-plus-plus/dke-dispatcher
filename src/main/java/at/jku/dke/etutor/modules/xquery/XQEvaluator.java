@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery;
+package at.jku.dke.etutor.modules.xquery;
 
 import java.rmi.Remote;
 

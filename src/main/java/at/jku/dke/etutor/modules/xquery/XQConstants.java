@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery;
+package at.jku.dke.etutor.modules.xquery;
 
 public class XQConstants {
 	public final static String ATTR_COMMAND = "command";

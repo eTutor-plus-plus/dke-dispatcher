@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.analysis;
+package at.jku.dke.etutor.modules.xquery.analysis;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.ParameterException;
-import at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.UrlContentException;
+import at.jku.dke.etutor.modules.xquery.ParameterException;
+import at.jku.dke.etutor.modules.xquery.UrlContentException;
 
 /**
  * This class can be used for managing the mapping between some URLs and alias names for these URLs.

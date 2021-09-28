@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.grading;
+package at.jku.dke.etutor.modules.xquery.grading;
 
 import java.io.Serializable;
 

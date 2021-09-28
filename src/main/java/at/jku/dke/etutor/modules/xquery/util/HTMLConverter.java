@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.util;
+package at.jku.dke.etutor.modules.xquery.util;
 
 /**
  * Utility class for making a String ready to be used in HTML context by escaping literals which

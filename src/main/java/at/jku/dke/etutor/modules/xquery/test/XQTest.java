@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.test;/*
+package at.jku.dke.etutor.modules.xquery.test;/*
  * Created on 16.06.2005
  *
  * TODO To change the template for this generated file go to

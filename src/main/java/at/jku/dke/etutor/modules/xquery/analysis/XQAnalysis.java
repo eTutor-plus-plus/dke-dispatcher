@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.analysis;
+package at.jku.dke.etutor.modules.xquery.analysis;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,8 +9,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Logger;
+
+import at.jku.dke.etutor.modules.xquery.*;
+import at.jku.dke.etutor.modules.xquery.util.*;
 
 
+import at.jku.dke.etutor.core.evaluation.Analysis;
 import org.dom4j.DocumentException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -44,7 +49,7 @@ public class XQAnalysis implements Analysis, Serializable {
     /**
      * The logger used for logging.
      */
-    private final static Logger LOGGER = Logger.getLogger(XQAnalysis.class);
+    private final static Logger LOGGER = Logger.getLogger(String.valueOf(XQAnalysis.class));
 
     private Serializable submission;
 
@@ -137,7 +142,7 @@ public class XQAnalysis implements Analysis, Serializable {
             UrlContentException {
         super();
         init(config);
-        this.setResults(result1, result2);
+        setResults(result1, result2);
     }
 
     /**
@@ -169,7 +174,7 @@ public class XQAnalysis implements Analysis, Serializable {
             
             XQResult result2 = new XQResult(config.getQuery2(), config.getProcessor(), config.getUrls());
             
-            this.setResults(result1, result2);
+            setResults(result1, result2);
         } catch (InternalException e) {
             throw new AnalysisException(e.getMessage());
         }
@@ -191,12 +196,12 @@ public class XQAnalysis implements Analysis, Serializable {
             WellformednessException, QuerySyntaxException, UrlContentException {
     	
     	//Parameters for files for debugging purpose or files required for analysis  
-    	FileParameter xml1FileParameter = this.getXML1FileParameter();
-    	FileParameter xml2FileParameter = this.getXML2FileParameter();
-    	FileParameter dtdFileParameter = this.getDTDFileParameter();
-    	FileParameter xslFileParameter = this.getXSLFileParameter();
+    	FileParameter xml1FileParameter = getXML1FileParameter();
+    	FileParameter xml2FileParameter = getXML2FileParameter();
+    	FileParameter dtdFileParameter =  getDTDFileParameter();
+    	FileParameter xslFileParameter =  getXSLFileParameter();
     	
-        LOGGER.debug("Start comparing correct and submitted result object");
+        // LOGGER.debug("Start comparing correct and submitted result object");
         if (result1.getSyntaxException() != null) {
             throw result1.getSyntaxException();
         }

@@ -1,6 +1,6 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery;
+package at.jku.dke.etutor.modules.xquery;
 
-import at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.util.PropertyFile;
+import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
 
 import java.io.File;
 import java.net.MalformedURLException;

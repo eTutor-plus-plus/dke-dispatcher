@@ -1,11 +1,16 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.analysis;
+package at.jku.dke.etutor.modules.xquery.analysis;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.logging.Logger;
 
+import at.jku.dke.etutor.modules.xquery.QuerySyntaxException;
+import at.jku.dke.etutor.modules.xquery.UrlContentException;
+import at.jku.dke.etutor.modules.xquery.WellformednessException;
+import at.jku.dke.etutor.modules.xquery.util.FileParameter;
 import oracle.xml.parser.v2.XMLDocument;
 import oracle.xml.parser.v2.XSLException;
 

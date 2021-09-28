@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.util;
+package at.jku.dke.etutor.modules.xquery.util;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

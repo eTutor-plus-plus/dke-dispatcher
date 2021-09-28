@@ -1,12 +1,13 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.util;
+package at.jku.dke.etutor.modules.xquery.util;
+
+import at.jku.dke.etutor.modules.xquery.InvalidResourceException;
+import at.jku.dke.etutor.modules.xquery.XQCoreManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 
-import etutor.modules.xquery.InvalidResourceException;
-import etutor.modules.xquery.XQCoreManager;
 
 /**
  * Utility class for collecting all necessary information which can be used for

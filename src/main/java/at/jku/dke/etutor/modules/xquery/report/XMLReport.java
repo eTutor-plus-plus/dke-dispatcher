@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery.src.etutor.modules.xquery.report;
+package at.jku.dke.etutor.modules.xquery.report;
 
 import java.io.File;
 import java.io.IOException;
