@@ -6,20 +6,12 @@ import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
-import etutor.modules.xquery.ParameterException;
-import etutor.modules.xquery.QuerySyntaxException;
-import etutor.modules.xquery.ReportException;
-import etutor.modules.xquery.UrlContentException;
-import etutor.modules.xquery.WellformednessException;
-import etutor.modules.xquery.analysis.NodeError;
-import etutor.modules.xquery.analysis.NodeErrorList;
-import etutor.modules.xquery.analysis.UrlContent;
-import etutor.modules.xquery.analysis.XMLNodeDescription;
-import etutor.modules.xquery.analysis.XQAnalysis;
-import etutor.modules.xquery.analysis.XQResult;
-import etutor.modules.xquery.grading.XQGrading;
-import etutor.modules.xquery.util.HTMLConverter;
-import etutor.modules.xquery.util.XQResources;
+import at.jku.dke.etutor.core.evaluation.Report;
+import at.jku.dke.etutor.modules.xquery.*;
+import at.jku.dke.etutor.modules.xquery.analysis.*;
+import at.jku.dke.etutor.modules.xquery.grading.XQGrading;
+import at.jku.dke.etutor.modules.xquery.util.HTMLConverter;
+import at.jku.dke.etutor.modules.xquery.util.XQResources;
 
 /**
  * This class is used for presenting the results of an analysis that was carried out on two XQuery
@@ -78,7 +70,7 @@ public class XQReport implements XQFeedback, Serializable {
      * @param grading A grading object which contains information about points which have been
      *            assigned to the submitted query of the analysis. The grading information will not
      *            be used for this <code>XQReport</code>, if the object is <code>null</code> or
-     *            if {@link XQGrading#isReporting()}of the specified object returns false.
+     *            if of the specified object returns false.
      * @param config Configuration parameters for reporting.
      * @throws NullPointerException if any of the parameters is null or if one of the results
      *             contained in the analysis is null.
@@ -235,8 +227,8 @@ public class XQReport implements XQFeedback, Serializable {
                         .getString(XQResources.ERROR_RESULT_ALIAS_UNDECLARED));
                 Format[] formats = new Format[] {null, null, null};
                 messageForm.setFormats(formats);
-                Object[] messageArguments = new Object[] {alias, new Integer(line),
-                        new Integer(index)};
+                Object[] messageArguments = new Object[] {alias, Integer.valueOf(line),
+                        Integer.valueOf(index)};
                 String msg = messageForm.format(messageArguments);
                 if (message.length() > 0) {
                     message += "\n";
@@ -461,7 +453,7 @@ public class XQReport implements XQFeedback, Serializable {
                     messageForm.applyPattern(XQResources.getString(XQResources.NODES_DISPLACED_PL));
                     Format[] formats = new Format[] {NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {new Integer(list.length),
+                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -493,7 +485,7 @@ public class XQReport implements XQFeedback, Serializable {
                 messageForm.applyPattern(XQResources.getString(XQResources.NODES_REDUNDANT_PL));
                 Format[] formats = new Format[] {NumberFormat.getInstance()};
                 messageForm.setFormats(formats);
-                Object[] messageArguments = new Object[] {new Integer(redundantNodes.size())};
+                Object[] messageArguments = new Object[] {Integer.valueOf(redundantNodes.size())};
                 result = messageForm.format(messageArguments);
             }
             // ---------- apply the message --------------- //
@@ -532,7 +524,7 @@ public class XQReport implements XQFeedback, Serializable {
                             .getString(XQResources.NODES_REDUNDANT_PL));
                     Format[] formats = new Format[] {NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {new Integer(list.length),
+                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -579,7 +571,7 @@ public class XQReport implements XQFeedback, Serializable {
                             .getString(XQResources.NODES_MISSING_INSTEAD_PL));
                     Format[] formats = new Format[] {NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {new Integer(list.length),
+                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -625,7 +617,7 @@ public class XQReport implements XQFeedback, Serializable {
                             .applyPattern(XQResources.getString(XQResources.NODES_MISSING_BEFORE_PL));
                     Format[] formats = new Format[] {NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {new Integer(list.length),
+                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -667,7 +659,7 @@ public class XQReport implements XQFeedback, Serializable {
                     messageForm.applyPattern(XQResources.getString(XQResources.NODES_MISSING_AFTER_PL));
                     Format[] formats = new Format[] {NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {new Integer(list.length),
+                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -716,14 +708,14 @@ public class XQReport implements XQFeedback, Serializable {
                                 .getString(XQResources.NODES_MISSING_ROOT_PL));
                         Format[] formats = new Format[] {NumberFormat.getInstance()};
                         messageForm.setFormats(formats);
-                        Object[] messageArguments = new Object[] {new Integer(list.length)};
+                        Object[] messageArguments = new Object[] {Integer.valueOf(list.length)};
                         result = messageForm.format(messageArguments);
                     } else {
                         messageForm
                                 .applyPattern(XQResources.getString(XQResources.NODES_MISSING_IN_PL));
                         Format[] formats = new Format[] {NumberFormat.getInstance(), null};
                         messageForm.setFormats(formats);
-                        Object[] messageArguments = new Object[] {new Integer(list.length),
+                        Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
                                 getRootExcluded(xPathNode)};
                         result = messageForm.format(messageArguments);
                     }
@@ -768,7 +760,7 @@ public class XQReport implements XQFeedback, Serializable {
                             .applyPattern(XQResources.getString(XQResources.ATTRIBUTES_REDUNDANT_PL));
                     Format[] formats = new Format[] {NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {new Integer(list.length),
+                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -810,7 +802,7 @@ public class XQReport implements XQFeedback, Serializable {
                     messageForm.applyPattern(XQResources.getString(XQResources.ATTRIBUTES_MISSING_PL));
                     Format[] formats = new Format[] {NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {new Integer(list.length),
+                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -854,7 +846,7 @@ public class XQReport implements XQFeedback, Serializable {
                             .getString(XQResources.VALUES_INCORRECT_PL));
                     Format[] formats = new Format[] {NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {new Integer(list.length),
+                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -898,7 +890,7 @@ public class XQReport implements XQFeedback, Serializable {
                             .getString(XQResources.VALUES_INCORRECT_PL));
                     Format[] formats = new Format[] {NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {new Integer(list.length),
+                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -1101,7 +1093,7 @@ public class XQReport implements XQFeedback, Serializable {
      *            achieved for a datalog exercise, and the points actually assigned for a submitted
      *            query.
      * @return The text generated from the grading object or an empty String if the grading object
-     *         is <code>null</code> or if {@link XQGrading#isReporting()}of the specified object
+     *         is <code>null</code> or if of the specified object
      *         returns false.
      */
     private String getGrading(XQGrading grading) {
@@ -1110,8 +1102,8 @@ public class XQReport implements XQFeedback, Serializable {
             messageForm.applyPattern(XQResources.getString(XQResources.GRADING_POINTS));
             Format[] formats = new Format[] {null, null};
             messageForm.setFormats(formats);
-            Object[] messageArguments = new Object[] {new Double(grading.getPoints()),
-                    new Double(grading.getMaxPoints())};
+            Object[] messageArguments = new Object[] {Double.valueOf(grading.getPoints()),
+                   Double.valueOf(grading.getMaxPoints())};
             String message = messageForm.format(messageArguments);
             return message;
         }

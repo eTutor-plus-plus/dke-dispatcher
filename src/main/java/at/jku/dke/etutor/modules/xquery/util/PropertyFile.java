@@ -7,10 +7,10 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import at.jku.dke.etutor.modules.xquery.InvalidResourceException;
+import at.jku.dke.etutor.modules.xquery.XQCoreManager;
 import org.apache.log4j.Logger;
 
-import etutor.modules.xquery.InvalidResourceException;
-import etutor.modules.xquery.XQCoreManager;
 
 /**
  * Utility class which extends the basic {@link java.util.Properties}with tailored methods for
@@ -129,7 +129,7 @@ public class PropertyFile extends Properties {
      */
     public boolean parseBooleanProperty(String key) throws InvalidResourceException {
         String value = loadProperty(key);
-        return new Boolean(value).booleanValue();
+        return Boolean.valueOf(value).booleanValue();
     }
 
     /**

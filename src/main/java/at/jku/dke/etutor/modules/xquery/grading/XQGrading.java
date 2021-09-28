@@ -2,9 +2,9 @@ package at.jku.dke.etutor.modules.xquery.grading;
 
 import java.io.Serializable;
 
-import etutor.core.evaluation.Grading;
-import etutor.modules.xquery.analysis.NodeErrorList;
-import etutor.modules.xquery.analysis.XQAnalysis;
+import at.jku.dke.etutor.core.evaluation.Grading;
+import at.jku.dke.etutor.modules.xquery.analysis.NodeErrorList;
+import at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis;
 
 /**
  * This class represents the grading of an analyzed query.
@@ -23,7 +23,7 @@ public class XQGrading implements Serializable, Grading {
 
     /**
      * Creates a new grading object with default values. Maximum points and actual points are set to
-     * 0,{@link #solutionIsCorrect()}and {@link #isReporting()}will return <code>false</code>.
+     * 0,{@link #solutionIsCorrect()}and will return <code>false</code>.
      */
     public XQGrading() {
         super();

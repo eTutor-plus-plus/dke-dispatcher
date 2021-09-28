@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import at.jku.dke.etutor.modules.xquery.util.XMLUtil;
 import oracle.xml.parser.v2.XMLDocument;
 import oracle.xml.parser.v2.XMLElement;
 import oracle.xml.parser.v2.XSLException;
@@ -30,7 +31,6 @@ import oracle.xml.parser.v2.XSLException;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import etutor.modules.xquery.util.XMLUtil;
 
 /**
  * @author nitsche (16.06.2005)

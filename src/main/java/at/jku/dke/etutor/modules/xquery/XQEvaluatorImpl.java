@@ -10,22 +10,21 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
+import at.jku.dke.etutor.core.evaluation.Analysis;
+import at.jku.dke.etutor.core.evaluation.Grading;
+import at.jku.dke.etutor.core.evaluation.Report;
+import at.jku.dke.etutor.modules.xquery.analysis.UrlContentMap;
+import at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis;
+import at.jku.dke.etutor.modules.xquery.analysis.XQAnalysisConfig;
+import at.jku.dke.etutor.modules.xquery.analysis.XQProcessor;
+import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseBean;
+import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseManagerImpl;
+import at.jku.dke.etutor.modules.xquery.grading.XQGrading;
+import at.jku.dke.etutor.modules.xquery.grading.XQGradingConfig;
+import at.jku.dke.etutor.modules.xquery.report.XQReport;
+import at.jku.dke.etutor.modules.xquery.report.XQReportConfig;
+import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
 import org.apache.log4j.Logger;
-
-import etutor.core.evaluation.Analysis;
-import etutor.core.evaluation.Grading;
-import etutor.core.evaluation.Report;
-import etutor.modules.xquery.analysis.UrlContentMap;
-import etutor.modules.xquery.analysis.XQAnalysis;
-import etutor.modules.xquery.analysis.XQAnalysisConfig;
-import etutor.modules.xquery.analysis.XQProcessor;
-import etutor.modules.xquery.exercise.XQExerciseBean;
-import etutor.modules.xquery.exercise.XQExerciseManagerImpl;
-import etutor.modules.xquery.grading.XQGrading;
-import etutor.modules.xquery.grading.XQGradingConfig;
-import etutor.modules.xquery.report.XQReport;
-import etutor.modules.xquery.report.XQReportConfig;
-import etutor.modules.xquery.util.PropertyFile;
 
 /**
  * This class serves as entry point for evaluating XQuery queries. There are some basic methods for
@@ -59,7 +58,7 @@ public class XQEvaluatorImpl extends UnicastRemoteObject implements XQEvaluator 
      * 
      * @see etutor.core.evaluation.Evaluator#analyze(int, int, java.util.Map, java.util.Map)
      */
-    public Analysis analyze(int exerciseId, int userId, Map passedAttributes, Map passedParameters) throws Exception {
+    public Analysis analyze(int exerciseId, int userId, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
     	String msg;
     	String action;
     	String command;
@@ -85,7 +84,12 @@ public class XQEvaluatorImpl extends UnicastRemoteObject implements XQEvaluator 
         	return analyzeSubmission(exerciseId, userId, passedAttributes, passedParameters);
         }
     }
-    
+
+    @Override
+    public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
+        return null;
+    }
+
     public Analysis analyzeSubmission(int exerciseId, int userId, Map passedAttributes, Map passedParameters) throws Exception {
     	String msg;
     	String action;
@@ -416,7 +420,7 @@ public class XQEvaluatorImpl extends UnicastRemoteObject implements XQEvaluator 
      *      etutor.core.evaluation.Grading, java.util.Map, java.util.Map)
      */
     public Report report(Analysis analysis, Grading grading, Map passedAttributes,
-            Map passedParameters, Locale locale) throws Exception {
+                         Map passedParameters, Locale locale) throws Exception {
     	String msg;
     	String action;
     	XQAnalysis xqAnalysis;

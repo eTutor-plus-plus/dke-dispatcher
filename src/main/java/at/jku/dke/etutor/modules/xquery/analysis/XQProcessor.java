@@ -2,6 +2,7 @@ package at.jku.dke.etutor.modules.xquery.analysis;
 
 import java.util.Properties;
 
+import at.jku.dke.etutor.modules.xquery.InternalException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -11,7 +12,6 @@ import de.fraunhofer.ipsi.xquery.api.Connection;
 import de.fraunhofer.ipsi.xquery.api.Driver;
 import de.fraunhofer.ipsi.xquery.api.QueryResult;
 import de.fraunhofer.ipsi.xquery.api.XQueryException;
-import etutor.modules.xquery.InternalException;
 
 /**
  * A processor for evaluating XQuery queries. The underlying processor consists of classes from a Java library

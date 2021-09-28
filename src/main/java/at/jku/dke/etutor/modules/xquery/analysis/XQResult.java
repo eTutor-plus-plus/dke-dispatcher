@@ -1,31 +1,16 @@
 package at.jku.dke.etutor.modules.xquery.analysis;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.logging.Logger;
-
-import at.jku.dke.etutor.modules.xquery.QuerySyntaxException;
-import at.jku.dke.etutor.modules.xquery.UrlContentException;
-import at.jku.dke.etutor.modules.xquery.WellformednessException;
+import at.jku.dke.etutor.modules.xquery.*;
 import at.jku.dke.etutor.modules.xquery.util.FileParameter;
+import at.jku.dke.etutor.modules.xquery.util.XMLUtil;
+import de.fraunhofer.ipsi.xquery.api.XQueryException;
 import oracle.xml.parser.v2.XMLDocument;
 import oracle.xml.parser.v2.XSLException;
-
 import org.apache.log4j.Logger;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.fraunhofer.ipsi.xquery.api.XQueryException;
-import etutor.modules.xquery.InternalException;
-import etutor.modules.xquery.ParameterException;
-import etutor.modules.xquery.QuerySyntaxException;
-import etutor.modules.xquery.UrlContentException;
-import etutor.modules.xquery.WellformednessException;
-import etutor.modules.xquery.util.FileParameter;
-import etutor.modules.xquery.util.XMLUtil;
+import java.io.*;
 
 /**
  * Represents the evaluation result of an XQuery query as it is returned by a XQuery query
@@ -50,7 +35,7 @@ public class XQResult implements Serializable {
     /**
      * The logger used for logging.
      */
-    private final static Logger LOGGER = Logger.getLogger(XQResult.class);
+    private final static Logger LOGGER = Logger.getLogger(String.valueOf(XQResult.class));
     private transient XMLDocument document;
     private String schema;
     private File xmlResultFile;

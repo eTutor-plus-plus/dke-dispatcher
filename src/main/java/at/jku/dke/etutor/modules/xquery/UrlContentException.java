@@ -1,5 +1,7 @@
 package at.jku.dke.etutor.modules.xquery;
 
+import at.jku.dke.etutor.modules.xquery.analysis.UrlContent;
+
 import java.util.ArrayList;
 
 

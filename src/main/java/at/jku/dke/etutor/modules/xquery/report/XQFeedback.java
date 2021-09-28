@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.xquery.report;
 
-import etutor.core.evaluation.Report;
-import etutor.modules.xquery.ReportException;
+import at.jku.dke.etutor.core.evaluation.Report;
+import at.jku.dke.etutor.modules.xquery.ReportException;
 
 /**
  * This interface defines a number of methods which are required when presenting the results,

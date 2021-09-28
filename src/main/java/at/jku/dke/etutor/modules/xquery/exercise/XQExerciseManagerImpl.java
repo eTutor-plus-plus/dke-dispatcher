@@ -1,29 +1,19 @@
 package at.jku.dke.etutor.modules.xquery.exercise;
 
+import at.jku.dke.etutor.modules.xquery.GradingException;
+import at.jku.dke.etutor.modules.xquery.XQCoreManager;
+import at.jku.dke.etutor.modules.xquery.analysis.UrlContentMap;
+import at.jku.dke.etutor.modules.xquery.grading.XQGradingConfig;
+import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
+import org.apache.log4j.Logger;
+
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.sql.*;
+import java.util.*;
 
-import org.apache.log4j.Logger;
 
-import etutor.modules.xquery.GradingException;
-import etutor.modules.xquery.InvalidResourceException;
-import etutor.modules.xquery.ParameterException;
-import etutor.modules.xquery.XQCoreManager;
-import etutor.modules.xquery.analysis.UrlContentMap;
-import etutor.modules.xquery.grading.XQGradingConfig;
-import etutor.modules.xquery.util.PropertyFile;
 
 public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExerciseManager {
 	
@@ -538,7 +528,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
             if (rset.next()) {
             	exercise = new XQExerciseBean();
                 exercise.setQuery(rset.getString("query"));
-                exercise.setPoints(rset.getString("points") != null ? new Double(rset.getString("points")) : null);
+                exercise.setPoints(rset.getString("points") != null ? Double.parseDouble(rset.getString("points")) : null);
             }
             if (exercise != null) {
                 // Fetch nodes required to be in certain order in the result of the query
@@ -611,7 +601,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
     	exercise = new XQExerciseBean();
         exercise.setQuery("");
 		//just internal points, should be > 0, points are set by eTutor core
-        exercise.setPoints(new Double(1));
+        exercise.setPoints(1.0);
         exercise.setSortedNodes(new ArrayList());
         exercise.setUrls(new UrlContentMap());
 
@@ -627,10 +617,6 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
      * @throws ClassNotFoundException if the connection can not be established due to problems with
      *             the database driver.
      * @throws SQLException if the connection can not be established due to an SQLException.
-     * @throws InvalidResourceException if some important information for the database connection is
-     *             not defined in the properties file.
-     * @throws ParameterException if some grading parameter fetched from the database is not
-     *             applicable.
      * @throws GradingException if an SQLException was thrown when fetching the grading parameters
      *             from the database, even after the connection has been established successfully.
      */

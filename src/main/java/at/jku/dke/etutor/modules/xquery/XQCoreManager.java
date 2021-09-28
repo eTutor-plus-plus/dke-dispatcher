@@ -1,6 +1,10 @@
 package at.jku.dke.etutor.modules.xquery;
 
 import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.varia.NullAppender;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -38,7 +42,7 @@ public class XQCoreManager {
     /**
      * Location of the folder for temp files which are created when analyzing XQuery queries.
      */
-    public final static String TEMP_FOLDER = "/etutor/resources/modules/xquery/temp";
+    public final static String TEMP_FOLDER = "/main/java/at/jku/dke/etutor/modules/xquery/resources/modules/xquery/temp";
 
     /**
      * Location of the configuration file for logging
@@ -60,7 +64,7 @@ public class XQCoreManager {
      * Relative path of the XSL stylesheet, which is required for rendering the XML representation
      * of an XQuery result or the analysis of this result in HTML format.
      */
-    public final static String XSL_RENDER_XQ = "/etutor/resources/modules/xquery/xml/render-xquery.xsl";
+    public final static String XSL_RENDER_XQ = "/main/java/at/jku/dke/etutor/modules/xquery/resources/modules/xquery/xml/render-xquery.xsl";
 
     /**
      * Relative path of the XSL stylesheet, which is required for modifying the XSL stylesheet,
@@ -68,7 +72,7 @@ public class XQCoreManager {
      * result. The XSL stylesheet is customized so that error information can be included and
      * transformed automatically and directly into HTML format.
      */
-    public final static String XSL_MODIFY = "/etutor/resources/modules/xquery/xml/modify-xmlDiff.xsl";
+    public final static String XSL_MODIFY = "/main/java/at/jku/dke/etutor/modules/xquery/resources/modules/xquery/xml/modify-xmlDiff.xsl";
 
     /**
      * This denotes a predefined relative path to an XML API used by the Schema generating tool
@@ -96,7 +100,7 @@ public class XQCoreManager {
 
     /**
      * Path of the file which represents the XML Schema used for validating XML configuration files
-     * for initializing {@link etutor.modules.xquery.grading.XQGradingConfig} objects.
+     * for initializing XQGradingConfig objects.
      */
     public final static String XSD_FILE_SCORES = "/etutor/resources/modules/xquery/xml/xquery-score.xsd";
 

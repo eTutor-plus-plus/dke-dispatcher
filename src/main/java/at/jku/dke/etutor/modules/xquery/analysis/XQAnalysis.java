@@ -9,13 +9,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Logger;
+
 
 import at.jku.dke.etutor.modules.xquery.*;
 import at.jku.dke.etutor.modules.xquery.util.*;
 
 
 import at.jku.dke.etutor.core.evaluation.Analysis;
+import oracle.xml.differ.XMLDiff;
+import oracle.xml.parser.v2.NodeFactory;
+import oracle.xml.parser.v2.XMLDocument;
+import oracle.xml.parser.v2.XMLElement;
+import oracle.xml.parser.v2.XSLException;
+import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -954,7 +960,6 @@ public class XQAnalysis implements Analysis, Serializable {
      * @param expression An XPath expression.
      * @return true if the specified expression can be interpreted as valid XPath expression and
      *         returns the root element when evaluated, otherwise false.
-     * @see etutor.modules.xquery.analysis.XQResult#XML_ROOT
      */
     public boolean isRootNode(String expression) {
         XMLDocument document1 = result1.getDocument();
@@ -975,7 +980,6 @@ public class XQAnalysis implements Analysis, Serializable {
      * correct result.
      * 
      * @return An object describing the found errors.
-     * @see etutor.modules.xquery.analysis.XQResult#setSortedNodes(String[])
      */
     public NodeErrorList getDisplacedNodes() {
         return displacedNodes;

@@ -10,11 +10,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import at.jku.dke.etutor.modules.xquery.XQCoreManager;
 import oracle.sql.CLOB;
 
 import org.apache.log4j.Logger;
 
-import etutor.modules.xquery.XQCoreManager;
 
 /*
  * Created on 17.05.2005

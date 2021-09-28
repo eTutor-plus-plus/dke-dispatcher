@@ -8,6 +8,11 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.sql.Date;
 
+import at.jku.dke.etutor.modules.xquery.*;
+import at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis;
+import at.jku.dke.etutor.modules.xquery.analysis.XQResult;
+import at.jku.dke.etutor.modules.xquery.grading.XQGrading;
+import at.jku.dke.etutor.modules.xquery.util.XMLUtil;
 import oracle.xml.parser.v2.NodeFactory;
 import oracle.xml.parser.v2.XMLDocument;
 import oracle.xml.parser.v2.XMLDocumentFragment;
@@ -22,16 +27,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import etutor.modules.xquery.InvalidResourceException;
-import etutor.modules.xquery.QuerySyntaxException;
-import etutor.modules.xquery.ReportException;
-import etutor.modules.xquery.UrlContentException;
-import etutor.modules.xquery.WellformednessException;
-import etutor.modules.xquery.XQCoreManager;
-import etutor.modules.xquery.analysis.XQAnalysis;
-import etutor.modules.xquery.analysis.XQResult;
-import etutor.modules.xquery.grading.XQGrading;
-import etutor.modules.xquery.util.XMLUtil;
 
 /**
  * An object which is the XML representation of all details about an XQuery result. An instance can
@@ -76,7 +71,6 @@ public class XMLReport {
      *            query processor.
      * @throws ReportException if any unexpected Exception occured when transforming contents of the
      *             analysis into an XML representation.
-     * @see etutor.modules.xquery.report.XQFeedback
      */
     public XMLReport(
             XQAnalysis analysis, XQGrading grading, XQReport report, boolean isSupplementedResult) throws ReportException {
@@ -259,7 +253,6 @@ public class XMLReport {
      * <code>XMLReport</code> to the specified value.
      * 
      * @param diagnoseLevel The level which was used for generating a report.
-     * @see etutor.modules.xquery.report.XQFeedback
      */
     public void setDiagnoseLevel(int diagnoseLevel) {
         this.root.setAttribute("diagnose-level", Integer.toString(diagnoseLevel));
@@ -361,7 +354,6 @@ public class XMLReport {
     /**
      * Sets the submitted XQuery statement.
      * 
-     * @param syntaxReport The text to set.
      */
     public void setQuery(String query) {
     	this.queryElement.appendChild(this.doc.createCDATASection(query));
@@ -502,7 +494,6 @@ public class XMLReport {
      * @return The rendered result of the XQuery result or of the analysis.
      * @throws ReportException if an internal Exception was thrown when applying the XSL stylesheet
      *             used for rendering the result.
-     * @see etutor.modules.xquery.XQCoreManager#XSL_RENDER_XQ
      */
     public String getRenderedResult() throws ReportException {
         try {
@@ -534,7 +525,6 @@ public class XMLReport {
      * @throws IOException if an internal <code>IOException</code> was thrown when applying the
      *             XSL stylesheet used for rendering the result.
      * @throws InvalidResourceException if accessing required XSL stylesheet files causes any exception 
-     * @see etutor.modules.xquery.XQCoreManager#XSL_RENDER_XQ
      */
     private String getRenderedResult(XMLDocument document) throws XSLException, IOException, InvalidResourceException {
 
@@ -612,7 +602,6 @@ public class XMLReport {
      * compared after they each have been embeddeded into an XML root element. The generated
      * stylesheet can be requested from the <code>XQAnalysis</code> as XML document. This
      * stylesheet itself will be transformed using a
-     * {@link etutor.modules.xquery.XQCoreManager#XSL_MODIFY stylesheet}, in order to include error
      * information of the XQuery result.</li>
      * <li>Second, this modified XSL stylesheet is applied to the XML document of the "submitted
      * result", which has been compared to the "correct result". The result of this transformation
@@ -630,7 +619,6 @@ public class XMLReport {
      *         returned.
      * @throws ReportException if an internal Exception was thrown when applying the XSL stylesheet
      *             used for rendering the result.
-     * @see etutor.modules.xquery.XQCoreManager#XSL_MODIFY
      */
     private XMLDocument createModifiedResult(XQAnalysis analysis, boolean isSupplementedResult)
             throws ReportException {

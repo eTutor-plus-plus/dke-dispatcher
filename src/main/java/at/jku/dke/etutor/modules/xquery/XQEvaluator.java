@@ -1,8 +1,9 @@
 package at.jku.dke.etutor.modules.xquery;
 
+import at.jku.dke.etutor.core.evaluation.Evaluator;
+
 import java.rmi.Remote;
 
-import etutor.core.evaluation.Evaluator;
 
 /**
  * Adds additional functionality to the <code>Evaluator</code> interface for RMI purpose.

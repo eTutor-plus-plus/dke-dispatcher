@@ -11,7 +11,7 @@ public class RAConstants {
 	public static final String CONN_URL = "jdbc:postgresql://localhost:5433";
 	public static final String JDBC_DRIVER = "org.postgresql.Driver";
 
-	public static final String SQL_MSG_MAPPING_PATH = "./resources/ra/sql_msg_mapping.properties";
+	public static final String SQL_MSG_MAPPING_PATH = "main/resources/ra/sql_msg_mapping.properties";
 	public static final String RULE_ALIASES_PATH =	"/resources/ra/rule_aliases.properties";
 	public static final String ATOM_ALIASES_PATH =	"/resources/ra/atom_aliases.properties";
 	

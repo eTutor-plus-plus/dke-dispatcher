@@ -1,13 +1,14 @@
 package at.jku.dke.etutor.modules.xquery.analysis;
 
+import at.jku.dke.etutor.modules.xquery.InternalException;
+import at.jku.dke.etutor.modules.xquery.XQCoreManager;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import etutor.modules.xquery.InternalException;
-import etutor.modules.xquery.XQCoreManager;
 
 /**
  * A class used for generating a String which represents the DTD or the XML
@@ -117,11 +118,11 @@ public class SchemaGenerator {
 					methodName, new Class[] { boolean.class });
 
 			method_setContinueOnError.invoke(obj_Parameter,
-					new Object[] { new Boolean(false) });
+					new Object[] { Boolean.valueOf(false) });
 			method_addSource.invoke(obj_Parameter,
 					new Object[] { xmlInputFile });
 			method_setDtdRequested.invoke(obj_Parameter,
-					new Object[] { new Boolean(true) });
+					new Object[] { Boolean.valueOf(true) });
 
 			// Instantiate a DDModel object using the class loader
 			Class class_DDModel = Class.forName(

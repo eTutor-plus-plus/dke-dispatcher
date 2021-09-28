@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Vector;
 
+import at.jku.dke.etutor.modules.xquery.*;
+import at.jku.dke.etutor.modules.xquery.util.XMLUtil;
 import oracle.xml.parser.schema.XSDException;
 import oracle.xml.parser.v2.XMLDocument;
 import oracle.xml.parser.v2.XMLError;
@@ -12,12 +14,6 @@ import oracle.xml.parser.v2.XSLException;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import etutor.modules.xquery.InternalException;
-import etutor.modules.xquery.InvalidResourceException;
-import etutor.modules.xquery.ParameterException;
-import etutor.modules.xquery.ValidationException;
-import etutor.modules.xquery.XQCoreManager;
-import etutor.modules.xquery.util.XMLUtil;
 
 /**
  * Used for defining grading parameters.
@@ -106,8 +102,7 @@ public class XQGradingConfig {
 	/**
 	 * Creates a new instance of this class from an XML document which holds all information used
      * for grading. This document must be valid with regard to the XML Schema defined in
-     * {@link etutor.modules.xquery.XQCoreManager#XSD_FILE_SCORES}.
-     * 
+     *
      * @param doc The XML document containing the grading information.
      * @throws InternalException if any unexpected exception occured when parsing or validating the
      *             given XML document or the XML Schema which is internally defined.
@@ -156,8 +151,8 @@ public class XQGradingConfig {
             message += "with a given XML Schema document.\n" + e.getMessage();
     		throw new InternalException(message);
         }
-        
-		if (xmlError.getListTrees().size() > 0) {
+
+        if (xmlError.getListTrees().size() > 0) {
 			String errorMessages = "";
 			Vector errors = xmlError.getListTrees();
 			for (int i = 0; i < errors.size(); i++) {
@@ -171,8 +166,7 @@ public class XQGradingConfig {
     /**
      * Initializes this <code>XQGradingConfig</code> object using an XML document which holds all
      * information used for grading. This document must be valid with regard to the XML Schema
-     * defined in {@link etutor.modules.xquery.XQCoreManager#XSD_FILE_SCORES}.
-     * 
+     *
      * @param doc The XML document containing the grading information.
      * @throws InternalException if any unexpected exception occured when parsing or validating the
      *             given XML document or the XML Schema which is internally defined.

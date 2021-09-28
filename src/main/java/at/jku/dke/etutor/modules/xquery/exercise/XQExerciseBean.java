@@ -1,9 +1,10 @@
 package at.jku.dke.etutor.modules.xquery.exercise;
 
+import at.jku.dke.etutor.modules.xquery.analysis.UrlContentMap;
+
 import java.io.Serializable;
 import java.util.List;
 
-import etutor.modules.xquery.analysis.UrlContentMap;
 
 
 /**
