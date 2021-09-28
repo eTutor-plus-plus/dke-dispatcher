@@ -11,9 +11,9 @@ public class RAConstants {
 	public static final String CONN_URL = "jdbc:postgresql://localhost:5433";
 	public static final String JDBC_DRIVER = "org.postgresql.Driver";
 
-	public static final String SQL_MSG_MAPPING_PATH = "./resources/ra/sql_msg_mapping.properties";
-	public static final String RULE_ALIASES_PATH =	"/resources/ra/rule_aliases.properties";
-	public static final String ATOM_ALIASES_PATH =	"/resources/ra/atom_aliases.properties";
+	public static final String SQL_MSG_MAPPING_PATH = "/ra/sql_msg_mapping.properties";
+	public static final String RULE_ALIASES_PATH =	"/ra/rule_aliases.properties";
+	public static final String ATOM_ALIASES_PATH =	"/ra/atom_aliases.properties";
 	
 	//USER INTERFACE ETUTOR-CORE CONSTANTS
     public static final String ATTR_USER_ID = "userID";			//CoreConstants.ATTR_USER_ID

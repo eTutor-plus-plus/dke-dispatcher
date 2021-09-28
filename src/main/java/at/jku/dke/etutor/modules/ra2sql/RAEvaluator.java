@@ -571,7 +571,7 @@ public class RAEvaluator implements Evaluator{
 	private String printSQLError(SQLException e) {
 		return sqlMsgMappingProps.getProperty(
 			Integer.toString(e.getErrorCode()),
-			"Sorry, your relational algebra expression is incorect!");
+			"Sorry, your relational algebra expression is incorrect!");
 	}
 
 	public static String prepareSubmission(String submission) {
