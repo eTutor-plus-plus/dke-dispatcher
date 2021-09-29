@@ -660,3 +660,430 @@ XQueryException (0, 0): Internal error (java.lang.NoClassDefFoundError): org/w3c
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
 	at java.base/java.lang.Thread.run(Thread.java:831)
+2021-09-29 14:55:44,925 INFO {} [async1] xquery.XQCoreManager (XQCoreManager.java:433) - Main logger initialized with basic configuration parameters from file:/C:/Users/pc/Documents/GitHub/eTutor-Grading/target/classes/xquery/log4j.properties
+2021-09-29 14:55:44,927 INFO {} [async1] xquery.XQCoreManager (XQCoreManager.java:155) - Initializing at.jku.dke.etutor.modules.xquery.XQCoreManager singleton ...
+2021-09-29 14:55:44,929 INFO {} [async1] xquery.XQCoreManager (XQCoreManager.java:289) - Setting up JNDI context ...
+2021-09-29 14:55:44,935 INFO {} [async1] ooc.InitialContextFactoryImpl (InitialContextFactoryImpl.java:47) - creating InitialContext {table.exercise=exercise, java.naming.factory.initial=org.shiftone.ooc.InitialContextFactoryImpl, xq.java.naming.datasource=java:comp/env/jdbc/etutor/modules/xquery/xqDS, table.error.grading=error_gradings, databasePath=/xquery, table.error.categories=error_categories, table.urls=exercise_urls, table.sortings=sortings, pwd=etutor, modus.debug=true, user=etutor}
+2021-09-29 14:55:44,939 WARN {} [async1] initialize.XMLContextConfig (XMLContextConfig.java:149) - using default (empty) context config
+2021-09-29 14:55:44,941 DEBUG {} [async1] arbor.Arbor (Arbor.java:51) - Using SAX2
+2021-09-29 14:55:44,943 DEBUG {} [async1] arbor.EventProcessor (EventProcessor.java:37) - new EventProcessor( org.shiftone.ooc.initialize.types.XContext )
+2021-09-29 14:55:44,945 INFO {} [async1] xquery.XQCoreManager (XQCoreManager.java:303) - Main environment properties effectively set for JNDI context: 
+java.naming.factory.initial=org.shiftone.ooc.InitialContextFactoryImpl
+java.naming.provider.url=null
+
+2021-09-29 14:55:44,945 INFO {} [async1] xquery.XQCoreManager (XQCoreManager.java:344) - Setting up XQ data source mapped to java:comp/env/jdbc/etutor/modules/xquery/xqDS ...
+2021-09-29 14:55:44,948 DEBUG {} [async1] provider.ContextImpl (ContextImpl.java:524) - lookup java:comp/env/jdbc/etutor/modules/xquery/xqDS
+2021-09-29 14:55:44,949 WARN {} [async1] xquery.XQCoreManager (XQCoreManager.java:172) - Initializing JDBC data source failed.
+javax.naming.NameNotFoundException: name not found : java:comp
+	at org.shiftone.ooc.provider.ContextImpl.getBindingHolder(ContextImpl.java:309)
+	at org.shiftone.ooc.provider.ContextImpl.getBindingObject(ContextImpl.java:323)
+	at org.shiftone.ooc.provider.ContextImpl.lookup(ContextImpl.java:532)
+	at org.shiftone.ooc.provider.ContextImpl.lookup(ContextImpl.java:210)
+	at java.naming/javax.naming.InitialContext.lookup(InitialContext.java:409)
+	at at.jku.dke.etutor.modules.xquery.XQCoreManager.getDataSource(XQCoreManager.java:345)
+	at at.jku.dke.etutor.modules.xquery.XQCoreManager.init(XQCoreManager.java:169)
+	at at.jku.dke.etutor.modules.xquery.XQCoreManager.<init>(XQCoreManager.java:149)
+	at at.jku.dke.etutor.modules.xquery.XQCoreManager.getInstance(XQCoreManager.java:183)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.<init>(XQEvaluatorImpl.java:51)
+	at at.jku.dke.etutor.grading.service.ModuleManager.getEvaluator(ModuleManager.java:39)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.run(SubmissionDispatcher.java:41)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher$$FastClassBySpringCGLIB$$127a17e.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:779)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:264)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2021-09-29 14:55:44,956 INFO {} [async1] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:78) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose'; 
+Command is 'null' -> evaluating query as assistant's exercise specification? No evaluating query as student's exercise submission? Yes 
+2021-09-29 14:55:44,960 INFO {} [async1] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:119) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose', command null
+2021-09-29 14:55:45,007 DEBUG {} [async1] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:190) - Url specification: real url = 'C:\Users\pc\Documents\text.xml', hidden url = 'C:\Users\pc\Documents\text.xml'. 
+Evaluation not in 'submit' mode. Setting real url as hidden url. 
+2021-09-29 15:02:46,737 FATAL {} [async1] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:220) - Analysis was stopped (Exercise id: 1).
+at.jku.dke.etutor.modules.xquery.QuerySyntaxException: Query result cannot be processed due to syntax errors.
+XQueryException (0, 0): Internal error (java.lang.NoClassDefFoundError): org/w3c/dom/ls/DocumentLS
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.createQuerySyntaxException(XQResult.java:663)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.<init>(XQResult.java:93)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis.<init>(XQAnalysis.java:177)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyzeSubmission(XQEvaluatorImpl.java:212)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyze(XQEvaluatorImpl.java:83)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.getAnalysis(SubmissionDispatcher.java:92)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.run(SubmissionDispatcher.java:47)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher$$FastClassBySpringCGLIB$$127a17e.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:779)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:264)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2021-09-29 15:05:55,358 INFO {} [async1] xquery.XQCoreManager (XQCoreManager.java:433) - Main logger initialized with basic configuration parameters from file:/C:/Users/pc/Documents/GitHub/eTutor-Grading/target/classes/xquery/log4j.properties
+2021-09-29 15:05:55,361 INFO {} [async1] xquery.XQCoreManager (XQCoreManager.java:155) - Initializing at.jku.dke.etutor.modules.xquery.XQCoreManager singleton ...
+2021-09-29 15:05:55,363 INFO {} [async1] xquery.XQCoreManager (XQCoreManager.java:289) - Setting up JNDI context ...
+2021-09-29 15:05:55,368 INFO {} [async1] ooc.InitialContextFactoryImpl (InitialContextFactoryImpl.java:47) - creating InitialContext {table.exercise=exercise, java.naming.factory.initial=org.shiftone.ooc.InitialContextFactoryImpl, xq.java.naming.datasource=java:comp/env/jdbc/etutor/modules/xquery/xqDS, table.error.grading=error_gradings, databasePath=/xquery, table.error.categories=error_categories, table.urls=exercise_urls, table.sortings=sortings, pwd=etutor, modus.debug=true, user=etutor}
+2021-09-29 15:05:55,374 WARN {} [async1] initialize.XMLContextConfig (XMLContextConfig.java:149) - using default (empty) context config
+2021-09-29 15:05:55,376 DEBUG {} [async1] arbor.Arbor (Arbor.java:57) - Using SAX1
+2021-09-29 15:05:55,377 DEBUG {} [async1] arbor.EventProcessor (EventProcessor.java:37) - new EventProcessor( org.shiftone.ooc.initialize.types.XContext )
+2021-09-29 15:05:55,381 INFO {} [async1] xquery.XQCoreManager (XQCoreManager.java:303) - Main environment properties effectively set for JNDI context: 
+java.naming.factory.initial=org.shiftone.ooc.InitialContextFactoryImpl
+java.naming.provider.url=null
+
+2021-09-29 15:05:55,381 INFO {} [async1] xquery.XQCoreManager (XQCoreManager.java:344) - Setting up XQ data source mapped to java:comp/env/jdbc/etutor/modules/xquery/xqDS ...
+2021-09-29 15:05:55,384 DEBUG {} [async1] provider.ContextImpl (ContextImpl.java:524) - lookup java:comp/env/jdbc/etutor/modules/xquery/xqDS
+2021-09-29 15:05:55,385 WARN {} [async1] xquery.XQCoreManager (XQCoreManager.java:172) - Initializing JDBC data source failed.
+javax.naming.NameNotFoundException: name not found : java:comp
+	at org.shiftone.ooc.provider.ContextImpl.getBindingHolder(ContextImpl.java:309)
+	at org.shiftone.ooc.provider.ContextImpl.getBindingObject(ContextImpl.java:323)
+	at org.shiftone.ooc.provider.ContextImpl.lookup(ContextImpl.java:532)
+	at org.shiftone.ooc.provider.ContextImpl.lookup(ContextImpl.java:210)
+	at java.naming/javax.naming.InitialContext.lookup(InitialContext.java:409)
+	at at.jku.dke.etutor.modules.xquery.XQCoreManager.getDataSource(XQCoreManager.java:345)
+	at at.jku.dke.etutor.modules.xquery.XQCoreManager.init(XQCoreManager.java:169)
+	at at.jku.dke.etutor.modules.xquery.XQCoreManager.<init>(XQCoreManager.java:149)
+	at at.jku.dke.etutor.modules.xquery.XQCoreManager.getInstance(XQCoreManager.java:183)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.<init>(XQEvaluatorImpl.java:51)
+	at at.jku.dke.etutor.grading.service.ModuleManager.getEvaluator(ModuleManager.java:39)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.run(SubmissionDispatcher.java:41)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher$$FastClassBySpringCGLIB$$127a17e.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:779)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:264)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2021-09-29 15:05:55,396 INFO {} [async1] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:78) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose'; 
+Command is 'null' -> evaluating query as assistant's exercise specification? No evaluating query as student's exercise submission? Yes 
+2021-09-29 15:05:55,402 INFO {} [async1] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:119) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose', command null
+2021-09-29 15:05:55,463 DEBUG {} [async1] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:190) - Url specification: real url = 'C:\Users\pc\Documents\text.xml', hidden url = 'C:\Users\pc\Documents\text.xml'. 
+Evaluation not in 'submit' mode. Setting real url as hidden url. 
+2021-09-29 15:06:53,544 FATAL {} [async1] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:220) - Analysis was stopped (Exercise id: 1).
+at.jku.dke.etutor.modules.xquery.QuerySyntaxException: Query result cannot be processed due to syntax errors.
+XQueryException (0, 0): Encountered "root" at line 1, column 5.
+Was expecting one of:
+    <EOF> 
+    "or" ...
+    "and" ...
+    "div" ...
+    "idiv" ...
+    "mod" ...
+    "*" ...
+    "to" ...
+    "intersect" ...
+    "union" ...
+    "except" ...
+    <Instanceof> ...
+    <Castable> ...
+    "/" ...
+    "//" ...
+    "=" ...
+    "is" ...
+    "!=" ...
+    "<=" ...
+    "<<" ...
+    ">=" ...
+    ">>" ...
+    "eq" ...
+    "ne" ...
+    "gt" ...
+    "ge" ...
+    "lt" ...
+    "le" ...
+    "<" ...
+    ">" ...
+    "-" ...
+    "+" ...
+    "|" ...
+    "[" ...
+    <CastAs> ...
+    <TreatAs> ...
+    "," ...
+    
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.createQuerySyntaxException(XQResult.java:663)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.<init>(XQResult.java:93)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis.<init>(XQAnalysis.java:177)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyzeSubmission(XQEvaluatorImpl.java:212)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyze(XQEvaluatorImpl.java:83)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.getAnalysis(SubmissionDispatcher.java:92)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.run(SubmissionDispatcher.java:47)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher$$FastClassBySpringCGLIB$$127a17e.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:779)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:264)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2021-09-29 15:06:56,498 INFO {} [async2] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:78) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose'; 
+Command is 'null' -> evaluating query as assistant's exercise specification? No evaluating query as student's exercise submission? Yes 
+2021-09-29 15:06:56,499 INFO {} [async2] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:119) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose', command null
+2021-09-29 15:06:56,566 DEBUG {} [async2] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:190) - Url specification: real url = 'C:\Users\pc\Documents\text.xml', hidden url = 'C:\Users\pc\Documents\text.xml'. 
+Evaluation not in 'submit' mode. Setting real url as hidden url. 
+2021-09-29 15:08:03,892 FATAL {} [async2] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:220) - Analysis was stopped (Exercise id: 1).
+at.jku.dke.etutor.modules.xquery.QuerySyntaxException: Query result cannot be processed due to syntax errors.
+XQueryException (0, 0): Encountered "root" at line 1, column 5.
+Was expecting one of:
+    <EOF> 
+    "or" ...
+    "and" ...
+    "div" ...
+    "idiv" ...
+    "mod" ...
+    "*" ...
+    "to" ...
+    "intersect" ...
+    "union" ...
+    "except" ...
+    <Instanceof> ...
+    <Castable> ...
+    "/" ...
+    "//" ...
+    "=" ...
+    "is" ...
+    "!=" ...
+    "<=" ...
+    "<<" ...
+    ">=" ...
+    ">>" ...
+    "eq" ...
+    "ne" ...
+    "gt" ...
+    "ge" ...
+    "lt" ...
+    "le" ...
+    "<" ...
+    ">" ...
+    "-" ...
+    "+" ...
+    "|" ...
+    "[" ...
+    <CastAs> ...
+    <TreatAs> ...
+    "," ...
+    
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.createQuerySyntaxException(XQResult.java:663)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.<init>(XQResult.java:93)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis.<init>(XQAnalysis.java:177)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyzeSubmission(XQEvaluatorImpl.java:212)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyze(XQEvaluatorImpl.java:83)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.getAnalysis(SubmissionDispatcher.java:92)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.run(SubmissionDispatcher.java:47)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher$$FastClassBySpringCGLIB$$127a17e.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:779)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:264)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2021-09-29 15:08:19,522 INFO {} [async3] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:78) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose'; 
+Command is 'null' -> evaluating query as assistant's exercise specification? No evaluating query as student's exercise submission? Yes 
+2021-09-29 15:08:19,522 INFO {} [async3] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:119) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose', command null
+2021-09-29 15:08:19,599 DEBUG {} [async3] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:190) - Url specification: real url = 'C:\Users\pc\Documents\text.xml', hidden url = 'C:\Users\pc\Documents\text.xml'. 
+Evaluation not in 'submit' mode. Setting real url as hidden url. 
+2021-09-29 15:12:18,510 FATAL {} [async3] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:220) - Analysis was stopped (Exercise id: 1).
+at.jku.dke.etutor.modules.xquery.QuerySyntaxException: Query result cannot be processed due to syntax errors.
+XQueryException (0, 0): Encountered "root" at line 1, column 5.
+Was expecting one of:
+    <EOF> 
+    "or" ...
+    "and" ...
+    "div" ...
+    "idiv" ...
+    "mod" ...
+    "*" ...
+    "to" ...
+    "intersect" ...
+    "union" ...
+    "except" ...
+    <Instanceof> ...
+    <Castable> ...
+    "/" ...
+    "//" ...
+    "=" ...
+    "is" ...
+    "!=" ...
+    "<=" ...
+    "<<" ...
+    ">=" ...
+    ">>" ...
+    "eq" ...
+    "ne" ...
+    "gt" ...
+    "ge" ...
+    "lt" ...
+    "le" ...
+    "<" ...
+    ">" ...
+    "-" ...
+    "+" ...
+    "|" ...
+    "[" ...
+    <CastAs> ...
+    <TreatAs> ...
+    "," ...
+    
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.createQuerySyntaxException(XQResult.java:663)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.<init>(XQResult.java:93)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis.<init>(XQAnalysis.java:177)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyzeSubmission(XQEvaluatorImpl.java:212)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyze(XQEvaluatorImpl.java:83)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.getAnalysis(SubmissionDispatcher.java:92)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.run(SubmissionDispatcher.java:47)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher$$FastClassBySpringCGLIB$$127a17e.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:779)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:264)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2021-09-29 15:12:23,819 INFO {} [async4] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:78) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose'; 
+Command is 'null' -> evaluating query as assistant's exercise specification? No evaluating query as student's exercise submission? Yes 
+2021-09-29 15:12:23,819 INFO {} [async4] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:119) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose', command null
+2021-09-29 15:12:23,890 DEBUG {} [async4] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:190) - Url specification: real url = 'C:\Users\pc\Documents\text.xml', hidden url = 'C:\Users\pc\Documents\text.xml'. 
+Evaluation not in 'submit' mode. Setting real url as hidden url. 
+2021-09-29 15:15:21,388 FATAL {} [async4] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:220) - Analysis was stopped (Exercise id: 1).
+at.jku.dke.etutor.modules.xquery.QuerySyntaxException: Query result cannot be processed due to syntax errors.
+StaticError (1, 1): err:XP0016: Variable "fs:dot" not found.
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.createQuerySyntaxException(XQResult.java:663)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.<init>(XQResult.java:93)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis.<init>(XQAnalysis.java:177)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyzeSubmission(XQEvaluatorImpl.java:212)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyze(XQEvaluatorImpl.java:83)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.getAnalysis(SubmissionDispatcher.java:92)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.run(SubmissionDispatcher.java:47)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher$$FastClassBySpringCGLIB$$127a17e.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:779)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:264)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2021-09-29 15:15:26,775 INFO {} [async5] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:78) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose'; 
+Command is 'null' -> evaluating query as assistant's exercise specification? No evaluating query as student's exercise submission? Yes 
+2021-09-29 15:15:26,775 INFO {} [async5] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:119) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose', command null
+2021-09-29 15:15:26,821 DEBUG {} [async5] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:190) - Url specification: real url = 'C:\Users\pc\Documents\text.xml', hidden url = 'C:\Users\pc\Documents\text.xml'. 
+Evaluation not in 'submit' mode. Setting real url as hidden url. 
+2021-09-29 15:17:42,669 FATAL {} [async5] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:220) - Analysis was stopped (Exercise id: 1).
+at.jku.dke.etutor.modules.xquery.QuerySyntaxException: Query result cannot be processed due to syntax errors.
+StaticError (1, 1): err:XP0016: Variable "fs:dot" not found.
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.createQuerySyntaxException(XQResult.java:663)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.<init>(XQResult.java:93)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis.<init>(XQAnalysis.java:177)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyzeSubmission(XQEvaluatorImpl.java:212)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyze(XQEvaluatorImpl.java:83)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.getAnalysis(SubmissionDispatcher.java:92)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.run(SubmissionDispatcher.java:47)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher$$FastClassBySpringCGLIB$$127a17e.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:779)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:264)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2021-09-29 15:17:46,037 INFO {} [async6] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:78) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose'; 
+Command is 'null' -> evaluating query as assistant's exercise specification? No evaluating query as student's exercise submission? Yes 
+2021-09-29 15:17:46,037 INFO {} [async6] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:119) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose', command null
+2021-09-29 15:17:46,111 DEBUG {} [async6] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:190) - Url specification: real url = 'C:\Users\pc\Documents\text.xml', hidden url = 'C:\Users\pc\Documents\text.xml'. 
+Evaluation not in 'submit' mode. Setting real url as hidden url. 
+2021-09-29 15:17:58,698 FATAL {} [async6] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:220) - Analysis was stopped (Exercise id: 1).
+at.jku.dke.etutor.modules.xquery.QuerySyntaxException: Query result cannot be processed due to syntax errors.
+StaticError (1, 1): err:XP0016: Variable "fs:dot" not found.
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.createQuerySyntaxException(XQResult.java:663)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.<init>(XQResult.java:93)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis.<init>(XQAnalysis.java:177)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyzeSubmission(XQEvaluatorImpl.java:212)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyze(XQEvaluatorImpl.java:83)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.getAnalysis(SubmissionDispatcher.java:92)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.run(SubmissionDispatcher.java:47)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher$$FastClassBySpringCGLIB$$127a17e.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:779)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:264)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2021-09-29 15:18:00,940 INFO {} [async7] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:78) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose'; 
+Command is 'null' -> evaluating query as assistant's exercise specification? No evaluating query as student's exercise submission? Yes 
+2021-09-29 15:18:00,940 INFO {} [async7] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:119) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose', command null
+2021-09-29 15:18:01,007 DEBUG {} [async7] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:190) - Url specification: real url = 'C:\Users\pc\Documents\text.xml', hidden url = 'C:\Users\pc\Documents\text.xml'. 
+Evaluation not in 'submit' mode. Setting real url as hidden url. 
+2021-09-29 15:18:29,739 FATAL {} [async7] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:220) - Analysis was stopped (Exercise id: 1).
+at.jku.dke.etutor.modules.xquery.QuerySyntaxException: Query result cannot be processed due to syntax errors.
+StaticError (1, 1): err:XP0016: Variable "fs:dot" not found.
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.createQuerySyntaxException(XQResult.java:663)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.<init>(XQResult.java:93)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis.<init>(XQAnalysis.java:177)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyzeSubmission(XQEvaluatorImpl.java:212)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyze(XQEvaluatorImpl.java:83)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.getAnalysis(SubmissionDispatcher.java:92)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.run(SubmissionDispatcher.java:47)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher$$FastClassBySpringCGLIB$$127a17e.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:779)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:264)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2021-09-29 15:18:32,348 INFO {} [async8] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:78) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose'; 
+Command is 'null' -> evaluating query as assistant's exercise specification? No evaluating query as student's exercise submission? Yes 
+2021-09-29 15:18:32,349 INFO {} [async8] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:119) - Start analyzing with exercise ID 1, user ID -1, action 'diagnose', command null
+2021-09-29 15:18:32,409 DEBUG {} [async8] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:190) - Url specification: real url = 'C:\Users\pc\Documents\text.xml', hidden url = 'C:\Users\pc\Documents\text.xml'. 
+Evaluation not in 'submit' mode. Setting real url as hidden url. 
+2021-09-29 15:22:00,650 FATAL {} [async8] xquery.XQEvaluatorImpl (XQEvaluatorImpl.java:220) - Analysis was stopped (Exercise id: 1).
+at.jku.dke.etutor.modules.xquery.QuerySyntaxException: Query result cannot be processed due to syntax errors.
+StaticError (1, 1): err:XP0016: Variable "fs:dot" not found.
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.createQuerySyntaxException(XQResult.java:663)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQResult.<init>(XQResult.java:93)
+	at at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis.<init>(XQAnalysis.java:177)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyzeSubmission(XQEvaluatorImpl.java:212)
+	at at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl.analyze(XQEvaluatorImpl.java:83)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.getAnalysis(SubmissionDispatcher.java:92)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher.run(SubmissionDispatcher.java:47)
+	at at.jku.dke.etutor.grading.service.SubmissionDispatcher$$FastClassBySpringCGLIB$$127a17e.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:779)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:264)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:831)
