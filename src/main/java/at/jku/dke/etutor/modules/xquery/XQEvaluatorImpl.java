@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -13,6 +11,7 @@ import java.util.Map;
 import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.core.evaluation.Report;
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.modules.xquery.analysis.UrlContentMap;
 import at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis;
 import at.jku.dke.etutor.modules.xquery.analysis.XQAnalysisConfig;
@@ -25,7 +24,6 @@ import at.jku.dke.etutor.modules.xquery.report.XQReport;
 import at.jku.dke.etutor.modules.xquery.report.XQReportConfig;
 import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
 import org.apache.log4j.Logger;
-
 /**
  * This class serves as entry point for evaluating XQuery queries. There are some basic methods for
  * analyzing the differences between two query solutions, grading the analysis and reporting it.
@@ -34,23 +32,24 @@ import org.apache.log4j.Logger;
  * @version 1.0
  * @since 1.0
  */
-public class XQEvaluatorImpl extends UnicastRemoteObject implements XQEvaluator {
+public class XQEvaluatorImpl implements XQEvaluator {
 
-    private final static Logger LOGGER = Logger.getLogger(XQEvaluatorImpl.class);
+    private final static Logger LOGGER = Logger.getLogger(String.valueOf(XQEvaluatorImpl.class));
 	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
+	private final ApplicationProperties applicationProperties;
 	
     /**
      * Constructs a new <code>XQEvaluatorImpl</code>.
      * 
-     * @throws RemoteException if any RemoteException occurs.
      */
-    public XQEvaluatorImpl() throws RemoteException {
+    public XQEvaluatorImpl(ApplicationProperties applicationProperties)  {
         super();
         //evaluator implementation is bound to RMI registry at startup process; 
         //requesting core manager instance causes creation of singleton
         //and initialization of basic resources with configuration errors
         //being logged
         XQCoreManager.getInstance();
+        this.applicationProperties = applicationProperties;
     }
 
     /*
@@ -64,8 +63,8 @@ public class XQEvaluatorImpl extends UnicastRemoteObject implements XQEvaluator 
     	String command;
         boolean isSpec;
 
-        action = (String)passedAttributes.get(XQConstants.ATTR_ACTION);
-        command = (String)passedAttributes.get(XQConstants.ATTR_COMMAND);
+        action = passedAttributes.get(XQConstants.ATTR_ACTION);
+        command = passedAttributes.get(XQConstants.ATTR_COMMAND);
         isSpec = XQConstants.COMMAND_EVALUATE_SPEC.equals(command);
         
         msg = new String();
@@ -147,7 +146,7 @@ public class XQEvaluatorImpl extends UnicastRemoteObject implements XQEvaluator 
             throw new AnalysisException(msg, e);
         }
 
-        exerciseMgr = new XQExerciseManagerImpl();
+        exerciseMgr = new XQExerciseManagerImpl(applicationProperties);
         exercise = (XQExerciseBean)exerciseMgr.fetchExercise(exerciseId);
 
         if (exercise == null) {
@@ -389,7 +388,7 @@ public class XQEvaluatorImpl extends UnicastRemoteObject implements XQEvaluator 
         	msg += "', grading will be processed and reported.";
             LOGGER.debug(msg);
             try {
-            	exerciseMgr = new XQExerciseManagerImpl();
+            	exerciseMgr = new XQExerciseManagerImpl(applicationProperties);
                 config = exerciseMgr.fetchGradingConfig(exerciseId);
                 grading = new XQGrading(xqAnalysis, config);
                 return grading;

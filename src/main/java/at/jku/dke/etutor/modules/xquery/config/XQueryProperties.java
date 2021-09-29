@@ -1,10 +1,19 @@
 package at.jku.dke.etutor.modules.xquery.config;
 
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(value = "xquery")
 public class XQueryProperties {
+    private ApplicationProperties applicationProperties;
     private Table table;
+    private String databasePath;
+    private String databaseUser;
+    private String databasePwd;
+
+    public XQueryProperties(ApplicationProperties applicationProperties){
+
+    }
 
     public Table getTable() {
         return table;

@@ -1,5 +1,7 @@
 package at.jku.dke.etutor.modules.xquery.exercise;
 
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.modules.sql.SQLEvaluator;
 import at.jku.dke.etutor.modules.xquery.GradingException;
 import at.jku.dke.etutor.modules.xquery.XQCoreManager;
 import at.jku.dke.etutor.modules.xquery.analysis.UrlContentMap;
@@ -19,14 +21,16 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 	
 	private static final Logger LOGGER = Logger.getLogger(XQExerciseManagerImpl.class);
 	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
+	private final ApplicationProperties applicationProperties;
 
-	public XQExerciseManagerImpl() throws RemoteException { 
+	public XQExerciseManagerImpl(ApplicationProperties properties) throws RemoteException {
 		super();
         //evaluator implementation is bound to RMI registry at startup process; 
         //requesting core manager instance causes creation of singleton
         //and initialization of basic resources with configuration errors
         //being logged
         XQCoreManager.getInstance();
+        this.applicationProperties = properties;
 	}
 	
 	public int createExercise(Serializable exercise, Map attributes, Map parameters) throws Exception {
@@ -484,8 +488,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 	public Serializable fetchExercise(int exerciseId) throws Exception {
 		String msg;
 		String sql;
-		XQCoreManager coreManager;
-		PropertyFile properties;
+		ApplicationProperties properties;
 		String exerciseTable;
         String urlsTable;
         String sortedNodesTable;
@@ -505,12 +508,11 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
         
         //fetch properties
         try {
-            coreManager = XQCoreManager.getInstance();
-            properties = coreManager.getPropertyFile();
+            properties = this.applicationProperties;
 
-            exerciseTable = properties.getProperty(XQCoreManager.KEY_TABLE_EXERCISE);
-            urlsTable = properties.getProperty(XQCoreManager.KEY_TABLE_URLS);
-            sortedNodesTable = properties.getProperty(XQCoreManager.KEY_TABLE_SORTINGS);
+            exerciseTable = properties.getXquery().getTable().getExercise();
+            urlsTable = properties.getXquery().getTable().getUrls();
+            sortedNodesTable = properties.getXquery().getTable().getSortings();
         } catch (Exception e) {
             LOGGER.error(e);
             throw e;
@@ -522,7 +524,9 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
         sql += "WHERE 	id = " + exerciseId + " " + LINE_SEP;
 
         try {
-        	conn = coreManager.getConnection();
+        	//TODO: change connection retrievement (old version below requires datasource mapping JNDI)
+        	//conn = coreManager.getConnection();
+         	conn = DriverManager.getConnection(properties.getXquery().getConnUrl(), properties.getXquery().getConnUser(), properties.getXquery().getConnPwd());
             stmt = conn.createStatement();
             rset = stmt.executeQuery(sql);
             if (rset.next()) {

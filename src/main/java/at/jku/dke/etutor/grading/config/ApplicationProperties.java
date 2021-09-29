@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.grading.config;
 
+import de.fraunhofer.ipsi.xquery.tree.XQuery;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -10,6 +11,8 @@ public class ApplicationProperties {
     private Async async = new Async();
 
     private SQL sql = new SQL();
+
+    private XQueryProps xquery = new XQueryProps();
 
     private Grading grading = new Grading();
 
@@ -27,6 +30,14 @@ public class ApplicationProperties {
 
     public void setSql(SQL sql) {
         this.sql = sql;
+    }
+
+    public XQueryProps getXquery() {
+        return xquery;
+    }
+
+    public void setXquery(XQueryProps xquery) {
+        this.xquery = xquery;
     }
 
     public Grading getGrading() {
@@ -145,6 +156,108 @@ public class ApplicationProperties {
 
         public void setExerciseDatabase(String exerciseDatabase) {
             this.exerciseDatabase = exerciseDatabase;
+        }
+    }
+
+    /**
+     * The properties for the XQuery-module
+     */
+    public static class XQueryProps{
+        private XQTable table;
+        private boolean modus_debug;
+        private String connUser;
+        private String connPwd;
+        private String connUrl;
+
+        public XQTable getTable() {
+            return table;
+        }
+
+        public void setTable(XQTable table) {
+            this.table = table;
+        }
+
+        public boolean isModus_debug() {
+            return modus_debug;
+        }
+
+        public void setModus_debug(boolean modus_debug) {
+            this.modus_debug = modus_debug;
+        }
+
+        public String getConnUser() {
+            return connUser;
+        }
+
+        public void setConnUser(String connUser) {
+            this.connUser = connUser;
+        }
+
+        public String getConnPwd() {
+            return connPwd;
+        }
+
+        public void setConnPwd(String connPwd) {
+            this.connPwd = connPwd;
+        }
+
+        public String getConnUrl() {
+            return connUrl;
+        }
+
+        public void setConnUrl(String connUrl) {
+            this.connUrl = connUrl;
+        }
+
+        /**
+         * Properties regarding table-names of the xquery-module
+         */
+        public static class XQTable{
+            private String error_categories;
+            private String error_grading;
+            private String urls;
+            private String exercise;
+            private String sortings;
+
+            public String getError_categories() {
+                return error_categories;
+            }
+
+            public void setError_categories(String error_categories) {
+                this.error_categories = error_categories;
+            }
+
+            public String getError_grading() {
+                return error_grading;
+            }
+
+            public void setError_grading(String error_grading) {
+                this.error_grading = error_grading;
+            }
+
+            public String getUrls() {
+                return urls;
+            }
+
+            public void setUrls(String urls) {
+                this.urls = urls;
+            }
+
+            public String getExercise() {
+                return exercise;
+            }
+
+            public void setExercise(String exercise) {
+                this.exercise = exercise;
+            }
+
+            public String getSortings() {
+                return sortings;
+            }
+
+            public void setSortings(String sortings) {
+                this.sortings = sortings;
+            }
         }
     }
 

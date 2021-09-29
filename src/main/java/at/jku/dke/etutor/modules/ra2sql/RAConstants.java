@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.modules.ra2sql;
 
+ //TODO: switch to application.properties
 public class RAConstants {
 
 	private RAConstants(){

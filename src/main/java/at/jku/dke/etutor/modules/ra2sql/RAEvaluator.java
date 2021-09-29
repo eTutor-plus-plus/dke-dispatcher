@@ -240,6 +240,7 @@ public class RAEvaluator implements Evaluator{
 		//ANALYZING SEMANTICS
 		try{
 			//ESTABLISHING CONNECTION TO RA DATABASE
+			//TODO: Establish connection without use of sqlEvaluator
 			java.sql.DriverManager.registerDriver(new org.postgresql.Driver());
 			conn = sqlEvaluator.getConnectionToSqlDatabase();
 			//conn = DriverManager.getConnection(RAConstants.CONN_URL, RAConstants.CONN_USER, RAConstants.CONN_PWD);
