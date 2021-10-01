@@ -16,7 +16,7 @@ import java.sql.*;
 import java.util.*;
 
 
-
+//TODO: restliche Methoden auf application.properties umstellen
 public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExerciseManager {
 	
 	private static final Logger LOGGER = Logger.getLogger(XQExerciseManagerImpl.class);
@@ -509,7 +509,6 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
         //fetch properties
         try {
             properties = this.applicationProperties;
-
             exerciseTable = properties.getXquery().getTable().getExercise();
             urlsTable = properties.getXquery().getTable().getUrls();
             sortedNodesTable = properties.getXquery().getTable().getSortings();

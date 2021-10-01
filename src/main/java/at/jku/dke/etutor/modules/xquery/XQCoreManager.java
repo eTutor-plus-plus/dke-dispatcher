@@ -84,7 +84,7 @@ public class XQCoreManager {
      * 
      * @see #JAR_DDBE
      */
-    public final static String JAR_XERCES = "/xquery/reflect/xerces.jar";
+    public final static String JAR_XERCES = "/lib/xerces.jar";
 
     /**
      * This denotes a predefined relative path to the Schema generating tool <i>DDBE </i>, which is
