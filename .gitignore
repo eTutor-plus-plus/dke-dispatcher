@@ -3,7 +3,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-!**/out/
+
+out/
 
 ### STS ###
 .apt_generated
@@ -39,3 +40,4 @@ src/main/java/at/jku/dke/etutor/grading//rest/TestApp.java
 ### Log File ###
 ETutorGradingLogFile.log
 ETutorGradingLogFile.*.gz
+logfile*.*
