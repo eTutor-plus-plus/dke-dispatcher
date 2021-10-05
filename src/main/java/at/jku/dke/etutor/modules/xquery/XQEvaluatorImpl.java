@@ -24,6 +24,7 @@ import at.jku.dke.etutor.modules.xquery.report.XQReport;
 import at.jku.dke.etutor.modules.xquery.report.XQReportConfig;
 import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
 import org.apache.log4j.Logger;
+
 /**
  * This class serves as entry point for evaluating XQuery queries. There are some basic methods for
  * analyzing the differences between two query solutions, grading the analysis and reporting it.
@@ -48,7 +49,7 @@ public class XQEvaluatorImpl implements XQEvaluator {
         //requesting core manager instance causes creation of singleton
         //and initialization of basic resources with configuration errors
         //being logged
-        XQCoreManager.getInstance();
+        XQCoreManager.getInstance(applicationProperties);
         this.applicationProperties = applicationProperties;
     }
 
@@ -196,7 +197,7 @@ public class XQEvaluatorImpl implements XQEvaluator {
         }
         
         try {
-            processor = new XQProcessor();
+            processor = new XQProcessor(applicationProperties);
         	config = new XQAnalysisConfig();
             
         	config.setProcessor(processor);
@@ -319,7 +320,7 @@ public class XQEvaluatorImpl implements XQEvaluator {
         }
         
         try {
-            processor = new XQProcessor();
+            processor = new XQProcessor(applicationProperties);
         	config = new XQAnalysisConfig();
         	config.setProcessor(processor);
             config.setQuery1(queryCorrect);

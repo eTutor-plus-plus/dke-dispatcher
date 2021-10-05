@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.modules.xquery;
 
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
@@ -10,6 +11,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Hashtable;
 
@@ -31,6 +33,7 @@ public class XQCoreManager {
     private PropertyFile propertyFile;
     private DataSource dataSource;
     private Context ctx;
+    private ApplicationProperties applicationProperties;
     private static final Logger LOGGER = initLogger();
     private static final String LINE_SEP = System.getProperty("line.separator", "\n");
     
@@ -84,7 +87,7 @@ public class XQCoreManager {
      * 
      * @see #JAR_DDBE
      */
-    public final static String JAR_XERCES = "/lib/xerces.jar";
+    public final static String JAR_XERCES = "/xquery/xerces.jar";
 
     /**
      * This denotes a predefined relative path to the Schema generating tool <i>DDBE </i>, which is
@@ -145,8 +148,9 @@ public class XQCoreManager {
      * Constructs an instance of this class, which is intended to be called only once for creating
      * the <i>singleton </i>.
      */
-    private XQCoreManager() {
-    	init();
+    private XQCoreManager(ApplicationProperties properties) {
+    	this.applicationProperties = properties;
+        init();
     }
 
     private void init() {
@@ -178,11 +182,20 @@ public class XQCoreManager {
      * 
      * @return The <code>XQCoreManager </code> singleton.
      */
-    public synchronized static XQCoreManager getInstance() {
+    public synchronized static XQCoreManager getInstance(ApplicationProperties applicationProperties) {
         if (coreManager == null) {
-            coreManager = new XQCoreManager();
+            coreManager = new XQCoreManager(applicationProperties);
         }
         return coreManager;
+    }
+
+    /**
+     * Gets the only instance of this class.
+     * @return The <code>XQCoreManager</code> singleton
+     */
+    public synchronized  static  XQCoreManager getInstance(){
+        if(coreManager != null) return coreManager;
+        else return null;
     }
 
     /**
@@ -346,24 +359,20 @@ public class XQCoreManager {
     }
     
     /**
-     * Gets a connection from a connection pool which is configured in the JNDI context.
-     * The retrieved connection must be closed explicitly after handling, in order to release 
-     * it for further usage.
-     * @return the pooled connection 
-     * @throws NamingException indicates that the JNDI context is not configured correctly
-     * @throws InvalidResourceException indicates that properties needed for retrieving
-     * the JNDI context are not set correctly
+     * Gets the connection to the database which contains exercise definitions.
+     * @return the  connection
+     * @throws InvalidResourceException indicates that properties are not set correctly
      * @throws SQLException is thrown when trying to retrieve a connection out of the pool
      */
-    public Connection getConnection() throws NamingException, InvalidResourceException, SQLException {
-    	DataSource ds;
-        ds = getDataSource();
-        return ds.getConnection();
+    public Connection getConnection() throws InvalidResourceException, SQLException {
+        return DriverManager.getConnection(applicationProperties.getXquery().getConnUrl(),
+                applicationProperties.getXquery().getConnUser(),
+                applicationProperties.getXquery().getConnPwd());
     }
     
     /*
-     * Creates a new connection to the database which contains exercise information.
-     * 
+     * Gets the connection to the database which contains exercise definitions.
+     *
      * @param dbDriver The database driver.
      * @param dbUrl The database url.
      * @param dbUser The database user.

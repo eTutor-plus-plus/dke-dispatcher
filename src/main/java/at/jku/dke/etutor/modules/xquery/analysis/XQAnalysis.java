@@ -181,7 +181,7 @@ public class XQAnalysis implements Analysis, Serializable {
             XQResult result2 = new XQResult(config.getQuery2(), config.getProcessor(), config.getUrls());
             
             setResults(result1, result2);
-        } catch (InternalException e) {
+        } catch (InternalException | IOException e) {
             throw new AnalysisException(e.getMessage());
         }
     }

@@ -29,7 +29,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
         //requesting core manager instance causes creation of singleton
         //and initialization of basic resources with configuration errors
         //being logged
-        XQCoreManager.getInstance();
+        XQCoreManager.getInstance(properties);
         this.applicationProperties = properties;
 	}
 	
@@ -523,9 +523,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
         sql += "WHERE 	id = " + exerciseId + " " + LINE_SEP;
 
         try {
-        	//TODO: change connection retrievement (old version below requires datasource mapping JNDI)
-        	//conn = coreManager.getConnection();
-         	conn = DriverManager.getConnection(properties.getXquery().getConnUrl(), properties.getXquery().getConnUser(), properties.getXquery().getConnPwd());
+         	conn = XQCoreManager.getInstance().getConnection();
             stmt = conn.createStatement();
             rset = stmt.executeQuery(sql);
             if (rset.next()) {
@@ -651,7 +649,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 
         // Fetch properties
         try {
-            coreManager = XQCoreManager.getInstance();
+            coreManager = XQCoreManager.getInstance(applicationProperties);
             properties = coreManager.getPropertyFile();
 
             exerciseTable = properties.getProperty(XQCoreManager.KEY_TABLE_EXERCISE);

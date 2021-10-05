@@ -1,5 +1,0 @@
-known bugs
-
-* Summenberechnung fehlerhaft
-
-* Keine Fehlermeldung bei fehlerhafter Verwendung von Attribut/Element Knoten in order by (z.B. ean ist Attribut: $produkt/ean liefert keinen Fehler)

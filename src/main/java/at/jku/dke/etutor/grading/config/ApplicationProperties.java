@@ -168,6 +168,7 @@ public class ApplicationProperties {
         private String connUser;
         private String connPwd;
         private String connUrl;
+        private String questionFolderBaseName;
 
         public XQTable getTable() {
             return table;
@@ -207,6 +208,14 @@ public class ApplicationProperties {
 
         public void setConnUrl(String connUrl) {
             this.connUrl = connUrl;
+        }
+
+        public String getQuestionFolderBaseName() {
+            return questionFolderBaseName;
+        }
+
+        public void setQuestionFolderBaseName(String questionFolderBaseName) {
+            this.questionFolderBaseName = questionFolderBaseName;
         }
 
         /**

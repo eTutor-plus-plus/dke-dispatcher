@@ -11,6 +11,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.io.*;
+import java.util.Set;
 
 /**
  * Represents the evaluation result of an XQuery query as it is returned by a XQuery query
@@ -77,20 +78,19 @@ public class XQResult implements Serializable {
      * @see #setUrls(UrlContentMap)
      */
     public XQResult(
-            String query, XQProcessor xqProcessor, UrlContentMap urls) throws InternalException {
+            String query, XQProcessor xqProcessor, UrlContentMap urls) throws InternalException, IOException {
         String rawResult = "";
         try {
             if (urls != null) {
+                Set urlSet = urls.aliasSet();
                 String decodedQuery = urls.getEncodedQuery(query);
-                rawResult = xqProcessor.executeQuery(decodedQuery);
+                rawResult = xqProcessor.executeQuery(decodedQuery, urlSet);
                 //LOGGER.debug("EXECUTING DECODED QUERY: " + decodedQuery);
             } else {
-                rawResult = xqProcessor.executeQuery(query);
+                rawResult = xqProcessor.executeQuery(query, null);
                 //LOGGER.debug("EXECUTING NOT DECODED QUERY: " + query);
             }
             //LOGGER.debug("RAW RESULT: " + rawResult);
-        } catch (XQueryException e) {
-            this.syntaxException = createQuerySyntaxException(e.getMessage());
         } catch (UrlContentException e) {
             this.urlContentException = e;
         }

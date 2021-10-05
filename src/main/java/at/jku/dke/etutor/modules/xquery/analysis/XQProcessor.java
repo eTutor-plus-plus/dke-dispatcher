@@ -1,88 +1,107 @@
 package at.jku.dke.etutor.modules.xquery.analysis;
 
-import java.util.Properties;
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.modules.xquery.BaseXApi;
+import at.jku.dke.etutor.modules.xquery.ParameterException;
+import at.jku.dke.etutor.modules.xquery.UrlContentException;
 
-import at.jku.dke.etutor.modules.xquery.InternalException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Set;
+import java.util.UUID;
 
-import de.fraunhofer.ipsi.ipsixq.api.XQIDriver;
-import de.fraunhofer.ipsi.xquery.api.Connection;
-import de.fraunhofer.ipsi.xquery.api.Driver;
-import de.fraunhofer.ipsi.xquery.api.QueryResult;
-import de.fraunhofer.ipsi.xquery.api.XQueryException;
 
 /**
- * A processor for evaluating XQuery queries. The underlying processor consists of classes from a Java library
- * provided by the <i>Fraunhofer Institut (Integrierte Publikations- und Informationssysteme)</i>,
- * called <i>IPSI-XQ</i>, version 1.3.2. 
- * 
- * @author Georg Nitsche
- * @version 1.0
+ *
+ * @author Georg Nitsche, Florian Reisinger
+ * @version 2016.7.11
  * @since 1.0
  */
 public class XQProcessor {
 
-    private Driver driver;
+    private final String QUESTION_FOLDER_BASE_NAME;
 
-	private Properties props;
+    public XQProcessor(ApplicationProperties properties){
+        this.QUESTION_FOLDER_BASE_NAME = properties.getXquery().getQuestionFolderBaseName();
+    }
+    /**
+     * Executes and evaluates an XQuery query.
+     *
+     * @param query
+     *            The query to evaluate.
+     * @param urlSet
+     *            A set of all Urls in the query, which need to be changed
+     * @return A String representing the result as it is returned by the
+     *         underlying XQuery processor.
+     * @throws IOException
+     *             if the query has syntax errors.
+     */
+    public String executeQuery(String query, Set urlSet) throws IOException {
+        UrlContentMap ucm = new UrlContentMap();
+        String tempTableBaseName = "eTutor"
+                + UUID.randomUUID().toString().replace("-", "");
+        int tempTableUsed = 0;
+        BaseXApi api = null;
+        String result = "";
+        try {
+            api = new BaseXApi();
+            if (urlSet != null) {
+                for (Object o : urlSet) {
+                    // This is the Url in the query --> Only Strings
+                    String curUrl = (String) o;
+                    curUrl = curUrl.trim();
+                    String filename = curUrl
+                            .substring("http://etutor.dke.uni-linz.ac.at/etutor/XML?id="
+                                    .length());
 
-    private XQAnalysis diff;
+                    File file = new File(QUESTION_FOLDER_BASE_NAME, filename
+                            + ".xml");
+                    BufferedReader reader = null;
+                    String line = null;
+                    String fileContentString = "";
+                    try {
+                        reader = new BufferedReader(new InputStreamReader(
+                                new FileInputStream(file), "UTF-8"));
+                        while ((line = reader.readLine()) != null) {
+                            fileContentString += line;
+                        }
+                        // Create Temp table
+                        tempTableUsed++;
+                        String currentTempTableName = tempTableBaseName
+                                + tempTableUsed;
+                        api.createDatabase(currentTempTableName,
+                                fileContentString);
+                        ucm.addUrlAlias(currentTempTableName, curUrl);
+                    } catch (IOException | ParameterException e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (reader != null) {
+                            reader.close();
+                        }
+                    }
+                }
+                query = ucm.getEncodedQuery(query);
+            }
 
-    private Connection connection;
-	
-	/**
-	 * Constructs a new XQuery processor instance.
-	 * 
-	 * @throws XQueryException if an unexpected Exception was thrown when setting up the underlying XQuery processor.
-	 */
-	public XQProcessor() throws XQueryException {
-		props = new Properties();
-		props.setProperty("CorePrettyPrint", "false");
-		props.setProperty("XQueryPrettyPrint", "false");		
-		props.setProperty("infer", "false");
-		props.setProperty("eval", "true");
-		driver = new XQIDriver();
-		connection = driver.connect(".", props);
-	}
-	
-	/**
-	 * Executes and evaluates an XQuery query.
-
-	 * @param query The query to evaluate.
-	 * @return A String representing the result as it is returned by the underlying XQuery processor.
-	 * @throws XQueryException if the query has syntax errors.
-	 * @throws InternalException The result of the query is part of an XML document which is generated by the underlying
-	 * query processor. This unexpected exception is thrown if extracting this part from the document fails.
-	 */
-	public String executeQuery(String query) throws XQueryException, InternalException {
-
-		QueryResult result = connection.executeQuery(query);
-		Document document = result.getDocument();
-		return getEvalResultValue(document);
-		
-	}
-	/**
-	 * Used for extracting the result of a query from an XML document, which is generated and returned by the underlying
-	 * XQuery processor.
-	 *  
-	 * @param parentNode The XML node which represents the XML document returned by the XQuery processor.
-	 * @return The query result.
-	 * @throws InternalException if extracting the result from the document fails.
-	 */
-	private String getEvalResultValue(Node parentNode) throws InternalException {
-	    NodeList childNodes = parentNode.getChildNodes();
-		for (int i=0; i<childNodes.getLength(); i++) {
-			Node node = childNodes.item(i);
-			if (node.getNodeType() == Node.CDATA_SECTION_NODE) {
-				return node.getNodeValue().trim();
-			} else {
-				return getEvalResultValue(node);
-			}
-		}
-		String message = "Fatal: could not retrieve XQuery result section from the result produced by the XQuery processor.";
-		throw new InternalException(message);
-	}
-	
+            result = api.executeQuery(query);
+        } catch (UrlContentException e) {
+            throw new IOException(e);
+        } finally {
+            try {
+                if (api != null) {
+                    while (tempTableUsed > 0) {
+                        api.dropDatabase(tempTableBaseName + tempTableUsed);
+                        tempTableUsed--;
+                    }
+                    api.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
 }
