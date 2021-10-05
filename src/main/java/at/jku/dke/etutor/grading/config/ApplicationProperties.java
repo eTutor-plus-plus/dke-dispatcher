@@ -169,6 +169,15 @@ public class ApplicationProperties {
         private String connPwd;
         private String connUrl;
         private String questionFolderBaseName;
+        private String xmlFileURLPrefix;
+        private String tempFolderPath;
+        private String log4jPropertiesPath;
+        private String propertyFilePath;
+        private String xslRenderXqPath;
+        private String xslModifyPath;
+        private String xercesJarPath;
+        private String DDbeJarPath;
+        private String xsdFileScoresPath;
 
         public XQTable getTable() {
             return table;
@@ -216,6 +225,78 @@ public class ApplicationProperties {
 
         public void setQuestionFolderBaseName(String questionFolderBaseName) {
             this.questionFolderBaseName = questionFolderBaseName;
+        }
+
+        public String getXmlFileURLPrefix() {
+            return xmlFileURLPrefix;
+        }
+
+        public void setXmlFileURLPrefix(String xmlFileURLPrefix) {
+            this.xmlFileURLPrefix = xmlFileURLPrefix;
+        }
+
+        public String getTempFolderPath() {
+            return tempFolderPath;
+        }
+
+        public void setTempFolderPath(String tempFolderPath) {
+            this.tempFolderPath = tempFolderPath;
+        }
+
+        public String getLog4jPropertiesPath() {
+            return log4jPropertiesPath;
+        }
+
+        public void setLog4jPropertiesPath(String log4jPropertiesPath) {
+            this.log4jPropertiesPath = log4jPropertiesPath;
+        }
+
+        public String getPropertyFilePath() {
+            return propertyFilePath;
+        }
+
+        public void setPropertyFilePath(String propertyFilePath) {
+            this.propertyFilePath = propertyFilePath;
+        }
+
+        public String getXslRenderXqPath() {
+            return xslRenderXqPath;
+        }
+
+        public void setXslRenderXqPath(String xslRenderXqPath) {
+            this.xslRenderXqPath = xslRenderXqPath;
+        }
+
+        public String getXslModifyPath() {
+            return xslModifyPath;
+        }
+
+        public void setXslModifyPath(String xslModifyPath) {
+            this.xslModifyPath = xslModifyPath;
+        }
+
+        public String getXercesJarPath() {
+            return xercesJarPath;
+        }
+
+        public void setXercesJarPath(String xercesJarPath) {
+            this.xercesJarPath = xercesJarPath;
+        }
+
+        public String getDDbeJarPath() {
+            return DDbeJarPath;
+        }
+
+        public void setDDbeJarPath(String DDbeJarPath) {
+            this.DDbeJarPath = DDbeJarPath;
+        }
+
+        public String getXsdFileScoresPath() {
+            return xsdFileScoresPath;
+        }
+
+        public void setXsdFileScoresPath(String xsdFileScoresPath) {
+            this.xsdFileScoresPath = xsdFileScoresPath;
         }
 
         /**

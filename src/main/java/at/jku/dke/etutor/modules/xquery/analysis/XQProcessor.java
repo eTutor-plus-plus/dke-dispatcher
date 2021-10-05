@@ -23,9 +23,11 @@ import java.util.UUID;
 public class XQProcessor {
 
     private final String QUESTION_FOLDER_BASE_NAME;
+    private final ApplicationProperties properties;
 
     public XQProcessor(ApplicationProperties properties){
         this.QUESTION_FOLDER_BASE_NAME = properties.getXquery().getQuestionFolderBaseName();
+        this.properties = properties;
     }
     /**
      * Executes and evaluates an XQuery query.
@@ -54,7 +56,7 @@ public class XQProcessor {
                     String curUrl = (String) o;
                     curUrl = curUrl.trim();
                     String filename = curUrl
-                            .substring("http://etutor.dke.uni-linz.ac.at/etutor/XML?id="
+                            .substring(properties.getXquery().getXmlFileURLPrefix()
                                     .length());
 
                     File file = new File(QUESTION_FOLDER_BASE_NAME, filename
