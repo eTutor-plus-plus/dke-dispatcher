@@ -688,40 +688,42 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
             	} while (rset.next());
             } else {
             	msg = "No max points set for exercise " + exerciseId;
+            	config.setMaxScore(1);
                 LOGGER.warn(msg);
             }
-            
-            sql = new String();
-            sql += "SELECT 	cat.name, gr.grading_level, gr.minus_points " + LINE_SEP;
-            sql += "FROM 	" + exerciseTable + " ex, " + errorGradingTable + " gr, " + LINE_SEP;
-            sql += "		" + errorCategoryTable + " cat " + LINE_SEP;
-            sql += "WHERE 	ex.id = " + exerciseId + " " + LINE_SEP;
-            sql += "AND 	gr.grading_group = ex.gradings " + LINE_SEP;
-            sql += "AND 	gr.grading_category = cat.id " + LINE_SEP;
-            LOGGER.debug(sql);
+			/**
+             * TODO: check if still needed for etutor++
+			 sql = new String();
+			 sql += "SELECT 	cat.name, gr.grading_level, gr.minus_points " + LINE_SEP;
+			 sql += "FROM 	" + exerciseTable + " ex, " + errorGradingTable + " gr, " + LINE_SEP;
+			 sql += "		" + errorCategoryTable + " cat " + LINE_SEP;
+			 sql += "WHERE 	ex.id = " + exerciseId + " " + LINE_SEP;
+			 sql += "AND 	gr.grading_group = ex.gradings " + LINE_SEP;
+			 sql += "AND 	gr.grading_category = cat.id " + LINE_SEP;
+			 LOGGER.debug(sql);
 
-            rset.close();
-            rset = null;
-            rset = stmt.executeQuery(sql);
-            
-            while (rset.next()) {
-                category = rset.getString("name");
-                errorLevel = rset.getInt("grading_level");
-                minusPoints = rset.getDouble("minus_points");
-                msg = new String();
-                msg += "Setting grading parameter for exercise " + exerciseId + ":";
-                msg += LINE_SEP + "\t Error level for category " + category + ": " + errorLevel;
-                msg += LINE_SEP + "\t Minus points for category " + category + ": " + minusPoints;
-                LOGGER.debug(msg);
-                config.setErrorLevel(category, errorLevel);
-                config.setScore(category, minusPoints);
-            }
-            
-        } catch (Exception e) {
-        	msg = new String();
-        	msg += "An exception was thrown when fetching grading parameters ";
-        	msg += "from database for exercise with id " + exerciseId + ".";
-            LOGGER.error(msg, e);
+			 rset.close();
+			 rset = null;
+			 rset = stmt.executeQuery(sql);
+
+			 while (rset.next()) {
+			 category = rset.getString("name");
+			 errorLevel = rset.getInt("grading_level");
+			 minusPoints = rset.getDouble("minus_points");
+			 msg = new String();
+			 msg += "Setting grading parameter for exercise " + exerciseId + ":";
+			 msg += LINE_SEP + "\t Error level for category " + category + ": " + errorLevel;
+			 msg += LINE_SEP + "\t Minus points for category " + category + ": " + minusPoints;
+			 LOGGER.debug(msg);
+			 config.setErrorLevel(category, errorLevel);
+			 config.setScore(category, minusPoints);
+			 }
+			 */
+		} catch (Exception e) {
+			msg = new String();
+			msg += "An exception was thrown when fetching grading parameters ";
+			msg += "from database for exercise with id " + exerciseId + ".";
+			LOGGER.error(msg, e);
             throw new GradingException(msg, e);
         } finally {
         	if (rset != null) {

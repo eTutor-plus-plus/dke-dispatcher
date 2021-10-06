@@ -392,7 +392,7 @@ public class UrlContentMap implements Serializable {
             indexEnd = query.indexOf("\n", indexStart);
             String line = "";
             if (indexEnd == -1) {
-                line = query.substring(indexStart, query.length());
+                line = query.substring(indexStart);
             } else {
                 line = query.substring(indexStart, indexEnd);
             }

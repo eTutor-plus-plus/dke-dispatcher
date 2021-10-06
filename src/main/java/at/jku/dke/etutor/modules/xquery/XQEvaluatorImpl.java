@@ -383,9 +383,12 @@ public class XQEvaluatorImpl implements XQEvaluator {
         LOGGER.info(msg);
 
         action = (String)passedAttributes.get(XQConstants.ATTR_ACTION);
-        if (XQConstants.ACTION_SUBMIT.equalsIgnoreCase(action)) {
+        if (XQConstants.ACTION_SUBMIT.equalsIgnoreCase(action)
+        || XQConstants.ACTION_DIAGNOSE.equalsIgnoreCase(action)
+                || XQConstants.ACTION_RUN.equalsIgnoreCase(action)
+                || XQConstants.ACTION_CHECK.equalsIgnoreCase(action)) {
         	msg = new String();
-        	msg += "Modus is '" + XQConstants.ACTION_SUBMIT;
+        	msg += "Modus is '" + action;
         	msg += "', grading will be processed and reported.";
             LOGGER.debug(msg);
             try {
@@ -398,11 +401,6 @@ public class XQEvaluatorImpl implements XQEvaluator {
                 LOGGER.error(msg, e);
                 throw new GradingException(msg, e);
             }
-        } else if (XQConstants.ACTION_DIAGNOSE.equalsIgnoreCase(action)
-                || XQConstants.ACTION_RUN.equalsIgnoreCase(action)
-				|| XQConstants.ACTION_CHECK.equalsIgnoreCase(action)) {
-            grading = new XQGrading();
-            return grading;
         } else {
         	msg = new String();
             msg += "Report processing was stopped. ";

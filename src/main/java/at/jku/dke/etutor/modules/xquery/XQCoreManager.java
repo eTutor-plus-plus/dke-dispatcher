@@ -99,7 +99,7 @@ public class XQCoreManager {
      * 
      * @see #JAR_XERCES
      */
-    public final static String JAR_DDBE = "/lib/DDbE.jar";
+    public final static String JAR_DDBE = "/xquery/reflect/DDbE.jar";
 
     /**
      * Path of the file which represents the XML Schema used for validating XML configuration files
