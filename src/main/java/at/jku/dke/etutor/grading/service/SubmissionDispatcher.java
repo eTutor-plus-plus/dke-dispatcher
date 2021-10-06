@@ -2,6 +2,7 @@ package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.core.evaluation.*;
 import at.jku.dke.etutor.grading.rest.dto.*;
+import at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -52,7 +53,11 @@ public class SubmissionDispatcher  {
             logger.debug("Finished evaluating submission");
 
             GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading);
-            gradingDTO.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes(), locale));
+            if(analysis instanceof XQAnalysis analysis1){
+                gradingDTO.setResult(analysis1.getResult2().getRawResult());
+            }else{
+                gradingDTO.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes(), locale));
+            }
 
             if(grading.getPoints()<grading.getMaxPoints() || grading.getPoints() == 0) {
                     logger.info("Requesting report");

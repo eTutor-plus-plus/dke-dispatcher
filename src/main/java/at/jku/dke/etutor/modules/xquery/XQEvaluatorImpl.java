@@ -87,7 +87,7 @@ public class XQEvaluatorImpl implements XQEvaluator {
 
     @Override
     public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
-        return null;
+        return "";
     }
 
     public Analysis analyzeSubmission(int exerciseId, int userId, Map passedAttributes, Map passedParameters) throws Exception {
