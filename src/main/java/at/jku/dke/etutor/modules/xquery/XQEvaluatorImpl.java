@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -85,13 +86,23 @@ public class XQEvaluatorImpl implements XQEvaluator {
         }
     }
 
+    /**
+     * Returns an HTML-representation of the result of the student's submitted xQuery
+     * @param analysis the Analysis
+     * @param passedAttributes the passed attributes
+     * @param locale the locale
+     * @return an HTML-String
+     */
     @Override
     public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
-        if(analysis instanceof XQAnalysis xqAnalysis){
-            return "<pre lang=\"xml\" >{{"+
-                    xqAnalysis.getResult2().getRawResult()+
-                    "}}<pre>";
-
+        if(analysis instanceof XQAnalysis){
+            try {
+                return ((XQReport)this.report
+                        (analysis, null, passedAttributes, new HashMap<String, String>(), locale))
+                        .getRenderedResult();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return "";
     }

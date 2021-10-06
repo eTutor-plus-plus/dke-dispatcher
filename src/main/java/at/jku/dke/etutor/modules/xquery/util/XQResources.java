@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 
 /**
  * Serves as key holder for message properties in a resource bundle named after this class.
- * The property file is expected to be located in the same package as this class.
+ * The property file is expected to be located under /resources/xquery/XQResources.properties
  * 
  * @author  Georg Nitsche
  * @version 1.0

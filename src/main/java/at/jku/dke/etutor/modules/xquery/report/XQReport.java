@@ -6,6 +6,7 @@ import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
+import at.jku.dke.etutor.core.evaluation.DefaultReport;
 import at.jku.dke.etutor.core.evaluation.Report;
 import at.jku.dke.etutor.modules.xquery.*;
 import at.jku.dke.etutor.modules.xquery.analysis.*;
@@ -22,7 +23,7 @@ import at.jku.dke.etutor.modules.xquery.util.XQResources;
  * @version 1.0
  * @since 1.0
  */
-public class XQReport implements XQFeedback, Serializable {
+public class XQReport extends DefaultReport implements XQFeedback, Serializable {
 
 	private String summary;
 
@@ -60,6 +61,7 @@ public class XQReport implements XQFeedback, Serializable {
         this.errors = new ErrorCategory[] {};
         this.syntaxError = new ErrorCategory();
         this.includesGrading = false;
+        this.setDescription(summary);
     }
 
     /**
