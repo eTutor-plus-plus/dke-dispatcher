@@ -135,7 +135,7 @@ public class XQResources {
 	/*
 	private static final ResourceBundle bundle = PropertyResourceBundle.getBundle(PROPERTIES);
 	*/
-	private static final ResourceBundle bundle = PropertyResourceBundle.getBundle(XQResources.class.getName());
+	private static final ResourceBundle bundle = PropertyResourceBundle.getBundle("xquery/XQResources");
 	
 	/**
 	 * Gets the message defined in a property.

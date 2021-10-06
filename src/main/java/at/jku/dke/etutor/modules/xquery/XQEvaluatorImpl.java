@@ -87,6 +87,12 @@ public class XQEvaluatorImpl implements XQEvaluator {
 
     @Override
     public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
+        if(analysis instanceof XQAnalysis xqAnalysis){
+            return "<pre lang=\"xml\" >{{"+
+                    xqAnalysis.getResult2().getRawResult()+
+                    "}}<pre>";
+
+        }
         return "";
     }
 

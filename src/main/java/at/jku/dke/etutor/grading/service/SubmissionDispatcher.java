@@ -53,11 +53,7 @@ public class SubmissionDispatcher  {
             logger.debug("Finished evaluating submission");
 
             GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading);
-            if(analysis instanceof XQAnalysis analysis1){
-                gradingDTO.setResult(analysis1.getResult2().getRawResult());
-            }else{
-                gradingDTO.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes(), locale));
-            }
+            gradingDTO.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes(), locale));
 
             if(grading.getPoints()<grading.getMaxPoints() || grading.getPoints() == 0) {
                     logger.info("Requesting report");
