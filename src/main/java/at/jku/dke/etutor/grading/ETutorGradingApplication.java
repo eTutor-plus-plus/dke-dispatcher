@@ -13,8 +13,6 @@ import at.jku.dke.etutor.modules.ra2sql.RAEvaluator;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
 import at.jku.dke.etutor.modules.sql.report.SQLReporter;
-import at.jku.dke.etutor.modules.xquery.config.XQueryProperties;
-import de.fraunhofer.ipsi.xquery.tree.XQuery;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -53,7 +51,7 @@ import java.util.List;
         RAEvaluator.class,
         SQLReporter.class
 })
-@EnableConfigurationProperties({ApplicationProperties.class, XQueryProperties.class})
+@EnableConfigurationProperties({ApplicationProperties.class})
 @SpringBootApplication
 @EnableAsync
 public class ETutorGradingApplication {

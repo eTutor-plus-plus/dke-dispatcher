@@ -13,5 +13,4 @@ public class XQConstants {
     public final static String ACTION_RUN = "run";
     public final static String ACTION_CHECK = "check";
     public final static String ATTR_SUBMISSION = "submission";
-	
 }

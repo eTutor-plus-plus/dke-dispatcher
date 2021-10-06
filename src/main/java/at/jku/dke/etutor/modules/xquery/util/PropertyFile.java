@@ -23,7 +23,6 @@ import org.apache.log4j.Logger;
 public class PropertyFile extends Properties {
 
     private String file;
-    private ResourceBundle bundle;
     private static final Logger LOGGER = Logger.getLogger(PropertyFile.class);
     
     /**

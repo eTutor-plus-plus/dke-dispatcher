@@ -31,12 +31,8 @@ import javax.sql.DataSource;
 public class XQCoreManager {
 
     private PropertyFile propertyFile;
-    private DataSource dataSource;
-    private Context ctx;
     private ApplicationProperties applicationProperties;
     private static final Logger LOGGER = initLogger();
-    private static final String LINE_SEP = System.getProperty("line.separator", "\n");
-    
     /**
      * The <i>singleton </i> of this class.
      */
@@ -52,11 +48,6 @@ public class XQCoreManager {
      */
     public final static String LOG4J_PROPERTIES = "/xquery/log4j.properties";
 
-    /**
-     * Location of the datasource within the JNDI context which is used for retrieving pooled connections
-     */
-    public final static String NAMING_DATASOURCE = "xq.java.naming.datasource";
-    
     /**
      * Location of the properties file from which to get basic information for setting up a XQuery
      * exercise.
@@ -161,18 +152,6 @@ public class XQCoreManager {
 			this.propertyFile = getPropertyFile();
 		} catch (InvalidResourceException e) {
 			msg = "Initializing properties file failed.";
-			LOGGER.warn(msg, e);
-		}
-    	try {
-			this.ctx = getContext();
-		} catch (Exception e) {
-			msg = "Initializing JNDI context failed.";
-			LOGGER.warn(msg, e);
-		}
-    	try {
-			this.dataSource = this.ctx != null ? getDataSource(this.ctx) : null;
-		} catch (Exception e) {
-			msg = "Initializing JDBC data source failed.";
 			LOGGER.warn(msg, e);
 		}
     }
@@ -281,83 +260,7 @@ public class XQCoreManager {
         }
         return url;
     }
-    
-    /**
-     * Gets the JNDI context for retrieving resources configured in this context.
-     * 
-     * @return the JNDI context
-     * @throws InvalidResourceException if the properties file needed for 
-     * establishing the JNDI context can not be found
-     */
-    private synchronized Context getContext() throws InvalidResourceException, NamingException {
-    	String msg;
-    	PropertyFile propertyFile;
-        ClassLoader oldClassLoader;
-		ClassLoader newClassLoader;
-		Hashtable table;
 
-		propertyFile = this.getPropertyFile();
-        if (this.ctx == null) {
-        	msg = "Setting up JNDI context ...";
-        	LOGGER.info(msg);
-        	//Set classloader to avoid problems with classes not found when datalog 
-        	//module is initiated by the RMI server module
-    		oldClassLoader = Thread.currentThread().getContextClassLoader();
-    		newClassLoader = this.getClass().getClassLoader();
-            Thread.currentThread().setContextClassLoader(newClassLoader);
-			this.ctx = new InitialContext(propertyFile);
-			table = this.ctx.getEnvironment();
-			
-			msg = "Main environment properties effectively set for JNDI context: " + LINE_SEP;
-			msg += Context.INITIAL_CONTEXT_FACTORY + "=";
-			msg += table.get(Context.INITIAL_CONTEXT_FACTORY) + LINE_SEP;
-			msg += Context.PROVIDER_URL + "=";
-			msg += table.get(Context.PROVIDER_URL) + LINE_SEP;
-			LOGGER.info(msg);
-    		Thread.currentThread().setContextClassLoader(oldClassLoader);
-        }
-        
-        return this.ctx;
-    }
-    
-    /**
-     * Gets the datasource for retrieving connections out of a connection pool
-     * which is configured in the JNDI context.
-     * 
-     * @return the datasource
-     * @throws InvalidResourceException if the properties file can not be found
-     * @throws NamingException exception thrown when creating the JNDI context or 
-     * looking up the data source fails
-     */
-    private synchronized DataSource getDataSource() throws InvalidResourceException, NamingException {
-    	Context ctx;
-        if (this.dataSource == null) {
-        	ctx = this.getContext();
-        	this.dataSource = ctx != null ? getDataSource(ctx) : null;
-        }
-        return this.dataSource;
-    }
-    
-    /**
-     * Gets the datasource for retrieving connections out of a connection pool
-     * which is configured in the JNDI context.
-     * 
-     * @return the datasource
-     * @throws InvalidResourceException if the properties file can not be found
-     * @throws NamingException exception thrown when looking up the data source fails
-     */
-    private synchronized DataSource getDataSource(Context ctx) throws InvalidResourceException, NamingException {
-    	String msg;
-    	String dataSourceName;
-    	PropertyFile propertyFile;
-
-		propertyFile = this.getPropertyFile();
-    	dataSourceName = propertyFile.getProperty(NAMING_DATASOURCE);
-    	msg = "Setting up XQ data source mapped to " + dataSourceName + " ...";
-    	LOGGER.info(msg);
-		return (DataSource)ctx.lookup(dataSourceName);
-    }
-    
     /**
      * Gets the connection to the database which contains exercise definitions.
      * @return the  connection
