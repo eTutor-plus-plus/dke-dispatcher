@@ -13,6 +13,7 @@ import at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis;
 import at.jku.dke.etutor.modules.xquery.analysis.XQResult;
 import at.jku.dke.etutor.modules.xquery.grading.XQGrading;
 import at.jku.dke.etutor.modules.xquery.util.XMLUtil;
+import ch.qos.logback.classic.Logger;
 import oracle.xml.parser.v2.NodeFactory;
 import oracle.xml.parser.v2.XMLDocument;
 import oracle.xml.parser.v2.XMLDocumentFragment;
@@ -21,7 +22,7 @@ import oracle.xml.parser.v2.XSLException;
 import oracle.xml.parser.v2.XSLProcessor;
 import oracle.xml.parser.v2.XSLStylesheet;
 
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -42,7 +43,7 @@ public class XMLReport {
     /**
      * The logger used for logging.
      */
-    private final static Logger LOGGER = Logger.getLogger(XMLReport.class);
+    private final static Logger LOGGER = (Logger) LoggerFactory.getLogger(XMLReport.class);
 
     private XMLDocument doc;
 
@@ -670,7 +671,7 @@ public class XMLReport {
                 } catch (IOException e) {
                 	String msg = "An internal exception was thrown when writing a file written only in debug modus: ";
                     msg += e.getClass().getName() + ": " + e.getMessage();
-                    LOGGER.fatal(msg);
+                    LOGGER.error(msg);
                     throw new ReportException(msg, e);
                 }
             }

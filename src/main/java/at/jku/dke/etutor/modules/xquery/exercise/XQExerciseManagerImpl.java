@@ -7,7 +7,8 @@ import at.jku.dke.etutor.modules.xquery.XQCoreManager;
 import at.jku.dke.etutor.modules.xquery.analysis.UrlContentMap;
 import at.jku.dke.etutor.modules.xquery.grading.XQGradingConfig;
 import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
-import org.apache.log4j.Logger;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -19,7 +20,7 @@ import java.util.*;
 //TODO: restliche Methoden auf application.properties umstellen
 public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExerciseManager {
 	
-	private static final Logger LOGGER = Logger.getLogger(XQExerciseManagerImpl.class);
+	private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(XQExerciseManagerImpl.class);
 	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
 	private final ApplicationProperties applicationProperties;
 
@@ -63,7 +64,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 		if (exercise == null){
 			msg = new String();
 			msg += "Passed exercise is null.";
-			LOGGER.fatal(msg);
+			LOGGER.error(msg);
 			return -1;
 		}
 		
@@ -73,7 +74,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 			msg += exercise.getClass().getName();
 			msg += " to module-specific type ";
 			msg += XQExerciseBean.class.getName();
-			LOGGER.fatal(msg);
+			LOGGER.error(msg);
 			return -1;
 		}
 		
@@ -86,7 +87,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
             sortedNodesTable = properties.loadProperty(XQCoreManager.KEY_TABLE_SORTINGS);
             urlsTable = properties.loadProperty(XQCoreManager.KEY_TABLE_URLS);
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error(e.getMessage());
             throw e;
         }
         
@@ -173,14 +174,14 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 		} catch (Exception e) {
 			msg = new String();
 			msg += "Stopped processing command 'createExercise'. ";
-			LOGGER.fatal(msg, e);
+			LOGGER.error(msg, e);
 			if (conn != null) {
 				try {
 					conn.rollback();
 				} catch (SQLException e2){
 					msg = new String();
 					msg += "Exception at rollback.";
-					LOGGER.fatal(msg, e2);
+					LOGGER.error(msg, e2);
 				}
 			}
 		} finally {
@@ -189,7 +190,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 					pStmt.close();
 				} catch (SQLException e){
 					msg = new String();
-					LOGGER.fatal(msg, e);
+					LOGGER.error(msg, e);
 				}
 			}
 			if (stmt != null) {
@@ -197,7 +198,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 					stmt.close();
 				} catch (SQLException e) {
 					msg = new String();
-					LOGGER.fatal(msg, e);
+					LOGGER.error(msg, e);
 				}
 			}
 			if (conn != null) {
@@ -205,7 +206,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 					conn.close();
 				} catch (SQLException e){
 					msg = new String();
-					LOGGER.fatal(msg, e);
+					LOGGER.error(msg, e);
 				}
 			}
 		}
@@ -241,7 +242,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 		if (exercise == null){
 			msg = new String();
 			msg += "Passed exercise is null.";
-			LOGGER.fatal(msg);
+			LOGGER.error(msg);
 			return false;
 		}
 		
@@ -251,7 +252,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 			msg += exercise.getClass().getName();
 			msg += " to module-specific type ";
 			msg += XQExerciseBean.class.getName();
-			LOGGER.fatal(msg);
+			LOGGER.error(msg);
 			return false;
 		}
 		
@@ -264,7 +265,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
             sortedNodesTable = properties.loadProperty(XQCoreManager.KEY_TABLE_SORTINGS);
             urlsTable = properties.loadProperty(XQCoreManager.KEY_TABLE_URLS);
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error(e.getMessage());
             throw e;
         }
         
@@ -354,14 +355,14 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 		} catch (Exception e) {
 			msg = new String();
 			msg += "Stopped processing command 'modifyExercise'. ";
-			LOGGER.fatal(msg, e);
+			LOGGER.error(msg, e);
 			if (conn != null) {
 				try {
 					conn.rollback();
 				} catch (SQLException e2){
 					msg = new String();
 					msg += "Exception at rollback.";
-					LOGGER.fatal(msg, e2);
+					LOGGER.error(msg, e2);
 				}
 			}
 		} finally {
@@ -370,14 +371,14 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 					pStmt.close();
 				} catch (SQLException e){
 					msg = new String();
-					LOGGER.fatal(msg, e);
+					LOGGER.error(msg, e);
 				}
 			}
 			try {
 				conn.close();
 			} catch (SQLException e){
 				msg = new String();
-				LOGGER.fatal(msg, e);
+				LOGGER.error(msg, e);
 			}
 		}
 		return false;
@@ -411,7 +412,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
             sortedNodesTable = properties.loadProperty(XQCoreManager.KEY_TABLE_SORTINGS);
             urlsTable = properties.loadProperty(XQCoreManager.KEY_TABLE_URLS);
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error(e.getMessage());
             throw e;
         }
         
@@ -449,14 +450,14 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 		} catch (Exception e) {
 			msg = new String();
 			msg += "Stopped processing command 'deleteExercise', rolling back. ";
-			LOGGER.fatal(msg, e);
+			LOGGER.error(msg, e);
 			if (conn != null) {
 				try {
 					conn.rollback();
 				} catch (SQLException e2){
 					msg = new String();
 					msg += "Exception at rollback.";
-					LOGGER.fatal(msg, e2);
+					LOGGER.error(msg, e2);
 				}
 			}
 		} finally {
@@ -465,7 +466,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 					stmt.close();
 				} catch (SQLException e){
 					msg = new String();
-					LOGGER.fatal(msg, e);
+					LOGGER.error(msg, e);
 				}
 			}
 			if (conn != null) {
@@ -473,7 +474,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 					conn.close();
 				} catch (SQLException e){
 					msg = new String();
-					LOGGER.fatal(msg, e);
+					LOGGER.error(msg, e);
 				}
 			}
 		}
@@ -513,7 +514,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
             urlsTable = properties.getXquery().getTable().getUrls();
             sortedNodesTable = properties.getXquery().getTable().getSortings();
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error(e.getMessage());
             throw e;
         }
         
@@ -575,21 +576,21 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
 				try {
 					rset.close();
 				} catch (SQLException e){
-					LOGGER.fatal(e);
+					LOGGER.error(e.getMessage());
 				}
 			}
 			if (stmt != null){
 				try {
 					stmt.close();
 				} catch (SQLException e){
-					LOGGER.fatal(e);
+					LOGGER.error(e.getMessage());
 				}
 			}
 			if (conn != null) {
 				try {
 					conn.close();
 				} catch (SQLException e){
-					LOGGER.fatal(e);
+					LOGGER.error(e.getMessage());
 				}
 			}
         }
@@ -656,7 +657,7 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
             errorCategoryTable = properties.getProperty(XQCoreManager.KEY_TABLE_ERROR_CATEGORIES);
             errorGradingTable = properties.getProperty(XQCoreManager.KEY_TABLE_ERROR_GRADING);
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error(e.getMessage());
             throw e;
         }
 
@@ -730,21 +731,21 @@ public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExer
                 try {
 	        		rset.close();
 	            } catch (SQLException e) {
-	            	LOGGER.fatal(e);
+	            	LOGGER.error(e.getMessage());
 	            }
         	}
         	if (stmt != null) {
                 try {
 	                stmt.close();
 	            } catch (SQLException e) {
-	            	LOGGER.fatal(e);
+	            	LOGGER.error(e.getMessage());
 	            }
         	}
         	if (conn != null) {
                 try {
 	                conn.close();
 	            } catch (SQLException e) {
-	            	LOGGER.fatal(e);
+	            	LOGGER.error(e.getMessage());
 	            }
         	}
         }

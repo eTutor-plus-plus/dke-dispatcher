@@ -16,13 +16,14 @@ import at.jku.dke.etutor.modules.xquery.util.*;
 
 
 import at.jku.dke.etutor.core.evaluation.Analysis;
+import ch.qos.logback.classic.Logger;
 import oracle.xml.differ.XMLDiff;
 import oracle.xml.parser.v2.NodeFactory;
 import oracle.xml.parser.v2.XMLDocument;
 import oracle.xml.parser.v2.XMLElement;
 import oracle.xml.parser.v2.XSLException;
-import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -55,7 +56,7 @@ public class XQAnalysis implements Analysis, Serializable {
     /**
      * The logger used for logging.
      */
-    private final static Logger LOGGER = Logger.getLogger(String.valueOf(XQAnalysis.class));
+    private final static Logger LOGGER = (Logger) LoggerFactory.getLogger(XQAnalysis.class);
 
     private Serializable submission;
 
@@ -240,7 +241,7 @@ public class XQAnalysis implements Analysis, Serializable {
             } catch (InternalException e) {
                 String msg = "An internal exception was thrown when writing a file written only in debug modus: ";
                 msg += e.getClass().getName() + ": " + e.getMessage();
-                LOGGER.fatal(msg);
+                LOGGER.error(msg);
                 throw new AnalysisException(msg, e);
             }
         }

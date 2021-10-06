@@ -9,7 +9,8 @@ import java.util.ResourceBundle;
 
 import at.jku.dke.etutor.modules.xquery.InvalidResourceException;
 import at.jku.dke.etutor.modules.xquery.XQCoreManager;
-import org.apache.log4j.Logger;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -23,7 +24,7 @@ import org.apache.log4j.Logger;
 public class PropertyFile extends Properties {
 
     private String file;
-    private static final Logger LOGGER = Logger.getLogger(PropertyFile.class);
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(PropertyFile.class);
     
     /**
      * Constructs a new PropertyFile.

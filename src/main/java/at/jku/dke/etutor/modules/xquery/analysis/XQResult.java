@@ -3,10 +3,11 @@ package at.jku.dke.etutor.modules.xquery.analysis;
 import at.jku.dke.etutor.modules.xquery.*;
 import at.jku.dke.etutor.modules.xquery.util.FileParameter;
 import at.jku.dke.etutor.modules.xquery.util.XMLUtil;
+import ch.qos.logback.classic.Logger;
 import de.fraunhofer.ipsi.xquery.api.XQueryException;
 import oracle.xml.parser.v2.XMLDocument;
 import oracle.xml.parser.v2.XSLException;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -36,7 +37,7 @@ public class XQResult implements Serializable {
     /**
      * The logger used for logging.
      */
-    private final static Logger LOGGER = Logger.getLogger(String.valueOf(XQResult.class));
+    private final static Logger LOGGER = (Logger) LoggerFactory.getLogger(XQResult.class);
     private transient XMLDocument document;
     private String schema;
     private File xmlResultFile;
@@ -567,7 +568,7 @@ public class XQResult implements Serializable {
                 LOGGER.debug(msg);
             } catch (IOException e) {
             	msg = "An exception was thrown when serializing an XML document.";
-            	LOGGER.fatal(msg, e);
+            	LOGGER.error(msg, e);
                 throw e;
             }
         } else {
@@ -614,7 +615,7 @@ public class XQResult implements Serializable {
             	msg = new String();
             	msg += "An exception was thrown when reparsing an ";
             	msg += "XML document after serialization.";
-            	LOGGER.fatal(msg, e);
+            	LOGGER.error(msg, e);
                 throw new IOException(msg);
             } catch (IOException e) {
             	msg = new String();

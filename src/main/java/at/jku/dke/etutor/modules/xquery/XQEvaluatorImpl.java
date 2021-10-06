@@ -24,7 +24,8 @@ import at.jku.dke.etutor.modules.xquery.grading.XQGradingConfig;
 import at.jku.dke.etutor.modules.xquery.report.XQReport;
 import at.jku.dke.etutor.modules.xquery.report.XQReportConfig;
 import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
-import org.apache.log4j.Logger;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class serves as entry point for evaluating XQuery queries. There are some basic methods for
@@ -36,7 +37,7 @@ import org.apache.log4j.Logger;
  */
 public class XQEvaluatorImpl implements XQEvaluator {
 
-    private final static Logger LOGGER = Logger.getLogger(String.valueOf(XQEvaluatorImpl.class));
+    private final static Logger LOGGER = (Logger) LoggerFactory.getLogger(XQEvaluatorImpl.class);
 	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
 	private final ApplicationProperties applicationProperties;
 	
@@ -235,7 +236,7 @@ public class XQEvaluatorImpl implements XQEvaluator {
             return analysis;
         } catch (Exception e) {
         	msg = "Analysis was stopped (Exercise id: " + exerciseId + ").";
-            LOGGER.fatal(msg, e);
+            LOGGER.error(msg, e);
             throw new AnalysisException(msg, e);
         }
     }
@@ -355,7 +356,7 @@ public class XQEvaluatorImpl implements XQEvaluator {
             return analysis;
         } catch (Exception e) {
         	msg = "Analysis was stopped (Exercise id: " + exerciseId + ").";
-            LOGGER.fatal(msg, e);
+            LOGGER.error(msg, e);
             throw new AnalysisException(msg, e);
         }
     }
@@ -519,7 +520,7 @@ public class XQEvaluatorImpl implements XQEvaluator {
             throw new ReportException(msg, e);
         } catch (Exception e) {
             msg = "Report processing was stopped. ";
-            LOGGER.fatal(msg, e);
+            LOGGER.error(msg, e);
             throw new ReportException(msg, e);
         }
     }
@@ -549,7 +550,7 @@ public class XQEvaluatorImpl implements XQEvaluator {
                     input.close();
                 } catch (IOException e) {
                 	msg = "Exception when closing file input stream.";
-                    LOGGER.fatal(msg, e);
+                    LOGGER.error(msg, e);
                 }
             }
         }

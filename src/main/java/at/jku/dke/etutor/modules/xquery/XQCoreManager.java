@@ -2,10 +2,8 @@ package at.jku.dke.etutor.modules.xquery;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.varia.NullAppender;
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -42,11 +40,6 @@ public class XQCoreManager {
      * Location of the folder for temp files which are created when analyzing XQuery queries.
      */
     public final static String TEMP_FOLDER = "/xquery/temp";
-
-    /**
-     * Location of the configuration file for logging
-     */
-    public final static String LOG4J_PROPERTIES = "/xquery/log4j.properties";
 
     /**
      * Location of the properties file from which to get basic information for setting up a XQuery
@@ -321,34 +314,11 @@ public class XQCoreManager {
     */
 
     /**
-     * Sets up the logger used for logging within the datalog module. As configuration of
-     * LOG4J logging depends on this method, logging will not work as desired until this
-     * method is invoked. Thus, invocation should be included in entry point(s) of the
-     * datalog module. Alternative mechanisms might be used for initialization, e.g. setting
-     * the log4j.configuration system property with the configuration file or placing
-     * log4j.properties into the working directory. 
+     * Sets up the logger used for logging within the datalog module.
      * 
      * @return the initialized <code>Logger</code>.
-     * @see #LOG4J_PROPERTIES
      */
     private static Logger initLogger() {
-        Logger logger;
-    	String msg;
-    	URL logConfig;
-    	logger = Logger.getLogger(XQCoreManager.class);
-		try {
-			logConfig = getResource(LOG4J_PROPERTIES);
-            PropertyConfigurator.configure(logConfig);
-            msg = new String();
-        	msg += "Main logger initialized with basic configuration parameters from ";
-        	msg += logConfig.toString();
-            logger.info(msg);
-		} catch (InvalidResourceException e) {
-            BasicConfigurator.configure(new NullAppender());
-            msg = "No log4j configuration file found at " + LOG4J_PROPERTIES;            
-            logger.warn(msg);			
-		}
-		
-		return logger;
+    	return (Logger) LoggerFactory.getLogger(XQCoreManager.class);
     }
 }

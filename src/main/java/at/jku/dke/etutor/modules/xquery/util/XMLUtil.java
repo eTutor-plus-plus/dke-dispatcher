@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
 
+import ch.qos.logback.classic.Logger;
 import oracle.xml.parser.schema.XMLSchema;
 import oracle.xml.parser.schema.XSDBuilder;
 import oracle.xml.parser.schema.XSDException;
@@ -20,12 +21,12 @@ import oracle.xml.parser.v2.XMLError;
 import oracle.xml.parser.v2.XMLNode;
 import oracle.xml.schemavalidator.XSDValidator;
 
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.SAXValidator;
 import org.dom4j.util.XMLErrorHandler;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -40,7 +41,7 @@ import org.xml.sax.SAXException;
 public class XMLUtil {
 
 	private final static String LINE_SEP = System.getProperty("line.separator", "\n");
-	private final static Logger LOGGER = Logger.getLogger(XMLUtil.class);
+	private final static Logger LOGGER = (Logger) LoggerFactory.getLogger(XMLUtil.class);
 	
     /**
      * Parses an XML document from a String.

@@ -11,9 +11,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import at.jku.dke.etutor.modules.xquery.XQCoreManager;
+import ch.qos.logback.classic.Logger;
 import oracle.sql.CLOB;
-
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /*
@@ -27,9 +27,8 @@ import org.apache.log4j.Logger;
  */
 public class XQExerciseManagerHelper {
 
-	private static final Logger LOGGER = Logger.getLogger(XQExerciseManagerHelper.class);
-	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
-	
+	private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(XQExerciseManagerHelper.class);
+
 	private static String readFile(String path) throws Exception {
 		FileReader f = null;
 		int c;
@@ -51,7 +50,7 @@ public class XQExerciseManagerHelper {
                     f.close();
                 } catch (IOException e) {
                 	String msg = "Exception when closing file input stream.";
-                    LOGGER.fatal(msg, e);
+                    LOGGER.error(msg, e);
                 }
             }
         }
@@ -69,7 +68,7 @@ public class XQExerciseManagerHelper {
 		try {
 			text = readFile(path);
 		} catch (Exception e) {
-			LOGGER.fatal("Fehler beim Lesen der Datei");
+			LOGGER.error("Fehler beim Lesen der Datei");
 			e.printStackTrace();
 			return;
 		}
@@ -117,7 +116,7 @@ public class XQExerciseManagerHelper {
 		try {
 			text = readFile(path);
 		} catch (Exception e) {
-			LOGGER.fatal("Fehler beim Lesen der Datei");
+			LOGGER.error("Fehler beim Lesen der Datei");
 			e.printStackTrace();
 			return;
 		}
@@ -174,7 +173,7 @@ public class XQExerciseManagerHelper {
 		try {
 			doc = readFile(path);
 		} catch (Exception e) {
-			LOGGER.fatal("Fehler beim Lesen der Datei");
+			LOGGER.error("Fehler beim Lesen der Datei");
 			e.printStackTrace();
 			return;
 		}
@@ -247,7 +246,7 @@ public class XQExerciseManagerHelper {
 		try {
 			doc = readFile(path);
 		} catch (Exception e) {
-			LOGGER.fatal("Fehler beim Lesen der Datei");
+			LOGGER.error("Fehler beim Lesen der Datei");
 			e.printStackTrace();
 			return;
 		}
