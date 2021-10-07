@@ -4,7 +4,6 @@ import at.jku.dke.etutor.modules.xquery.*;
 import at.jku.dke.etutor.modules.xquery.util.FileParameter;
 import at.jku.dke.etutor.modules.xquery.util.XMLUtil;
 import ch.qos.logback.classic.Logger;
-import de.fraunhofer.ipsi.xquery.api.XQueryException;
 import oracle.xml.parser.v2.XMLDocument;
 import oracle.xml.parser.v2.XSLException;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.grading.config;
 
-import de.fraunhofer.ipsi.xquery.tree.XQuery;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
