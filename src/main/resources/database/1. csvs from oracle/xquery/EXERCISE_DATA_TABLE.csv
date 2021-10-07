@@ -1,0 +1,302 @@
+"ID","QUERY","GRADINGS","POINTS"
+13043,"let $db := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=2')/db,
+    $personen := $db/person,
+    $wohnungen := $db/wohnung,
+    $mietet := $db/mietet
+return for $w in $wohnungen[gross > 50],
+           $p in $personen[stand eq 'verheiratet'],
+           $m in $mietet[(@mieternr eq $p/@nr) and (@wohnnr eq $w/@nr)]
+       order by $w/@nr
+       return <NichtSingleWohnung>{$w/@nr}{$p/name}{$w/gross}</NichtSingleWohnung>",,1
+14316,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=5001')/Bilanzen
+let $b02 := $d/Bilanz[@jahr=2002]
+let $b03 := $d/Bilanz[@jahr=2003]
+
+for $p02 in $b02/Aktiva//*, $p03 in $b03/Aktiva//*
+where local-name($p02)=local-name($p03) and not(empty($p02/*)) and not(empty($p03/*))
+return  <position name=""{node-name($p02)}"">
+        {
+        for $v in $p02//*[@summe], $w in $p03//*[@summe]
+        let $s02 := data($v/@summe)
+        let $s03 := data($w/@summe)
+        where local-name($v)=local-name($w)
+        return <position name=""{node-name($v)}""> { 
+		(
+                  <j2002>{$s02}</j2002>,
+                  <j2003>{$s03}</j2003>,
+                  <diff>{$s03 - $s02}</diff>
+                )
+                }
+              </position>
+        }
+	</position>
+",,1
+13053,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+return <filialenLinz>
+  {for $f in $hk/filialen/filiale[plz eq ""4040""]
+   return <filiale>{$f/inhName, $f/strasse, $f/plz}</filiale>}
+</filialenLinz>",,1
+13059,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+for $k in $hk/kunden/kunde
+let $linzFil := $hk/filialen/filiale[plz = ""4040""]
+where empty($hk/rechnungen/rechnung[kundeNr = $k/@kundeNr and filNr = $linzFil/@filNr])
+order by $k/name
+return $k",,1
+13044,"let $db := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=2')/db, 
+    $personen := $db/person, $wohnungen := $db/wohnung,
+    $mietet := $db/mietet
+return for $b in distinct-values($wohnungen/bezirk)
+       where empty(
+          for $w in $wohnungen[bezirk eq $b]
+          where empty($mietet[(@wohnnr eq $w/@nr) and
+                              (bis eq ""31.12.2099"")])
+          return $w)
+       order by $b
+       return <Bezirk>{$b}</Bezirk>",,1
+13060,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+for $fil in $hk/filialen/filiale
+let $katFil := (
+    let $prod := $fil/sortiment/prodInSortiment
+    for $prodK in distinct-values($hk/produkte/produkt[@ean = $prod/ean]/kategorie)
+    return ($prodK))
+let $prods := $hk/produkte/produkt
+where every $kat in distinct-values($prods/kategorie)
+    satisfies (some $k in $katFil satisfies $k = $kat)
+return <filiale filialeNr=""{$fil/@filNr}""> {
+    for $kateg in distinct-values($prods/kategorie)
+    return <prodGruppe val=""{$kateg}""> {
+        for $allePrInKat in $hk/produkte/produkt[kategorie = $kateg]/@ean
+        for $p2 in $fil/sortiment/prodInSortiment
+        where data($p2/ean) = $allePrInKat
+        return $p2/ean }
+    </prodGruppe> }
+</filiale>",,1
+13054,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+for $billigprodukt in $hk/produkte/produkt[ekPreis < 100]
+let $f := $hk/filialen/filiale[sortiment/prodInSortiment/ean = $billigprodukt/@ean]
+let $bestand := $f/sortiment/prodInSortiment[ean = $billigprodukt/@ean]/bestand
+let $prodbez := $billigprodukt/bezeichnung
+return <bProdukt ekPreis=""{data($billigprodukt/ekPreis)}"">
+		 {$prodbez}
+		 <dsBestand>{avg($bestand)}</dsBestand>
+       </bProdukt>",,1
+13055,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+for $p in $hk/produkte/produkt
+where not(some $pif in $hk/filialen/filiale/sortiment/prodInSortiment satisfies $p/@ean eq $pif/ean)
+order by $p/@ean
+return $p",,1
+13062,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+for $f in $hk/filialen/filiale
+where some $ps in $f/sortiment/prodInSortiment satisfies 
+    $ps/vkPreis < 0.8*$hk/produkte/produkt[@ean eq $ps/ean]/listPreis
+return
+  <filiale>{$f/@filNr,
+    for $ps in $f/sortiment/prodInSortiment
+    let $listPreis := $hk/produkte/produkt[@ean eq $ps/ean]/listPreis
+    where $ps/vkPreis < 0.8 * $listPreis
+    return <produkt ean=""{$ps/ean}"" vkPreis=""{$ps/vkPreis}"" listPreis=""{$listPreis}""/>}
+  </filiale>",,1
+13045,"let $db := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=2')/db, 
+    $personen := $db/person, $wohnungen := $db/wohnung,
+    $mietet := $db/mietet
+return let $ma := $mietet[bis eq '31.12.2099']
+       let $qms := (for $m in $ma, $w in $wohnungen[@nr eq $m/@wohnnr]
+                    return ($m/preis div $w/gross))
+return
+ <mietstatistik>
+  <anzahl>{count($ma)}</anzahl>
+  <sum-preis>{sum($ma/preis)}</sum-preis>
+  <qm-preis>{avg($qms)}</qm-preis>
+ </mietstatistik>
+",,1
+13056,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+for $bon in distinct-values($hk/kunden/kunde/bonStufe)
+return <bstufe val=""{$bon}"">
+  { for $k in $hk/kunden/kunde[bonStufe = $bon]
+    return <name kundeNr=""{data($k/@kundeNr)}"">
+      {data($k/name)}
+    </name>
+  } 
+</bstufe>",,1
+13061,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+let $minAnzahlProd := min(
+  for $f in $hk/filialen/filiale
+  return (count($f/sortiment/prodInSortiment))
+)
+for $fil in $hk/filialen/filiale
+where count($fil/sortiment/prodInSortiment) = $minAnzahlProd
+return <filiale prodAnzahl=""{$minAnzahlProd}"">{$fil/@filNr}</filiale>",,1
+13046,"let $db := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=2')/db, 
+    $personen := $db/person, $wohnungen := $db/wohnung,
+    $mietet := $db/mietet
+return let $gesamtflaeche := sum($wohnungen/gross)
+       for $en in distinct-values($wohnungen/@eigentuemer)
+       let $p := $personen[@nr eq $en],
+           $w := $wohnungen[@eigentuemer eq $en]
+       order by sum($w/gross)
+       return
+ <vermieterstatistik anzahl=""{count($w)}"">{$p/@nr}{$p/name}
+  <sum-gross>{sum($w/gross)}</sum-gross>
+  <anteil>{sum($w/gross)*100 div $gesamtflaeche}</anteil>
+ </vermieterstatistik>
+",,1
+13057,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+for $kat in distinct-values($hk/produkte/produkt/kategorie)
+let $prod := $hk/produkte/produkt[kategorie = $kat]
+let $price := $hk/filialen/filiale/sortiment/prodInSortiment[ean = $prod/@ean]/vkPreis
+return <kategorie val=""{$kat}"">{avg($price)}</kategorie>",,1
+13058,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+for $k in $hk/kunden/kunde
+let $re := $hk/rechnungen/rechnung[kundeNr = $k/@kundeNr]
+let $umsatzPos := (
+    for $rPos in $hk/rechnungen/rechnung[kundeNr = $k/@kundeNr]/rposition
+	return ($rPos/einzelPreis * $rPos/menge))
+let $umsatz := sum($umsatzPos)
+order by $umsatz descending
+return <kunde umsatz=""{$umsatz}"">{$k/@kundeNr}</kunde>",,1
+14267,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette return <kundenBonB> {for $k in $hk/kunden/kunde[bonStufe eq ""B""] return $k} </kundenBonB>",,1
+13047,"let $db := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=2')/db, 
+    $personen := $db/person, $wohnungen := $db/wohnung,
+    $mietet := $db/mietet
+return for $b in distinct-values($wohnungen/bezirk)
+       let $anzahl := count($wohnungen[bezirk eq $b])
+       where empty(for $w in $wohnungen[bezirk eq $b],
+                       $m in $mietet[(@wohnnr eq $w/@nr) and 
+                                     (bis eq ""31.12.2099"")]
+                   return $m)
+       order by $b
+       return <unbelegterbezirk nr=""{$b}"" anzahlwohnungen=""{$anzahl}""/>
+",,1
+14268,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette for $et in $hk/produkte/produkt[kategorie eq ""Ersatz""] return <ersatzteil><ean>{data($et/@ean)}</ean>    {$et/bezeichnung} </ersatzteil>",,1
+14269,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette let $fil5020 := $hk/filialen/filiale[plz eq ""5020""]/@filNr for $k in $hk/kunden/kunde where not(some $r in $hk/rechnungen/rechnung[kundeNr eq $k/@kundeNr]   satisfies $r/filNr = $fil5020) order by $k/name return $k",,1
+14270,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette let $pg := distinct-values($hk/produkte/produkt/kategorie) for $kat in $pg let $prodInKat := $hk/produkte/produkt[kategorie eq $kat] return <kategorie kname=""{$kat}"">     <anzahl>{count($prodInKat)}</anzahl> <avgEkPreis>{avg($prodInKat/ekPreis)}</avgEkPreis> </kategorie>",,1
+14271,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+let $bs := distinct-values($hk/kunden/kunde/bonStufe)
+for $bStufe in $bs
+let $kdNrBs := $hk/kunden//kunde[bonStufe eq $bStufe]/@kundeNr,
+    $kdCnt := count(distinct-values($kdNrBs))
+let $rPosten :=
+    (for $r in $hk/rechnungen/rechnung[kundeNr = $kdNrBs]/rposition
+    return ($r/einzelPreis * $r/menge))
+order by $bStufe
+return <bStufe val=""{$bStufe}"">
+    <umsGesamt>{sum($rPosten)}</umsGesamt>
+    <umsProKunde>{sum($rPosten) div $kdCnt}</umsProKunde>
+</bStufe>",,1
+14272,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette let $prodAudio := $hk/produkte/produkt[kategorie eq ""Audio""]/@ean for $k in $hk/kunden/kunde where not(some $r in $hk/rechnungen/rechnung[kundeNr eq $k/@kundeNr] satisfies $r/rposition/ean = $prodAudio) order by $k/name return <kundeNr>{data($k/@kundeNr)}</kundeNr>",,1
+14273,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette for $filiale in $hk/filialen/filiale where some $b in $filiale/sortiment/prodInSortiment/bestand satisfies $b < 4 return <bestellung>{$filiale/@filNr, for $prod in $filiale/sortiment/prodInSortiment[bestand < 4] order by $prod/ean return <ean val=""{$prod/ean}"" bestellmenge=""{10 - $prod/bestand}""/>} </bestellung>",,1
+14274,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette for $fil in $hk/filialen/filiale let $re := $hk/rechnungen/rechnung[bezahlt=""N"" and filNr=$fil/@filNr] let $anz := count($re) let $offenPos := (for $rPos in $hk/rechnungen/rechnung [bezahlt=""N"" and filNr=$fil/@filNr]/rposition return ($rPos/einzelPreis * $rPos/menge)) return <filiale anzahlOffen=""{$anz}"">{$fil/@filNr} {sum($offenPos) } </filiale> 
+",,1
+14275,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette let $fil := $hk/filialen/filiale for $prod in $hk/produkte/produkt where every $f in $fil satisfies(some $ean in $f/sortiment/prodInSortiment/ean satisfies ($ean = $prod/@ean)) return <produkt>{$prod/@ean, $prod/bezeichnung, $prod/kategorie}</produkt>",,1
+14307,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=5001')/Bilanzen
+let $sa := $d//Sachanlagen
+return $sa",,1
+14308,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=5001')/Bilanzen
+let $sa := $d//Sachanlagen
+for $s in $sa 
+return <Sachgueter vermoegen=""{$s/@summe}""/>
+",,1
+14309,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=5001')/Bilanzen
+let $sa := $d//Sachanlagen
+for $s in $sa 
+return <Sachanlagen>
+          <summe>{data($s/@summe)}</summe>
+       </Sachanlagen>
+",,1
+14310,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=5001')/Bilanzen
+let $lfvm := $d/Bilanz[@jahr=2003]/Aktiva/LangfristigesVermoegen/*
+for $v in $lfvm
+order by xs:float($v/@summe) descending
+return $v",,1
+14311,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=5001')/Bilanzen
+let $akt := $d/Bilanz[@jahr=2003]/Aktiva//*[@summe>200000]
+return sum($akt/@summe)
+",,1
+14312,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=5001')/Bilanzen
+for $v in $d//*
+where empty($v/*)
+return $v
+",,1
+14313,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=5001')/Bilanzen
+let $bilanzen := $d/Bilanz
+for $b in $bilanzen
+let $akt := $b/Aktiva//*[@summe]
+return <aktiva jahr=""{$b/@jahr}"" summe=""{sum($akt/@summe)}""/>
+",,1
+14314,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=5001')/Bilanzen
+let $b02 := $d/Bilanz[@jahr=2002]
+for $p02 in $b02/Aktiva//*
+return  node-name($p02) 
+",,1
+14315,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=5001')/Bilanzen
+let $drei := $d//Bilanz[@jahr=2003]//LangfristigesVermoegen
+let $zwei := $d//Bilanz[@jahr=2002]//LangfristigesVermoegen
+
+for $x in $drei/*
+for $xx in $zwei/*
+
+let $res := <d>{string($x/@summe)}</d> - <d>{string($xx/@summe)}</d>
+let $name := <g><f>{name($x)}</f></g>
+let $str := <positionsdifferenz name='{string($name)}'>{$res}</positionsdifferenz>
+where name($x) = name($xx)
+return $str
+",,1
+14318,"let $db := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=5001')
+return $db",,1
+14320,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=5001')/Bilanzen
+let $b02 := $d/Bilanz[@jahr=2002]
+let $b03 := $d/Bilanz[@jahr=2003]
+
+for $p02 in $b02/Aktiva//*, $p03 in $b03/Aktiva//*
+where local-name($p02)=local-name($p03) and not(empty($p02/*)) and not(empty($p03/*))
+return  <position name=""{node-name($p02)}"">
+        {
+        for $v in $p02//*[@summe], $w in $p03//*[@summe]
+        let $s02 := data($v/@summe)
+        let $s03 := data($w/@summe)
+        where local-name($v)=local-name($w)
+        return <position name=""{node-name($v)}""> { 
+		(
+                  <j2002>{$s02}</j2002>,
+                  <j2003>{$s03}</j2003>,
+                  <diff>{$s03 - $s02}</diff>
+                )
+                }
+              </position>
+        }
+	</position>
+",,1
+14321,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+let $i := $d//inhName
+return $i",,1
+14322,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+let $p := $d/filialen/filiale[@filNr=1]/sortiment/prodInSortiment[vkPreis>5000]
+return sum($p/vkPreis)",,1
+14323,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+let $kn := $d//kunde
+for $k in $kn 
+return <customer customerNo=""{$k/@kundeNr}""/>",,1
+14324,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+let $sa := $d//kunde
+for $s in $sa 
+return <kunde>
+          <nummer>{data($s/@kundeNr)}</nummer>
+       </kunde>",,1
+14325,"let $d := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+let $pis := $d/filialen/filiale[@filNr=1]/sortiment/*
+for $p in $pis
+order by xs:float($p/vkPreis) descending
+return $p",,1
+14319,"let $hk := doc('http://etutor.dke.uni-linz.ac.at/etutor/XML?id=1')/handelskette
+let $bs := distinct-values($hk/kunden/kunde/bonStufe)
+for $bStufe in $bs
+let $kdNrBs := $hk/kunden//kunde[bonStufe eq $bStufe]/@kundeNr,
+    $kdCnt := count(distinct-values($kdNrBs))
+let $rPosten :=
+    (for $r in $hk/rechnungen/rechnung[kundeNr = $kdNrBs]/rposition
+    return ($r/einzelPreis * $r/menge))
+order by $bStufe
+return <bStufe val=""{$bStufe}"">
+    <umsGesamt>{sum($rPosten)}</umsGesamt>
+    <umsProKunde>{sum($rPosten) div $kdCnt}</umsProKunde>
+</bStufe>",,1
