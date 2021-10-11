@@ -37,10 +37,8 @@ public class ModuleManager{
     public Evaluator getEvaluator(String tasktype) {
         return switch (tasktype) {
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#SQLTask", "sql" -> new SQLEvaluator(sqlConstants);
-            case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#SQLTask" -> new SQLEvaluator(sqlConstants);
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#RATask" -> new RAEvaluator(new SQLEvaluator(sqlConstants), new SQLReporter());
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#XQueryTask" -> new XQEvaluatorImpl(properties);
-            case "sql" -> new SQLEvaluator(sqlConstants);
             default -> null;
         };
     }
