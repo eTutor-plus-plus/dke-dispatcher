@@ -7,7 +7,6 @@ import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
 import ch.qos.logback.classic.Logger;
-import io.swagger.models.Response;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
