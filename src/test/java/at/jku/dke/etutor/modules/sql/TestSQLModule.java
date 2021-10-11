@@ -65,7 +65,7 @@ public class TestSQLModule {
      * @throws SQLException
      */
     @Test
-    @Disabled
+    //@Disabled
     void whenSubmissionIsSolution_thenAllPoints() throws IOException, InterruptedException, SQLException {
         ResultSet exercises = getExercisesResultSet();
         while (exercises.next()) {
@@ -86,6 +86,7 @@ public class TestSQLModule {
                 .uri(URI.create(REST_URL + "/submission"))
                 .POST(HttpRequest.BodyPublishers.ofString(submissionJson))
                 .setHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                .setHeader(HttpHeaders.ACCEPT_LANGUAGE, "de")
                 .build();
         HttpResponse<String> response = sendRequest(request);
         String id = getId(response);

@@ -16,6 +16,7 @@ import java.util.Map;
  */
 @Entity
 @JsonIgnoreProperties(ignoreUnknown=true)
+@Table(name = "submission")
 public class Submission implements Serializable {
     @Id
     private String submissionId;
