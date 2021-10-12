@@ -49,7 +49,7 @@ public class ETutorSubmissionController {
      */
     @CrossOrigin(origins="*")
     @PostMapping("")
-    public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody SubmissionDTO submissionDto, @RequestHeader("Accept-Language") String language) {
+    public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody SubmissionDTO submissionDto, @RequestHeader(value = "Accept-Language", defaultValue = "de") String language) {
         Submission submission = new Submission(submissionDto);
         logger.info("Submission received");
         SubmissionId submissionId;
