@@ -5,7 +5,7 @@ import at.jku.dke.etutor.grading.rest.dto.SubmissionDTO;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
-import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
+import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,14 +27,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @org.springframework.web.bind.annotation.RequestMapping("/submission")
 public class ETutorSubmissionController {
     private final Logger logger;
-    private final SubmissionDispatcher submissionDispatcherService;
+    private final SubmissionDispatcherService submissionDispatcherService;
     private final SubmissionRepository submissionRepository;
 
     /**
      * The constructor
      * @param submissionDispatcherService the injected SubmissionDispatcher service that handles the evaluation of a submission
      */
-    public ETutorSubmissionController(SubmissionDispatcher submissionDispatcherService, SubmissionRepository submissionRepository){
+    public ETutorSubmissionController(SubmissionDispatcherService submissionDispatcherService, SubmissionRepository submissionRepository){
         this.logger = (Logger) LoggerFactory.getLogger(ETutorSubmissionController.class);
         this.submissionDispatcherService = submissionDispatcherService;
         this.submissionRepository = submissionRepository;

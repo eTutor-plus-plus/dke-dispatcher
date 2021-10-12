@@ -6,13 +6,15 @@ import at.jku.dke.etutor.grading.config.AsyncConfiguration;
 import at.jku.dke.etutor.grading.rest.ETutorGradingController;
 import at.jku.dke.etutor.grading.rest.ETutorSubmissionController;
 import at.jku.dke.etutor.grading.rest.ETutorSQLController;
-import at.jku.dke.etutor.grading.service.ModuleManager;
-import at.jku.dke.etutor.grading.service.RepositoryManager;
-import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
+import at.jku.dke.etutor.grading.service.ModuleService;
+import at.jku.dke.etutor.grading.service.RepositoryService;
+import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
+import at.jku.dke.etutor.grading.service.XQueryResourceService;
 import at.jku.dke.etutor.modules.ra2sql.RAEvaluator;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
 import at.jku.dke.etutor.modules.sql.report.SQLReporter;
+import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseManagerImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -41,15 +43,17 @@ import java.util.List;
         ETutorGradingController.class,
         ETutorSubmissionController.class,
         ETutorSQLController.class,
-        ModuleManager.class,
-        RepositoryManager.class,
+        ModuleService.class,
+        RepositoryService.class,
         ETutorGradingApplication.class,
-        SubmissionDispatcher.class,
+        SubmissionDispatcherService.class,
         AsyncConfiguration.class,
         SQLConstants.class,
         SQLEvaluator.class,
         RAEvaluator.class,
-        SQLReporter.class
+        SQLReporter.class,
+        XQueryResourceService.class,
+        XQExerciseManagerImpl.class
 })
 @EnableConfigurationProperties({ApplicationProperties.class})
 @SpringBootApplication

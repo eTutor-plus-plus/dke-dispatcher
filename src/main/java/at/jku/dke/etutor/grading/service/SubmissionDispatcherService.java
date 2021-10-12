@@ -16,15 +16,15 @@ import java.util.Locale;
  * and persist the entities
  */
 @Service
-public class SubmissionDispatcher  {
+public class SubmissionDispatcherService {
     private final Logger logger;
-    private final RepositoryManager repositoryManager;
-    private final ModuleManager moduleManager;
+    private final RepositoryService repositoryService;
+    private final ModuleService moduleService;
 
-    public SubmissionDispatcher(RepositoryManager repositoryManager, ModuleManager moduleManager) {
-        this.logger = (Logger) LoggerFactory.getLogger(SubmissionDispatcher.class);
-        this.repositoryManager=repositoryManager;
-        this.moduleManager=moduleManager;
+    public SubmissionDispatcherService(RepositoryService repositoryService, ModuleService moduleService) {
+        this.logger = (Logger) LoggerFactory.getLogger(SubmissionDispatcherService.class);
+        this.repositoryService = repositoryService;
+        this.moduleService = moduleService;
     }
 
     /**
@@ -35,11 +35,11 @@ public class SubmissionDispatcher  {
     @Async("asyncExecutor")
     public void run(Submission submission, Locale locale) {
         logger.debug("Saving submission to database");
-        repositoryManager.persistSubmission(submission);
+        repositoryService.persistSubmission(submission);
         logger.debug("Finished saving submission to database");
         try {
             logger.debug("Evaluating submission");
-            Evaluator evaluator = moduleManager.getEvaluator(submission.getTaskType());
+            Evaluator evaluator = moduleService.getEvaluator(submission.getTaskType());
             if (evaluator == null) {
                 logger.warn("Could not find evaluator for tasktype: {}", submission.getTaskType());
                 return;
@@ -117,7 +117,7 @@ public class SubmissionDispatcher  {
     public void persistGrading(GradingDTO gradingDTO){
         try{
             logger.debug("Saving grading to database");
-            repositoryManager.persistGrading(gradingDTO);
+            repositoryService.persistGrading(gradingDTO);
             logger.debug("Finished saving grading to database");
         }catch(Exception e){
             logger.error("Could not save grading");

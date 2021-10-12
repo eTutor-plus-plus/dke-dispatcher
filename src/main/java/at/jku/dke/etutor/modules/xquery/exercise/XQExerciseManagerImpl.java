@@ -9,6 +9,7 @@ import at.jku.dke.etutor.modules.xquery.grading.XQGradingConfig;
 import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -18,18 +19,15 @@ import java.util.*;
 
 
 //TODO: restliche Methoden auf application.properties umstellen
-public class XQExerciseManagerImpl extends UnicastRemoteObject implements XQExerciseManager {
+@Service
+public class XQExerciseManagerImpl implements XQExerciseManager {
 	
 	private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(XQExerciseManagerImpl.class);
 	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
 	private final ApplicationProperties applicationProperties;
 
-	public XQExerciseManagerImpl(ApplicationProperties properties) throws RemoteException {
+	public XQExerciseManagerImpl(ApplicationProperties properties) {
 		super();
-        //evaluator implementation is bound to RMI registry at startup process; 
-        //requesting core manager instance causes creation of singleton
-        //and initialization of basic resources with configuration errors
-        //being logged
         XQCoreManager.getInstance(properties);
         this.applicationProperties = properties;
 	}

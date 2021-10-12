@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  * Maps the task-types to the modules implementation of the Evaluator interface
  */
 @Service
-public class ModuleManager{
+public class ModuleService {
     private ApplicationProperties properties;
     private SQLConstants sqlConstants;
 
@@ -22,7 +22,7 @@ public class ModuleManager{
      * The constructor
      * @param sqlEvaluator the inejcted SQLEvaluator
      */
-    public ModuleManager(
+    public ModuleService(
             ApplicationProperties properties,
             SQLConstants sqlConstants){
         this.properties = properties;

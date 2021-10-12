@@ -3,7 +3,7 @@ package at.jku.dke.etutor.grading.rest;
 import at.jku.dke.etutor.grading.ETutorCORSPolicy;
 import at.jku.dke.etutor.grading.rest.dto.DataDefinitionDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
-import at.jku.dke.etutor.grading.service.SQLResourceManager;
+import at.jku.dke.etutor.grading.service.SQLResourceService;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -20,14 +20,14 @@ import java.text.MessageFormat;
 @RequestMapping("/sql")
 public class ETutorSQLController {
     private final Logger logger;
-    private final SQLResourceManager resourceManager;
+    private final SQLResourceService resourceManager;
 
 
     /**
      * The constructor
       * @param resourceManager the injected SQLResourceManager providing methods for manipulating data related to the SQL module
      */
-    public ETutorSQLController(SQLResourceManager resourceManager){
+    public ETutorSQLController(SQLResourceService resourceManager){
 
         this.logger= (Logger) LoggerFactory.getLogger(ETutorSQLController.class);
         this.resourceManager=resourceManager;

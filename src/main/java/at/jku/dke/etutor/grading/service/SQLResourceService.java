@@ -13,7 +13,7 @@ import java.util.List;
  * Service used to manipulate schemas and exercises for the SQL module
  */
 @Service
-public class SQLResourceManager {
+public class SQLResourceService {
 
     private final String SQL_BASE_URL;
     private final String SQL_ADMINISTRATION_URL;
@@ -34,7 +34,7 @@ public class SQLResourceManager {
      * @param properties the injected application properties
      * @throws ClassNotFoundException if class not found
      */
-    public SQLResourceManager(ApplicationProperties properties) throws ClassNotFoundException {
+    public SQLResourceService(ApplicationProperties properties) throws ClassNotFoundException {
         Class.forName(properties.getGrading().getJDBCDriver());
         this.logger= (Logger) LoggerFactory.getLogger("at.jku.dke.etutor.sqlexercisemanager");
 

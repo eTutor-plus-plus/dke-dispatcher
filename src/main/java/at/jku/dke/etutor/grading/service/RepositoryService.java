@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  *Service for handling entities
  */
 @Service
-public class RepositoryManager {
+public class RepositoryService {
     private  final GradingDTORepository gradingRepository;
     private  final SubmissionRepository submissionRepository;
     private  final ReportDTORepository reportRepository;
@@ -24,7 +24,7 @@ public class RepositoryManager {
      * @param submissionRepo the injected JPARepository for Submissions
      * @param reportRepo the injected JPARepository for ReportDTO´s
      */
-    public RepositoryManager(GradingDTORepository gradingRepo,
+    public RepositoryService(GradingDTORepository gradingRepo,
                              SubmissionRepository submissionRepo, ReportDTORepository reportRepo){
         gradingRepository = gradingRepo;
         submissionRepository = submissionRepo;
