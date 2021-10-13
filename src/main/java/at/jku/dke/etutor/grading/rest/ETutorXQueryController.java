@@ -58,7 +58,11 @@ public class ETutorXQueryController {
         }
     }
 
-    
+    /**
+     * Returns the diagnose-xml for a task group
+     * @param taskGroupUUID the UUID of the task group
+     * @return a String containing the xml
+     */
     @GetMapping("/xml/taskGroup/{taskGroupUUID}")
     public ResponseEntity<String> getXML(@PathVariable String taskGroupUUID){
         Objects.requireNonNull(taskGroupUUID);

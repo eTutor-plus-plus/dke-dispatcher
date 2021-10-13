@@ -135,6 +135,12 @@ public class XQueryResourceService {
         }
     }
 
+    /**
+     * Fetches available ids for xml files
+     * @param con the Connection
+     * @return the id's
+     * @throws SQLException if an error occurs while accessing the database
+     */
     public int[] fetchAvailableIds(Connection con) throws SQLException {
         String query = "Select max(id) from xmldocs";
         int maxId;
@@ -155,6 +161,12 @@ public class XQueryResourceService {
         }
     }
 
+    /**
+     * Returns an xml for a task group
+     * @param UUID the UUID of the task group
+     * @return a String containing the xml
+     * @throws SQLException if an error occurs while accessing the database
+     */
     public String getXML(String UUID) throws SQLException {
         String query = "SELECT diagnoseFileId FROM taskGroup_fileIds_mapping WHERE UUID = ?";
         String xml = "";
@@ -174,6 +186,13 @@ public class XQueryResourceService {
         return xml;
     }
 
+    /**
+     * Fetches an xml from the database
+     * @param con the Connection
+     * @param id the file id
+     * @return a String containing the xml
+     * @throws SQLException if an error occurs while accessing the database
+     */
     private String fetchXML(Connection con, int id) throws SQLException {
         String query = "SELECT doc FROM xmldocs WHERE id = ?";
         try(PreparedStatement stmt = con.prepareStatement(query)){
