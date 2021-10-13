@@ -5,10 +5,13 @@ import at.jku.dke.etutor.grading.rest.dto.XMLDefinitionDTO;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.repository.config.RepositoryNameSpaceHandler;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Objects;
 
 @RestController(value="/xquery")
@@ -23,6 +26,13 @@ public class ETutorXQueryController {
         LOGGER = (Logger) LoggerFactory.getLogger(ETutorXQueryController.class);
     }
 
+    /**
+     * Adds the XML files for a specific taskGroup to to filesystem and adds the necessary data to the database,
+     * namely the mapping of the taskGroup-UUID to the file-ids and the XML's to the xmldocs table.
+     * @param taskGroupUUID the UUID identifying the task
+     * @param xmls wrapper dto for the diagnose-xml and submission-xml
+     * @return
+     */
     @PostMapping(value = "/xml/taskgroup/{taskGroupUUID}")
     public ResponseEntity<Integer> addXML(@PathVariable String taskGroupUUID, @RequestBody XMLDefinitionDTO xmls){
         Objects.requireNonNull(taskGroupUUID);
@@ -30,19 +40,35 @@ public class ETutorXQueryController {
         int diagnoseFileId;
         int submissionFileId;
 
-        // TODO:1. find available/ existent ids for diagnose and submission
-        diagnoseFileId = 22;
-        submissionFileId = 23;
-        // 2. Save the files at the path specified in the properties: path/id.xml
+        int[] fileIds;
         try {
-            xQueryResourceService.createXMLFiles(xmls, diagnoseFileId, submissionFileId);
-        } catch (IOException e) {
-            e.printStackTrace();
+            fileIds = xQueryResourceService.getFileIds(taskGroupUUID, xmls);
+            diagnoseFileId = fileIds[0];
+            submissionFileId = fileIds[1];
+            try {
+                xQueryResourceService.createXMLFiles(xmls, diagnoseFileId, submissionFileId);
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1);
+            }
+            return ResponseEntity.ok(diagnoseFileId);
+        } catch (SQLException throwables) {
+            LOGGER.error(throwables.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1);
         }
-        // 3. map the UUID to the found url and hidden url - ids in the database
-        // 4. return the id of the diagnose schema for XML retrieval
-        // 5. when creating a task, fetch the ids according to the taskgroup uuid, append them to the url prefix according to properties and save them as url/hidden url for the task
-        // 6. persist data in xmldocs table
-        return ResponseEntity.ok(0);
+    }
+
+    
+    @GetMapping("/xml/taskGroup/{taskGroupUUID}")
+    public ResponseEntity<String> getXML(@PathVariable String taskGroupUUID){
+        Objects.requireNonNull(taskGroupUUID);
+        String xml = null;
+        try {
+            xml = xQueryResourceService.getXML(taskGroupUUID);
+            return ResponseEntity.ok(xml);
+        } catch (SQLException throwables) {
+           LOGGER.error(throwables.getMessage());
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(throwables.getMessage());
+        }
     }
 }

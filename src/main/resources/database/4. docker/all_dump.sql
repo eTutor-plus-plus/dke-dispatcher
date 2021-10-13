@@ -13,8 +13,6 @@ SET standard_conforming_strings = on;
 
 CREATE ROLE etutor;
 ALTER ROLE etutor WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION NOBYPASSRLS PASSWORD 'SCRAM-SHA-256$4096:gjjvvllncxx9CeL8Gu9kzg==$5Ai9fKfIPk3EyuLf8pNwa9YJBrbx6mj3ATAEYjbcMX0=:xrEALT7vE5Kx53ftOJP+jA+kUfO3r52qc/xTTiHui7o=';
-CREATE ROLE postgres;
-ALTER ROLE postgres WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION BYPASSRLS PASSWORD 'SCRAM-SHA-256$4096:2hlXb5TGt5LNRTaigcbqJw==$XdQoXvGeVcFqoz178qamC9/7U8mdGaLKk+lB1M36CYM=:z3y1DNmDzdKSj144II+04PhZqK77C+AFpMnRLKBxNpA=';
 CREATE ROLE sql;
 ALTER ROLE sql WITH NOSUPERUSER NOINHERIT NOCREATEROLE NOCREATEDB LOGIN NOREPLICATION NOBYPASSRLS PASSWORD 'SCRAM-SHA-256$4096:Ao5Xgmea57FvlWRtmNfwkA==$1X2KzQa0qm1pSqoSB4iDJja/7uJCd4qbZlMD9zroNY0=:AqhsFYF8K8mBYzVbtFjXV6BuTL7cYnkoYA/1ERtTeeQ=';
 
@@ -11625,7 +11623,7 @@ CREATE TABLE public.error_grading_group (
 );
 
 
-ALTER TABLE public.error_grading_group OWNER TO postgres;
+ALTER TABLE public.error_grading_group OWNER TO etutor;
 
 --
 -- Name: error_gradings; Type: TABLE; Schema: public; Owner: postgres
@@ -11639,7 +11637,7 @@ CREATE TABLE public.error_gradings (
 );
 
 
-ALTER TABLE public.error_gradings OWNER TO postgres;
+ALTER TABLE public.error_gradings OWNER TO etutor;
 
 --
 -- Name: exercise; Type: TABLE; Schema: public; Owner: postgres
@@ -11653,7 +11651,7 @@ CREATE TABLE public.exercise (
 );
 
 
-ALTER TABLE public.exercise OWNER TO postgres;
+ALTER TABLE public.exercise OWNER TO etutor;
 
 --
 -- Name: exercise_urls; Type: TABLE; Schema: public; Owner: postgres
@@ -11666,7 +11664,7 @@ CREATE TABLE public.exercise_urls (
 );
 
 
-ALTER TABLE public.exercise_urls OWNER TO postgres;
+ALTER TABLE public.exercise_urls OWNER TO  etutor;
 
 --
 -- Name: sortings; Type: TABLE; Schema: public; Owner: postgres
@@ -11678,7 +11676,7 @@ CREATE TABLE public.sortings (
 );
 
 
-ALTER TABLE public.sortings OWNER TO postgres;
+ALTER TABLE public.sortings OWNER TO etutor;
 
 --
 -- Name: xmldocs; Type: TABLE; Schema: public; Owner: postgres
@@ -11691,7 +11689,20 @@ CREATE TABLE public.xmldocs (
 );
 
 
-ALTER TABLE public.xmldocs OWNER TO postgres;
+ALTER TABLE public.xmldocs OWNER TO etutor;
+
+--
+-- Name: taskGroup_fileIds_mapping; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.taskGroup_fileIds_mapping (
+    UUID character varying(20) NOT NULL,
+    diagnoseFileId integer NOT NULL,
+    submissionFileId integer NOT NULL
+);
+
+
+ALTER TABLE public.taskGroup_fileIds_mapping OWNER TO etutor;
 
 --
 -- Data for Name: bu_exercise_urls; Type: TABLE DATA; Schema: public; Owner: postgres

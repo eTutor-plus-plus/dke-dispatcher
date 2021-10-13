@@ -307,6 +307,7 @@ public class ApplicationProperties {
             private String urls;
             private String exercise;
             private String sortings;
+            private String taskGroup_fileIds_mapping;
 
             public String getError_categories() {
                 return error_categories;
@@ -346,6 +347,14 @@ public class ApplicationProperties {
 
             public void setSortings(String sortings) {
                 this.sortings = sortings;
+            }
+
+            public String getTaskGroup_fileIds_mapping() {
+                return taskGroup_fileIds_mapping;
+            }
+
+            public void setTaskGroup_fileIds_mapping(String taskGroup_fileIds_mapping) {
+                this.taskGroup_fileIds_mapping = taskGroup_fileIds_mapping;
             }
         }
     }
