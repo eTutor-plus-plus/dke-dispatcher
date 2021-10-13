@@ -5,7 +5,6 @@ import at.jku.dke.etutor.grading.rest.dto.XMLDefinitionDTO;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.repository.config.RepositoryNameSpaceHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
 
-@RestController(value="/xquery")
+@RestController
+@RequestMapping("/xquery")
 public class ETutorXQueryController {
     private ApplicationProperties properties;
     private XQueryResourceService xQueryResourceService;
@@ -33,7 +33,7 @@ public class ETutorXQueryController {
      * @param xmls wrapper dto for the diagnose-xml and submission-xml
      * @return
      */
-    @PostMapping(value = "/xml/taskgroup/{taskGroupUUID}")
+    @PostMapping(value = "/xml/taskGroup/{taskGroupUUID}")
     public ResponseEntity<Integer> addXML(@PathVariable String taskGroupUUID, @RequestBody XMLDefinitionDTO xmls){
         Objects.requireNonNull(taskGroupUUID);
         Objects.requireNonNull(xmls);
