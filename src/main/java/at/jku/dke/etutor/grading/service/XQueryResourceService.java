@@ -78,11 +78,39 @@ public class XQueryResourceService {
             }
             persistXMLinDatabase(con, result[0], xmls.getDiagnoseXML(), isNew);
             persistXMLinDatabase(con, result[1], xmls.getSubmissionXML(), isNew);
+            addPublicFileId(con, result[0]);
             con.commit();
         } catch (SQLException throwables) {
             throw new SQLException(throwables);
         }
         return result;
+    }
+
+    /**
+     * Adds the diagnose-file-id of a task group to the list of public available xml files
+     * @param con the Connection
+     * @param i the id
+     */
+    private void addPublicFileId(Connection con, int i) throws SQLException {
+        String query = "INSERT INTO public_file_ids values(?)";
+        try(PreparedStatement stmt = con.prepareStatement(query)){
+            stmt.setInt(1, i);
+            stmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Removes a public file id
+     * @param con the Connection
+     * @param i the id
+     * @throws SQLException if an error occurs
+     */
+    private void removePublicFileId(Connection con, int i) throws SQLException {
+        String query = "DELETE FROM public_file_ids where id = ?";
+        try(PreparedStatement stmt = con.prepareStatement(query)){
+            stmt.setInt(1, i);
+            stmt.executeUpdate();
+        }
     }
 
     /**
@@ -249,6 +277,7 @@ public class XQueryResourceService {
                deleteStmt.executeUpdate();
                deleteXMLDocsFromDB(con, diagnoseFileId, submissionFileId);
                deleteXMLFiles(diagnoseFileId, submissionFileId);
+               removePublicFileId(con, diagnoseFileId);
             }else{
                 return;
             }
