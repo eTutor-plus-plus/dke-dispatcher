@@ -11696,7 +11696,7 @@ ALTER TABLE public.xmldocs OWNER TO etutor;
 --
 
 CREATE TABLE public.taskGroup_fileIds_mapping (
-    UUID character varying(20) NOT NULL,
+    taskGroup character varying(20) NOT NULL,
     diagnoseFileId integer NOT NULL,
     submissionFileId integer NOT NULL
 );

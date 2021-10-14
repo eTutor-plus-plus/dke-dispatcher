@@ -29,20 +29,20 @@ public class ETutorXQueryController {
     /**
      * Adds the XML files for a specific taskGroup to to filesystem and adds the necessary data to the database,
      * namely the mapping of the taskGroup-UUID to the file-ids and the XML's to the xmldocs table.
-     * @param taskGroupUUID the UUID identifying the task
+     * @param taskGroup the UUID identifying the task
      * @param xmls wrapper dto for the diagnose-xml and submission-xml
      * @return
      */
-    @PostMapping(value = "/xml/taskGroup/{taskGroupUUID}")
-    public ResponseEntity<Integer> addXML(@PathVariable String taskGroupUUID, @RequestBody XMLDefinitionDTO xmls){
-        Objects.requireNonNull(taskGroupUUID);
+    @PostMapping(value = "/xml/taskGroup/{taskGroup}")
+    public ResponseEntity<Integer> addXML(@PathVariable String taskGroup, @RequestBody XMLDefinitionDTO xmls){
+        Objects.requireNonNull(taskGroup);
         Objects.requireNonNull(xmls);
         int diagnoseFileId;
         int submissionFileId;
 
         int[] fileIds;
         try {
-            fileIds = xQueryResourceService.getFileIds(taskGroupUUID, xmls);
+            fileIds = xQueryResourceService.getFileIds(taskGroup, xmls);
             diagnoseFileId = fileIds[0];
             submissionFileId = fileIds[1];
             try {
@@ -60,15 +60,15 @@ public class ETutorXQueryController {
 
     /**
      * Returns the diagnose-xml for a task group
-     * @param taskGroupUUID the UUID of the task group
+     * @param taskGroup the UUID of the task group
      * @return a String containing the xml
      */
-    @GetMapping("/xml/taskGroup/{taskGroupUUID}")
-    public ResponseEntity<String> getXML(@PathVariable String taskGroupUUID){
-        Objects.requireNonNull(taskGroupUUID);
+    @GetMapping("/xml/taskGroup/{taskGroup}")
+    public ResponseEntity<String> getXML(@PathVariable String taskGroup){
+        Objects.requireNonNull(taskGroup);
         String xml = null;
         try {
-            xml = xQueryResourceService.getXML(taskGroupUUID);
+            xml = xQueryResourceService.getXML(taskGroup);
             return ResponseEntity.ok(xml);
         } catch (SQLException throwables) {
            LOGGER.error(throwables.getMessage());

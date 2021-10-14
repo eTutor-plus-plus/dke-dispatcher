@@ -49,24 +49,24 @@ public class XQueryResourceService {
     }
 
     /**
-     * Takes a taskGrou-UUID and the 2 xml's and processes them.
-     * @param taskGroupUUID the UUID identifying the taskGroup
+     * Takes a taskGrou-taskGroup and the 2 xml's and processes them.
+     * @param taskGroup the taskGroup identifying the taskGroup
      * @param xmls the xml's
      * @return the id's of the diagnose and submission xml
      * @throws SQLException if an error occurs while accessing the database
      */
-    public int[] getFileIds(String taskGroupUUID, XMLDefinitionDTO xmls) throws SQLException {
+    public int[] getFileIds(String taskGroup, XMLDefinitionDTO xmls) throws SQLException {
         boolean isNew ;
         int[] result = new int[2];
 
         String tableName = properties.getXquery().getTable().getTaskGroup_fileIds_mapping();
-        String mappingExistsQuery = "SELECT * FROM " + tableName + " WHERE UUID = ?";
+        String mappingExistsQuery = "SELECT * FROM " + tableName + " WHERE taskGroup = ?";
 
         try(Connection con = DriverManager.getConnection(URL, USER, PWD);
             PreparedStatement stmt = con.prepareStatement(mappingExistsQuery)){
             con.setAutoCommit(false);
 
-            stmt.setString(1, taskGroupUUID);
+            stmt.setString(1, taskGroup);
             ResultSet resultSet = stmt.executeQuery();
             if (resultSet.next()){
                 isNew = false;
@@ -75,7 +75,7 @@ public class XQueryResourceService {
             }else{
                 isNew = true;
                 result = fetchAvailableIds(con);
-                addFileIdMappings(con, taskGroupUUID, result[0], result[1]);
+                addFileIdMappings(con, taskGroup, result[0], result[1]);
             }
             persistXMLinDatabase(con, result[0], xmls.getDiagnoseXML(), isNew);
             persistXMLinDatabase(con, result[1], xmls.getSubmissionXML(), isNew);
@@ -117,18 +117,18 @@ public class XQueryResourceService {
     }
 
     /**
-     * Adds the mapping from the taskGroup-UUID to the file id#s to the database
+     * Adds the mapping from the taskGroup-taskGroup to the file id#s to the database
      * @param con the Connection
-     * @param taskGroupUUID the UUID of the taskGroup
+     * @param taskGroup the taskGroup of the taskGroup
      * @param diagnoseId the file id for the diagnose xml
      * @param submissionId the file id for the submission xml
      * @throws SQLException if an error occurs while accessing the database
      */
-    public void addFileIdMappings(Connection con, String taskGroupUUID, int diagnoseId, int submissionId) throws SQLException {
+    public void addFileIdMappings(Connection con, String taskGroup, int diagnoseId, int submissionId) throws SQLException {
         String tableName = properties.getXquery().getTable().getTaskGroup_fileIds_mapping();
-        String query = "INSERT INTO "+tableName+" VALUES(?,?,?)";
+        String query = "INSERT INTO "+tableName+"(taskGroup, diagnoseFileId, submissionFileId) VALUES(?,?,?)";
         try(PreparedStatement stmt = con.prepareStatement(query)){
-            stmt.setString(1, taskGroupUUID);
+            stmt.setString(1, taskGroup);
             stmt.setInt(2, diagnoseId);
             stmt.setInt(3, submissionId);
             stmt.executeUpdate();
@@ -163,17 +163,17 @@ public class XQueryResourceService {
 
     /**
      * Returns an xml for a task group
-     * @param UUID the UUID of the task group
+     * @param taskGroup the name of the task group
      * @return a String containing the xml
      * @throws SQLException if an error occurs while accessing the database
      */
-    public String getXML(String UUID) throws SQLException {
-        String query = "SELECT diagnoseFileId FROM taskGroup_fileIds_mapping WHERE UUID = ?";
+    public String getXML(String taskGroup) throws SQLException {
+        String query = "SELECT diagnoseFileId FROM taskGroup_fileIds_mapping WHERE taskGroup = ?";
         String xml = "";
 
         try(Connection con = DriverManager.getConnection(URL, USER, PWD);
         PreparedStatement stmt = con.prepareStatement(query)){
-            stmt.setString(1, UUID);
+            stmt.setString(1, taskGroup);
             ResultSet resultSet = stmt.executeQuery();
             if(resultSet.next()){
                 int id = resultSet.getInt("diagnoseFileId");
@@ -181,7 +181,7 @@ public class XQueryResourceService {
             }
 
         } catch (SQLException throwables) {
-            throw new SQLException("No XML for UUID "+UUID + " found.");
+            throw new SQLException("No XML for taskGroup "+ taskGroup + " found.");
         }
         return xml;
     }
