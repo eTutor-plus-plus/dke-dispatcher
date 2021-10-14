@@ -11704,6 +11704,17 @@ CREATE TABLE public.taskGroup_fileIds_mapping (
 
 ALTER TABLE public.taskGroup_fileIds_mapping OWNER TO etutor;
 
+
+CREATE TABLE public.public_file_ids(
+    id integer not null
+);
+
+ALTER TABLE public.public_file_ids OWNER TO etutor;
+
+INSERT INTO public.public_file_ids values(1);
+INSERT INTO public.public_file_ids values(2);
+INSERT INTO public.public_file_ids values(5001);
+
 --
 -- Data for Name: bu_exercise_urls; Type: TABLE DATA; Schema: public; Owner: postgres
 --

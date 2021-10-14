@@ -73,6 +73,23 @@ public class ETutorXQueryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(throwables.getMessage());
         }
     }
+
+    /**
+     * Returns an XML according to the file id
+     * @param id the id of the file
+     * @return a String representation of the xml
+     */
+    @GetMapping("/xml/fileid/{id}")
+    public ResponseEntity<String> getXMLById(@PathVariable int id){
+        try{
+            String xml = xQueryResourceService.getXMLById(id);
+            return ResponseEntity.ok(xml);
+        } catch (Exception throwables) {
+            LOGGER.error(throwables.getMessage());
+            return ResponseEntity.status(500).body(throwables.getMessage());
+        }
+    }
+
     /**
      * Returns the diagnose-xml for a task group
      * @param taskGroup the UUID of the task group

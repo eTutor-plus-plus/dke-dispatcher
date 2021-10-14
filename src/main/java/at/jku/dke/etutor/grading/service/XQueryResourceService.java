@@ -4,7 +4,6 @@ import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.dto.XMLDefinitionDTO;
 import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseManagerImpl;
 import at.jku.dke.etutor.modules.xquery.util.XMLUtil;
-import oracle.jdbc.proxy.annotation.Pre;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -94,7 +93,7 @@ public class XQueryResourceService {
      * @param isNew flag stating wheter the id is already associated with an xml
      * @throws SQLException if an error occurs while accessing the database
      */
-    public void persistXMLinDatabase(Connection con, int fileId, String xml, boolean isNew) throws SQLException {
+    private void persistXMLinDatabase(Connection con, int fileId, String xml, boolean isNew) throws SQLException {
         String query;
         SQLXML xmlVal = con.createSQLXML();
         xmlVal.setString(xml);
@@ -124,7 +123,7 @@ public class XQueryResourceService {
      * @param submissionId the file id for the submission xml
      * @throws SQLException if an error occurs while accessing the database
      */
-    public void addFileIdMappings(Connection con, String taskGroup, int diagnoseId, int submissionId) throws SQLException {
+    private void addFileIdMappings(Connection con, String taskGroup, int diagnoseId, int submissionId) throws SQLException {
         String tableName = properties.getXquery().getTable().getTaskGroup_fileIds_mapping();
         String query = "INSERT INTO "+tableName+"(taskGroup, diagnoseFileId, submissionFileId) VALUES(?,?,?)";
         try(PreparedStatement stmt = con.prepareStatement(query)){
@@ -157,7 +156,7 @@ public class XQueryResourceService {
      * @return the id's
      * @throws SQLException if an error occurs while accessing the database
      */
-    public int[] fetchAvailableIds(Connection con) throws SQLException {
+    private int[] fetchAvailableIds(Connection con) throws SQLException {
         String query = "Select max(id) from xmldocs";
         int maxId;
         int[] ids = new int[2];
@@ -209,7 +208,7 @@ public class XQueryResourceService {
      * @return a String containing the xml
      * @throws SQLException if an error occurs while accessing the database
      */
-    private String fetchXML(Connection con, int id) throws SQLException {
+    public String fetchXML(Connection con, int id) throws SQLException {
         String query = "SELECT doc FROM xmldocs WHERE id = ?";
         try(PreparedStatement stmt = con.prepareStatement(query)){
             stmt.setInt(1, id);
@@ -271,5 +270,23 @@ public class XQueryResourceService {
         submissionFile.delete();
     }
 
-
+    /**
+     * Returns an xml file, if id refers to a public xml file
+     * @param id the id
+     * @return the xml as string
+     * @throws SQLException if an error occurs
+     */
+    public String getXMLById(int id) throws Exception {
+        String isIdPublicQuery = "SELECT * FROM public_file_ids WHERE id = ?";
+        try(Connection con = DriverManager.getConnection(URL, USER, PWD);
+        PreparedStatement stmt = con.prepareStatement(isIdPublicQuery)){
+            stmt.setInt(1, id);
+            ResultSet resultSet = stmt.executeQuery();
+            if(resultSet.next()){
+                return fetchXML(con, id);
+            }else throw new Exception("ID not public");
+        } catch (SQLException throwables) {
+            throw new SQLException(throwables);
+        }
+    }
 }
