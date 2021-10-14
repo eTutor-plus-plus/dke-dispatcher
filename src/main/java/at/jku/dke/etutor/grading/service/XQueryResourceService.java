@@ -136,6 +136,22 @@ public class XQueryResourceService {
     }
 
     /**
+     * Deletes xml files from the xmldocs table
+     * @param con the Connection
+     * @param diagnoseFileId the id of the diagnose file
+     * @param submissionFileId the id of the submission file
+     */
+    private void deleteXMLDocsFromDB(Connection con, int diagnoseFileId, int submissionFileId) throws SQLException {
+        String query = "DELETE FROM xmldocs WHERE id = ?";
+        try(PreparedStatement diagnoseStmt = con.prepareStatement(query);
+        PreparedStatement submissionStmt = con.prepareStatement(query)){
+            diagnoseStmt.setInt(1, diagnoseFileId);
+            submissionStmt.setInt(1, submissionFileId);
+            diagnoseStmt.executeUpdate();
+            submissionStmt.executeUpdate();
+        }
+    }
+    /**
      * Fetches available ids for xml files
      * @param con the Connection
      * @return the id's
@@ -205,6 +221,54 @@ public class XQueryResourceService {
         } catch (SQLException throwables) {
             throw new SQLException(throwables);
         }
+    }
+
+    /**
+     * Deletes all database entries associated with a task group
+     * @param taskGroup the name of the task group
+     * @throws SQLException if an error occurs
+     */
+    public void deleteXML(String taskGroup) throws SQLException {
+        int diagnoseFileId;
+        int submissionFileId;
+
+        String tableName = properties.getXquery().getTable().getTaskGroup_fileIds_mapping();
+        String mappingExistsQuery = "SELECT * FROM " + tableName + " WHERE taskGroup = ?";
+        String deleteMappingQuery = "DELETE FROM "+tableName + " WHERE taskGroup = ?";
+
+        try(Connection con = DriverManager.getConnection(URL, USER, PWD);
+            PreparedStatement stmt = con.prepareStatement(mappingExistsQuery);
+            PreparedStatement deleteStmt = con.prepareStatement(deleteMappingQuery)){
+            con.setAutoCommit(false);
+
+            stmt.setString(1, taskGroup);
+            deleteStmt.setString(1, taskGroup);
+            ResultSet resultSet = stmt.executeQuery();
+            if (resultSet.next()){
+               diagnoseFileId = resultSet.getInt("diagnoseFileId");
+               submissionFileId = resultSet.getInt("submissionFileId");
+               deleteStmt.executeUpdate();
+               deleteXMLDocsFromDB(con, diagnoseFileId, submissionFileId);
+               deleteXMLFiles(diagnoseFileId, submissionFileId);
+            }else{
+                return;
+            }
+            con.commit();
+        } catch (SQLException throwables) {
+            throw new SQLException(throwables);
+        }
+    }
+
+    /**
+     * Deletes xml files saved in the question folder
+     * @param diagnoseFileId the id of the diagnose xml file
+     * @param submissionFileId the id of the submsission xml file
+     */
+    private void deleteXMLFiles(int diagnoseFileId, int submissionFileId) {
+        File diagnoseFile = new File(properties.getXquery().getQuestionFolderBaseName()+"\\"+diagnoseFileId+".xml");
+        File submissionFile = new File(properties.getXquery().getQuestionFolderBaseName()+"\\"+submissionFileId+".xml");
+        diagnoseFile.delete();
+        submissionFile.delete();
     }
 
 

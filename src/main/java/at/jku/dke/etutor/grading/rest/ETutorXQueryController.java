@@ -34,7 +34,7 @@ public class ETutorXQueryController {
      * @return
      */
     @PostMapping(value = "/xml/taskGroup/{taskGroup}")
-    public ResponseEntity<Integer> addXML(@PathVariable String taskGroup, @RequestBody XMLDefinitionDTO xmls){
+    public ResponseEntity<Integer> addXMLForTaskGroup(@PathVariable String taskGroup, @RequestBody XMLDefinitionDTO xmls){
         Objects.requireNonNull(taskGroup);
         Objects.requireNonNull(xmls);
         int diagnoseFileId;
@@ -58,6 +58,21 @@ public class ETutorXQueryController {
         }
     }
 
+    /**
+     * Deletes a task group (namely the xml files belonging to the task group and the entries in the database)
+     * @param taskGroup the task group
+     * @return an ResponseEntity
+     */
+    @DeleteMapping("/xml/taskGroup/{taskGroup}")
+    public ResponseEntity<String> deleteXMLOfTaskGroup(@PathVariable String taskGroup){
+        try{
+            xQueryResourceService.deleteXML(taskGroup);
+            return ResponseEntity.ok("XML for taskGroup deleted");
+        } catch (SQLException throwables) {
+            LOGGER.error(throwables.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(throwables.getMessage());
+        }
+    }
     /**
      * Returns the diagnose-xml for a task group
      * @param taskGroup the UUID of the task group
