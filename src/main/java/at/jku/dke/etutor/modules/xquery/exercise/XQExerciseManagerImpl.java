@@ -79,11 +79,10 @@ public class XQExerciseManagerImpl implements XQExerciseManager {
         //Fetch properties
         try {
             coreManager = XQCoreManager.getInstance();
-            properties = coreManager.getPropertyFile();
 
-            exerciseTable = properties.loadProperty(XQCoreManager.KEY_TABLE_EXERCISE);
-            sortedNodesTable = properties.loadProperty(XQCoreManager.KEY_TABLE_SORTINGS);
-            urlsTable = properties.loadProperty(XQCoreManager.KEY_TABLE_URLS);
+            exerciseTable = applicationProperties.getXquery().getTable().getExercise();
+            sortedNodesTable = applicationProperties.getXquery().getTable().getSortings();
+            urlsTable = applicationProperties.getXquery().getTable().getUrls();
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             throw e;
@@ -109,8 +108,8 @@ public class XQExerciseManagerImpl implements XQExerciseManager {
 			}
 			
 			sql = new String();
-			sql += "INSERT INTO	" + exerciseTable + " e " + LINE_SEP;
-			sql += "(e.id, e.query, e.gradings, e.points)" + LINE_SEP;
+			sql += "INSERT INTO	" + exerciseTable +LINE_SEP;
+			sql += "(id, query, gradings, points)" + LINE_SEP;
 			sql += "VALUES (?, ?, ?, ?)" + LINE_SEP;
 			pStmt = conn.prepareStatement(sql);
 			index = 1;
@@ -127,8 +126,8 @@ public class XQExerciseManagerImpl implements XQExerciseManager {
 			sortedNodes = xqExercise.getSortedNodes();
 			if (sortedNodes != null && sortedNodes.size() > 0) {
 				sql = new String();
-				sql += "INSERT INTO	" + sortedNodesTable + " s " + LINE_SEP;
-				sql += "(s.exercise, s.xpath)" + LINE_SEP;
+				sql += "INSERT INTO	" + sortedNodesTable + LINE_SEP;
+				sql += "(exercise, xpath)" + LINE_SEP;
 				sql += "VALUES (?, ?)" + LINE_SEP;
 				pStmt.close();
 				pStmt = null;
@@ -144,8 +143,8 @@ public class XQExerciseManagerImpl implements XQExerciseManager {
 			urlMap = xqExercise.getUrls();
 			if (urlMap != null && urlMap.aliasSet().size() > 0) {
 				sql = new String();
-				sql += "INSERT INTO	" + urlsTable + " u " + LINE_SEP;
-				sql += "(u.exercise, u.url, u.hidden_url)" + LINE_SEP;
+				sql += "INSERT INTO	" + urlsTable +  LINE_SEP;
+				sql += "(exercise, url, hidden_url)" + LINE_SEP;
 				sql += "VALUES (?, ?, ?)" + LINE_SEP;
 				pStmt.close();
 				pStmt = null;

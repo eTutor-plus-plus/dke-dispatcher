@@ -2,8 +2,11 @@ package at.jku.dke.etutor.grading.rest;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.dto.XMLDefinitionDTO;
+import at.jku.dke.etutor.grading.rest.dto.XQExerciseDTO;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
 import ch.qos.logback.classic.Logger;
+import oracle.jdbc.proxy.annotation.Post;
+import oracle.xml.xsql.Res;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +37,7 @@ public class ETutorXQueryController {
      * @return
      */
     @PostMapping(value = "/xml/taskGroup/{taskGroup}")
-    public ResponseEntity<Integer> addXMLForTaskGroup(@PathVariable String taskGroup, @RequestBody XMLDefinitionDTO xmls){
+    public ResponseEntity<String> addXMLForTaskGroup(@PathVariable String taskGroup, @RequestBody XMLDefinitionDTO xmls){
         Objects.requireNonNull(taskGroup);
         Objects.requireNonNull(xmls);
         int diagnoseFileId;
@@ -42,19 +45,19 @@ public class ETutorXQueryController {
 
         int[] fileIds;
         try {
-            fileIds = xQueryResourceService.getFileIds(taskGroup, xmls);
+            fileIds = xQueryResourceService.addXML(taskGroup, xmls);
             diagnoseFileId = fileIds[0];
             submissionFileId = fileIds[1];
             try {
                 xQueryResourceService.createXMLFiles(xmls, diagnoseFileId, submissionFileId);
             } catch (IOException e) {
                 LOGGER.error(e.getMessage());
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1+"");
             }
-            return ResponseEntity.ok(diagnoseFileId);
+            return ResponseEntity.ok(properties.getXquery().getXmlFileURLPrefix()+diagnoseFileId);
         } catch (SQLException throwables) {
             LOGGER.error(throwables.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1+"");
         }
     }
 
@@ -106,5 +109,23 @@ public class ETutorXQueryController {
            LOGGER.error(throwables.getMessage());
            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(throwables.getMessage());
         }
+    }
+
+    /**
+     * Creates an exercise for a task group
+     * @param taskGroup the task group
+     * @param dto the dto
+     * @return a ResponseEntity
+     */
+    @PostMapping("/exercise/taskGroup/{taskGroup}")
+    public ResponseEntity<Integer> createExercise(@PathVariable String taskGroup, @RequestBody XQExerciseDTO dto){
+        var id = -1;
+        try {
+            id = xQueryResourceService.createExercise(taskGroup, dto);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(id);
+        }
+        return ResponseEntity.ok(id);
     }
 }

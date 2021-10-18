@@ -2,6 +2,9 @@ package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.dto.XMLDefinitionDTO;
+import at.jku.dke.etutor.grading.rest.dto.XQExerciseDTO;
+import at.jku.dke.etutor.modules.xquery.analysis.UrlContentMap;
+import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseBean;
 import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseManagerImpl;
 import at.jku.dke.etutor.modules.xquery.util.XMLUtil;
 import org.springframework.stereotype.Service;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  * Service class for handling xQuery resources
@@ -48,13 +52,13 @@ public class XQueryResourceService {
     }
 
     /**
-     * Takes a taskGrou-taskGroup and the 2 xml's and processes them.
+     * Takes a taskGroup and the 2 xml's and processes them.
      * @param taskGroup the taskGroup identifying the taskGroup
      * @param xmls the xml's
      * @return the id's of the diagnose and submission xml
      * @throws SQLException if an error occurs while accessing the database
      */
-    public int[] getFileIds(String taskGroup, XMLDefinitionDTO xmls) throws SQLException {
+    public int[] addXML(String taskGroup, XMLDefinitionDTO xmls) throws SQLException {
         boolean isNew ;
         int[] result = new int[2];
 
@@ -316,6 +320,53 @@ public class XQueryResourceService {
             }else throw new Exception("ID not public");
         } catch (SQLException throwables) {
             throw new SQLException(throwables);
+        }
+    }
+
+    /**
+     * Creates an xquery exercise for a specific task-group
+     * @param taskGroup the task group
+     * @param dto the dto containing the solution query and a list of sorted nodes
+     * @throws Exception if an error occurs
+     */
+    public int createExercise(String taskGroup, XQExerciseDTO dto) throws Exception {
+        XQExerciseBean exercise = new XQExerciseBean();
+        UrlContentMap urlContentMap = new UrlContentMap();
+        var ids = getIdsForTaskGroup(taskGroup);
+
+        urlContentMap.addUrlAlias(properties.getXquery().getXmlFileURLPrefix()+ids[1],
+                properties.getXquery().getXmlFileURLPrefix()+ids[0]);
+
+        exercise.setQuery(dto.getQuery());
+        exercise.setPoints(1.0);
+        exercise.setSortedNodes(dto.getSortedNodes());
+        exercise.setUrls(urlContentMap);
+
+
+        return xqExerciseManager.createExercise(exercise, null, null);
+    }
+
+    /**
+     * Returns the mapped file ids for a task group
+     * @param taskGroup the task group
+     * @return the ids
+     * @throws SQLException if an error occurs
+     */
+    private int[] getIdsForTaskGroup(String taskGroup) throws SQLException {
+        String table = properties.getXquery().getTable().getTaskGroup_fileIds_mapping();
+        String query = "SELECT diagnoseFileId, submissionFileId FROM "+table + " WHERE taskGroup = ?";
+        try(Connection con = DriverManager.getConnection(properties.getXquery().getConnUrl(), properties.getXquery().getConnUser(), properties.getXquery().getConnPwd());
+        PreparedStatement stmt = con.prepareStatement(query)){
+            stmt.setString(1, taskGroup);
+            ResultSet set = stmt.executeQuery();
+            if(set.next()){
+                var result = new int[2];
+                result[0] = set.getInt("diagnoseFileId");
+                result[1] = set.getInt("submissionFileId");
+                return result;
+            }else{
+                throw new SQLException("Could not find file ids for task group");
+            }
         }
     }
 }
