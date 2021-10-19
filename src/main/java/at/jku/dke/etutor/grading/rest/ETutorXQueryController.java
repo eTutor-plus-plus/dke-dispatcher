@@ -128,4 +128,20 @@ public class ETutorXQueryController {
         }
         return ResponseEntity.ok(id);
     }
+
+    /**
+     * Returns the exercise definition for a given id
+     * @param id the id of the exercise
+     * @return an XQExerciseDTO
+     */
+    @GetMapping("/exercise/solution/id/{id}")
+    public ResponseEntity<XQExerciseDTO> getSolutionAndSorting(@PathVariable int id){
+        try {
+            XQExerciseDTO exercise = xQueryResourceService.fetchExercise(id);
+            return ResponseEntity.ok(exercise);
+        } catch (Exception e) {
+           LOGGER.error(e.getMessage());
+           return ResponseEntity.status(500).body(null);
+        }
+    }
 }

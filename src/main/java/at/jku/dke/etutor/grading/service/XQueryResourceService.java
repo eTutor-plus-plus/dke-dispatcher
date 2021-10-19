@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -368,5 +369,22 @@ public class XQueryResourceService {
                 throw new SQLException("Could not find file ids for task group");
             }
         }
+    }
+
+    /**
+     * Returns the solution-query and the sortings of an exercise
+     * @param id the exercise id
+     * @return an XQExerciseDTO
+     */
+    public XQExerciseDTO fetchExercise(int id) throws Exception {
+        Serializable e = xqExerciseManager.fetchExercise(id);
+        XQExerciseDTO result = new XQExerciseDTO();
+        result.setQuery("Could not find exercise with id "+ id);
+
+        if(e instanceof XQExerciseBean exercise){
+            result.setQuery(exercise.getQuery());
+            result.setSortedNodes(exercise.getSortedNodes());
+        }
+        return result;
     }
 }

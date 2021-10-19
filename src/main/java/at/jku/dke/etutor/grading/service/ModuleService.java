@@ -38,7 +38,7 @@ public class ModuleService {
         return switch (tasktype) {
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#SQLTask", "sql" -> new SQLEvaluator(sqlConstants);
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#RATask" -> new RAEvaluator(new SQLEvaluator(sqlConstants), new SQLReporter());
-            case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#XQueryTask" -> new XQEvaluatorImpl(properties);
+            case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#XQTask" -> new XQEvaluatorImpl(properties);
             default -> null;
         };
     }
