@@ -407,4 +407,13 @@ public class XQueryResourceService {
         xqExerciseManager.modifyExercise(id, exercise, null, null);
         return "Exercise with id "+id +" updated";
     }
+
+    /**
+     * Deletes an exercise according tothe id
+     * @param id the id
+     * @return boolean indicating wheter exercise has been deleted
+     */
+    public boolean deleteExercise(int id) throws Exception {
+        return xqExerciseManager.deleteExercise(id);
+    }
 }

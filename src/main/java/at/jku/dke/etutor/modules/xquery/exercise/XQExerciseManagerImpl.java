@@ -408,11 +408,10 @@ public class XQExerciseManagerImpl implements XQExerciseManager {
         //Fetch properties
         try {
             coreManager = XQCoreManager.getInstance();
-            properties = coreManager.getPropertyFile();
 
-            exerciseTable = properties.loadProperty(XQCoreManager.KEY_TABLE_EXERCISE);
-            sortedNodesTable = properties.loadProperty(XQCoreManager.KEY_TABLE_SORTINGS);
-            urlsTable = properties.loadProperty(XQCoreManager.KEY_TABLE_URLS);
+            exerciseTable = applicationProperties.getXquery().getTable().getExercise();
+            sortedNodesTable = applicationProperties.getXquery().getTable().getSortings();
+            urlsTable = applicationProperties.getXquery().getTable().getUrls();
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             throw e;
@@ -425,22 +424,22 @@ public class XQExerciseManagerImpl implements XQExerciseManager {
 			stmt = conn.createStatement();
 			
 			sql = new String();
-			sql += "DELETE FROM " + sortedNodesTable + " s " + LINE_SEP;
-			sql += "WHERE s.exercise = " + exerciseId + LINE_SEP;
+			sql += "DELETE FROM " + sortedNodesTable +  LINE_SEP;
+			sql += "WHERE exercise = " + exerciseId + LINE_SEP;
 			count = stmt.executeUpdate(sql);
 			msg += "Deleted sorted nodes " + exerciseId;
 			msg += " (" + count + " row(s) deleted)" + LINE_SEP;
 
 			sql = new String();
-			sql += "DELETE FROM " + urlsTable + " u " + LINE_SEP;
-			sql += "WHERE u.exercise = " + exerciseId + LINE_SEP;
+			sql += "DELETE FROM " + urlsTable + LINE_SEP;
+			sql += "WHERE exercise = " + exerciseId + LINE_SEP;
 			count = stmt.executeUpdate(sql);
 			msg += "Deleted urls " + exerciseId;
 			msg += " (" + count + " row(s) deleted)" + LINE_SEP;
 			
 			sql = new String();
-			sql += "DELETE FROM " + exerciseTable + " e " + LINE_SEP;
-			sql += "WHERE e.id = " + exerciseId + LINE_SEP;
+			sql += "DELETE FROM " + exerciseTable +  LINE_SEP;
+			sql += "WHERE id = " + exerciseId + LINE_SEP;
 			count = stmt.executeUpdate(sql);
 			msg += "Deleted XQuery exercise with id " + exerciseId;
 			msg += " (" + count + " row(s) deleted)" + LINE_SEP;

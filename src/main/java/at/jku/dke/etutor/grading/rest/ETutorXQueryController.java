@@ -164,4 +164,21 @@ public class ETutorXQueryController {
             return ResponseEntity.status(500).body("Could not update exercise");
         }
     }
+
+    /**
+     * Deletes an exercise
+     * @param id the id of the exercise
+     * @return a ResponseEntity
+     */
+    @DeleteMapping("exercise/id/{id}")
+    public ResponseEntity<String> deleteExercise(@PathVariable int id){
+        var response = "Exercise with id "+id +" deleted";
+        try {
+            xQueryResourceService.deleteExercise(id);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return ResponseEntity.status(500).body("Could not delete exercise with id "+id);
+    }
 }
