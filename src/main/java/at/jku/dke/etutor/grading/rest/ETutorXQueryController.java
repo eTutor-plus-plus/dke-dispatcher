@@ -5,6 +5,7 @@ import at.jku.dke.etutor.grading.rest.dto.XMLDefinitionDTO;
 import at.jku.dke.etutor.grading.rest.dto.XQExerciseDTO;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
 import ch.qos.logback.classic.Logger;
+import io.swagger.models.Response;
 import oracle.jdbc.proxy.annotation.Post;
 import oracle.xml.xsql.Res;
 import org.slf4j.LoggerFactory;
@@ -142,6 +143,25 @@ public class ETutorXQueryController {
         } catch (Exception e) {
            LOGGER.error(e.getMessage());
            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    /**
+     * Updates an exercise
+     * @param dto the XQExerciseDTO
+     * @param id the id of the exercise
+     * @return a ResponseEntity
+     */
+    @PostMapping("exercise/id/{id}")
+    public ResponseEntity<String> updateExercise(@RequestBody XQExerciseDTO dto, @PathVariable int id){
+        LOGGER.info("updateExerciseTriggered!");
+        LOGGER.info(dto.getQuery());
+        LOGGER.info(dto.getSortedNodes().toString());
+        try {
+            return ResponseEntity.ok(xQueryResourceService.updateExercise(dto, id));
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return ResponseEntity.status(500).body("Could not update exercise");
         }
     }
 }

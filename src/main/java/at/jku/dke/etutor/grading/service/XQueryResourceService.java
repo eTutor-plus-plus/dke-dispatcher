@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Service class for handling xQuery resources
@@ -235,13 +236,13 @@ public class XQueryResourceService {
     }
 
     /**
-     * Fetches an xml from the database
+     * Fetches an xml from the database according to the file id
      * @param con the Connection
      * @param id the file id
      * @return a String containing the xml
      * @throws SQLException if an error occurs while accessing the database
      */
-    public String fetchXML(Connection con, int id) throws SQLException {
+    private String fetchXML(Connection con, int id) throws SQLException {
         String query = "SELECT doc FROM xmldocs WHERE id = ?";
         try(PreparedStatement stmt = con.prepareStatement(query)){
             stmt.setInt(1, id);
@@ -386,5 +387,24 @@ public class XQueryResourceService {
             result.setSortedNodes(exercise.getSortedNodes());
         }
         return result;
+    }
+
+    /**
+     * Updates an exercise (solution and sorting)
+     * @param dto the dto
+     * @param id the id of the exercise
+     * @return a String indicating wheter updating has been succesfull
+     * @throws Exception if an error occurs while updating
+     */
+    public String updateExercise(XQExerciseDTO dto, int id) throws Exception {
+        Objects.requireNonNull(dto.getQuery());
+
+        XQExerciseBean exercise = new XQExerciseBean();
+        exercise.setQuery(dto.getQuery());
+        exercise.setSortedNodes(dto.getSortedNodes());
+        exercise.setPoints(1.0);
+
+        xqExerciseManager.modifyExercise(id, exercise, null, null);
+        return "Exercise with id "+id +" updated";
     }
 }

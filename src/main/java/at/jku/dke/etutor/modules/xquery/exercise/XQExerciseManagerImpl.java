@@ -256,11 +256,10 @@ public class XQExerciseManagerImpl implements XQExerciseManager {
         //Fetch properties
         try {
             coreManager = XQCoreManager.getInstance();
-            properties = coreManager.getPropertyFile();
 
-            exerciseTable = properties.loadProperty(XQCoreManager.KEY_TABLE_EXERCISE);
-            sortedNodesTable = properties.loadProperty(XQCoreManager.KEY_TABLE_SORTINGS);
-            urlsTable = properties.loadProperty(XQCoreManager.KEY_TABLE_URLS);
+            exerciseTable = applicationProperties.getXquery().getTable().getExercise();
+            sortedNodesTable = applicationProperties.getXquery().getTable().getSortings();
+            urlsTable = applicationProperties.getXquery().getTable().getUrls();
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             throw e;
@@ -273,9 +272,9 @@ public class XQExerciseManagerImpl implements XQExerciseManager {
 			conn.setAutoCommit(false);
 			
 			sql = new String();
-			sql += "UPDATE 	" + exerciseTable + " e " + LINE_SEP;
-			sql += "SET 	e.query = ?, e.gradings = ?, e.points = ? " + LINE_SEP;
-			sql += "WHERE 	e.id = ?" + LINE_SEP;
+			sql += "UPDATE 	" + exerciseTable + LINE_SEP;
+			sql += "SET 	query = ?, gradings = ?, points = ? " + LINE_SEP;
+			sql += "WHERE 	id = ?" + LINE_SEP;
 			pStmt = conn.prepareStatement(sql);
 			index = 1;
 			pStmt.setString(index++, xqExercise.getQuery());
@@ -289,26 +288,29 @@ public class XQExerciseManagerImpl implements XQExerciseManager {
 			pStmt.executeUpdate();
 			
 			sql = new String();
-			sql += "DELETE FROM " + sortedNodesTable + " s " + LINE_SEP;
-			sql += "WHERE s.exercise = " + exerciseId + LINE_SEP;
+			sql += "DELETE FROM " + sortedNodesTable +  LINE_SEP;
+			sql += "WHERE exercise = " + exerciseId + LINE_SEP;
 			pStmt.close();
 			pStmt = null;
 			pStmt = conn.prepareStatement(sql);
 			pStmt.executeUpdate();
-			
-			sql = new String();
-			sql += "DELETE FROM " + urlsTable + " u " + LINE_SEP;
-			sql += "WHERE u.exercise = " + exerciseId + LINE_SEP;
-			pStmt.close();
-			pStmt = null;
-			pStmt = conn.prepareStatement(sql);
-			pStmt.executeUpdate();
-			
+
+			/**
+			 *
+			 sql = new String();
+			 sql += "DELETE FROM " + urlsTable + " u " + LINE_SEP;
+			 sql += "WHERE u.exercise = " + exerciseId + LINE_SEP;
+			 pStmt.close();
+			 pStmt = null;
+			 pStmt = conn.prepareStatement(sql);
+			 pStmt.executeUpdate();
+			 */
+
 			sortedNodes = xqExercise.getSortedNodes();
 			if (sortedNodes != null && sortedNodes.size() > 0) {
 				sql = new String();
-				sql += "INSERT INTO	" + sortedNodesTable + " s " + LINE_SEP;
-				sql += "(s.exercise, s.xpath)" + LINE_SEP;
+				sql += "INSERT INTO	" + sortedNodesTable +  LINE_SEP;
+				sql += "(exercise, xpath)" + LINE_SEP;
 				sql += "VALUES (?, ?)" + LINE_SEP;
 				pStmt.close();
 				pStmt = null;
@@ -320,29 +322,32 @@ public class XQExerciseManagerImpl implements XQExerciseManager {
 					pStmt.executeUpdate();
 				}
 			}
-			
-			urlMap = xqExercise.getUrls();
-			if (urlMap != null && urlMap.aliasSet().size() > 0) {
-				sql = new String();
-				sql += "INSERT INTO	" + urlsTable + " u " + LINE_SEP;
-				sql += "(u.exercise, u.url, u.hidden_url)" + LINE_SEP;
-				sql += "VALUES (?, ?, ?)" + LINE_SEP;
-				pStmt.close();
-				pStmt = null;
-				pStmt = conn.prepareStatement(sql);
-				
-				it = urlMap.aliasSet().iterator();
-				while (it.hasNext()) {
-					hiddenUrl = (String)it.next();
-		        	url = urlMap.getUrl(hiddenUrl);
-					index = 1;
-					pStmt.setInt(index++, exerciseId);
-					pStmt.setString(index++, url);
-					pStmt.setString(index++, hiddenUrl);
-					pStmt.executeUpdate();
-				}
-			}
-			
+			/**
+			 *
+			 urlMap = xqExercise.getUrls();
+
+			 if (urlMap != null && urlMap.aliasSet().size() > 0) {
+			 sql = new String();
+			 sql += "INSERT INTO	" + urlsTable + " u " + LINE_SEP;
+			 sql += "(u.exercise, u.url, u.hidden_url)" + LINE_SEP;
+			 sql += "VALUES (?, ?, ?)" + LINE_SEP;
+			 pStmt.close();
+			 pStmt = null;
+			 pStmt = conn.prepareStatement(sql);
+
+			 it = urlMap.aliasSet().iterator();
+			 while (it.hasNext()) {
+			 hiddenUrl = (String)it.next();
+			 url = urlMap.getUrl(hiddenUrl);
+			 index = 1;
+			 pStmt.setInt(index++, exerciseId);
+			 pStmt.setString(index++, url);
+			 pStmt.setString(index++, hiddenUrl);
+			 pStmt.executeUpdate();
+			 }
+			 }
+			 */
+
 			conn.commit();
 
 			msg = new String();
