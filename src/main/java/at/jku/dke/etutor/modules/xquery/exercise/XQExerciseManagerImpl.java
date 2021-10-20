@@ -653,11 +653,10 @@ public class XQExerciseManagerImpl implements XQExerciseManager {
         // Fetch properties
         try {
             coreManager = XQCoreManager.getInstance(applicationProperties);
-            properties = coreManager.getPropertyFile();
 
-            exerciseTable = properties.getProperty(XQCoreManager.KEY_TABLE_EXERCISE);
-            errorCategoryTable = properties.getProperty(XQCoreManager.KEY_TABLE_ERROR_CATEGORIES);
-            errorGradingTable = properties.getProperty(XQCoreManager.KEY_TABLE_ERROR_GRADING);
+            exerciseTable = applicationProperties.getXquery().getTable().getExercise();
+            errorCategoryTable = applicationProperties.getXquery().getTable().getError_categories();
+            errorGradingTable = applicationProperties.getXquery().getTable().getError_grading();
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             throw e;
