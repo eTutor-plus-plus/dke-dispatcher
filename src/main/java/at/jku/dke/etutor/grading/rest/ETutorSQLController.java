@@ -18,6 +18,7 @@ import java.text.MessageFormat;
  */
 @RestController
 @RequestMapping("/sql")
+@CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
 public class ETutorSQLController {
     private final Logger logger;
     private final SQLResourceService resourceManager;
@@ -38,7 +39,6 @@ public class ETutorSQLController {
      * @param ddl the Object containing the statements
      * @return ResponseEntity
      */
-    @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
     @PostMapping("/schema")
     public ResponseEntity<String> executeDDL(@RequestBody DataDefinitionDTO ddl){
         logger.info("Enter executeDDL() for schema {} ",ddl.getSchemaName());
@@ -67,8 +67,6 @@ public class ETutorSQLController {
      * @param schemaName the schema to be created
      * @return ResponseEntity
      */
-    @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
-    @PutMapping("/schema/{schemaName}")
     public ResponseEntity<String> createSchema(@PathVariable String schemaName){
         logger.info("Enter: createSchema() {}",schemaName);
         try {
@@ -85,7 +83,6 @@ public class ETutorSQLController {
      * Deletes the diagnose and submission schemas with the specified prefix
      * @param schemaName the schema to be deleted
      */
-    @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
     @DeleteMapping("/schema/{schemaName}")
     public ResponseEntity<String> dropSchema(@PathVariable String schemaName){
         logger.info("Enter: dropSchema() {}",schemaName);
@@ -105,7 +102,6 @@ public class ETutorSQLController {
      * @param schemaName the schemaName
      * @return an ResponseEntity containing a wrapped message
      */
-    @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
     @DeleteMapping("/schema/{schemaName}/connection")
     public ResponseEntity<String> deleteConnection(@PathVariable String schemaName){
        logger.info("Enter: deleteConnection() {}",schemaName);
@@ -123,7 +119,6 @@ public class ETutorSQLController {
      * @param schemaName the name of the schema where a table has to be created
      * @param queries the create table query
      */
-    @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
     @PutMapping("/schema/{schemaName}/table")
     public ResponseEntity<String> createTables(@PathVariable String schemaName, @RequestBody String queries){
         logger.info(MessageFormat.format("Enter: createTable() {}", schemaName));
@@ -145,7 +140,6 @@ public class ETutorSQLController {
      * @param schemaName the name of the schema where a table has to be deleted
      * @param tableName the name of the table to be deleted
      */
-    @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
     @DeleteMapping("/schema/{schemaName}/table/{tableName}")
     public ResponseEntity<String> dropTable(@PathVariable String schemaName, @PathVariable String tableName){
         logger.info("Enter: dropTable() "+tableName);
@@ -164,7 +158,6 @@ public class ETutorSQLController {
      * @param schemaName the name of the schema
      * @param queries the insert query
      */
-    @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
     @PostMapping("/schema/{schemaName}/submission/data")
     public ResponseEntity<String> insertDataSubmission(@PathVariable String schemaName, @RequestBody String queries){
         logger.info("Enter: insertDataSubmission()");
@@ -185,7 +178,6 @@ public class ETutorSQLController {
      * @param schemaName the name of the schame
      * @param queries the insert query
      */
-    @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
     @PostMapping("/schema/{schemaName}/diagnose/data")
     public ResponseEntity<String> insertDataDiagnose(@PathVariable String schemaName, @RequestBody String queries){
         logger.info("Enter: insertDataDiagnose()");
@@ -208,7 +200,6 @@ public class ETutorSQLController {
      * @param id the id of the exercise to be created
      * @param solution the solution for the exercise
      */
-    @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
     @PutMapping("/exercise/{schemaName}/{id}")
     public ResponseEntity<String> createExercise(@PathVariable int id, @PathVariable String schemaName, @RequestBody String solution) {
         logger.info("Enter: createExercise() {}", id);
@@ -226,7 +217,6 @@ public class ETutorSQLController {
      * Deletes an exercise
      * @param id the id of the exercise
      */
-    @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
     @DeleteMapping("/exercise/{id}")
     public ResponseEntity<String> deleteExercise(@PathVariable int id)  {
         logger.info("Enter: deleteExercise(): {}", id);
@@ -246,7 +236,6 @@ public class ETutorSQLController {
      * @param newSolution the solution
      * @return a response entity
      */
-    @CrossOrigin(ETutorCORSPolicy.CORS_POLICY)
     @PostMapping("/exercise/{id}/solution")
     public ResponseEntity<String> updateExerciseSolution(@PathVariable int id, @RequestBody String newSolution){
         logger.info("Enter: updateExerciseSolution(): {}",id);
@@ -264,7 +253,6 @@ public class ETutorSQLController {
      * Fetches an available exercise id
      * @return the exercise id
      */
-    @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
     @GetMapping("/exercise/reservation")
     public ResponseEntity<String> reserveExerciseID(){
         logger.info("Enter: reserveExercise() ");
@@ -283,7 +271,6 @@ public class ETutorSQLController {
      * @param id the id
      * @return the solution
      */
-    @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
     @GetMapping("/exercise/{id}/solution")
     public ResponseEntity<String> getSolution(@PathVariable int id){
         logger.info("Enter: getSolution()");
@@ -309,7 +296,6 @@ public class ETutorSQLController {
      * @param exerciseId optional exerciseId
      * @return the HTML-table
      */
-    @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
     @GetMapping("/table/{tableName}")
     public ResponseEntity<String> getHTMLTable(@PathVariable String tableName, @RequestParam(defaultValue = "") String taskGroup, @RequestParam(defaultValue = "-1") int exerciseId){
        logger.info("Enter: getHTMLTable() for table {}", tableName);

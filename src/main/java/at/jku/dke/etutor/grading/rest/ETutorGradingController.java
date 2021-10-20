@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.grading.rest;
 
 
+import at.jku.dke.etutor.grading.ETutorCORSPolicy;
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
 import ch.qos.logback.classic.Logger;
@@ -21,6 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/grading")
+@CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
 public class ETutorGradingController {
     private Logger logger;
     private GradingDTORepository gradingDTORepository;
@@ -42,7 +44,6 @@ public class ETutorGradingController {
      *          - HttpStatus.NOT_FOUND if no Grading is available for the given id.
      *          - HttpStatus.OK if Grading is available
      */
-    @CrossOrigin(origins="*")
     @GetMapping("/{submissionId}")
     public ResponseEntity<EntityModel<GradingDTO>> getGrading(@PathVariable String submissionId) {
         logger.info( "Received request for Grading with Submission ID:  {}",  submissionId);

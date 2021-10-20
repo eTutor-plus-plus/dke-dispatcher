@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.grading.rest;
 
 
+import at.jku.dke.etutor.grading.ETutorCORSPolicy;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionDTO;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
@@ -25,6 +26,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @org.springframework.web.bind.annotation.RestController
 @org.springframework.web.bind.annotation.RequestMapping("/submission")
+@CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
 public class ETutorSubmissionController {
     private final Logger logger;
     private final SubmissionDispatcherService submissionDispatcherService;
@@ -47,7 +49,6 @@ public class ETutorSubmissionController {
      *          - HttpStatus.INTERNAL_SERVER_ERROR if exception occurs
      *          - HttpStatus.ACCEPTED if submission is accepted for processing
      */
-    @CrossOrigin(origins="*")
     @PostMapping("")
     public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody SubmissionDTO submissionDto, @RequestHeader(value = "Accept-Language", defaultValue = "de") String language) {
         Submission submission = new Submission(submissionDto);
@@ -70,7 +71,6 @@ public class ETutorSubmissionController {
      * @param submissionUUID the UUID identifying the submission
      * @return a ResponseEntity containing the submission
      */
-    @CrossOrigin(origins="*")
     @GetMapping("/{submissionUUID}")
     public ResponseEntity<Submission> getSubmission(@PathVariable String submissionUUID){
         Optional<Submission> optionalSubmission = this.submissionRepository.findById(submissionUUID);
