@@ -309,13 +309,12 @@ public class SQLResourceService {
 
     /**
      * Creates an exercise to match students submission against it
-     * @param id the id of the exercise to be created
      * @param schemaName the prefix of the schema where the data for the exercise are persisted
      * @param solution the solution of the exercise
      * @throws DatabaseException if an SQLExcption occurs
      */
-    public void createExercise(int id, String schemaName, String solution) throws DatabaseException {
-        logger.debug("Creating exercise in schema with prefix {} and id {} " , schemaName, id);
+    public int createExercise(String schemaName, String solution) throws DatabaseException {
+        logger.debug("Creating exercise in schema with prefix {} " , schemaName);
         try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
             con.setAutoCommit(false);
             int diagnoseConnID = fetchConnection(con, schemaName + DIAGNOSE_SUFFIX);
@@ -327,10 +326,12 @@ public class SQLResourceService {
                 logger.error("Could not fetch / create connection id");
                 throw new SQLException();
             }
-            createExerciseUtil(con, id, submissionConnID, diagnoseConnID, solution);
+            int exerciseId = reserveExerciseID();
+            createExerciseUtil(con, exerciseId, submissionConnID, diagnoseConnID, solution);
             con.commit();
             addConnectionMapping(schemaName, diagnoseConnID);
             logger.debug("Exercise created");
+            return exerciseId;
         }catch(SQLException throwables){
             logger.error(throwables.getMessage(), throwables);
             throw new DatabaseException(throwables);
@@ -448,18 +449,15 @@ public class SQLResourceService {
 
     private int reserveExerciseIDUtil(Connection con) throws DatabaseException {
         String fetchMaxIdQuery = "SELECT max(id) as id from exercises";
-        String insertQuery = "INSERT INTO EXERCISES VALUES(?, 1, 1, '-1')";
         int maxId = -1;
 
         try(PreparedStatement fetchMaxIdStmt = con.prepareStatement(fetchMaxIdQuery);
             ResultSet maxIdSet = fetchMaxIdStmt.executeQuery();
-            PreparedStatement insertStmt = con.prepareStatement(insertQuery);) {
+            ) {
             if(maxIdSet.next()){
                 maxId = maxIdSet.getInt("id");
                 maxId++;
-            }else throw new DatabaseException("Internal Error: could not reserve exercise id");
-            insertStmt.setInt(1, maxId);
-            insertStmt.executeUpdate();
+            }else throw new DatabaseException("Internal Error: could not fetch exercise id");
 
             con.commit();
         } catch (SQLException throwables) {

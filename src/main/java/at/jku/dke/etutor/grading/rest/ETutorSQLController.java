@@ -197,19 +197,18 @@ public class ETutorSQLController {
     /**
      * Adds an exercise for the specified schema
      * @param schemaName the name of the schema for which the exercise has to be created
-     * @param id the id of the exercise to be created
      * @param solution the solution for the exercise
      */
-    @PutMapping("/exercise/{schemaName}/{id}")
-    public ResponseEntity<String> createExercise(@PathVariable int id, @PathVariable String schemaName, @RequestBody String solution) {
-        logger.info("Enter: createExercise() {}", id);
+    @PutMapping("/exercise/{schemaName}")
+    public ResponseEntity<Integer> createExercise( @PathVariable String schemaName, @RequestBody String solution) {
+        logger.info("Enter: createExercise() {}");
         try {
-            resourceManager.createExercise(id, schemaName, solution);
-            logger.info("Exit: createExercise() {} with Status Code 200", id);
-            return ResponseEntity.ok("Exercise created");
+            int id = resourceManager.createExercise(schemaName, solution);
+            logger.info("Exit: createExercise() {} with Status Code 200");
+            return ResponseEntity.ok(id);
         } catch (DatabaseException e) {
-            logger.error("Exit: createExercise() {} with Status Code 500", id, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+            logger.error("Exit: createExercise() {} with Status Code 500", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1);
         }
     }
 

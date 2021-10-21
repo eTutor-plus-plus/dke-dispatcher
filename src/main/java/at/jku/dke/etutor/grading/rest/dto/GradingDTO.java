@@ -37,7 +37,6 @@ public class GradingDTO {
     /**
      * The report containing information about potential errors
      */
-    @ManyToOne(fetch = FetchType.LAZY)
     @OneToOne(cascade=CascadeType.ALL)
     private ReportDTO report;
 
