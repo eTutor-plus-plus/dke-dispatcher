@@ -3,6 +3,7 @@ package at.jku.dke.etutor.grading;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.config.AsyncConfiguration;
+import at.jku.dke.etutor.grading.config.DataSourceConfiguration;
 import at.jku.dke.etutor.grading.rest.ETutorGradingController;
 import at.jku.dke.etutor.grading.rest.ETutorSubmissionController;
 import at.jku.dke.etutor.grading.rest.ETutorSQLController;
@@ -15,7 +16,6 @@ import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
 import at.jku.dke.etutor.modules.sql.report.SQLReporter;
 import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseManagerImpl;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -33,7 +33,6 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +49,7 @@ import java.util.List;
         ETutorGradingApplication.class,
         SubmissionDispatcherService.class,
         AsyncConfiguration.class,
+        DataSourceConfiguration.class,
         SQLConstants.class,
         SQLEvaluator.class,
         RAEvaluator.class,
@@ -86,19 +86,7 @@ public class ETutorGradingApplication {
         return new LinkDiscoverers(SimplePluginRegistry.create(plugins));
     }
 
-    //TODO: derive from properties
-    @Bean
-    public DataSource dataSource() {
-        BasicDataSource dataSource = new BasicDataSource();
 
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUsername("etutor");
-        dataSource.setPassword("etutor");
-        dataSource.setUrl(
-                "jdbc:postgresql://localhost:5433/etutor");
-
-        return dataSource;
-    }
 
     public void addResourceHandlers(ResourceHandlerRegistry registry)
     {

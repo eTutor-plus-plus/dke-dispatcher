@@ -11,6 +11,8 @@ public class ApplicationProperties {
 
     private SQL sql = new SQL();
 
+    private DataSource datasource = new DataSource();
+
     private XQueryProps xquery = new XQueryProps();
 
     private Grading grading = new Grading();
@@ -45,6 +47,14 @@ public class ApplicationProperties {
 
     public void setGrading(Grading grading) {
         this.grading = grading;
+    }
+
+    public DataSource getDatasource() {
+        return datasource;
+    }
+
+    public void setDatasource(DataSource datasource) {
+        this.datasource = datasource;
     }
 
     /**
@@ -89,6 +99,48 @@ public class ApplicationProperties {
         }
     }
 
+    public static class DataSource{
+        private String url;
+        private String username;
+        private String password;
+        private String driver;
+
+        public DataSource(){
+
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public String getDriver() {
+            return driver;
+        }
+
+        public void setDriver(String driver) {
+            this.driver = driver;
+        }
+    }
     /**
      * The properties for the SQL module
      */
