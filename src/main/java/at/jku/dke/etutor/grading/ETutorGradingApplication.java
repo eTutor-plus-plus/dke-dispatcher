@@ -15,6 +15,7 @@ import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
 import at.jku.dke.etutor.modules.sql.report.SQLReporter;
 import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseManagerImpl;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -32,6 +33,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,6 +84,20 @@ public class ETutorGradingApplication {
         List<LinkDiscoverer> plugins = new ArrayList<>();
         plugins.add(new CollectionJsonLinkDiscoverer());
         return new LinkDiscoverers(SimplePluginRegistry.create(plugins));
+    }
+
+    //TODO: derive from properties
+    @Bean
+    public DataSource dataSource() {
+        BasicDataSource dataSource = new BasicDataSource();
+
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setUsername("etutor");
+        dataSource.setPassword("etutor");
+        dataSource.setUrl(
+                "jdbc:postgresql://localhost:5433/etutor");
+
+        return dataSource;
     }
 
     public void addResourceHandlers(ResourceHandlerRegistry registry)

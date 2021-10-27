@@ -45,7 +45,7 @@ public class TestXQueryModule {
     private String CONN_URL;
     private String CONN_USER;
     private String CONN_PWD;
-    private final String EXERCISE_CONSTRAINTS = "";
+    private final String EXERCISE_CONSTRAINTS = " where id < 14326 ";
     private final String ACTION_STRING = "diagnose";
     private final String DIAGNOSE_LEVEL = "3";
 
@@ -70,7 +70,7 @@ public class TestXQueryModule {
      * @throws SQLException
      */
     @Test
-    @Disabled
+    //@Disabled
     void whenSubmissionIsSolution_thenAllPoints() throws IOException, InterruptedException, SQLException {
         ResultSet exercises = getExercisesResultSet();
         while (exercises.next()) {
@@ -79,9 +79,9 @@ public class TestXQueryModule {
             Submission submission = prepareSubmission(id, solution);
             assertFalse(submission == null);
             sendSubmission(submission);
-            Thread.sleep(200);
+            Thread.sleep(500);
         }
-        Thread.sleep(10000);
+        Thread.sleep(1000);
         getGradings();
         System.out.println(ids.size());
     }
@@ -141,7 +141,7 @@ public class TestXQueryModule {
         submission.setPassedAttributes(attributeMap);
         submission.setPassedParameters(new HashMap<String, String>());
         submission.setMaxPoints(1);
-        submission.setTaskType("http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#XQueryTask");
+        submission.setTaskType("http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#XQTask");
         submission.setExerciseId(id);
         return submission;
     }
