@@ -103,7 +103,7 @@ public class ApplicationProperties {
         private String url;
         private String username;
         private String password;
-        private String driver;
+        private String driverClassName;
 
         public DataSource(){
 
@@ -133,12 +133,12 @@ public class ApplicationProperties {
             this.password = password;
         }
 
-        public String getDriver() {
-            return driver;
+        public String getDriverClassName() {
+            return driverClassName;
         }
 
-        public void setDriver(String driver) {
-            this.driver = driver;
+        public void setDriverClassName(String driver) {
+            this.driverClassName = driver;
         }
     }
     /**

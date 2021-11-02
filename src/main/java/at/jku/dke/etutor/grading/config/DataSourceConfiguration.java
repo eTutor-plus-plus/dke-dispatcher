@@ -1,9 +1,9 @@
 package at.jku.dke.etutor.grading.config;
 
-import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 
@@ -17,10 +17,11 @@ public class DataSourceConfiguration {
 
 
     @Bean
+    @Primary
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
 
-        dataSource.setDriverClassName(properties.getDatasource().getDriver());
+        dataSource.setDriverClassName(properties.getDatasource().getDriverClassName());
         dataSource.setUsername(properties.getDatasource().getUsername());
         dataSource.setPassword(properties.getDatasource().getPassword());
         dataSource.setUrl(properties.getDatasource().getUrl());

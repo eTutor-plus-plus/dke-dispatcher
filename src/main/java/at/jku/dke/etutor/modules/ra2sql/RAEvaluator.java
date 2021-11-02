@@ -10,6 +10,7 @@ import java.util.*;
 
 import at.jku.dke.etutor.core.evaluation.*;
 import at.jku.dke.etutor.modules.ra2sql.model.Expression;
+import at.jku.dke.etutor.modules.sql.SQLDataSource;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationAction;
 import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
@@ -240,10 +241,7 @@ public class RAEvaluator implements Evaluator{
 		//ANALYZING SEMANTICS
 		try{
 			//ESTABLISHING CONNECTION TO RA DATABASE
-			//TODO: Establish connection without use of sqlEvaluator
-			java.sql.DriverManager.registerDriver(new org.postgresql.Driver());
-			conn = sqlEvaluator.getConnectionToSqlDatabase();
-			//conn = DriverManager.getConnection(RAConstants.CONN_URL, RAConstants.CONN_USER, RAConstants.CONN_PWD);
+			conn = SQLDataSource.getConnection();
 			conn.setAutoCommit(true);
 
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE
