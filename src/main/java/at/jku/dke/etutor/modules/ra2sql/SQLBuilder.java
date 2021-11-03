@@ -90,7 +90,7 @@ public class SQLBuilder {
 					query = query.concat(leftQuery);
 					query = query.concat(") AS joinLeftSideSubquery NATURAL JOIN (");
 					query = query.concat(rightQuery);
-					query = query.concat(") AS joinRightSideSubquery ");
+					query = query.concat(") as joinRightSideSubquery");
 				}
 				if (exp instanceof Minus) {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
@@ -98,7 +98,7 @@ public class SQLBuilder {
 					query = query.concat(leftQuery);
 					query = query.concat(") AS minusLeftSideSubquery MINUS (");
 					query = query.concat(rightQuery);
-					query = query.concat(") AS minusRightSideSubquery ");
+					query = query.concat(")");
 				}
 				if (exp instanceof Division) {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
@@ -109,7 +109,7 @@ public class SQLBuilder {
 					query = query.concat(") AS naJoinRightSideSubquery ");
 					query = query.concat("GROUP BY " + this.printSchema(exp) + " ");
 					query = query.concat("HAVING COUNT(*) = (SELECT COUNT(*) FROM (");
-					query = query.concat(rightQuery + ") AS havingSubquery ) AS divisionSubquery ");
+					query = query.concat(rightQuery + ") AS havingSubquery ) ");
 				}
 				if (exp instanceof OuterJoin) {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
@@ -141,7 +141,7 @@ public class SQLBuilder {
 				query = query.concat(leftQuery);
 				query = query.concat(") AS intersectLeftSubQu INTERSECT (");
 				query = query.concat(rightQuery);
-				query = query.concat(") AS intersectRightSubQu ");
+				query = query.concat(")");
 			}
 			if (exp instanceof Union) {
 				query = query.concat("SELECT " + this.printSchema(exp) + " ");
@@ -149,7 +149,7 @@ public class SQLBuilder {
 				query = query.concat(leftQuery);
 				query = query.concat(") AS unionLeftSubQu UNION (");
 				query = query.concat(rightQuery);
-				query = query.concat(") AS unionRightSubQu");
+				query = query.concat(")");
 			}
 			if (exp instanceof ThetaJoin) {
 				ThetaJoin thetaJoin = (ThetaJoin)exp;
