@@ -11,6 +11,10 @@ public class ApplicationProperties {
 
     private SQL sql = new SQL();
 
+    private DataSource datasource = new DataSource();
+
+    private XQueryProps xquery = new XQueryProps();
+
     private Grading grading = new Grading();
 
     public Async getAsync() {
@@ -29,12 +33,28 @@ public class ApplicationProperties {
         this.sql = sql;
     }
 
+    public XQueryProps getXquery() {
+        return xquery;
+    }
+
+    public void setXquery(XQueryProps xquery) {
+        this.xquery = xquery;
+    }
+
     public Grading getGrading() {
         return grading;
     }
 
     public void setGrading(Grading grading) {
         this.grading = grading;
+    }
+
+    public DataSource getDatasource() {
+        return datasource;
+    }
+
+    public void setDatasource(DataSource datasource) {
+        this.datasource = datasource;
     }
 
     /**
@@ -79,6 +99,48 @@ public class ApplicationProperties {
         }
     }
 
+    public static class DataSource{
+        private String url;
+        private String username;
+        private String password;
+        private String driverClassName;
+
+        public DataSource(){
+
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public String getDriverClassName() {
+            return driverClassName;
+        }
+
+        public void setDriverClassName(String driver) {
+            this.driverClassName = driver;
+        }
+    }
     /**
      * The properties for the SQL module
      */
@@ -145,6 +207,207 @@ public class ApplicationProperties {
 
         public void setExerciseDatabase(String exerciseDatabase) {
             this.exerciseDatabase = exerciseDatabase;
+        }
+    }
+
+    /**
+     * The properties for the XQuery-module
+     */
+    public static class XQueryProps{
+        private XQTable table;
+        private boolean modus_debug;
+        private String connUser;
+        private String connPwd;
+        private String connUrl;
+        private String questionFolderBaseName;
+        private String xmlFileURLPrefix;
+        private String tempFolderPath;
+        private String log4jPropertiesPath;
+        private String propertyFilePath;
+        private String xslRenderXqPath;
+        private String xslModifyPath;
+        private String xercesJarPath;
+        private String DDbeJarPath;
+        private String xsdFileScoresPath;
+
+        public XQTable getTable() {
+            return table;
+        }
+
+        public void setTable(XQTable table) {
+            this.table = table;
+        }
+
+        public boolean isModus_debug() {
+            return modus_debug;
+        }
+
+        public void setModus_debug(boolean modus_debug) {
+            this.modus_debug = modus_debug;
+        }
+
+        public String getConnUser() {
+            return connUser;
+        }
+
+        public void setConnUser(String connUser) {
+            this.connUser = connUser;
+        }
+
+        public String getConnPwd() {
+            return connPwd;
+        }
+
+        public void setConnPwd(String connPwd) {
+            this.connPwd = connPwd;
+        }
+
+        public String getConnUrl() {
+            return connUrl;
+        }
+
+        public void setConnUrl(String connUrl) {
+            this.connUrl = connUrl;
+        }
+
+        public String getQuestionFolderBaseName() {
+            return questionFolderBaseName;
+        }
+
+        public void setQuestionFolderBaseName(String questionFolderBaseName) {
+            this.questionFolderBaseName = questionFolderBaseName;
+        }
+
+        public String getXmlFileURLPrefix() {
+            return xmlFileURLPrefix;
+        }
+
+        public void setXmlFileURLPrefix(String xmlFileURLPrefix) {
+            this.xmlFileURLPrefix = xmlFileURLPrefix;
+        }
+
+        public String getTempFolderPath() {
+            return tempFolderPath;
+        }
+
+        public void setTempFolderPath(String tempFolderPath) {
+            this.tempFolderPath = tempFolderPath;
+        }
+
+        public String getLog4jPropertiesPath() {
+            return log4jPropertiesPath;
+        }
+
+        public void setLog4jPropertiesPath(String log4jPropertiesPath) {
+            this.log4jPropertiesPath = log4jPropertiesPath;
+        }
+
+        public String getPropertyFilePath() {
+            return propertyFilePath;
+        }
+
+        public void setPropertyFilePath(String propertyFilePath) {
+            this.propertyFilePath = propertyFilePath;
+        }
+
+        public String getXslRenderXqPath() {
+            return xslRenderXqPath;
+        }
+
+        public void setXslRenderXqPath(String xslRenderXqPath) {
+            this.xslRenderXqPath = xslRenderXqPath;
+        }
+
+        public String getXslModifyPath() {
+            return xslModifyPath;
+        }
+
+        public void setXslModifyPath(String xslModifyPath) {
+            this.xslModifyPath = xslModifyPath;
+        }
+
+        public String getXercesJarPath() {
+            return xercesJarPath;
+        }
+
+        public void setXercesJarPath(String xercesJarPath) {
+            this.xercesJarPath = xercesJarPath;
+        }
+
+        public String getDDbeJarPath() {
+            return DDbeJarPath;
+        }
+
+        public void setDDbeJarPath(String DDbeJarPath) {
+            this.DDbeJarPath = DDbeJarPath;
+        }
+
+        public String getXsdFileScoresPath() {
+            return xsdFileScoresPath;
+        }
+
+        public void setXsdFileScoresPath(String xsdFileScoresPath) {
+            this.xsdFileScoresPath = xsdFileScoresPath;
+        }
+
+        /**
+         * Properties regarding table-names of the xquery-module
+         */
+        public static class XQTable{
+            private String error_categories;
+            private String error_grading;
+            private String urls;
+            private String exercise;
+            private String sortings;
+            private String taskGroup_fileIds_mapping;
+
+            public String getError_categories() {
+                return error_categories;
+            }
+
+            public void setError_categories(String error_categories) {
+                this.error_categories = error_categories;
+            }
+
+            public String getError_grading() {
+                return error_grading;
+            }
+
+            public void setError_grading(String error_grading) {
+                this.error_grading = error_grading;
+            }
+
+            public String getUrls() {
+                return urls;
+            }
+
+            public void setUrls(String urls) {
+                this.urls = urls;
+            }
+
+            public String getExercise() {
+                return exercise;
+            }
+
+            public void setExercise(String exercise) {
+                this.exercise = exercise;
+            }
+
+            public String getSortings() {
+                return sortings;
+            }
+
+            public void setSortings(String sortings) {
+                this.sortings = sortings;
+            }
+
+            public String getTaskGroup_fileIds_mapping() {
+                return taskGroup_fileIds_mapping;
+            }
+
+            public void setTaskGroup_fileIds_mapping(String taskGroup_fileIds_mapping) {
+                this.taskGroup_fileIds_mapping = taskGroup_fileIds_mapping;
+            }
         }
     }
 

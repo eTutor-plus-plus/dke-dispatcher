@@ -40,7 +40,8 @@ public class TestSQLModule {
     private String CONN_URL;
     private String CONN_USER;
     private String CONN_PWD;
-    private final String EXERCISE_CONSTRAINTS = "";
+    private final String EXERCISE_CONSTRAINTS = " WHERE id < 13914 AND id NOT IN (65, 13089, 13883, 13884, 13885, 13887, 13901, 13902, 13903, 13904, 13905" +
+            ", 13906, 13907, 13908, 13909, 13910, 13911, 13912, 13913) " ;
     private final String ACTION_STRING = "diagnose";
     private final String DIAGNOSE_LEVEL = "3";
 
@@ -74,6 +75,7 @@ public class TestSQLModule {
             Submission submission = prepareSubmission(id, solution);
             assertFalse(submission == null);
             sendSubmission(submission);
+            Thread.sleep(350);
         }
         Thread.sleep(350);
         getGradings();
@@ -86,6 +88,7 @@ public class TestSQLModule {
                 .uri(URI.create(REST_URL + "/submission"))
                 .POST(HttpRequest.BodyPublishers.ofString(submissionJson))
                 .setHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                .setHeader(HttpHeaders.ACCEPT_LANGUAGE, "de")
                 .build();
         HttpResponse<String> response = sendRequest(request);
         String id = getId(response);

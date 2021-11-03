@@ -1,0 +1,1096 @@
+"ID","DOC","FILENAME"
+1,<?xml version='1.0' encoding='UTF-8'?>
+<handelskette>
+	<produkte>
+		<produkt ean="0-666-4567-2-22">
+			<bezeichnung>Autoschampoo</bezeichnung>
+			<kategorie>Pflege</kategorie>
+			<ekPreis>35</ekPreis>
+			<listPreis>69</listPreis>
+		</produkt>
+		<produkt ean="0-777-4997-2-43">
+			<bezeichnung>Glanzpolitur</bezeichnung>
+			<kategorie>Pflege</kategorie>
+			<ekPreis>70</ekPreis>
+			<listPreis>119</listPreis>
+		</produkt>
+		<produkt ean="0-456-4887-3-22">
+			<bezeichnung>Kaltwachs</bezeichnung>
+			<kategorie>Pflege</kategorie>
+			<ekPreis>90</ekPreis>
+			<listPreis>199</listPreis>
+		</produkt>
+		<produkt ean="0-55-48567-16-2">
+			<bezeichnung>Armaturenreiniger</bezeichnung>
+			<kategorie>Pflege</kategorie>
+			<ekPreis>115</ekPreis>
+			<listPreis>333</listPreis>
+		</produkt>
+		<produkt ean="1-626-7767-2-99">
+			<bezeichnung>Scheibenwischer</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>390</ekPreis>
+			<listPreis>400</listPreis>
+		</produkt>
+		<produkt ean="1-256-7700-2-00">
+			<bezeichnung>Sportlenkrad</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>1300</ekPreis>
+			<listPreis>1999</listPreis>
+		</produkt>
+		<produkt ean="1-333-7788-2-31">
+			<bezeichnung>Gaspedal</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>800</ekPreis>
+			<listPreis>960</listPreis>
+		</produkt>
+		<produkt ean="2-446-7240-9-15">
+			<bezeichnung>Rennsitz</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>18900</ekPreis>
+			<listPreis>22999</listPreis>
+		</produkt>
+		<produkt ean="0-596-4628-0-00">
+			<bezeichnung>Wagenheber</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>890</ekPreis>
+			<listPreis>1299</listPreis>
+		</produkt>
+		<produkt ean="9-396-7510-9-00">
+			<bezeichnung>Chromfelge</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>9000</ekPreis>
+			<listPreis>12980</listPreis>
+		</produkt>
+		<produkt ean="3-211-1000-2-00">
+			<bezeichnung>Sonnenschutz</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>160</ekPreis>
+			<listPreis>250</listPreis>
+		</produkt>
+		<produkt ean="7-2881-760-3-70">
+			<bezeichnung>Schraubantenne</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>965</ekPreis>
+			<listPreis>1300</listPreis>
+		</produkt>
+		<produkt ean="5-2671-955-5-55">
+			<bezeichnung>Autoradio</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>5555</ekPreis>
+			<listPreis>6800</listPreis>
+		</produkt>
+		<produkt ean="1-4444-652-8-88">
+			<bezeichnung>CD-Wechsler</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>2345</ekPreis>
+			<listPreis>3999</listPreis>
+		</produkt>
+		<produkt ean="3-1111-654-3-99">
+			<bezeichnung>Lautsprecher</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>999</ekPreis>
+			<listPreis>1599</listPreis>
+		</produkt>
+		<produkt ean="3-5674-904-5-13">
+			<bezeichnung>Subwoofer</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>1749</ekPreis>
+			<listPreis>2279</listPreis>
+		</produkt>
+		<produkt ean="6-581-1766-3-45">
+			<bezeichnung>Telefonhalter</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>130</ekPreis>
+			<listPreis>225</listPreis>
+		</produkt>
+		<produkt ean="6-231-4777-3-15">
+			<bezeichnung>Lenkradueberzug</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>125</ekPreis>
+			<listPreis>529</listPreis>
+		</produkt>
+		<produkt ean="4-1161-730-3-88">
+			<bezeichnung>Warndreieck</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>350</ekPreis>
+			<listPreis>499</listPreis>
+		</produkt>
+		<produkt ean="0-4381-880-7-00">
+			<bezeichnung>Verbandskasten DIN</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>965</ekPreis>
+			<listPreis>999</listPreis>
+		</produkt>
+		<produkt ean="5-6661-000-0-00">
+			<bezeichnung>Abschleppseil</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>225</ekPreis>
+			<listPreis>475</listPreis>
+		</produkt>
+	</produkte>
+	<filialen,"handelskette.xml"
+1009,<?xml version="1.0" encoding="UTF-8"?>
+<handelskette>
+	<produkte>
+		<produkt ean="0-666-4567-2-22">
+			<bezeichnung>Autoschampoo</bezeichnung>
+			<kategorie>Pflege</kategorie>
+			<ekPreis>35</ekPreis>
+			<listPreis>69</listPreis>
+		</produkt>
+		<produkt ean="0-777-4997-2-43">
+			<bezeichnung>Glanzpolitur</bezeichnung>
+			<kategorie>Pflege</kategorie>
+			<ekPreis>70</ekPreis>
+			<listPreis>119</listPreis>
+		</produkt>
+		<produkt ean="0-456-4887-3-22">
+			<bezeichnung>Kaltwachs</bezeichnung>
+			<kategorie>Pflege</kategorie>
+			<ekPreis>90</ekPreis>
+			<listPreis>199</listPreis>
+		</produkt>
+		<produkt ean="0-55-48567-16-2">
+			<bezeichnung>Armaturenreiniger</bezeichnung>
+			<kategorie>Pflege</kategorie>
+			<ekPreis>115</ekPreis>
+			<listPreis>333</listPreis>
+		</produkt>
+		<produkt ean="1-626-7767-2-99">
+			<bezeichnung>Scheibenwischer</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>390</ekPreis>
+			<listPreis>400</listPreis>
+		</produkt>
+		<produkt ean="1-256-7700-2-00">
+			<bezeichnung>Sportlenkrad</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>1300</ekPreis>
+			<listPreis>1999</listPreis>
+		</produkt>
+		<produkt ean="1-333-7788-2-31">
+			<bezeichnung>Gaspedal</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>800</ekPreis>
+			<listPreis>960</listPreis>
+		</produkt>
+		<produkt ean="2-446-7240-9-15">
+			<bezeichnung>Rennsitz</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>18900</ekPreis>
+			<listPreis>22999</listPreis>
+		</produkt>
+		<produkt ean="0-596-4628-0-00">
+			<bezeichnung>Wagenheber</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>890</ekPreis>
+			<listPreis>1299</listPreis>
+		</produkt>
+		<produkt ean="9-396-7510-9-00">
+			<bezeichnung>Chromfelge</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>9000</ekPreis>
+			<listPreis>12980</listPreis>
+		</produkt>
+		<produkt ean="3-211-1000-2-00">
+			<bezeichnung>Sonnenschutz</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>160</ekPreis>
+			<listPreis>250</listPreis>
+		</produkt>
+		<produkt ean="7-2881-760-3-70">
+			<bezeichnung>Schraubantenne</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>965</ekPreis>
+			<listPreis>1300</listPreis>
+		</produkt>
+		<produkt ean="5-2671-955-5-55">
+			<bezeichnung>Autoradio</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>5555</ekPreis>
+			<listPreis>6800</listPreis>
+		</produkt>
+		<produkt ean="1-4444-652-8-88">
+			<bezeichnung>CD-Wechsler</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>2345</ekPreis>
+			<listPreis>3999</listPreis>
+		</produkt>
+		<produkt ean="3-1111-654-3-99">
+			<bezeichnung>Lautsprecher</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>999</ekPreis>
+			<listPreis>1599</listPreis>
+		</produkt>
+		<produkt ean="3-5674-904-5-13">
+			<bezeichnung>Subwoofer</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>1749</ekPreis>
+			<listPreis>2279</listPreis>
+		</produkt>
+		<produkt ean="6-581-1766-3-45">
+			<bezeichnung>Telefonhalter</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>130</ekPreis>
+			<listPreis>225</listPreis>
+		</produkt>
+		<produkt ean="6-231-4777-3-15">
+			<bezeichnung>Lenkradueberzug</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>125</ekPreis>
+			<listPreis>529</listPreis>
+		</produkt>
+		<produkt ean="4-1161-730-3-88">
+			<bezeichnung>Warndreieck</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>350</ekPreis>
+			<listPreis>499</listPreis>
+		</produkt>
+		<produkt ean="0-4381-880-7-00">
+			<bezeichnung>Verbandskasten DIN</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>965</ekPreis>
+			<listPreis>999</listPreis>
+		</produkt>
+		<produkt ean="5-6661-000-0-00">
+			<bezeichnung>Abschleppseil</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>225</ekPreis>
+			<listPreis>475</listPreis>
+		</produkt>
+	</produkte>
+	<filialen,"handelskette2.xml"
+1010,<?xml version="1.0" encoding="UTF-8"?>
+<handelskette>
+	<produkte>
+		<produkt ean="0-666-4567-2-22">
+			<bezeichnung>Autoschampoo</bezeichnung>
+			<kategorie>Pflege</kategorie>
+			<ekPreis>35</ekPreis>
+			<listPreis>69</listPreis>
+		</produkt>
+		<produkt ean="0-777-4997-2-43">
+			<bezeichnung>Glanzpolitur</bezeichnung>
+			<kategorie>Pflege</kategorie>
+			<ekPreis>70</ekPreis>
+			<listPreis>119</listPreis>
+		</produkt>
+		<produkt ean="0-456-4887-3-22">
+			<bezeichnung>Kaltwachs</bezeichnung>
+			<kategorie>Pflege</kategorie>
+			<ekPreis>90</ekPreis>
+			<listPreis>199</listPreis>
+		</produkt>
+		<produkt ean="0-55-48567-16-2">
+			<bezeichnung>Armaturenreiniger</bezeichnung>
+			<kategorie>Pflege</kategorie>
+			<ekPreis>115</ekPreis>
+			<listPreis>333</listPreis>
+		</produkt>
+		<produkt ean="1-626-7767-2-99">
+			<bezeichnung>Scheibenwischer</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>390</ekPreis>
+			<listPreis>400</listPreis>
+		</produkt>
+		<produkt ean="1-256-7700-2-00">
+			<bezeichnung>Sportlenkrad</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>1300</ekPreis>
+			<listPreis>1999</listPreis>
+		</produkt>
+		<produkt ean="1-333-7788-2-31">
+			<bezeichnung>Gaspedal</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>800</ekPreis>
+			<listPreis>960</listPreis>
+		</produkt>
+		<produkt ean="2-446-7240-9-15">
+			<bezeichnung>Rennsitz</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>18900</ekPreis>
+			<listPreis>22999</listPreis>
+		</produkt>
+		<produkt ean="0-596-4628-0-00">
+			<bezeichnung>Wagenheber</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>890</ekPreis>
+			<listPreis>1299</listPreis>
+		</produkt>
+		<produkt ean="9-396-7510-9-00">
+			<bezeichnung>Chromfelge</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>9000</ekPreis>
+			<listPreis>12980</listPreis>
+		</produkt>
+		<produkt ean="3-211-1000-2-00">
+			<bezeichnung>Sonnenschutz</bezeichnung>
+			<kategorie>Ersatz</kategorie>
+			<ekPreis>160</ekPreis>
+			<listPreis>250</listPreis>
+		</produkt>
+		<produkt ean="7-2881-760-3-70">
+			<bezeichnung>Schraubantenne</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>965</ekPreis>
+			<listPreis>1300</listPreis>
+		</produkt>
+		<produkt ean="5-2671-955-5-55">
+			<bezeichnung>Autoradio</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>5555</ekPreis>
+			<listPreis>6800</listPreis>
+		</produkt>
+		<produkt ean="1-4444-652-8-88">
+			<bezeichnung>CD-Wechsler</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>2345</ekPreis>
+			<listPreis>3999</listPreis>
+		</produkt>
+		<produkt ean="3-1111-654-3-99">
+			<bezeichnung>Lautsprecher</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>999</ekPreis>
+			<listPreis>1599</listPreis>
+		</produkt>
+		<produkt ean="3-5674-904-5-13">
+			<bezeichnung>Subwoofer</bezeichnung>
+			<kategorie>Audio</kategorie>
+			<ekPreis>1749</ekPreis>
+			<listPreis>2279</listPreis>
+		</produkt>
+		<produkt ean="6-581-1766-3-45">
+			<bezeichnung>Telefonhalter</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>130</ekPreis>
+			<listPreis>225</listPreis>
+		</produkt>
+		<produkt ean="6-231-4777-3-15">
+			<bezeichnung>Lenkradueberzug</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>125</ekPreis>
+			<listPreis>529</listPreis>
+		</produkt>
+		<produkt ean="4-1161-730-3-88">
+			<bezeichnung>Warndreieck</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>350</ekPreis>
+			<listPreis>499</listPreis>
+		</produkt>
+		<produkt ean="0-4381-880-7-00">
+			<bezeichnung>Verbandskasten DIN</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>965</ekPreis>
+			<listPreis>999</listPreis>
+		</produkt>
+		<produkt ean="5-6661-000-0-00">
+			<bezeichnung>Abschleppseil</bezeichnung>
+			<kategorie>Sonstiges</kategorie>
+			<ekPreis>225</ekPreis>
+			<listPreis>475</listPreis>
+		</produkt>
+	</produkte>
+	<filialen,"handelskette3.xml"
+5002,
+ <Bilanzen>
+ 	<Bilanz jahr="2002">
+ 		<Aktiva>
+ 			<LangfristigesVermoegen>
+ 				<Sachanlagen summe="1286575.8"/>
+ 				<ImmateriellesVermoegen summe="37767.2"/>
+ 				<Patente summe="27767.2"/>
+ 				<AssoziierteUnternehmen summe="390826.3"/>
+ 				<AndereBeteiligungen summe="707692.7"/>
+ 				<Uebrige summe="32916.4"/>
+ 			</LangfristigesVermoegen>
+ 			<KurzfristigesVermoegen>
+ 				<Vorraete summe="98830.9"/>
+ 				<Forderungen summe="398210.3"/>
+ 				<Finanzmittel summe="141102.0"/>
+ 			</KurzfristigesVermoegen>
+ 		</Aktiva>
+ 		<Passiva>
+ 			<Eigenkapital>
+ 				<Grundkapital summe="61072.4"/>
+ 				<Kapitalruecklagen summe="146789.5"/>
+ 				<Gewinnruecklagen summe="758176.2"/>
+ 				<Bewertungsruecklagen summe="-32922.4"/>
+ 				<Waehrungsumrechnung summe="10000.0"/>
+ 				<EigeneAktien summe="0"/>
+ 			</Eigenkapital>
+ 			<AnteileGesellschafter summe="22613.1"/>
+ 			<LangfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="660007.1"/>
+ 				<Wechselbetrugsrueckstellungen summe="666.66"/>
+ 				<Steuern summe="36655.8"/>
+ 				<Rueckstellungen summe="422286.1"/>
+ 				<Baukostenzuschuesse summe="162246.0"/>
+ 				<Uebrige summe="32166.9"/>
+ 			</LangfristigeVerb>
+ 			<KurzfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="14414.6"/>
+ 				<Steuern summe="65547.6"/>
+ 				<Lieferanten summe="92939.2"/>
+ 				<Rueckstellungen summe="113664.8"/>
+ 				<Uebrige summe="82464.8"/>
+ 			</KurzfristigeVerb>
+ 		</Passiva>
+ 	</Bilanz>
+ 	<Bilanz jahr="2003">
+ 		<Aktiva>
+ 			<LangfristigesVermoegen>
+ 				<Sachanlagen summe="1790313.7"/>
+ 				<ImmateriellesVermoegen summe="66693.2"/>
+ 				<Patente summe="27767.2"/>
+ 				<AssoziierteUnternehmen summe="168224.7"/>
+ 				<AndereBeteiligungen summe="468489.3"/>
+ 				<Uebrige summe="164566.7"/>
+ 			</LangfristigesVermoegen>
+ 			<KurzfristigesVermoegen>
+ 				<Vorraete summe="26609.8"/>
+ 				<Forderungen summe="269458.5"/>
+ 				<Finanzmittel summe="362445.9"/>
+ 			</KurzfristigesVermoegen>
+ 		</Aktiva>
+ 		<Passiva>
+ 			<Eigenkapital>
+ 				<Grundkapital summe="96072.4"/>
+ 				<Kapitalruecklagen summe="166789.5"/>
+ 				<Gewinnruecklagen summe="865723.4"/>
+ 				<Bewertungsruecklagen summe="-16459.5"/>
+ 				<Waehrungsumrechnung summe="-663.7"/>
+ 				<EigeneAktien summe="0"/>
+ 			</Eigenkapital>
+ 			<AnteileGesellschafter summe="26669.8"/>
+ 			<LangfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="763990.2"/>
+ 				<Wechselbetrugsrueckstellungen summe="666.66"/>
+ 				<Steuern summe="66156.8"/>
+ 				<Rueckstellungen summe="365997.2"/>
+ 				<Baukostenzuschuesse summe="167338.5"/>
+ 				<Uebrige summe="36064.9"/>
+ 			</LangfristigeVerb>
+ 			<KurzfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="6664.7"/>
+ 				<Steuern summe="96119.1"/>
+ 				<Lieferanten summe="86606.0"/>
+ 				<Rueckstellungen summe="168237.5"/>
+ 				<Uebrige summe="96495.2"/>
+ 			</KurzfristigeVerb>
+ 		</Passiva>
+ 	</Bilanz>
+ </Bilanzen>,"abschluesse_s.xml"
+5001,
+ <Bilanzen>
+ 	<Bilanz jahr="2002">
+ 		<Aktiva>
+ 			<LangfristigesVermoegen>
+ 				<Sachanlagen summe="1486575.8"/>
+ 				<ImmateriellesVermoegen summe="67767.2"/>
+ 				<AssoziierteUnternehmen summe="190826.3"/>
+ 				<AndereBeteiligungen summe="507692.7"/>
+ 				<Uebrige summe="92916.4"/>
+ 			</LangfristigesVermoegen>
+ 			<KurzfristigesVermoegen>
+ 				<Vorraete summe="78830.9"/>
+ 				<Forderungen summe="198210.3"/>
+ 				<Finanzmittel summe="181102.0"/>
+ 			</KurzfristigesVermoegen>
+ 		</Aktiva>
+ 		<Passiva>
+ 			<Eigenkapital>
+ 				<Grundkapital summe="91072.4"/>
+ 				<Kapitalruecklagen summe="186789.5"/>
+ 				<Gewinnruecklagen summe="798176.2"/>
+ 				<Bewertungsruecklagen summe="-34922.4"/>
+ 				<Waehrungsumrechnung summe="0"/>
+ 				<EigeneAktien summe="0"/>
+ 			</Eigenkapital>
+ 			<AnteileGesellschafter summe="23613.1"/>
+ 			<LangfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="680007.1"/>
+ 				<Steuern summe="36555.8"/>
+ 				<Rueckstellungen summe="429286.1"/>
+ 				<Baukostenzuschuesse summe="169246.0"/>
+ 				<Uebrige summe="36166.9"/>
+ 			</LangfristigeVerb>
+ 			<KurzfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="14614.6"/>
+ 				<Steuern summe="65247.6"/>
+ 				<Lieferanten summe="94939.2"/>
+ 				<Rueckstellungen summe="123664.8"/>
+ 				<Uebrige summe="89464.8"/>
+ 			</KurzfristigeVerb>
+ 		</Passiva>
+ 	</Bilanz>
+ 	<Bilanz jahr="2003">
+ 		<Aktiva>
+ 			<LangfristigesVermoegen>
+ 				<Sachanlagen summe="1590313.7"/>
+ 				<ImmateriellesVermoegen summe="69693.2"/>
+ 				<AssoziierteUnternehmen summe="198224.7"/>
+ 				<AndereBeteiligungen summe="418489.3"/>
+ 				<Uebrige summe="104566.7"/>
+ 			</LangfristigesVermoegen>
+ 			<KurzfristigesVermoegen>
+ 				<Vorraete summe="20609.8"/>
+ 				<Forderungen summe="289458.5"/>
+ 				<Finanzmittel summe="302445.9"/>
+ 			</KurzfristigesVermoegen>
+ 		</Aktiva>
+ 		<Passiva>
+ 			<Eigenkapital>
+ 				<Grundkapital summe="91072.4"/>
+ 				<Kapitalruecklagen summe="186789.5"/>
+ 				<Gewinnruecklagen summe="875723.4"/>
+ 				<Bewertungsruecklagen summe="-15459.5"/>
+ 				<Waehrungsumrechnung summe="-633.7"/>
+ 				<EigeneAktien summe="0"/>
+ 			</Eigenkapital>
+ 			<AnteileGesellschafter summe="22669.8"/>
+ 			<LangfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="733990.2"/>
+ 				<Steuern summe="68156.8"/>
+ 				<Rueckstellungen summe="395997.2"/>
+ 				<Baukostenzuschuesse summe="177338.5"/>
+ 				<Uebrige summe="38064.9"/>
+ 			</LangfristigeVerb>
+ 			<KurzfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="6634.7"/>
+ 				<Steuern summe="97119.1"/>
+ 				<Lieferanten summe="89606.0"/>
+ 				<Rueckstellungen summe="128237.5"/>
+ 				<Uebrige summe="98495.2"/>
+ 			</KurzfristigeVerb>
+ 		</Passiva>
+ 	</Bilanz>
+ </Bilanzen>,"abschluesse.xml"
+5006,
+ <Bilanzen>
+ 	<Bilanz jahr="2002">
+ 		<Aktiva>
+ 			<LangfristigesVermoegen>
+ 				<Sachanlagen summe="1286575.8"/>
+ 				<ImmateriellesVermoegen summe="37767.2"/>
+ 				<Patente summe="27767.2"/>
+ 				<AssoziierteUnternehmen summe="390826.3"/>
+ 				<AndereBeteiligungen summe="707692.7"/>
+ 				<Uebrige summe="32916.4"/>
+ 			</LangfristigesVermoegen>
+ 			<KurzfristigesVermoegen>
+ 				<Vorraete summe="98830.9"/>
+ 				<Forderungen summe="398210.3"/>
+ 				<Finanzmittel summe="141102.0"/>
+ 			</KurzfristigesVermoegen>
+ 		</Aktiva>
+ 		<Passiva>
+ 			<Eigenkapital>
+ 				<Grundkapital summe="61072.4"/>
+ 				<Kapitalruecklagen summe="146789.5"/>
+ 				<Gewinnruecklagen summe="758176.2"/>
+ 				<Bewertungsruecklagen summe="-32922.4"/>
+ 				<Waehrungsumrechnung summe="10000.0"/>
+ 				<EigeneAktien summe="0"/>
+ 			</Eigenkapital>
+ 			<AnteileGesellschafter summe="22613.1"/>
+ 			<LangfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="660007.1"/>
+ 				<Wechselbetrugsrueckstellungen summe="666.66"/>
+ 				<Steuern summe="36655.8"/>
+ 				<Rueckstellungen summe="422286.1"/>
+ 				<Baukostenzuschuesse summe="162246.0"/>
+ 				<Uebrige summe="32166.9"/>
+ 			</LangfristigeVerb>
+ 			<KurzfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="14414.6"/>
+ 				<Steuern summe="65547.6"/>
+ 				<Lieferanten summe="92939.2"/>
+ 				<Rueckstellungen summe="113664.8"/>
+ 				<Uebrige summe="82464.8"/>
+ 			</KurzfristigeVerb>
+ 		</Passiva>
+ 	</Bilanz>
+ 	<Bilanz jahr="2003">
+ 		<Aktiva>
+ 			<LangfristigesVermoegen>
+ 				<Sachanlagen summe="1790313.7"/>
+ 				<ImmateriellesVermoegen summe="66693.2"/>
+ 				<Patente summe="27767.2"/>
+ 				<AssoziierteUnternehmen summe="168224.7"/>
+ 				<AndereBeteiligungen summe="468489.3"/>
+ 				<Uebrige summe="164566.7"/>
+ 			</LangfristigesVermoegen>
+ 			<KurzfristigesVermoegen>
+ 				<Vorraete summe="26609.8"/>
+ 				<Forderungen summe="269458.5"/>
+ 				<Finanzmittel summe="362445.9"/>
+ 			</KurzfristigesVermoegen>
+ 		</Aktiva>
+ 		<Passiva>
+ 			<Eigenkapital>
+ 				<Grundkapital summe="96072.4"/>
+ 				<Kapitalruecklagen summe="166789.5"/>
+ 				<Gewinnruecklagen summe="865723.4"/>
+ 				<Bewertungsruecklagen summe="-16459.5"/>
+ 				<Waehrungsumrechnung summe="-663.7"/>
+ 				<EigeneAktien summe="0"/>
+ 			</Eigenkapital>
+ 			<AnteileGesellschafter summe="26669.8"/>
+ 			<LangfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="763990.2"/>
+ 				<Wechselbetrugsrueckstellungen summe="666.66"/>
+ 				<Steuern summe="66156.8"/>
+ 				<Rueckstellungen summe="365997.2"/>
+ 				<Baukostenzuschuesse summe="167338.5"/>
+ 				<Uebrige summe="36064.9"/>
+ 			</LangfristigeVerb>
+ 			<KurzfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="6664.7"/>
+ 				<Steuern summe="96119.1"/>
+ 				<Lieferanten summe="86606.0"/>
+ 				<Rueckstellungen summe="168237.5"/>
+ 				<Uebrige summe="96495.2"/>
+ 			</KurzfristigeVerb>
+ 		</Passiva>
+ 	</Bilanz>
+ </Bilanzen>,"abschluesse.xml"
+5005,
+ <Bilanzen>
+ 	<Bilanz jahr="2002">
+ 		<Aktiva>
+ 			<LangfristigesVermoegen>
+ 				<Sachanlagen summe="1286575.8"/>
+ 				<ImmateriellesVermoegen summe="37767.2"/>
+ 				<Patente summe="27767.2"/>
+ 				<AssoziierteUnternehmen summe="390826.3"/>
+ 				<AndereBeteiligungen summe="707692.7"/>
+ 				<Uebrige summe="32916.4"/>
+ 			</LangfristigesVermoegen>
+ 			<KurzfristigesVermoegen>
+ 				<Vorraete summe="98830.9"/>
+ 				<Forderungen summe="398210.3"/>
+ 				<Finanzmittel summe="141102.0"/>
+ 			</KurzfristigesVermoegen>
+ 		</Aktiva>
+ 		<Passiva>
+ 			<Eigenkapital>
+ 				<Grundkapital summe="61072.4"/>
+ 				<Kapitalruecklagen summe="146789.5"/>
+ 				<Gewinnruecklagen summe="758176.2"/>
+ 				<Bewertungsruecklagen summe="-32922.4"/>
+ 				<Waehrungsumrechnung summe="10000.0"/>
+ 				<EigeneAktien summe="0"/>
+ 			</Eigenkapital>
+ 			<AnteileGesellschafter summe="22613.1"/>
+ 			<LangfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="660007.1"/>
+ 				<Wechselbetrugsrueckstellungen summe="666.66"/>
+ 				<Steuern summe="36655.8"/>
+ 				<Rueckstellungen summe="422286.1"/>
+ 				<Baukostenzuschuesse summe="162246.0"/>
+ 				<Uebrige summe="32166.9"/>
+ 			</LangfristigeVerb>
+ 			<KurzfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="14414.6"/>
+ 				<Steuern summe="65547.6"/>
+ 				<Lieferanten summe="92939.2"/>
+ 				<Rueckstellungen summe="113664.8"/>
+ 				<Uebrige summe="82464.8"/>
+ 			</KurzfristigeVerb>
+ 		</Passiva>
+ 	</Bilanz>
+ 	<Bilanz jahr="2003">
+ 		<Aktiva>
+ 			<LangfristigesVermoegen>
+ 				<Sachanlagen summe="1790313.7"/>
+ 				<ImmateriellesVermoegen summe="66693.2"/>
+ 				<Patente summe="27767.2"/>
+ 				<AssoziierteUnternehmen summe="168224.7"/>
+ 				<AndereBeteiligungen summe="468489.3"/>
+ 				<Uebrige summe="164566.7"/>
+ 			</LangfristigesVermoegen>
+ 			<KurzfristigesVermoegen>
+ 				<Vorraete summe="26609.8"/>
+ 				<Forderungen summe="269458.5"/>
+ 				<Finanzmittel summe="362445.9"/>
+ 			</KurzfristigesVermoegen>
+ 		</Aktiva>
+ 		<Passiva>
+ 			<Eigenkapital>
+ 				<Grundkapital summe="96072.4"/>
+ 				<Kapitalruecklagen summe="166789.5"/>
+ 				<Gewinnruecklagen summe="865723.4"/>
+ 				<Bewertungsruecklagen summe="-16459.5"/>
+ 				<Waehrungsumrechnung summe="-663.7"/>
+ 				<EigeneAktien summe="0"/>
+ 			</Eigenkapital>
+ 			<AnteileGesellschafter summe="26669.8"/>
+ 			<LangfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="763990.2"/>
+ 				<Wechselbetrugsrueckstellungen summe="666.66"/>
+ 				<Steuern summe="66156.8"/>
+ 				<Rueckstellungen summe="365997.2"/>
+ 				<Baukostenzuschuesse summe="167338.5"/>
+ 				<Uebrige summe="36064.9"/>
+ 			</LangfristigeVerb>
+ 			<KurzfristigeVerb>
+ 				<Finanzverbindlichkeiten summe="6664.7"/>
+ 				<Steuern summe="96119.1"/>
+ 				<Lieferanten summe="86606.0"/>
+ 				<Rueckstellungen summe="168237.5"/>
+ 				<Uebrige summe="96495.2"/>
+ 			</KurzfristigeVerb>
+ 		</Passiva>
+ 	</Bilanz>
+ </Bilanzen>,"abschluesse.xml"
+2,<db>
+	<person nr="p1">
+		<name>Deckere</name>
+		<stand>ledig</stand>
+		<beruf>Student</beruf>
+	</person>
+	<person nr="p2">
+		<name>Meier</name>
+		<stand>verheiratet</stand>
+		<beruf>Maurer</beruf>
+	</person>
+	<person nr="p3">
+		<name>Huber</name>
+		<stand>ledig</stand>
+		<beruf>Schlosser</beruf>
+	</person>
+	<person nr="p4">
+		<name>Bauer</name>
+		<stand>verwitwet</stand>
+		<beruf>Beamter</beruf>
+	</person>
+	<person nr="p5">
+		<name>Kaiser</name>
+		<stand>verheiratet</stand>
+		<beruf>Beamter</beruf>
+	</person>
+	<person nr="p6">
+		<name>Richter</name>
+		<stand>ledig</stand>
+		<beruf>Anwalt</beruf>
+	</person>
+	<person nr="p7">
+		<name>Weiss</name>
+		<stand>ledig</stand>
+		<beruf>Maler</beruf>
+	</person>
+	<person nr="p8">
+		<name>Traxler</name>
+		<stand>verheiratet</stand>
+		<beruf>Student</beruf>
+	</person>
+	<person nr="p9">
+		<name>Seyfried</name>
+		<stand>ledig</stand>
+		<beruf>Maurer</beruf>
+	</person>
+	<person nr="p10">
+		<name>Weikinger</name>
+		<stand>ledig</stand>
+		<beruf>Lehrer</beruf>
+	</person>
+	<person nr="p11">
+		<name>Rechberger</name>
+		<stand>verheiratet</stand>
+		<beruf>Hausmeister</beruf>
+	</person>
+	<person nr="p12">
+		<name>Gangl</name>
+		<stand>ledig</stand>
+		<beruf>Hausmeister</beruf>
+	</person>
+	<person nr="p13">
+		<name>Wallner</name>
+		<stand>verwitwet</stand>
+		<beruf>Beamter</beruf>
+	</person>
+	<person nr="p14">
+		<name>Reiber</name>
+		<stand>ledig</stand>
+		<beruf>Student</beruf>
+	</person>
+	<mietet mieternr="p1" wohnnr="w2">
+		<preis>500</preis>
+		<von>01.01.1996</von>
+		<bis>31.08.1999</bis>
+	</mietet>
+	<mietet mieternr="p8" wohnnr="w2">
+		<preis>900</preis>
+		<von>01.10.1999</von>
+		<bis>31.12.2001</bis>
+	</mietet>
+	<mietet mieternr="p2" wohnnr="w7">
+		<preis>950</preis>
+		<von>01.01.1997</von>
+		<bis>31.12.2099</bis>
+	</mietet>
+	<mietet mieternr="p6" wohnnr="w9">
+		<preis>1500</preis>
+		<von>01.04.1994</von>
+		<bis>30.09.1999</bis>
+	</mietet>
+	<mietet mieternr="p11" wohnnr="w9">
+		<preis>1600</preis>
+		<von>01.10.1999</von>
+		<bis>31.12.2099</bis>
+	</mietet>
+	<mietet mieternr="p9" wohnnr="w4">
+		<preis>700</preis>
+		<von>01.01.1997</von>
+		<bis>28.02.1999</bis>
+	</mietet>
+	<mietet mieternr="p11" wohnnr="w4">
+		<preis>650</preis>
+		<von>01.03.1999</von>
+		<bis>31.12.2099</bis>
+	</mietet>
+	<mietet mieternr="p5" wohnnr="w3">
+		<preis>1100</preis>
+		<von>01.01.1996</von>
+		<bis>31.12.2099</bis>
+	</mietet>
+	<mietet mieternr="p8" wohnnr="w11">
+		<preis>1100</preis>
+		<von>01.05.1998</von>
+		<bis>30.09.1999</bis>
+	</mietet>
+	<mietet mieternr="p9" wohnnr="w11">
+		<preis>1200</preis>
+		<von>01.01.2000</von>
+		<bis>30.09.2001</bis>
+	</mietet>
+	<mietet mieternr="p9" wohnnr="w1">
+		<preis>950</preis>
+		<von>01.01.1996</von>
+		<bis>31.12.2099</bis>
+	</mietet>
+	<mietet mieternr="p11" wohnnr="w6">
+		<preis>1400</preis>
+		<von>01.01.1996</von>
+		<bis>01.08.1999</bis>
+	</mietet>
+	<mietet mieternr="p1" wohnnr="w13">
+		<preis>2100</preis>
+		<von>01.01.1990</von>
+		<bis>31.12.1997</bis>
+	</mietet>
+	<mietet mieternr="p9" wohnnr="w13">
+		<preis>2200</preis>
+		<von>01.01.1998</von>
+		<bis>31.12.2099</bis>
+	</mietet>
+	<mietet mieternr="p13" wohnnr="w5">
+		<preis>1000</preis>
+		<von>01.01.1996</von>
+		<bis>31.08.2001</bis>
+	</mietet>
+	<mietet mieternr="p14" wohnnr="w12">
+		<preis>1200</preis>
+		<von>01.01.1996</von>
+		<bis>31.01.2002</bis>
+	</mietet>
+	<wohnung nr="w1" eigentuemer="p6">
+		<bezirk>4</bezirk>
+		<gross>62</gross>
+	</wohnung>
+	<wohnung nr="w2" eigentuemer="p6">
+		<bezirk>1</bezirk>
+		<gross>100</gross>
+	</wohnung>
+	<wohnung nr="w3" eigentuemer="p4">
+		<bezirk>1</bezirk>
+		<gross>60</gross>
+	</wohnung>
+	<wohnung nr="w4" eigentuemer="p3">
+		<bezirk>2</bezirk>
+		<gross>80</gross>
+	</wohnung>
+	<wohnung nr="w5" eigentuemer="p7">
+		<bezirk>5</bezirk>
+		<gross>40</gross>
+	</wohnung>
+	<wohnung nr="w6" eigentuemer="p3">
+		<bezirk>3</bezirk>
+		<gross,"wohnungen.xml"
+5009,<?xml version="1.0" encoding="UTF-8"?>
+<Bilanzen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://etutor.dke.uni-linz.ac.at/etutor/images/assignments/evn_bilanz.xsd">
+	<Bilanz jahr="2002">
+		<Aktiva>
+			<LangfristigesVermoegen>
+				<Sachanlagen summe="1486575.8"/>
+				<ImmateriellesVermoegen summe="67767.2"/>
+				<AssoziierteUnternehmen summe="190826.3"/>
+				<AndereBeteiligungen summe="507692.7"/>
+				<Uebrige summe="92916.4"/>
+			</LangfristigesVermoegen>
+			<KurzfristigesVermoegen>
+				<Vorraete summe="78830.9"/>
+				<Forderungen summe="198210.3"/>
+				<Finanzmittel summe="181102.0"/>
+			</KurzfristigesVermoegen>
+		</Aktiva>
+		<Passiva>
+			<Eigenkapital>
+				<Grundkapital summe="91072.4"/>
+				<Kapitalruecklagen summe="186789.5"/>
+				<Gewinnruecklagen summe="798176.2"/>
+				<Bewertungsruecklagen summe="-34922.4"/>
+				<Waehrungsumrechnung summe="0"/>
+				<EigeneAktien summe="0"/>
+			</Eigenkapital>
+			<AnteileGesellschafter summe="23613.1"/>
+			<LangfristigeVerb>
+				<Finanzverbindlichkeiten summe="680007.1"/>
+				<Steuern summe="36555.8"/>
+				<Rueckstellungen summe="429286.1"/>
+				<Baukostenzuschuesse summe="169246.0"/>
+				<Uebrige summe="36166.9"/>
+			</LangfristigeVerb>
+			<KurzfristigeVerb>
+				<Finanzverbindlichkeiten summe="14614.6"/>
+				<Steuern summe="65247.6"/>
+				<Lieferanten summe="94939.2"/>
+				<Rueckstellungen summe="123664.8"/>
+				<Uebrige summe="89464.8"/>
+			</KurzfristigeVerb>
+		</Passiva>
+	</Bilanz>
+	<Bilanz jahr="2003">
+		<Aktiva>
+			<LangfristigesVermoegen>
+				<Sachanlagen summe="1590313.7"/>
+				<ImmateriellesVermoegen summe="69693.2"/>
+				<AssoziierteUnternehmen summe="198224.7"/>
+				<AndereBeteiligungen summe="418489.3"/>
+				<Uebrige summe="104566.7"/>
+			</LangfristigesVermoegen>
+			<KurzfristigesVermoegen>
+				<Vorraete summe="20609.8"/>
+				<Forderungen summe="289458.5"/>
+				<Finanzmittel summe="302445.9"/>
+			</KurzfristigesVermoegen>
+		</Aktiva>
+		<Passiva>
+			<Eigenkapital>
+				<Grundkapital summe="91072.4"/>
+				<Kapitalruecklagen summe="186789.5"/>
+				<Gewinnruecklagen summe="875723.4"/>
+				<Bewertungsruecklagen summe="-15459.5"/>
+				<Waehrungsumrechnung summe="-633.7"/>
+				<EigeneAktien summe="0"/>
+			</Eigenkapital>
+			<AnteileGesellschafter summe="22669.8"/>
+			<LangfristigeVerb>
+				<Finanzverbindlichkeiten summe="733990.2"/>
+				<Steuern summe="68156.8"/>
+				<Rueckstellungen summe="395997.2"/>
+				<Baukostenzuschuesse summe="177338.5"/>
+				<Uebrige summe="38064.9"/>
+			</LangfristigeVerb>
+			<KurzfristigeVerb>
+				<Finanzverbindlichkeiten summe="6634.7"/>
+				<Steuern summe="97119.1"/>
+				<Lieferanten summe="89606.0"/>
+				<Rueckstellungen summe="128237.5"/>
+				<Uebrige summe="98495.2"/>
+			</KurzfristigeVerb>
+		</Passiva>
+	</Bilanz>
+</Bilanzen>
+,"abschluesse.xml"
+5010,<?xml version="1.0" encoding="UTF-8"?>
+<Bilanzen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://etutor.dke.uni-linz.ac.at/etutor/images/assignments/evn_bilanz_shadow.xsd">
+	<Bilanz jahr="2002">
+		<Aktiva>
+			<LangfristigesVermoegen>
+				<Sachanlagen summe="1286575.8"/>
+				<ImmateriellesVermoegen summe="37767.2"/>
+				<Patente summe="27767.2"/>
+				<AssoziierteUnternehmen summe="390826.3"/>
+				<AndereBeteiligungen summe="707692.7"/>
+				<Uebrige summe="32916.4"/>
+			</LangfristigesVermoegen>
+			<KurzfristigesVermoegen>
+				<Vorraete summe="98830.9"/>
+				<Forderungen summe="398210.3"/>
+				<Finanzmittel summe="141102.0"/>
+			</KurzfristigesVermoegen>
+		</Aktiva>
+		<Passiva>
+			<Eigenkapital>
+				<Grundkapital summe="61072.4"/>
+				<Kapitalruecklagen summe="146789.5"/>
+				<Gewinnruecklagen summe="758176.2"/>
+				<Bewertungsruecklagen summe="-32922.4"/>
+				<Waehrungsumrechnung summe="10000.0"/>
+				<EigeneAktien summe="0"/>
+			</Eigenkapital>
+			<AnteileGesellschafter summe="22613.1"/>
+			<LangfristigeVerb>
+				<Finanzverbindlichkeiten summe="660007.1"/>
+				<Wechselbetrugsrueckstellungen summe="666.66"/>
+				<Steuern summe="36655.8"/>
+				<Rueckstellungen summe="422286.1"/>
+				<Baukostenzuschuesse summe="162246.0"/>
+				<Uebrige summe="32166.9"/>
+			</LangfristigeVerb>
+			<KurzfristigeVerb>
+				<Finanzverbindlichkeiten summe="14414.6"/>
+				<Steuern summe="65547.6"/>
+				<Lieferanten summe="92939.2"/>
+				<Rueckstellungen summe="113664.8"/>
+				<Uebrige summe="82464.8"/>
+			</KurzfristigeVerb>
+		</Passiva>
+	</Bilanz>
+	<Bilanz jahr="2003">
+		<Aktiva>
+			<LangfristigesVermoegen>
+				<Sachanlagen summe="1790313.7"/>
+				<ImmateriellesVermoegen summe="66693.2"/>
+				<Patente summe="27767.2"/>
+				<AssoziierteUnternehmen summe="168224.7"/>
+				<AndereBeteiligungen summe="468489.3"/>
+				<Uebrige summe="164566.7"/>
+			</LangfristigesVermoegen>
+			<KurzfristigesVermoegen>
+				<Vorraete summe="26609.8"/>
+				<Forderungen summe="269458.5"/>
+				<Finanzmittel summe="362445.9"/>
+			</KurzfristigesVermoegen>
+		</Aktiva>
+		<Passiva>
+			<Eigenkapital>
+				<Grundkapital summe="96072.4"/>
+				<Kapitalruecklagen summe="166789.5"/>
+				<Gewinnruecklagen summe="865723.4"/>
+				<Bewertungsruecklagen summe="-16459.5"/>
+				<Waehrungsumrechnung summe="-663.7"/>
+				<EigeneAktien summe="0"/>
+			</Eigenkapital>
+			<AnteileGesellschafter summe="26669.8"/>
+			<LangfristigeVerb>
+				<Finanzverbindlichkeiten summe="763990.2"/>
+				<Wechselbetrugsrueckstellungen summe="666.66"/>
+				<Steuern summe="66156.8"/>
+				<Rueckstellungen summe="365997.2"/>
+				<Baukostenzuschuesse summe="167338.5"/>
+				<Uebrige summe="36064.9"/>
+			</LangfristigeVerb>
+			<KurzfristigeVerb>
+				<Finanzverbindlichkeiten summe="6664.7"/>
+				<Steuern summe="96119.1"/>
+				<Lieferanten summe="86606.0"/>
+				<Rueckstellungen summe="168237.5"/>
+				<Uebrige summe="96495.2"/>
+			</KurzfristigeVerb>
+		</Passiva>
+	</Bilanz>
+</Bilanzen>
+,"abschluesse_s.xml"

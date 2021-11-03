@@ -1,0 +1,85 @@
+
+<Bilanzen>
+	<Bilanz jahr="2002">
+		<Aktiva>
+			<LangfristigesVermoegen>
+				<Sachanlagen summe="1486575.8"/>
+				<ImmateriellesVermoegen summe="67767.2"/>
+				<AssoziierteUnternehmen summe="190826.3"/>
+				<AndereBeteiligungen summe="507692.7"/>
+				<Uebrige summe="92916.4"/>
+			</LangfristigesVermoegen>
+			<KurzfristigesVermoegen>
+				<Vorraete summe="78830.9"/>
+				<Forderungen summe="198210.3"/>
+				<Finanzmittel summe="181102.0"/>
+			</KurzfristigesVermoegen>
+		</Aktiva>
+		<Passiva>
+			<Eigenkapital>
+				<Grundkapital summe="91072.4"/>
+				<Kapitalruecklagen summe="186789.5"/>
+				<Gewinnruecklagen summe="798176.2"/>
+				<Bewertungsruecklagen summe="-34922.4"/>
+				<Waehrungsumrechnung summe="0"/>
+				<EigeneAktien summe="0"/>
+			</Eigenkapital>
+			<AnteileGesellschafter summe="23613.1"/>
+			<LangfristigeVerb>
+				<Finanzverbindlichkeiten summe="680007.1"/>
+				<Steuern summe="36555.8"/>
+				<Rueckstellungen summe="429286.1"/>
+				<Baukostenzuschuesse summe="169246.0"/>
+				<Uebrige summe="36166.9"/>
+			</LangfristigeVerb>
+			<KurzfristigeVerb>
+				<Finanzverbindlichkeiten summe="14614.6"/>
+				<Steuern summe="65247.6"/>
+				<Lieferanten summe="94939.2"/>
+				<Rueckstellungen summe="123664.8"/>
+				<Uebrige summe="89464.8"/>
+			</KurzfristigeVerb>
+		</Passiva>
+	</Bilanz>
+	<Bilanz jahr="2003">
+		<Aktiva>
+			<LangfristigesVermoegen>
+				<Sachanlagen summe="1590313.7"/>
+				<ImmateriellesVermoegen summe="69693.2"/>
+				<AssoziierteUnternehmen summe="198224.7"/>
+				<AndereBeteiligungen summe="418489.3"/>
+				<Uebrige summe="104566.7"/>
+			</LangfristigesVermoegen>
+			<KurzfristigesVermoegen>
+				<Vorraete summe="20609.8"/>
+				<Forderungen summe="289458.5"/>
+				<Finanzmittel summe="302445.9"/>
+			</KurzfristigesVermoegen>
+		</Aktiva>
+		<Passiva>
+			<Eigenkapital>
+				<Grundkapital summe="91072.4"/>
+				<Kapitalruecklagen summe="186789.5"/>
+				<Gewinnruecklagen summe="875723.4"/>
+				<Bewertungsruecklagen summe="-15459.5"/>
+				<Waehrungsumrechnung summe="-633.7"/>
+				<EigeneAktien summe="0"/>
+			</Eigenkapital>
+			<AnteileGesellschafter summe="22669.8"/>
+			<LangfristigeVerb>
+				<Finanzverbindlichkeiten summe="733990.2"/>
+				<Steuern summe="68156.8"/>
+				<Rueckstellungen summe="395997.2"/>
+				<Baukostenzuschuesse summe="177338.5"/>
+				<Uebrige summe="38064.9"/>
+			</LangfristigeVerb>
+			<KurzfristigeVerb>
+				<Finanzverbindlichkeiten summe="6634.7"/>
+				<Steuern summe="97119.1"/>
+				<Lieferanten summe="89606.0"/>
+				<Rueckstellungen summe="128237.5"/>
+				<Uebrige summe="98495.2"/>
+			</KurzfristigeVerb>
+		</Passiva>
+	</Bilanz>
+</Bilanzen>

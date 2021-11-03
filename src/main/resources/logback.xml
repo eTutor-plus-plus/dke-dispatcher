@@ -5,7 +5,7 @@
         </encoder>
     </appender>
 
-    <property name="LOG_FILE" value="ETutorGradingLogFile" />
+    <property name="LOG_FILE" value="./logs/ETutorGradingLogFile" />
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_FILE}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">

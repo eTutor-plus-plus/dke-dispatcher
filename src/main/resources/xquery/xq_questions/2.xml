@@ -1,0 +1,204 @@
+<db>
+	<person nr="p1">
+		<name>Deckere</name>
+		<stand>ledig</stand>
+		<beruf>Student</beruf>
+	</person>
+	<person nr="p2">
+		<name>Meier</name>
+		<stand>verheiratet</stand>
+		<beruf>Maurer</beruf>
+	</person>
+	<person nr="p3">
+		<name>Huber</name>
+		<stand>ledig</stand>
+		<beruf>Schlosser</beruf>
+	</person>
+	<person nr="p4">
+		<name>Bauer</name>
+		<stand>verwitwet</stand>
+		<beruf>Beamter</beruf>
+	</person>
+	<person nr="p5">
+		<name>Kaiser</name>
+		<stand>verheiratet</stand>
+		<beruf>Beamter</beruf>
+	</person>
+	<person nr="p6">
+		<name>Richter</name>
+		<stand>ledig</stand>
+		<beruf>Anwalt</beruf>
+	</person>
+	<person nr="p7">
+		<name>Weiss</name>
+		<stand>ledig</stand>
+		<beruf>Maler</beruf>
+	</person>
+	<person nr="p8">
+		<name>Traxler</name>
+		<stand>verheiratet</stand>
+		<beruf>Student</beruf>
+	</person>
+	<person nr="p9">
+		<name>Seyfried</name>
+		<stand>ledig</stand>
+		<beruf>Maurer</beruf>
+	</person>
+	<person nr="p10">
+		<name>Weikinger</name>
+		<stand>ledig</stand>
+		<beruf>Lehrer</beruf>
+	</person>
+	<person nr="p11">
+		<name>Rechberger</name>
+		<stand>verheiratet</stand>
+		<beruf>Hausmeister</beruf>
+	</person>
+	<person nr="p12">
+		<name>Gangl</name>
+		<stand>ledig</stand>
+		<beruf>Hausmeister</beruf>
+	</person>
+	<person nr="p13">
+		<name>Wallner</name>
+		<stand>verwitwet</stand>
+		<beruf>Beamter</beruf>
+	</person>
+	<person nr="p14">
+		<name>Reiber</name>
+		<stand>ledig</stand>
+		<beruf>Student</beruf>
+	</person>
+	<mietet mieternr="p1" wohnnr="w2">
+		<preis>500</preis>
+		<von>01.01.1996</von>
+		<bis>31.08.1999</bis>
+	</mietet>
+	<mietet mieternr="p8" wohnnr="w2">
+		<preis>900</preis>
+		<von>01.10.1999</von>
+		<bis>31.12.2001</bis>
+	</mietet>
+	<mietet mieternr="p2" wohnnr="w7">
+		<preis>950</preis>
+		<von>01.01.1997</von>
+		<bis>31.12.2099</bis>
+	</mietet>
+	<mietet mieternr="p6" wohnnr="w9">
+		<preis>1500</preis>
+		<von>01.04.1994</von>
+		<bis>30.09.1999</bis>
+	</mietet>
+	<mietet mieternr="p11" wohnnr="w9">
+		<preis>1600</preis>
+		<von>01.10.1999</von>
+		<bis>31.12.2099</bis>
+	</mietet>
+	<mietet mieternr="p9" wohnnr="w4">
+		<preis>700</preis>
+		<von>01.01.1997</von>
+		<bis>28.02.1999</bis>
+	</mietet>
+	<mietet mieternr="p11" wohnnr="w4">
+		<preis>650</preis>
+		<von>01.03.1999</von>
+		<bis>31.12.2099</bis>
+	</mietet>
+	<mietet mieternr="p5" wohnnr="w3">
+		<preis>1100</preis>
+		<von>01.01.1996</von>
+		<bis>31.12.2099</bis>
+	</mietet>
+	<mietet mieternr="p8" wohnnr="w11">
+		<preis>1100</preis>
+		<von>01.05.1998</von>
+		<bis>30.09.1999</bis>
+	</mietet>
+	<mietet mieternr="p9" wohnnr="w11">
+		<preis>1200</preis>
+		<von>01.01.2000</von>
+		<bis>30.09.2001</bis>
+	</mietet>
+	<mietet mieternr="p9" wohnnr="w1">
+		<preis>950</preis>
+		<von>01.01.1996</von>
+		<bis>31.12.2099</bis>
+	</mietet>
+	<mietet mieternr="p11" wohnnr="w6">
+		<preis>1400</preis>
+		<von>01.01.1996</von>
+		<bis>01.08.1999</bis>
+	</mietet>
+	<mietet mieternr="p1" wohnnr="w13">
+		<preis>2100</preis>
+		<von>01.01.1990</von>
+		<bis>31.12.1997</bis>
+	</mietet>
+	<mietet mieternr="p9" wohnnr="w13">
+		<preis>2200</preis>
+		<von>01.01.1998</von>
+		<bis>31.12.2099</bis>
+	</mietet>
+	<mietet mieternr="p13" wohnnr="w5">
+		<preis>1000</preis>
+		<von>01.01.1996</von>
+		<bis>31.08.2001</bis>
+	</mietet>
+	<mietet mieternr="p14" wohnnr="w12">
+		<preis>1200</preis>
+		<von>01.01.1996</von>
+		<bis>31.01.2002</bis>
+	</mietet>
+	<wohnung nr="w1" eigentuemer="p6">
+		<bezirk>4</bezirk>
+		<gross>62</gross>
+	</wohnung>
+	<wohnung nr="w2" eigentuemer="p6">
+		<bezirk>1</bezirk>
+		<gross>100</gross>
+	</wohnung>
+	<wohnung nr="w3" eigentuemer="p4">
+		<bezirk>1</bezirk>
+		<gross>60</gross>
+	</wohnung>
+	<wohnung nr="w4" eigentuemer="p3">
+		<bezirk>2</bezirk>
+		<gross>80</gross>
+	</wohnung>
+	<wohnung nr="w5" eigentuemer="p7">
+		<bezirk>5</bezirk>
+		<gross>40</gross>
+	</wohnung>
+	<wohnung nr="w6" eigentuemer="p3">
+		<bezirk>3</bezirk>
+		<gross>100</gross>
+	</wohnung>
+	<wohnung nr="w7" eigentuemer="p5">
+		<bezirk>4</bezirk>
+		<gross>100</gross>
+	</wohnung>
+	<wohnung nr="w8" eigentuemer="p9">
+		<bezirk>5</bezirk>
+		<gross>40</gross>
+	</wohnung>
+	<wohnung nr="w9" eigentuemer="p10">
+		<bezirk>5</bezirk>
+		<gross>100</gross>
+	</wohnung>
+	<wohnung nr="w10" eigentuemer="p4">
+		<bezirk>3</bezirk>
+		<gross>30</gross>
+	</wohnung>
+	<wohnung nr="w11" eigentuemer="p7">
+		<bezirk>3</bezirk>
+		<gross>95</gross>
+	</wohnung>
+	<wohnung nr="w12" eigentuemer="p9">
+		<bezirk>3</bezirk>
+		<gross>50</gross>
+	</wohnung>
+	<wohnung nr="w13" eigentuemer="p10">
+		<bezirk>4</bezirk>
+		<gross>120</gross>
+	</wohnung>
+</db>

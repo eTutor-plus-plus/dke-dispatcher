@@ -4,6 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+out/
+
 ### STS ###
 .apt_generated
 .classpath
@@ -38,3 +40,4 @@ src/main/java/at/jku/dke/etutor/grading//rest/TestApp.java
 ### Log File ###
 ETutorGradingLogFile.log
 ETutorGradingLogFile.*.gz
+logfile*.*

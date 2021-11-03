@@ -4,6 +4,9 @@ package at.jku.dke.etutor.modules.sql;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import org.springframework.stereotype.Service;
 
+/**
+ * Provides SQL module specific properties from application.properties
+ */
 @Service
 public class SQLConstants {
     private final String connPwd;

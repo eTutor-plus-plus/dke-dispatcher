@@ -1,10 +1,6 @@
 package at.jku.dke.etutor.modules.sql;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
@@ -24,6 +20,11 @@ import at.jku.dke.etutor.modules.sql.report.SQLReporter;
 import at.jku.dke.etutor.modules.sql.report.SQLReporterConfig;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -98,8 +99,8 @@ public class SQLEvaluator implements Evaluator {
 		String referenceConnUser = "";
 
 		//ESTABLISHING CONNECTION TO SQL DATABASE
-		try(Connection conn = DriverManager.getConnection(constants.getConnURL(), constants.getConnUser(), constants.getConnPwd())){
-			Class.forName(constants.getJdbcDriver());
+		//Connection conn = DriverManager.getConnection(constants.getConnURL(), constants.getConnUser(), constants.getConnPwd())
+		try(Connection conn = SQLDataSource.getConnection()){
 			conn.setAutoCommit(true);
 
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE
@@ -414,6 +415,14 @@ public class SQLEvaluator implements Evaluator {
 			return result.toString();
 		}
 		return null;
+	}
+
+	public Connection getConnectionToSqlDatabase() throws SQLException {
+		return DriverManager.getConnection(constants.getConnURL(), constants.getConnUser(), constants.getConnPwd());
+	}
+
+	public Connection getConnectionToSQLDatabase(String connUrl, String connUser, String connPwd) throws SQLException{
+		return DriverManager.getConnection(connUrl, connUser, connPwd);
 	}
 
 }

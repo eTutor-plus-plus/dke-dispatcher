@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.grading.rest.dto;
 
 import at.jku.dke.etutor.core.evaluation.Grading;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -30,7 +31,7 @@ public class GradingDTO {
     /**
      * The result
      */
-    @Column(length = 16384)
+    @Type(type = "text")
     private String result;
 
     /**

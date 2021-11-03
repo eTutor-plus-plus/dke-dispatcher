@@ -3,14 +3,19 @@ package at.jku.dke.etutor.grading;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.config.AsyncConfiguration;
+import at.jku.dke.etutor.grading.config.DataSourceConfiguration;
 import at.jku.dke.etutor.grading.rest.ETutorGradingController;
 import at.jku.dke.etutor.grading.rest.ETutorSubmissionController;
 import at.jku.dke.etutor.grading.rest.ETutorSQLController;
-import at.jku.dke.etutor.grading.service.ModuleManager;
-import at.jku.dke.etutor.grading.service.RepositoryManager;
-import at.jku.dke.etutor.grading.service.SubmissionDispatcher;
+import at.jku.dke.etutor.grading.service.ModuleService;
+import at.jku.dke.etutor.grading.service.RepositoryService;
+import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
+import at.jku.dke.etutor.grading.service.XQueryResourceService;
+import at.jku.dke.etutor.modules.ra2sql.RAEvaluator;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
+import at.jku.dke.etutor.modules.sql.report.SQLReporter;
+import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseManagerImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -39,13 +44,18 @@ import java.util.List;
         ETutorGradingController.class,
         ETutorSubmissionController.class,
         ETutorSQLController.class,
-        ModuleManager.class,
-        RepositoryManager.class,
+        ModuleService.class,
+        RepositoryService.class,
         ETutorGradingApplication.class,
-        SubmissionDispatcher.class,
+        SubmissionDispatcherService.class,
         AsyncConfiguration.class,
+        DataSourceConfiguration.class,
         SQLConstants.class,
-        SQLEvaluator.class
+        SQLEvaluator.class,
+        RAEvaluator.class,
+        SQLReporter.class,
+        XQueryResourceService.class,
+        XQExerciseManagerImpl.class
 })
 @EnableConfigurationProperties({ApplicationProperties.class})
 @SpringBootApplication
@@ -75,6 +85,8 @@ public class ETutorGradingApplication {
         plugins.add(new CollectionJsonLinkDiscoverer());
         return new LinkDiscoverers(SimplePluginRegistry.create(plugins));
     }
+
+
 
     public void addResourceHandlers(ResourceHandlerRegistry registry)
     {
