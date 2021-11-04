@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service used to manipulate schemas and exercises for the SQL module
@@ -489,6 +490,8 @@ public class SQLResourceService {
      * @throws DatabaseException if an error occurs
      */
     public void updateExerciseSolution(int id, String newSolution) throws DatabaseException {
+        Objects.requireNonNull(newSolution);
+        if(newSolution.isEmpty()) return;
         logger.debug("Updating solution of exercise {}", id);
         try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
             con.setAutoCommit(false);
