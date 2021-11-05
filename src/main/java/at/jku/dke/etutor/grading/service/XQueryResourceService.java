@@ -298,8 +298,8 @@ public class XQueryResourceService {
      * @param submissionFileId the id of the submsission xml file
      */
     private void deleteXMLFiles(int diagnoseFileId, int submissionFileId) {
-        File diagnoseFile = new File(properties.getXquery().getQuestionFolderBaseName()+"\\"+diagnoseFileId+".xml");
-        File submissionFile = new File(properties.getXquery().getQuestionFolderBaseName()+"\\"+submissionFileId+".xml");
+        File diagnoseFile = new File(properties.getXquery().getQuestionFolderBaseName(), diagnoseFileId+".xml");
+        File submissionFile = new File(properties.getXquery().getQuestionFolderBaseName(), submissionFileId+".xml");
         diagnoseFile.delete();
         submissionFile.delete();
     }
