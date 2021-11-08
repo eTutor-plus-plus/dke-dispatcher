@@ -97,9 +97,9 @@ public class SchemaGenerator {
 		try {
 
 			URL url1 = XQCoreManager.getInstance().getResource(
-					XQCoreManager.JAR_XERCES);
+					XQCoreManager.JAR_XERCES).toURI().toURL();
 			URL url2 = XQCoreManager.getInstance().getResource(
-					XQCoreManager.JAR_DDBE);
+					XQCoreManager.JAR_DDBE).toURI().toURL();
 
 			URLClassLoader classLoader = new URLClassLoader(new URL[] { url1,
 					url2 }, null);
