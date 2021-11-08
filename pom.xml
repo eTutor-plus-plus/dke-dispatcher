@@ -91,32 +91,24 @@
         </dependency>
         <!-- dependencies from resources/lib -->
         <dependency>
-            <groupId>oracle.xml</groupId>
+            <groupId>javax</groupId>
             <artifactId>xml</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/lib/xml.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>org.apache.xmlcommons</groupId>
+            <groupId>javax</groupId>
             <artifactId>xml-apis</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/lib/xml-apis.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>javax.xml.parsers</groupId>
-            <artifactId>xmlParserAPIs</artifactId>
+            <groupId>javax</groupId>
+            <artifactId>parsers</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/lib/xmlParserAPIs.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>javax.xml</groupId>
-            <artifactId>xmlParserv2</artifactId>
+            <groupId>javax</groupId>
+            <artifactId>parsersv2</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/lib/xmlparserv2.jar</systemPath>
         </dependency>
     </dependencies>
 
