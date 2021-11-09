@@ -110,6 +110,16 @@
             <artifactId>parsersv2</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>xerces</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>DDbE</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>

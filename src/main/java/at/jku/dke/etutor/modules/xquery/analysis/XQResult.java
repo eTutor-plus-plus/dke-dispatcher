@@ -4,6 +4,9 @@ import at.jku.dke.etutor.modules.xquery.*;
 import at.jku.dke.etutor.modules.xquery.util.FileParameter;
 import at.jku.dke.etutor.modules.xquery.util.XMLUtil;
 import ch.qos.logback.classic.Logger;
+import com.ibm.DDbEv2.Interfaces.Constants;
+import com.ibm.DDbEv2.Models.DDModel;
+import com.ibm.DDbEv2.Utilities.Parameter;
 import oracle.xml.parser.v2.XMLDocument;
 import oracle.xml.parser.v2.XSLException;
 import org.slf4j.LoggerFactory;
@@ -197,8 +200,7 @@ public class XQResult implements Serializable {
      */
     private File generateDTD(File xmlFile, FileParameter tempParameter) throws InternalException,
             IOException {
-        String dtd_String = new SchemaGenerator().generateDTD(xmlFile.getAbsolutePath());
-        /*
+        //String dtd_String = new SchemaGenerator().generateDTD(xmlFile.getAbsolutePath());
         Parameter param = new Parameter();
         param.setContinueOnError(false);
         param.addSource(xmlFile.getAbsolutePath());
@@ -207,7 +209,6 @@ public class XQResult implements Serializable {
         DDModel model = new DDModel(param);
         model.process();
         String dtd_String= model.printAs(Constants.DTD);
-         */
 
         File dtd = tempParameter.generateTempFile();
         XMLUtil.printFile(dtd_String, dtd);

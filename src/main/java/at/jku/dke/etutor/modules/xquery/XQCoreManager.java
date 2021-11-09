@@ -6,8 +6,10 @@ import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -213,11 +215,11 @@ public class XQCoreManager {
      * @throws InvalidResourceException if the resource can not be found
      */
     public static URL getResource(String resource) throws InvalidResourceException {
-        URL url = XQCoreManager.class.getResource(resource);
+        URL url = XQCoreManager.class.getClassLoader().getResource(resource);
         URL baseURL = null;
         if (url == null) {
         	// get the base directory
-        	url = XQCoreManager.class.getResource("/.");
+        	url = XQCoreManager.class.getClassLoader().getResource("/.");
         	// System.out.println("root: " + url.getPath() + "(" + url.getPath() + ")");
         	if (url != null) {
         		File dir = new File(url.getFile());
