@@ -198,6 +198,16 @@ public class XQResult implements Serializable {
     private File generateDTD(File xmlFile, FileParameter tempParameter) throws InternalException,
             IOException {
         String dtd_String = new SchemaGenerator().generateDTD(xmlFile.getAbsolutePath());
+        /*
+        Parameter param = new Parameter();
+        param.setContinueOnError(false);
+        param.addSource(xmlFile.getAbsolutePath());
+        param.setDtdRequested(true);
+
+        DDModel model = new DDModel(param);
+        model.process();
+        String dtd_String= model.printAs(Constants.DTD);
+         */
 
         File dtd = tempParameter.generateTempFile();
         XMLUtil.printFile(dtd_String, dtd);
