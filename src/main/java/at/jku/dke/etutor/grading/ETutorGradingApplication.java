@@ -21,6 +21,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.env.Environment;
 import org.springframework.hateoas.client.LinkDiscoverer;
 import org.springframework.hateoas.client.LinkDiscoverers;
 import org.springframework.hateoas.mediatype.collectionjson.CollectionJsonLinkDiscoverer;
@@ -61,11 +62,13 @@ import java.util.List;
 @SpringBootApplication
 @EnableAsync
 public class ETutorGradingApplication {
+    private final Environment env;
 
     public static void main(String[] args) {
         SpringApplication.run(ETutorGradingApplication.class, args);
     }
 
+    public ETutorGradingApplication(Environment env){this.env=env;}
     /**
      * The configuration for Swagger
      * @return a Docket
