@@ -7,19 +7,11 @@ import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Hashtable;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 /**
  * This class serves as central manager of all required resources and information which have to be
@@ -218,7 +210,6 @@ public class XQCoreManager {
      * @throws InvalidResourceException if the resource can not be found
      */
     public static URL getResource(String resource) throws InvalidResourceException {
-        //FileResourcesUtils.getFileFromResourceAsStream(resource);
         URL url = XQCoreManager.class.getClassLoader().getResource(resource);
         URL baseURL = null;
         if (url == null) {
