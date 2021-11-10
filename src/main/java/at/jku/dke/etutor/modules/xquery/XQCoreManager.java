@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.modules.xquery;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.grading.service.FileResourcesUtils;
 import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ public class XQCoreManager {
 
     private PropertyFile propertyFile;
     private ApplicationProperties applicationProperties;
+    private FileResourcesUtils fileResourcesUtils;
     private static final Logger LOGGER = initLogger();
     /**
      * The <i>singleton </i> of this class.
@@ -61,7 +63,7 @@ public class XQCoreManager {
      * result. The XSL stylesheet is customized so that error information can be included and
      * transformed automatically and directly into HTML format.
      */
-    public final static String XSL_MODIFY = "/xquery/xml/modify-xmlDiff.xsl";
+    public final static String XSL_MODIFY = "/xquery/xml/modify-xmldiff.xsl";
 
     /**
      * This denotes a predefined relative path to an XML API used by the Schema generating tool
@@ -136,6 +138,7 @@ public class XQCoreManager {
      */
     private XQCoreManager(ApplicationProperties properties) {
     	this.applicationProperties = properties;
+        fileResourcesUtils = new FileResourcesUtils();
         init();
     }
 
@@ -215,6 +218,7 @@ public class XQCoreManager {
      * @throws InvalidResourceException if the resource can not be found
      */
     public static URL getResource(String resource) throws InvalidResourceException {
+        //FileResourcesUtils.getFileFromResourceAsStream(resource);
         URL url = XQCoreManager.class.getClassLoader().getResource(resource);
         URL baseURL = null;
         if (url == null) {

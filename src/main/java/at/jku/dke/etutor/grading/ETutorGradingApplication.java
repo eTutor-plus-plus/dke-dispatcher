@@ -7,10 +7,7 @@ import at.jku.dke.etutor.grading.config.DataSourceConfiguration;
 import at.jku.dke.etutor.grading.rest.ETutorGradingController;
 import at.jku.dke.etutor.grading.rest.ETutorSubmissionController;
 import at.jku.dke.etutor.grading.rest.ETutorSQLController;
-import at.jku.dke.etutor.grading.service.ModuleService;
-import at.jku.dke.etutor.grading.service.RepositoryService;
-import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
-import at.jku.dke.etutor.grading.service.XQueryResourceService;
+import at.jku.dke.etutor.grading.service.*;
 import at.jku.dke.etutor.modules.ra2sql.RAEvaluator;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
@@ -34,6 +31,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,13 +60,12 @@ import java.util.List;
 @SpringBootApplication
 @EnableAsync
 public class ETutorGradingApplication {
-    private final Environment env;
 
     public static void main(String[] args) {
         SpringApplication.run(ETutorGradingApplication.class, args);
     }
 
-    public ETutorGradingApplication(Environment env){this.env=env;}
+    public ETutorGradingApplication(){}
     /**
      * The configuration for Swagger
      * @return a Docket
