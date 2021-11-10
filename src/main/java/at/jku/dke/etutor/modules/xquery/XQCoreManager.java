@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.modules.xquery;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.grading.service.FileResourcesUtils;
 import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,12 +12,6 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Hashtable;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 /**
  * This class serves as central manager of all required resources and information which have to be
@@ -30,6 +25,7 @@ public class XQCoreManager {
 
     private PropertyFile propertyFile;
     private ApplicationProperties applicationProperties;
+    private FileResourcesUtils fileResourcesUtils;
     private static final Logger LOGGER = initLogger();
     /**
      * The <i>singleton </i> of this class.
@@ -59,7 +55,7 @@ public class XQCoreManager {
      * result. The XSL stylesheet is customized so that error information can be included and
      * transformed automatically and directly into HTML format.
      */
-    public final static String XSL_MODIFY = "/xquery/xml/modify-xmlDiff.xsl";
+    public final static String XSL_MODIFY = "/xquery/xml/modify-xmldiff.xsl";
 
     /**
      * This denotes a predefined relative path to an XML API used by the Schema generating tool
@@ -134,6 +130,7 @@ public class XQCoreManager {
      */
     private XQCoreManager(ApplicationProperties properties) {
     	this.applicationProperties = properties;
+        fileResourcesUtils = new FileResourcesUtils();
         init();
     }
 
@@ -213,11 +210,11 @@ public class XQCoreManager {
      * @throws InvalidResourceException if the resource can not be found
      */
     public static URL getResource(String resource) throws InvalidResourceException {
-        URL url = XQCoreManager.class.getResource(resource);
+        URL url = XQCoreManager.class.getClassLoader().getResource(resource);
         URL baseURL = null;
         if (url == null) {
         	// get the base directory
-        	url = XQCoreManager.class.getResource("/.");
+        	url = XQCoreManager.class.getClassLoader().getResource("/.");
         	// System.out.println("root: " + url.getPath() + "(" + url.getPath() + ")");
         	if (url != null) {
         		File dir = new File(url.getFile());
