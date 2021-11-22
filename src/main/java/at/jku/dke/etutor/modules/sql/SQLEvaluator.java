@@ -221,7 +221,7 @@ public class SQLEvaluator implements Evaluator {
 				sqlAnalysis.setSubmissionSuitsSolution(false);
 			}
 		}
-
+		referenceConn.close();
 		return sqlAnalysis;
 	}
 

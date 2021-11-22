@@ -1,9 +1,10 @@
-package at.jku.dke.etutor.modules.sql;
+package at.jku.dke.etutor;
 
 import at.jku.dke.etutor.grading.ETutorGradingApplication;
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
+import at.jku.dke.etutor.modules.sql.SQLConstants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,8 +27,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+/**
+ * Integration Test for the SQL module that fetches SQL-Solutions from the database and sends
+ * them to the submission-endpoint as submission for evaluation.
+ * Assertion is that all Exercises without Syntax-Errors have to be evaluated as correct.
+ */
+
 @SpringBootTest(classes= ETutorGradingApplication.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
+//@Disabled
 public class TestSQLModule {
     private ObjectMapper mapper = new ObjectMapper();
     private HttpClient client = HttpClient.newHttpClient();
@@ -44,6 +52,7 @@ public class TestSQLModule {
             ", 13906, 13907, 13908, 13909, 13910, 13911, 13912, 13913) " ;
     private final String ACTION_STRING = "diagnose";
     private final String DIAGNOSE_LEVEL = "3";
+    private final String taskType = "sql";
 
     @BeforeAll
     void setup() {
@@ -66,7 +75,6 @@ public class TestSQLModule {
      * @throws SQLException
      */
     @Test
-    @Disabled
     void whenSubmissionIsSolution_thenAllPoints() throws IOException, InterruptedException, SQLException {
         ResultSet exercises = getExercisesResultSet();
         while (exercises.next()) {
@@ -136,7 +144,7 @@ public class TestSQLModule {
         submission.setPassedAttributes(attributeMap);
         submission.setPassedParameters(new HashMap<String, String>());
         submission.setMaxPoints(1);
-        submission.setTaskType("sql");
+        submission.setTaskType(taskType);
         submission.setExerciseId(id);
         return submission;
     }

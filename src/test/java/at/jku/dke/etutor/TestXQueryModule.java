@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.xquery;
+package at.jku.dke.etutor;
 
 import at.jku.dke.etutor.grading.ETutorGradingApplication;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest(classes= ETutorGradingApplication.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@Disabled
 public class TestXQueryModule {
     private ObjectMapper mapper = new ObjectMapper();
     private HttpClient client = HttpClient.newHttpClient();
@@ -70,7 +71,6 @@ public class TestXQueryModule {
      * @throws SQLException
      */
     @Test
-    @Disabled
     void whenSubmissionIsSolution_thenAllPoints() throws IOException, InterruptedException, SQLException {
         ResultSet exercises = getExercisesResultSet();
         while (exercises.next()) {

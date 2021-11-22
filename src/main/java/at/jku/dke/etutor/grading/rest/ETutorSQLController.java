@@ -4,6 +4,7 @@ import at.jku.dke.etutor.grading.ETutorCORSPolicy;
 import at.jku.dke.etutor.grading.rest.dto.DataDefinitionDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceService;
+import at.jku.dke.etutor.grading.service.StatementValidationException;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -46,13 +47,25 @@ public class ETutorSQLController {
             resourceManager.deleteSchemas(ddl.getSchemaName());
             resourceManager.createSchemas(ddl.getSchemaName());
             for(String stmt : ddl.getCreateStatements()){
-                resourceManager.createTables(ddl.getSchemaName(), stmt.trim());
+                try {
+                    resourceManager.createTables(ddl.getSchemaName(), stmt.trim());
+                } catch (StatementValidationException e) {
+                   logger.warn(e.getMessage());
+                }
             }
             for(String stmt : ddl.getInsertStatementsSubmission()){
-                resourceManager.insertDataSubmission(ddl.getSchemaName(), stmt.trim());
+                try {
+                    resourceManager.insertDataSubmission(ddl.getSchemaName(), stmt.trim());
+                } catch (StatementValidationException e) {
+                   logger.warn(e.getMessage());
+                }
             }
             for(String stmt : ddl.getInsertStatementsDiagnose()){
-                resourceManager.insertDataDiagnose(ddl.getSchemaName(), stmt.trim());
+                try {
+                    resourceManager.insertDataDiagnose(ddl.getSchemaName(), stmt.trim());
+                } catch (StatementValidationException e) {
+                   logger.warn(e.getMessage());
+                }
             }
             logger.info("Exit executeDDL() with Status 200");
             return ResponseEntity.ok("DDL Executed");
@@ -125,7 +138,11 @@ public class ETutorSQLController {
         try {
             String[] queryArray = queries.trim().split(";");
             for(String s: queryArray){
-                resourceManager.createTables(schemaName, s);
+                try {
+                    resourceManager.createTables(schemaName, s);
+                } catch (StatementValidationException e) {
+                   logger.warn(e.getMessage());
+                }
             }
             logger.info("Exit: createTable() with Status Code 200");
             return ResponseEntity.ok("Tables Created");
@@ -164,7 +181,11 @@ public class ETutorSQLController {
         try {
             String[] queryArray = queries.trim().split(";");
             for(String s: queryArray){
-                resourceManager.insertDataSubmission(schemaName, s);
+                try {
+                    resourceManager.insertDataSubmission(schemaName, s);
+                } catch (StatementValidationException e) {
+                   logger.warn(e.getMessage());
+                }
             }
             logger.info("Exit: insertDataSubmission() with Status Code 200");
             return ResponseEntity.ok("Data inserted");
@@ -184,7 +205,11 @@ public class ETutorSQLController {
         try {
             String[] queryArray = queries.trim().split(";");
             for(String s: queryArray){
-                resourceManager.insertDataDiagnose(schemaName, s);
+                try {
+                    resourceManager.insertDataDiagnose(schemaName, s);
+                } catch (StatementValidationException e) {
+                   logger.warn(e.getMessage());
+                }
             }
             logger.info("Exit: insertDataDiagnose() with Status Code 200");
             return ResponseEntity.ok("Insert completed");
@@ -256,7 +281,7 @@ public class ETutorSQLController {
     public ResponseEntity<String> reserveExerciseID(){
         logger.info("Enter: reserveExercise() ");
         try {
-            int id = resourceManager.reserveExerciseID();
+            int id = resourceManager.getAvailableExerciseId();
             logger.info("Exit: reserveExercise() with status 200 and id {}",id);
             return ResponseEntity.ok(""+id);
         } catch (DatabaseException e) {

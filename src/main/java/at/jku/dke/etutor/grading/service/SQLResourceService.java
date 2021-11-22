@@ -64,11 +64,11 @@ public class SQLResourceService {
     }
 
     /**
-     * creates a schema in the SQL_EXERCISE_DB with the owner etutor and grants select privileges to the SQL_USER for it
+     * Creates a schema in the SQL_EXERCISE_DB with the owner etutor and grants select privileges to the SQL_USER for it
      * @param schemaName the schema name
      * @throws DatabaseException if an SQLException occurs
      */
-    public void createSchema(String schemaName) throws DatabaseException {
+    private void createSchema(String schemaName) throws DatabaseException {
         try(Connection con = DriverManager.getConnection(SQL_EXERCISE_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
             con.setAutoCommit(false);
             createSchemaUtil(con, schemaName);
@@ -114,7 +114,7 @@ public class SQLResourceService {
      * @param schemaName the schema to be deleted
      * @throws DatabaseException if an SQLException occurs
      */
-    public void deleteSchema(String schemaName) throws DatabaseException {
+    private void deleteSchema(String schemaName) throws DatabaseException {
         try(Connection con = DriverManager.getConnection(SQL_EXERCISE_URL, CONN_SUPER_USER, CONN_SUPER_PWD);){
             con.setAutoCommit(false);
             deleteSchemaUtil(con, schemaName);
@@ -142,7 +142,7 @@ public class SQLResourceService {
     }
 
     /**
-     * Deletes a connection
+     * Deletes a connection and all associated exercises
      * @param schemaName the schema
      * @throws DatabaseException to leverage exception handling
      */
@@ -217,15 +217,15 @@ public class SQLResourceService {
      * @param query the query to be executed
      * @throws DatabaseException if an SQLException occurs or the query does not contain "create table"
      */
-    public void createTables(String schemaName, String query) throws DatabaseException {
+    public void createTables(String schemaName, String query) throws DatabaseException, StatementValidationException {
         logger.debug("Query for creating table: {}", query);
         if (!query.replace(" ", "").toLowerCase().contains("createtable")) {
             logger.warn("Not a crate-table-statement");
-            return;
+            throw new StatementValidationException("Not a create-table-statement: "+query);
         }
         if(query.contains("--") || query.contains("/*")){
             logger.warn("No comments allowed");
-            return;
+            throw new StatementValidationException("No comments allowed: "+query);
         }
         executeUpdate(schemaName + SUBMISSION_SUFFIX, query);
         executeUpdate(schemaName + DIAGNOSE_SUFFIX, query);
@@ -278,7 +278,7 @@ public class SQLResourceService {
      * @param query the insert into statement
      * @throws DatabaseException if an SQLException occurs or the query does not contain "insert into"
      */
-    public void insertDataSubmission(String schemaName, String query) throws DatabaseException {
+    public void insertDataSubmission(String schemaName, String query) throws DatabaseException, StatementValidationException {
         logger.debug("Query for inserting data: {}", query);
         insertData(schemaName + SUBMISSION_SUFFIX, query);
         logger.debug("Inserting data into submission schema of {} complete", schemaName);
@@ -290,20 +290,20 @@ public class SQLResourceService {
      * @param query the query
      * @throws DatabaseException if an SQLException occurs
      */
-    public void insertDataDiagnose(String schemaName, String query) throws DatabaseException {
+    public void insertDataDiagnose(String schemaName, String query) throws DatabaseException, StatementValidationException {
         logger.debug("Query for inserting data: {}", query);
         insertData(schemaName + DIAGNOSE_SUFFIX, query);
         logger.debug("Inserting data into diagnose schema of {} complete", schemaName);
     }
 
-    public void insertData(String schemaName, String query) throws DatabaseException {
+    private void insertData(String schemaName, String query) throws DatabaseException, StatementValidationException {
         if (!query.replace(" ", "").toLowerCase().contains("insertinto")) {
             logger.warn("Not an insert-into-statement: {}", query);
-            return;
+            throw new StatementValidationException("Not an insert-into-statement: "+query);
         }
         if(query.contains("--") || query.contains("/*")){
             logger.warn("No comments allowed");
-            return;
+            throw new StatementValidationException("No comments allowed: "+query);
         }
         executeUpdate(schemaName, query);
     }
@@ -318,19 +318,24 @@ public class SQLResourceService {
         logger.debug("Creating exercise in schema with prefix {} " , schemaName);
         try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
             con.setAutoCommit(false);
+            boolean isNew = false;
             int diagnoseConnID = fetchConnection(con, schemaName + DIAGNOSE_SUFFIX);
             int submissionConnID = fetchConnection(con, schemaName + SUBMISSION_SUFFIX);
-            if (diagnoseConnID == -1) diagnoseConnID = createConnection(con, schemaName + DIAGNOSE_SUFFIX);
+            if (diagnoseConnID == -1) {
+                diagnoseConnID = createConnection(con, schemaName + DIAGNOSE_SUFFIX);
+                isNew = true;
+            }
             if (submissionConnID == -1) submissionConnID = createConnection(con, schemaName + SUBMISSION_SUFFIX);
 
             if (diagnoseConnID == -1 || submissionConnID == -1) {
                 logger.error("Could not fetch / create connection id");
                 throw new SQLException();
             }
-            int exerciseId = reserveExerciseID();
+            int exerciseId = getAvailableExerciseId();
             createExerciseUtil(con, exerciseId, submissionConnID, diagnoseConnID, solution);
             con.commit();
-            addConnectionMapping(schemaName, diagnoseConnID);
+
+            if(isNew) addConnectionMapping(schemaName, diagnoseConnID);
             logger.debug("Exercise created");
             return exerciseId;
         }catch(SQLException throwables){
@@ -349,7 +354,7 @@ public class SQLResourceService {
      * @return -1 if no connection for the specified schema could be found
      * @throws DatabaseException if an error occurs
      */
-    public int fetchConnection(Connection con, String schemaName) throws DatabaseException {
+    private int fetchConnection(Connection con, String schemaName) throws DatabaseException {
        final String connExistsQuery=  "SELECT * FROM CONNECTIONS WHERE conn_string LIKE ?";
        int connID = -1;
        try(PreparedStatement connExistsStmt = con.prepareStatement(connExistsQuery)){
@@ -378,7 +383,7 @@ public class SQLResourceService {
      * @return the connection id
      * @throws DatabaseException if an error occurs
      */
-    public int createConnection(Connection con, String schemaName) throws DatabaseException {
+    private int createConnection(Connection con, String schemaName) throws DatabaseException {
         logger.info("Creating connection for schema {}", schemaName);
         final String maxIDQuery = "SELECT max(ID) as max_id FROM CONNECTIONS;";
         final String createConnectionQuery = "INSERT INTO CONNECTIONS VALUES(?,?,?,?)";
@@ -417,7 +422,7 @@ public class SQLResourceService {
      * @param solution the solution for the exercise
      * @throws DatabaseException if an error occurs
      */
-    public void createExerciseUtil(Connection con, int id, int submissionConnID, int diagnoseConnID, String solution) throws DatabaseException {
+    private void createExerciseUtil(Connection con, int id, int submissionConnID, int diagnoseConnID, String solution) throws DatabaseException {
         logger.debug("Creating exercise");
 
         try(PreparedStatement createExerciseStmt = con.prepareStatement("INSERT INTO EXERCISES VALUES(?,?,?,?);")){
@@ -433,14 +438,14 @@ public class SQLResourceService {
     }
 
     /**
-     * Fetches an available exercise id and reserves it by inserting default values for the given id
+     * Fetches an available exercise id
      * @return the exercise id
      * @throws DatabaseException if an SQLException occurs
      */
-    public int reserveExerciseID() throws DatabaseException {
+    public int getAvailableExerciseId() throws DatabaseException {
         try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD);){
             con.setAutoCommit(false);
-            return reserveExerciseIDUtil(con);
+            return getAvailableExerciseIdUtil(con);
         }catch(SQLException throwables){
             throwables.printStackTrace();
             throw new DatabaseException(throwables);
@@ -448,7 +453,7 @@ public class SQLResourceService {
 
     }
 
-    private int reserveExerciseIDUtil(Connection con) throws DatabaseException {
+    private int getAvailableExerciseIdUtil(Connection con) throws DatabaseException {
         String fetchMaxIdQuery = "SELECT max(id) as id from exercises";
         int maxId = -1;
 
@@ -510,7 +515,7 @@ public class SQLResourceService {
      * @param newSolution the solution
      * @throws DatabaseException if an error occurs
      */
-    public void updateExerciseSolutionUtil(Connection con, int id, String newSolution) throws DatabaseException {
+    private void updateExerciseSolutionUtil(Connection con, int id, String newSolution) throws DatabaseException {
         String updateQuery = "UPDATE EXERCISES SET SOLUTION = ? WHERE ID = ?";
         try(PreparedStatement updateStatement = con.prepareStatement(updateQuery)){
             updateStatement.setString(1, newSolution);
@@ -701,7 +706,7 @@ public class SQLResourceService {
      * @return the connection-id
      * @throws DatabaseException if an error occurs
      */
-    public int getDiagnoseConnectionFromExerciseID(Connection con, int exerciseId) throws DatabaseException {
+    private int getDiagnoseConnectionFromExerciseID(Connection con, int exerciseId) throws DatabaseException {
         String query = "SELECT * FROM exercises WHERE id = "+exerciseId;
         try(PreparedStatement stmt = con.prepareStatement(query);
         ResultSet rset = stmt.executeQuery()){
@@ -809,7 +814,7 @@ public class SQLResourceService {
      * @return a list with all the available id´s
      * @throws DatabaseException if an error occurs
      */
-    public List<Integer> getConnectionsForHTMLTable(Connection con) throws DatabaseException {
+    private List<Integer> getConnectionsForHTMLTable(Connection con) throws DatabaseException {
         logger.debug("Fetching available connections to search for table");
         var connectionIds = new ArrayList<Integer>();
         var query = "SELECT connection FROM connectionmapping";

@@ -85,12 +85,4 @@ public class ETutorGradingApplication {
         plugins.add(new CollectionJsonLinkDiscoverer());
         return new LinkDiscoverers(SimplePluginRegistry.create(plugins));
     }
-
-
-
-    public void addResourceHandlers(ResourceHandlerRegistry registry)
-    {
-        //enabling swagger-ui part for visual documentation
-        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
-    }
 }
