@@ -47,13 +47,5 @@ public class RepositoryService {
         gradingRepository.save(grading);
     }
 
-    /**
-     * Persists a ReportDTO
-     * @param report the report
-     */
-    public  void persistReport(ReportDTO report){
-        reportRepository.save(report);
-    }
-
 
 }

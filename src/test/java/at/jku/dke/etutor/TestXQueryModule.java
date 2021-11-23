@@ -5,6 +5,9 @@ import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
+import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
+import at.jku.dke.etutor.grading.service.RepositoryService;
+import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -21,27 +24,26 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class that fetches the persisted xquery-solutions, wraps
+ * them as submissions and lets them be evaluated by the dispatcher
+ */
 @SpringBootTest(classes= ETutorGradingApplication.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 //@Disabled
 public class TestXQueryModule {
-    private ObjectMapper mapper = new ObjectMapper();
-    private HttpClient client = HttpClient.newHttpClient();
     private List<String> ids = new ArrayList<>();
-    private final String REST_URL = "http://localhost:8081";
-
-    @Autowired
-    private SQLConstants sqlConstants;
 
     @Autowired
     private ApplicationProperties properties;
+    @Autowired
+    private SubmissionDispatcherService dispatcherService;
+    @Autowired
+    private GradingDTORepository gradingRepo;
 
     private String CONN_URL;
     private String CONN_USER;
@@ -49,36 +51,36 @@ public class TestXQueryModule {
     private final String EXERCISE_CONSTRAINTS = " where id < 14326 ";
     private final String ACTION_STRING = "diagnose";
     private final String DIAGNOSE_LEVEL = "3";
+    private final String TASK_TYPE = "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#XQTask";
 
+    /**
+     * Sets the connection parameters
+     * @throws ClassNotFoundException
+     */
     @BeforeAll
-    void setup() {
+    void setup() throws ClassNotFoundException {
         CONN_URL = properties.getXquery().getConnUrl();
         CONN_USER = properties.getXquery().getConnUser();
         CONN_PWD = properties.getXquery().getConnPwd();
-    }
-
-    @BeforeEach
-    void initialize() throws ClassNotFoundException {
         Class.forName("org.postgresql.Driver");
-        //exerciseConstraints = "id =22";
     }
 
     /**
-     * Test that fetches the solutions of the persisted exercises and sends them to the dispatcher for evaluation
+     * Test that fetches the solutions of the persisted exercises and evaluates them
      *
      * @throws IOException
      * @throws InterruptedException
      * @throws SQLException
      */
     @Test
-    void whenSubmissionIsSolution_thenAllPoints() throws IOException, InterruptedException, SQLException {
+    void whenSubmissionIsSolution_thenAllPoints() throws InterruptedException, SQLException {
         ResultSet exercises = getExercisesResultSet();
         while (exercises.next()) {
             int id = exercises.getInt("id");
             String solution = exercises.getString("query");
             Submission submission = prepareSubmission(id, solution);
             assertFalse(submission == null);
-            sendSubmission(submission);
+            evaluateSubmission(submission);
             Thread.sleep(500);
         }
         Thread.sleep(1000);
@@ -86,26 +88,25 @@ public class TestXQueryModule {
         System.out.println(ids.size());
     }
 
-    void sendSubmission(Submission submission) throws IOException, InterruptedException {
-        String submissionJson = mapper.writeValueAsString(submission);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(REST_URL + "/submission"))
-                .POST(HttpRequest.BodyPublishers.ofString(submissionJson))
-                .setHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                .setHeader(HttpHeaders.ACCEPT_LANGUAGE, "de")
-                .build();
-        HttpResponse<String> response = sendRequest(request);
-        String id = getId(response);
+    /**
+     * Utility method that triggers the evaluation of a submission
+     * @param submission the submission
+     */
+    void evaluateSubmission(Submission submission){
+        String id = UUID.randomUUID().toString();
+        submission.setSubmissionId(id);
+        dispatcherService.run(submission, Locale.GERMAN);
         ids.add(id);
     }
 
-    void getGradings() throws IOException, InterruptedException {
+    /**
+     * Utility method that iterates over the submission-ids and fetches the corresponding grading from the database
+     */
+    void getGradings()  {
         for (String id : ids) {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(REST_URL + "/grading/" + id))
-                    .build();
-            HttpResponse<String> response = sendRequest(request);
-            GradingDTO grading = extractGrading(response);
+            Optional<GradingDTO> optGrading = gradingRepo.findById(id);
+            assertTrue(optGrading.isPresent());
+            GradingDTO grading = optGrading.get();
             System.out.println(id);
             System.out.println("Result " + "\n" + grading.getResult());
             assertEquals(1, grading.getPoints());
@@ -114,23 +115,7 @@ public class TestXQueryModule {
         }
     }
 
-    HttpResponse<String> sendRequest(HttpRequest request) throws IOException, InterruptedException {
-        return client.send(request, HttpResponse.BodyHandlers.ofString());
-    }
 
-    String getId(HttpResponse<String> response) throws JsonProcessingException {
-        EntityModel<SubmissionId> submissionModel = mapper.readValue(response.body(), new TypeReference<EntityModel<SubmissionId>>() {
-        });
-        SubmissionId submissionId = submissionModel.getContent();
-        String id = submissionId.getSubmissionId();
-        return id;
-    }
-
-    GradingDTO extractGrading(HttpResponse<String> response) throws JsonProcessingException {
-        EntityModel<GradingDTO> entityModel = mapper.readValue(response.body(), new TypeReference<EntityModel<GradingDTO>>() {
-        });
-        return entityModel.getContent();
-    }
 
     Submission prepareSubmission(int id, String solution) {
         Submission submission = new Submission();
@@ -139,13 +124,17 @@ public class TestXQueryModule {
         attributeMap.put("diagnoseLevel", DIAGNOSE_LEVEL);
         attributeMap.put("submission", solution);
         submission.setPassedAttributes(attributeMap);
-        submission.setPassedParameters(new HashMap<String, String>());
+        submission.setPassedParameters(new HashMap<>());
         submission.setMaxPoints(1);
-        submission.setTaskType("http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#XQTask");
+        submission.setTaskType(TASK_TYPE);
         submission.setExerciseId(id);
         return submission;
     }
 
+    /**
+     * Fetches all xquery-exercise-solutions
+     * @return the ResultSet of the xq-exercise-table
+     */
     ResultSet getExercisesResultSet() {
         PreparedStatement stmt;
         try (Connection con = DriverManager.getConnection(CONN_URL, CONN_USER, CONN_PWD)) {

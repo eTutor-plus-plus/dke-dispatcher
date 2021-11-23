@@ -46,13 +46,14 @@ public class ETutorXQueryController {
 
         int[] fileIds;
         try {
-            fileIds = xQueryResourceService.addXML(taskGroup, xmls);
+            fileIds = xQueryResourceService.addXMLToDatabase(taskGroup, xmls);
             diagnoseFileId = fileIds[0];
             submissionFileId = fileIds[1];
             try {
-                xQueryResourceService.createXMLFiles(xmls, diagnoseFileId, submissionFileId);
+                xQueryResourceService.addXMLToFileSystem(xmls, diagnoseFileId, submissionFileId);
             } catch (IOException e) {
                 LOGGER.error(e.getMessage());
+                xQueryResourceService.deleteTaskGroup(taskGroup);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1+"");
             }
             return ResponseEntity.ok(properties.getXquery().getXmlFileURLPrefix()+diagnoseFileId);
@@ -70,7 +71,7 @@ public class ETutorXQueryController {
     @DeleteMapping("/xml/taskGroup/{taskGroup}")
     public ResponseEntity<String> deleteXMLOfTaskGroup(@PathVariable String taskGroup){
         try{
-            xQueryResourceService.deleteXML(taskGroup);
+            xQueryResourceService.deleteTaskGroup(taskGroup);
             return ResponseEntity.ok("XML for taskGroup deleted");
         } catch (SQLException throwables) {
             LOGGER.error(throwables.getMessage());

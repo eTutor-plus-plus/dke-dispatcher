@@ -35,13 +35,13 @@ public class XQueryResourceService {
     }
 
     /**
-     * Adds the xml-files to the filepath
+     * Adds the xml-files to the file-system
      * @param dto the dto with the xml's
      * @param diagnoseId the id for the diagnose-xml
      * @param submissionId the id for the submission-xml
      * @throws IOException if an error occurs while writing the file
      */
-    public void createXMLFiles(XMLDefinitionDTO dto, int diagnoseId, int submissionId) throws IOException {
+    public void addXMLToFileSystem(XMLDefinitionDTO dto, int diagnoseId, int submissionId) throws IOException {
         File diagnoseFile;
         File submissionFile;
 
@@ -53,13 +53,13 @@ public class XQueryResourceService {
     }
 
     /**
-     * Takes a taskGroup and the 2 xml's and processes them.
+     * Takes a taskGroup and the 2 xml's and persists them in the database.
      * @param taskGroup the taskGroup identifying the taskGroup
      * @param xmls the xml's
      * @return the id's of the diagnose and submission xml
      * @throws SQLException if an error occurs while accessing the database
      */
-    public int[] addXML(String taskGroup, XMLDefinitionDTO xmls) throws SQLException {
+    public int[] addXMLToDatabase(String taskGroup, XMLDefinitionDTO xmls) throws SQLException {
         boolean isNew ;
         int[] result = new int[2];
 
@@ -79,11 +79,11 @@ public class XQueryResourceService {
             }else{
                 isNew = true;
                 result = fetchAvailableIds(con);
-                addFileIdMappings(con, taskGroup, result[0], result[1]);
+                addFileIdToTaskGroupMapping(con, taskGroup, result[0], result[1]);
             }
             persistXMLinDatabase(con, result[0], xmls.getDiagnoseXML(), isNew);
             persistXMLinDatabase(con, result[1], xmls.getSubmissionXML(), isNew);
-            addPublicFileId(con, result[0]);
+            makeFileIdPublic(con, result[0]);
             con.commit();
         } catch (SQLException throwables) {
             throw new SQLException(throwables);
@@ -92,11 +92,11 @@ public class XQueryResourceService {
     }
 
     /**
-     * Adds the diagnose-file-id of a task group to the list of public available xml files
+     * Adds the diagnose-file-id of a task group to the list of publicly available xml files
      * @param con the Connection
      * @param i the id
      */
-    private void addPublicFileId(Connection con, int i) throws SQLException {
+    private void makeFileIdPublic(Connection con, int i) throws SQLException {
         String query = "INSERT INTO public_file_ids values(?)";
         try(PreparedStatement stmt = con.prepareStatement(query)){
             stmt.setInt(1, i);
@@ -149,14 +149,14 @@ public class XQueryResourceService {
     }
 
     /**
-     * Adds the mapping from the taskGroup-taskGroup to the file id#s to the database
+     * Adds the mapping of the taskGroup-name to the file id#s to the database
      * @param con the Connection
      * @param taskGroup the taskGroup of the taskGroup
      * @param diagnoseId the file id for the diagnose xml
      * @param submissionId the file id for the submission xml
      * @throws SQLException if an error occurs while accessing the database
      */
-    private void addFileIdMappings(Connection con, String taskGroup, int diagnoseId, int submissionId) throws SQLException {
+    private void addFileIdToTaskGroupMapping(Connection con, String taskGroup, int diagnoseId, int submissionId) throws SQLException {
         String tableName = properties.getXquery().getTable().getTaskGroup_fileIds_mapping();
         String query = "INSERT INTO "+tableName+"(taskGroup, diagnoseFileId, submissionFileId) VALUES(?,?,?)";
         try(PreparedStatement stmt = con.prepareStatement(query)){
@@ -256,11 +256,11 @@ public class XQueryResourceService {
     }
 
     /**
-     * Deletes all database entries associated with a task group
+     * Deletes all resources  associated with a task group
      * @param taskGroup the name of the task group
      * @throws SQLException if an error occurs
      */
-    public void deleteXML(String taskGroup) throws SQLException {
+    public void deleteTaskGroup(String taskGroup) throws SQLException {
         int diagnoseFileId;
         int submissionFileId;
 
@@ -293,7 +293,7 @@ public class XQueryResourceService {
     }
 
     /**
-     * Deletes xml files saved in the question folder
+     * Deletes xml files from the file system
      * @param diagnoseFileId the id of the diagnose xml file
      * @param submissionFileId the id of the submsission xml file
      */
@@ -408,7 +408,7 @@ public class XQueryResourceService {
     }
 
     /**
-     * Deletes an exercise according tothe id
+     * Deletes an exercise according to the id
      * @param id the id
      * @return boolean indicating wheter exercise has been deleted
      */

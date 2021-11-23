@@ -417,10 +417,6 @@ public class SQLEvaluator implements Evaluator {
 		return null;
 	}
 
-	public Connection getConnectionToSqlDatabase() throws SQLException {
-		return DriverManager.getConnection(constants.getConnURL(), constants.getConnUser(), constants.getConnPwd());
-	}
-
 	public Connection getConnectionToSQLDatabase(String connUrl, String connUser, String connPwd) throws SQLException{
 		return DriverManager.getConnection(connUrl, connUser, connPwd);
 	}

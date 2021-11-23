@@ -210,7 +210,9 @@ public class XQCoreManager {
      * @throws InvalidResourceException if the resource can not be found
      */
     public static URL getResource(String resource) throws InvalidResourceException {
-        URL url = XQCoreManager.class.getClassLoader().getResource(resource);
+        //TODO: uncomment upper URL version for production
+        //URL url = XQCoreManager.class.getClassLoader().getResource(resource);
+        URL url = XQCoreManager.class.getResource(resource);
         URL baseURL = null;
         if (url == null) {
         	// get the base directory
