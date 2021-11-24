@@ -3,6 +3,9 @@ package at.jku.dke.etutor.grading.rest.dto;
 
 import java.util.List;
 
+/**
+ * Wraps the solution-query and the sorted-nodes for an xquery-exercise
+ */
 public class XQExerciseDTO {
     private String query;
     private List<String> sortedNodes;

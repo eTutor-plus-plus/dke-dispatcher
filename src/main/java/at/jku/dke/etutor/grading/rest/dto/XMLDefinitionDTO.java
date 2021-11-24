@@ -1,5 +1,8 @@
 package at.jku.dke.etutor.grading.rest.dto;
 
+/**
+ * Contains the XMLs for a xquery-taskgroup
+ */
 public class XMLDefinitionDTO {
     private String diagnoseXML;
     private String submissionXML;

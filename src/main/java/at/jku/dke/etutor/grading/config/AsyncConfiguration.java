@@ -1,13 +1,15 @@
 package at.jku.dke.etutor.grading.config;
 
+import at.jku.dke.etutor.grading.rest.dto.Submission;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.Locale;
 import java.util.concurrent.Executor;
 
 /**
- * The Configuration to enable async handling of requests
+ * The Configuration to enable async handling of requests see {@link at.jku.dke.etutor.grading.service.SubmissionDispatcherService#run(Submission, Locale)}
  */
 @Configuration
 public class AsyncConfiguration {

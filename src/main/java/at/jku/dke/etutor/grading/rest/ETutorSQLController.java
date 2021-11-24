@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.grading.rest;
 
 import at.jku.dke.etutor.grading.ETutorCORSPolicy;
-import at.jku.dke.etutor.grading.rest.dto.DataDefinitionDTO;
+import at.jku.dke.etutor.grading.rest.dto.SqlDataDefinitionDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceService;
 import at.jku.dke.etutor.grading.service.StatementValidationException;
@@ -41,7 +41,7 @@ public class ETutorSQLController {
      * @return ResponseEntity
      */
     @PostMapping("/schema")
-    public ResponseEntity<String> executeDDL(@RequestBody DataDefinitionDTO ddl){
+    public ResponseEntity<String> executeDDL(@RequestBody SqlDataDefinitionDTO ddl){
         logger.info("Enter executeDDL() for schema {} ",ddl.getSchemaName());
         try {
             resourceManager.deleteSchemas(ddl.getSchemaName());

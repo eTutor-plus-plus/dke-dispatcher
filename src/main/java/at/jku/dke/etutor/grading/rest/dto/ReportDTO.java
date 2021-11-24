@@ -1,14 +1,20 @@
 package at.jku.dke.etutor.grading.rest.dto;
 
+import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.DefaultReport;
+import at.jku.dke.etutor.core.evaluation.Grading;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 /**
- * The report dto as entity
+ * The DTO representing a report generated in the course of the evaluation see {@link at.jku.dke.etutor.core.evaluation.Evaluator#report(Analysis, Grading, Map, Map, Locale)}
  */
 @Entity
 @Table(name= "report")
@@ -73,5 +79,18 @@ public class ReportDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        ReportDTO reportDTO = (ReportDTO) o;
+        return submissionId != null && Objects.equals(submissionId, reportDTO.submissionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

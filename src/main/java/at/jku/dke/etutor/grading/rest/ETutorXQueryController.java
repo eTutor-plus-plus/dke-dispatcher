@@ -31,7 +31,7 @@ public class ETutorXQueryController {
     }
 
     /**
-     * Adds the XML files for a specific taskGroup to to filesystem and adds the necessary data to the database,
+     * Adds the XML files for a specific taskGroup to the filesystem and adds the necessary data to the database,
      * namely the mapping of the taskGroup-UUID to the file-ids and the XML's to the xmldocs table.
      * @param taskGroup the UUID identifying the task
      * @param xmls wrapper dto for the diagnose-xml and submission-xml

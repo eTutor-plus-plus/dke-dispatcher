@@ -10,8 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents the students submission which hast to be distributed to and evaluated by the corresponding module,
- *  depending on the tasktype.
+ *  Entity representing a submission.
  *  Fields are corresponding to the core-interfaces (see package core/evaluation).
  */
 @Entity

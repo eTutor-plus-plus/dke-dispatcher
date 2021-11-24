@@ -9,7 +9,7 @@ import at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl;
 import org.springframework.stereotype.Service;
 
 /**
- * Maps the task-types to the modules implementation of the Evaluator interface
+ * Maps the task-types to the module's implementation of the {@link at.jku.dke.etutor.core.evaluation.Evaluator}
  */
 @Service
 public class ModuleService {

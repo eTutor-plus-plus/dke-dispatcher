@@ -3,7 +3,7 @@ package at.jku.dke.etutor.grading.rest.dto;
 import java.util.Map;
 
 /**
- * DTO for Submission-entities
+ * DTO representing a {@link at.jku.dke.etutor.grading.rest.dto.Submission}
  */
 public class SubmissionDTO {
     private String submissionId;

@@ -13,7 +13,6 @@ import java.util.Locale;
 
 /**
  * Is used to forward the submission to the corresponding module
- * and persist the entities
  */
 @Service
 public class SubmissionDispatcherService {

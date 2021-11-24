@@ -57,7 +57,7 @@ public class ETutorSubmissionController {
 
         logger.info("Calculating submission-ID");
         submissionId = SubmissionId.createId(submission);
-        logger.info("Finished calculating submission-ID: {}", submissionId.getSubmissionId());
+        logger.info("Finished calculating submission-ID: {}", submissionId.getValue());
 
         submissionDispatcherService.run(submission, mapLangToLocale(language));
 
@@ -76,7 +76,7 @@ public class ETutorSubmissionController {
         Optional<Submission> optionalSubmission = this.submissionRepository.findById(submissionUUID);
         Submission submission = optionalSubmission.orElse(null);
         if(submission != null) return ResponseEntity.ok(submission);
-        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(submission);
+        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
 

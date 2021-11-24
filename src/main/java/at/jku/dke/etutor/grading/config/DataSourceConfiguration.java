@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 
+/**
+ * Primary DataSource bean used by Hibernate-JPA
+ */
 @Configuration
 public class DataSourceConfiguration {
     private final ApplicationProperties properties;

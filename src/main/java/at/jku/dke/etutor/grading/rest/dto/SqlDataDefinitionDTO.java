@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Represents the statements required to create SQL- schemas, tables and populate them with data
  */
-public class DataDefinitionDTO {
+public class SqlDataDefinitionDTO {
     /**
      * The create table statments
      */

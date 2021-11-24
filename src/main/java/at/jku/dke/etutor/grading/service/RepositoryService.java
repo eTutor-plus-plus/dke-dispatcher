@@ -2,33 +2,28 @@ package at.jku.dke.etutor.grading.service;
 
 
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
-import at.jku.dke.etutor.grading.rest.dto.ReportDTO;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
-import at.jku.dke.etutor.grading.rest.repositories.ReportDTORepository;
 import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
 import org.springframework.stereotype.Service;
 
 /**
- *Service for handling entities
+ *Service for handling JPA-repository-methods
  */
 @Service
 public class RepositoryService {
     private  final GradingDTORepository gradingRepository;
     private  final SubmissionRepository submissionRepository;
-    private  final ReportDTORepository reportRepository;
 
     /**
      * The constructor
      * @param gradingRepo the injected JPARepository for GradingDTO´s
      * @param submissionRepo the injected JPARepository for Submissions
-     * @param reportRepo the injected JPARepository for ReportDTO´s
      */
     public RepositoryService(GradingDTORepository gradingRepo,
-                             SubmissionRepository submissionRepo, ReportDTORepository reportRepo){
+                             SubmissionRepository submissionRepo){
         gradingRepository = gradingRepo;
         submissionRepository = submissionRepo;
-        reportRepository = reportRepo;
     }
 
     /**

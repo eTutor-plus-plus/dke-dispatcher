@@ -8,22 +8,22 @@ import java.util.UUID;
  */
 
 public class SubmissionId {
-    private String submissionId;
+    private String value;
 
     public SubmissionId(){
         // empty constructor
     }
 
     public SubmissionId(String value){
-        this.submissionId=value;
+        this.value =value;
     }
 
-    public String getSubmissionId() {
-        return submissionId;
+    public String getValue() {
+        return value;
     }
 
-    public void setSubmissionId(String submissionId) {
-        this.submissionId = submissionId;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     /**
@@ -39,6 +39,6 @@ public class SubmissionId {
 
 
     public String toString(){
-        return submissionId;
+        return value;
     }
 }

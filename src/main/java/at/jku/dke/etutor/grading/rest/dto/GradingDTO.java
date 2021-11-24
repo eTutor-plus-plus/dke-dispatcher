@@ -1,9 +1,11 @@
 package at.jku.dke.etutor.grading.rest.dto;
 
 import at.jku.dke.etutor.core.evaluation.Grading;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Represents a graded submission
@@ -92,5 +94,18 @@ public class GradingDTO {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        GradingDTO that = (GradingDTO) o;
+        return submissionId != null && Objects.equals(submissionId, that.submissionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
