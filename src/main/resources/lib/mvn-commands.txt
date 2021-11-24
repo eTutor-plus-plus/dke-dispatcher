@@ -1,0 +1,16 @@
+// Pfade ersetzen
+
+
+mvn install:install-file -Dfile=<path-to-/resources/lib/xml.jar> -DgroupId=javax -DartifactId=xml -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+
+&&
+
+mvn install:install-file -Dfile=<path-to-/resources/lib/xml-apis.jar> -DgroupId=javax -DartifactId=xml-apis -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+
+&&
+
+mvn install:install-file -Dfile=<path-to-/resources/lib/xmlParserAPIs.jar> -DgroupId=javax -DartifactId=parsers -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+
+&&
+
+mvn install:install-file -Dfile=<path-to-/resources/lib/xmlparsersv2.jar> -DgroupId=javax -DartifactId=parsersv2 -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
