@@ -1,7 +1,6 @@
 package at.jku.dke.etutor.modules.xquery;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.grading.service.FileResourcesUtils;
 import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,6 @@ public class XQCoreManager {
 
     private PropertyFile propertyFile;
     private ApplicationProperties applicationProperties;
-    private FileResourcesUtils fileResourcesUtils;
     private static final Logger LOGGER = initLogger();
     /**
      * The <i>singleton </i> of this class.
@@ -130,7 +128,6 @@ public class XQCoreManager {
      */
     private XQCoreManager(ApplicationProperties properties) {
     	this.applicationProperties = properties;
-        fileResourcesUtils = new FileResourcesUtils();
         init();
     }
 
