@@ -772,7 +772,7 @@ public class SQLResourceService {
         logger.debug("Generating HTML table from ResultSet");
         ResultSetMetaData metaData = tableRset.getMetaData();
         var columnCount = metaData.getColumnCount();
-        var tableStart = "<table border=1 frame=void rules=rows>";
+        var tableStart = "<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\" >";
         var tableEnd = "</table>";
         var tableRowStart = "<tr>";
         var tableRowEnd = "</tr>";

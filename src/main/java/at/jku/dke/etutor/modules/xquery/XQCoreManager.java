@@ -208,8 +208,8 @@ public class XQCoreManager {
      */
     public static URL getResource(String resource) throws InvalidResourceException {
         //TODO: uncomment upper URL version for production
-        //URL url = XQCoreManager.class.getClassLoader().getResource(resource);
-        URL url = XQCoreManager.class.getResource(resource);
+        URL url = XQCoreManager.class.getClassLoader().getResource(resource);
+        //URL url = XQCoreManager.class.getResource(resource);
         URL baseURL = null;
         if (url == null) {
         	// get the base directory

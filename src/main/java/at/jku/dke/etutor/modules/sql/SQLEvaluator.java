@@ -390,7 +390,7 @@ public class SQLEvaluator implements Evaluator {
 			Iterator<String> columnIterator= sqlAnalysis.getQueryResultColumnLabels().iterator();
 
 
-			result.append("<table border=1 frame=void rules=rows>");
+			result.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\">");
 			result.append("<tr>");
 			while(columnIterator.hasNext()){
 				result.append("<th>").append(columnIterator.next()).append("</th>");

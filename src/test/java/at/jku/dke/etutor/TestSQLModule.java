@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes= ETutorGradingApplication.class)
 @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
-//@Disabled
+@Disabled
 public class TestSQLModule {
     private List<String> ids = new ArrayList<>();
 

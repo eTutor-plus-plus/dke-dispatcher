@@ -116,7 +116,7 @@ public class SQLReporter {
 
 
                             columnLabelsIterator = tuplesAnalysis.iterColumnLabels();
-                            description.append("<table border=1 frame=void rules=rows><tr>");
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr>");
                             while (columnLabelsIterator.hasNext()) {
                                 description.append("<th>").append(columnLabelsIterator.next()).append("</th>");
                             }
@@ -145,7 +145,7 @@ public class SQLReporter {
                             if(isGermanLocale(locale))description.append("Die folgenden ").append(surplusTuplesCount).append(" Tupel sind zu viel: ").append(LS);
                             else description.append("The following ").append(surplusTuplesCount).append(" tuples are too much in the result of your query: ").append(LS);
 
-                            description.append("<table border=1 frame=void rules=rows>");
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\">");
                             report.setSurplusTuples(tuplesAnalysis.getSurplusTuples());
 
                             columnLabelsIterator = tuplesAnalysis.iterColumnLabels();
