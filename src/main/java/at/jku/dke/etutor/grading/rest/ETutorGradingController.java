@@ -45,11 +45,19 @@ public class ETutorGradingController {
      *          - HttpStatus.OK if Grading is available
      */
     @GetMapping("/{submissionId}")
-    public ResponseEntity<EntityModel<GradingDTO>> getGrading(@PathVariable String submissionId) {
+    public ResponseEntity<EntityModel<GradingDTO>> getGrading(@PathVariable String submissionId)  {
         logger.info( "Received request for Grading with Submission ID:  {}",  submissionId);
         logger.info("Fetching Grading from database ");
 
         Optional<GradingDTO> optional = gradingDTORepository.findById(submissionId);
+        if(optional.isEmpty()){
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+               logger.info(e.getMessage());
+            }
+            optional = gradingDTORepository.findById(submissionId);
+        }
         if (optional.isPresent()) {
             logger.info("Finished fetching Grading from database ");
             GradingDTO grading = optional.get();
