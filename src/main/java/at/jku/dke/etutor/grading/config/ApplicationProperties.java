@@ -419,6 +419,7 @@ public class ApplicationProperties {
         private String connSuperPwd;
         private String corsPolicy;
         private String JDBCDriver;
+        private long sleepDuration;
 
         public String getConnSuperUser() {
             return connSuperUser;
@@ -450,6 +451,14 @@ public class ApplicationProperties {
 
         public void setJDBCDriver(String JDBCDriver) {
             this.JDBCDriver = JDBCDriver; }
+
+        public long getSleepDuration() {
+            return sleepDuration;
+        }
+
+        public void setSleepDuration(long sleepDuration) {
+            this.sleepDuration = sleepDuration;
+        }
     }
 
 

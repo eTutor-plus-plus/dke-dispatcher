@@ -2,6 +2,7 @@ package at.jku.dke.etutor.grading.rest;
 
 
 import at.jku.dke.etutor.grading.ETutorCORSPolicy;
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
 import ch.qos.logback.classic.Logger;
@@ -26,19 +27,21 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ETutorGradingController {
     private Logger logger;
     private GradingDTORepository gradingDTORepository;
+    private ApplicationProperties properties;
 
     /**
      * The construcotr
      * @param gradingDTORepository the injected repository
      */
-    public ETutorGradingController(GradingDTORepository gradingDTORepository) {
+    public ETutorGradingController(GradingDTORepository gradingDTORepository, ApplicationProperties properties) {
         this.logger = (Logger) LoggerFactory.getLogger(ETutorGradingController.class);
         this.gradingDTORepository = gradingDTORepository;
+        this.properties = properties;
     }
 
     /**
      * Takes the submissionId and fetches and returns
-     * the corresponding Grading.
+     * the corresponding Grading. If no grading is found at first, a retry is attempted after 5 seconds.
      * @param submissionId the identifier for the GradingDTO as path variable
      * @return ResponseEntity containing EntityModel<GradingDTO> and a self reference (link)
      *          - HttpStatus.NOT_FOUND if no Grading is available for the given id.
@@ -52,7 +55,7 @@ public class ETutorGradingController {
         Optional<GradingDTO> optional = gradingDTORepository.findById(submissionId);
         if(optional.isEmpty()){
             try {
-                Thread.sleep(5000);
+                Thread.sleep(properties.getGrading().getSleepDuration());
             } catch (InterruptedException e) {
                logger.info(e.getMessage());
             }
