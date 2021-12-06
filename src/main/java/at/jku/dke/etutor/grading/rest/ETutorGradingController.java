@@ -30,7 +30,7 @@ public class ETutorGradingController {
     private ApplicationProperties properties;
 
     /**
-     * The construcotr
+     * The constructor
      * @param gradingDTORepository the injected repository
      */
     public ETutorGradingController(GradingDTORepository gradingDTORepository, ApplicationProperties properties) {
@@ -41,7 +41,7 @@ public class ETutorGradingController {
 
     /**
      * Takes the submissionId and fetches and returns
-     * the corresponding Grading. If no grading is found at first, a retry is attempted after 5 seconds.
+     * the corresponding Grading. If no grading is found at first, a retry is attempted after the duration specified in application.properties.
      * @param submissionId the identifier for the GradingDTO as path variable
      * @return ResponseEntity containing EntityModel<GradingDTO> and a self reference (link)
      *          - HttpStatus.NOT_FOUND if no Grading is available for the given id.
