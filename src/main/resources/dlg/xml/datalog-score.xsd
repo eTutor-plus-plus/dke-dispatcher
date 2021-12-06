@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Georg (Nitsche) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="datalog-score">
+		<xs:annotation>
+			<xs:documentation>This schema describes the structure of a document which holds scoring information for a datalog example</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="category" minOccurs="8" maxOccurs="8">
+					<xs:complexType>
+						<xs:attributeGroup ref="error-category"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="max-score" type="xs:decimal" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:attributeGroup name="error-category">
+		<xs:attribute name="error" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:ID">
+					<xs:enumeration value="missing-predicate"/>
+					<xs:enumeration value="redundant-predicate"/>
+					<xs:enumeration value="low-term-predicate"/>
+					<xs:enumeration value="high-term-predicate"/>
+					<xs:enumeration value="missing-fact"/>
+					<xs:enumeration value="redundant-fact"/>
+					<xs:enumeration value="negative-fact"/>
+					<xs:enumeration value="positive-fact"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="less" type="xs:decimal" use="required"/>
+		<xs:attribute name="error-level" type="xs:int" use="required"/>
+	</xs:attributeGroup>
+</xs:schema>

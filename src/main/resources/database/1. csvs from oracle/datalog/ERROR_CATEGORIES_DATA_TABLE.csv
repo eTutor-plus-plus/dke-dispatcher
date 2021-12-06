@@ -1,0 +1,9 @@
+"NAME","ID"
+"missing-predicate",1
+"redundant-predicate",2
+"low-term-predicate",3
+"high-term-predicate",4
+"missing-fact",5
+"redundant-fact",6
+"negative-fact",7
+"positive-fact",8

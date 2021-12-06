@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Georg (Nitsche) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="datalog-exercise">
+		<xs:annotation>
+			<xs:documentation>This schema describes the structure of a document which holds basic information for a datalog example</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="query" type="xs:string"/>
+				<xs:element name="database" type="xs:string"/>
+				<xs:element name="required-predicate" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="name" type="xs:string" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="exercise-id" type="xs:string" use="optional"/>
+			<xs:attribute name="max-int" type="xs:int" use="required"/>
+			<xs:attribute name="exe" type="xs:string" use="required"/>
+			<xs:attribute name="timeout" type="xs:long" use="required"/>
+			<xs:attribute name="interval" type="xs:long" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:attributeGroup name="error-category">
+		<xs:attribute name="category" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:ID">
+					<xs:enumeration value="missing-node"/>
+					<xs:enumeration value="missing-attribute"/>
+					<xs:enumeration value="redundant-node"/>
+					<xs:enumeration value="redundant-attribute"/>
+					<xs:enumeration value="displaced-node"/>
+					<xs:enumeration value="incorrect-value"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="less" type="xs:decimal" use="required"/>
+		<xs:attribute name="global" type="xs:boolean" use="required"/>
+	</xs:attributeGroup>
+</xs:schema>
