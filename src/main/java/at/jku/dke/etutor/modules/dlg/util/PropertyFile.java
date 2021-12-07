@@ -164,7 +164,8 @@ public class PropertyFile extends Properties {
     public String parseFileProperty(String key) throws InvalidResourceException {
     	String msg;
         String value = loadProperty(key);
-        String filepath = getFilepath(value);
+        String filepath = PropertyFile.class.getResource(value).getPath();
+        //String filepath = getFilepath(value);
         if (filepath == null) {
             msg = "";
             msg += "Not existing file " + value + " specified for property ";

@@ -55,19 +55,19 @@ public class DatalogCoreManager {
      * Location of the properties file from which to get basic information for setting up a datalog
      * exercise.
      */
-    public final static String PROPERTIES_FILE = "/etutor/resources/modules/datalog/properties/datalog.properties";
+    public final static String PROPERTIES_FILE = "/dlg/properties/datalog.properties";
 
     /**
      * Path of the file which represents the XML Schema used for validating XML configuration files
      * for initializing {@link at.jku.dke.etutor.modules.dlg.grading.DatalogScores} objects.
      */
-    public final static String XSD_FILE_SCORES = "/etutor/resources/modules/datalog/xml/datalog-score.xsd";
+    public final static String XSD_FILE_SCORES = "/dlg/xml/datalog-score.xsd";
 
     /**
      * Relative path of the XSL stylesheet, which is required for rendering the XML representation
      * of a Datalog result or the analysis of this result in HTML format.
      */
-    public final static String XSL_RENDER_DATALOG = "/etutor/resources/modules/datalog/xml/render-datalog.xsl";
+    public final static String XSL_RENDER_DATALOG = "/dlg/xml/render-datalog.xsl";
 
     /**
      * Property key for the executable file of the datalog processor.
@@ -283,7 +283,7 @@ public class DatalogCoreManager {
 		Hashtable table;
 
 		propertyFile = this.getPropertyFile();
-        if (this.ctx == null) {
+        if (this.ctx == null && 1 == 2) {
         	msg = "Setting up JNDI context ...";
         	LOGGER.info(msg);
         	//Set classloader to avoid problems with classes not found when datalog 
@@ -410,9 +410,7 @@ public class DatalogCoreManager {
      * @throws SQLException is thrown when trying to retrieve a connection out of the pool
      */
     public Connection getConnection() throws NamingException, InvalidResourceException, SQLException {
-    	DataSource ds;
-        ds = getDataSource();
-        return ds.getConnection();
+    	return DatalogDataSource.getConnection();
     }
 
     /**

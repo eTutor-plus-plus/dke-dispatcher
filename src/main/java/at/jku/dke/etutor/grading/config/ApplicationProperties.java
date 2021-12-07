@@ -13,6 +13,8 @@ public class ApplicationProperties {
 
     private DataSource datasource = new DataSource();
 
+    private Datalog datalog = new Datalog();
+
     private XQueryProps xquery = new XQueryProps();
 
     private Grading grading = new Grading();
@@ -57,6 +59,29 @@ public class ApplicationProperties {
         this.datasource = datasource;
     }
 
+    public Datalog getDatalog() {
+        return datalog;
+    }
+
+    public void setDatalog(Datalog datalog) {
+        this.datalog = datalog;
+    }
+
+    /**
+     * Properties for the Datalog module
+     */
+
+    public static class Datalog{
+        private String connUrl;
+
+        public String getConnUrl() {
+            return connUrl;
+        }
+
+        public void setConnUrl(String connUrl) {
+            this.connUrl = connUrl;
+        }
+    }
     /**
      * The properties needed to configure the async TaskExecutor
      */

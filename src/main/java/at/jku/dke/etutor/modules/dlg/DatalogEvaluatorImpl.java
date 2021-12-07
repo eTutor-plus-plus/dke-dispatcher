@@ -1,17 +1,9 @@
 package at.jku.dke.etutor.modules.dlg;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.Locale;
-import java.util.Map;
-
 import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.core.evaluation.Report;
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogProcessor;
 import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseBean;
@@ -23,6 +15,14 @@ import at.jku.dke.etutor.modules.dlg.report.DatalogFeedback;
 import at.jku.dke.etutor.modules.dlg.util.PropertyFile;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * This class serves as entry point for evaluating Datalog queries. There are some basic methods for
@@ -42,7 +42,7 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
      * 
      * @throws RemoteException if any RemoteException occurs.
      */
-    public DatalogEvaluatorImpl() throws RemoteException {
+    public DatalogEvaluatorImpl(ApplicationProperties properties) {
         super();
         //evaluator implementation is bound to RMI registry at startup process;
         //requesting core manager instance causes creation of singleton
