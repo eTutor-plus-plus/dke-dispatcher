@@ -8,7 +8,6 @@ import at.jku.dke.etutor.modules.dlg.analysis.ABCDatalogProcessor;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
 import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseBean;
 import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseManagerImpl;
-import at.jku.dke.etutor.modules.dlg.exercise.TermDescription;
 import at.jku.dke.etutor.modules.dlg.grading.DatalogGrading;
 import at.jku.dke.etutor.modules.dlg.grading.DatalogScores;
 import at.jku.dke.etutor.modules.dlg.report.DatalogFeedback;
