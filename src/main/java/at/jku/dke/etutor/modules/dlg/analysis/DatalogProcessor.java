@@ -1,7 +1,5 @@
 package at.jku.dke.etutor.modules.dlg.analysis;
 
-import java.util.Enumeration;
-
 import DLV.*;
 import at.jku.dke.etutor.modules.dlg.InitException;
 import at.jku.dke.etutor.modules.dlg.QuerySyntaxException;
@@ -9,6 +7,8 @@ import at.jku.dke.etutor.modules.dlg.TimeoutException;
 import at.jku.dke.etutor.modules.dlg.exercise.TermDescription;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Enumeration;
 
 /**
  * A processor for evaluating Datalog queries. The underlying processor is an executable file. Apart
@@ -79,6 +79,9 @@ public class DatalogProcessor {
         this.timeout = timeout;
         initDLV(exe);
         setDatabase(database, maxInt, uncheckedTerms);
+    }
+
+    public DatalogProcessor() {
     }
 
     /**

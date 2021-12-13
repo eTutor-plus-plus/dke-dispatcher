@@ -4,6 +4,7 @@ import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.core.evaluation.Report;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.modules.dlg.analysis.ABCDatalogProcessor;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogProcessor;
 import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseBean;
@@ -137,10 +138,12 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
             coreManager = DatalogCoreManager.getInstance();
             properties = coreManager.getPropertyFile();
 
-            exe = properties.parseFileProperty(DatalogCoreManager.KEY_EXE);
+            /*
+             exe = properties.parseFileProperty(DatalogCoreManager.KEY_EXE);
             timeout = properties.parseLongProperty(DatalogCoreManager.KEY_TIMEOUT);
             interval = properties.parseLongProperty(DatalogCoreManager.KEY_INTERVAL);
             maxInt = properties.parseIntProperty(DatalogCoreManager.KEY_MAX_INT);
+             */
             debugMode = properties.parseBooleanProperty(DatalogCoreManager.KEY_MODUS_DEBUG);
         } catch (InvalidResourceException e) {
         	msg = new String();
@@ -188,7 +191,9 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
     	
         // Analysis, actually
         try {
-            processor = new DatalogProcessor(facts, exe, timeout, interval, maxInt, uncheckedTerms);
+            // processor = new DatalogProcessor(facts, exe, timeout, interval, maxInt, uncheckedTerms);
+            // DLGNEW
+            processor = new ABCDatalogProcessor(facts, uncheckedTerms);
             analysis = new DatalogAnalysis(queryCorrect, querySubmitted, requPredicates, processor, debugMode);
             analysis.setExerciseID(exerciseId);
             return analysis;

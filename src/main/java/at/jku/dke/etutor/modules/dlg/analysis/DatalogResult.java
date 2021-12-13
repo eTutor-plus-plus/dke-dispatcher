@@ -1,9 +1,13 @@
 package at.jku.dke.etutor.modules.dlg.analysis;
 
-import java.io.Serializable;
-
 import DLV.Model;
 import at.jku.dke.etutor.modules.dlg.*;
+import edu.harvard.seas.pl.abcdatalog.ast.PositiveAtom;
+import edu.harvard.seas.pl.abcdatalog.ast.validation.DatalogValidationException;
+import edu.harvard.seas.pl.abcdatalog.parser.DatalogParseException;
+
+import java.io.Serializable;
+import java.util.Set;
 
 
 /**
@@ -50,6 +54,8 @@ public class DatalogResult implements Serializable {
 
     private ModelConsistency consistency;
 
+    private Set<PositiveAtom> results;
+
     /**
      * Constructs a new object that represents the evaluation result of the specified query,
      * evaluated by the specified processor. The query may contain syntax errors, which can be
@@ -87,6 +93,20 @@ public class DatalogResult implements Serializable {
         }
         this.consistency = new ModelConsistency(this);
     	  System.out.println("DatalogResult after consistency");
+    }
+
+
+    public DatalogResult(
+            String submission, ABCDatalogProcessor processor, String[] queries
+    ) throws AnalysisException {
+        try {
+            this.results = processor.executeQuery(submission, queries, true);
+            this.query = submission;
+        } catch (DatalogValidationException e) {
+            e.printStackTrace();
+        } catch (DatalogParseException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -423,4 +443,11 @@ public class DatalogResult implements Serializable {
         return this.consistency;
     }
 
+    public Set<PositiveAtom> getResults() {
+        return results;
+    }
+
+    public void setResults(Set<PositiveAtom> results) {
+        this.results = results;
+    }
 }

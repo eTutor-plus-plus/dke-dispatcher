@@ -8,14 +8,15 @@ import at.jku.dke.etutor.modules.dlg.report.DatalogReport;
 import at.jku.dke.etutor.modules.dlg.util.FileParameter;
 import at.jku.dke.etutor.modules.dlg.util.XMLUtil;
 import ch.qos.logback.classic.Logger;
+import edu.harvard.seas.pl.abcdatalog.ast.PositiveAtom;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * An instance of this class takes two queries or already the result of two
@@ -119,11 +120,11 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 * Creates a new analysis instance by evaluating the given queries and
 	 * comparing the produced results.
 	 * 
-	 * @param query1
+	 * @param submission1
 	 *          The "correct" query.
-	 * @param query2
+	 * @param submission2
 	 *          The "submitted" query.
-	 * @param requPredicates
+	 * @param queries
 	 *          A number of predicates which are required to be present in the
 	 *          result of both queries, and so to be considered when analyzing.
 	 *          This may be an empty array or even <code>null</code>, which
@@ -152,14 +153,13 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 *           if any kind of unexpected Exception occured during analyzing the
 	 *           results.
 	 */
-	public DatalogAnalysis(String query1, String query2, String[] requPredicates, DatalogProcessor processor,
+	public DatalogAnalysis(String submission1, String submission2, String[] queries, DatalogProcessor processor,
 			boolean debugMode) throws Exception {
 		super();
 		init(debugMode);
 		try {
-			DatalogResult result1 = new DatalogResult(query1, processor);
-			result1.setRequPredicates(requPredicates);
-			DatalogResult result2 = new DatalogResult(query2, processor);
+			DatalogResult result1 = new DatalogResult(submission1, (ABCDatalogProcessor) processor, queries);
+			DatalogResult result2 = new DatalogResult(submission2, (ABCDatalogProcessor) processor, queries);
 			this.setResults(result1, result2);
 		} catch (Exception e) {
 			this.correct = false;
@@ -193,18 +193,6 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	public void setResults(DatalogResult result1, DatalogResult result2) throws NullPointerException, TimeoutException,
 			QuerySyntaxException, AnalysisException {
 		LOGGER.debug("Start comparing correct and submitted result object");
-		if (result1.getSyntaxException() != null) {
-			throw result1.getSyntaxException();
-		}
-		if (result1.getTimeoutException() != null) {
-			throw result1.getTimeoutException();
-		}
-		if (!result1.hasConsistentModel()) {
-			String message = "";
-			message += "The reference solution is not applicable for an analysis. ";
-			message += "The result has more than one model, or a single but nevertheless inconsistent model.";
-			throw new AnalysisException(message);
-		}
 		this.result1 = result1;
 		this.result2 = result2;
 		this.requPredicates = result1.getRequPredicates();
@@ -268,46 +256,26 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 *          The "submitted" query result.
 	 */
 	private void compare(DatalogResult result1, DatalogResult result2) {
-		List requPredicates = Arrays.asList(result1.getRequPredicates());
-		WrappedModel model1 = result1.getConsistentModel();
-		WrappedModel model2 = result2.getConsistentModel();
-		// model1 must not be null
-		if (model1 != null) {
-			if (model2 != null) {
-				if (model2.isConsistent()) {
-					LOGGER.debug("The submitted result consists of a single, consistent model.");
-					compare(model1, model2, requPredicates);
-					this.hasCorrectModel = !hasErrors();
-				} else {
-					LOGGER.debug("The submitted result consists of a single, inconsistent model.");
-					this.hasCorrectModel = false;
-				}
-			} else {
-				// The solution is surely incorrect. Now the question is, if there is a
-				// model among all
-				// possible models of the result, which would be correct.
-				this.correct = false;
-				WrappedModel[] models2 = result2.getWrappedModels();
-				for (int i = 0; i < models2.length && !hasCorrectModel; i++) {
-					if (models2[i].isConsistent()) {
-						// fills the error lists with found errors
-						compare(model1, models2[i], requPredicates);
-						// checks if error lists contain any found errors
-						this.hasCorrectModel = !hasErrors();
-						// removes errors again from the error lists
-						initErrorLists();
-					}
-				}
-				if (this.hasCorrectModel()) {
-					LOGGER.debug("The submitted result consists of " + models2.length + " models ... "
-							+ "the solution can not be correct, although the correct model is among them.");
-				} else {
-					LOGGER.debug("The submitted result consists of " + models2.length + " models ... "
-							+ "the solution can not be correct (even if the correct model was among them).");
-				}
+		var results1 = result1.getResults();
+		var results2 = result2.getResults();
+		if (results1 != null) {
+			if (results2 != null) {
+				compare(results1, results2);
 			}
 		}
+	}
 
+	private void compare(Set<PositiveAtom> results1, Set<PositiveAtom> results2) {
+		for(PositiveAtom p : results1){
+			if(!results2.contains(p)){
+				missingFacts.add(p);
+			}
+		}
+		for(PositiveAtom p : results2){
+			if(!results1.contains(p)){
+				redundantFacts.add(p);
+			}
+		}
 	}
 
 	/**
@@ -614,7 +582,7 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 *         only sensible if queries or their results have been compared.
 	 */
 	private boolean checkCorrectness() {
-		return isAnalyzable() && !result2.hasMultipleModels() && hasCorrectModel() && !hasErrors();
+		return missingFacts.isEmpty() && redundantFacts.isEmpty();
 	}
 
 	/**

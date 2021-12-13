@@ -89,6 +89,7 @@
             <artifactId>basex</artifactId>
             <version>8.6.7</version>
         </dependency>
+
         <!-- dependencies from resources/lib -->
         <dependency>
             <groupId>javax</groupId>

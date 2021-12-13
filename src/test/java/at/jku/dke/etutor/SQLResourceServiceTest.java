@@ -1,6 +1,5 @@
 package at.jku.dke.etutor;
 
-
 import at.jku.dke.etutor.grading.ETutorGradingApplication;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceService;
