@@ -55,6 +55,8 @@ public class DatalogGrading implements Serializable, Grading {
             DatalogAnalysis analysis, DatalogScores scores) {
         this.setSolutionIsCorrect(analysis.isCorrect());
         this.maxPoints = scores.getMaxScore();
+        if(this.solutionIsCorrect()) this.points = this.maxPoints;
+        else this.points = 0;
     }
 
     /*

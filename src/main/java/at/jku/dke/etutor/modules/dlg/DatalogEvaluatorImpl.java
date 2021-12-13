@@ -215,9 +215,11 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
         LOGGER.info(msg);
 
         action = (String)passedAttributes.get(DatalogConstants.ATTR_ACTION);
-        if (DatalogConstants.ACTION_SUBMIT.equalsIgnoreCase(action)) {
+        if (DatalogConstants.ACTION_SUBMIT.equalsIgnoreCase(action) || DatalogConstants.ACTION_DIAGNOSE.equalsIgnoreCase(action)
+                || DatalogConstants.ACTION_RUN.equalsIgnoreCase(action)
+                || DatalogConstants.ACTION_CHECK.equalsIgnoreCase(action)) {
         	msg = new String();
-        	msg += "Modus is '" + DatalogConstants.ACTION_SUBMIT;
+        	msg += "Modus is '" + action;
             msg += "', grading will be processed and reported.";
             LOGGER.debug(msg);
             try {
@@ -231,12 +233,6 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
                 LOGGER.error(msg, e);
                 throw new GradingException(msg, e);
             }
-        } else if (DatalogConstants.ACTION_DIAGNOSE.equalsIgnoreCase(action)
-                || DatalogConstants.ACTION_RUN.equalsIgnoreCase(action)
-				|| DatalogConstants.ACTION_CHECK.equalsIgnoreCase(action)) {
-            grading = new DatalogGrading();
-            grading.setReporting(false);
-            return grading;
         } else {
         	msg = new String();
             msg += "Report processing was stopped.\n ";
@@ -389,6 +385,33 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
     //TODO: implement
     @Override
     public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
-        return "Generating HTML Result not implemented.";
+        if(passedAttributes.get(DatalogConstants.ATTR_ACTION).equals(DatalogConstants.ACTION_SUBMIT)) return "";
+        String msg;
+        DatalogAnalysis datalogAnalysis;
+        try {
+            datalogAnalysis = (DatalogAnalysis)analysis;
+        } catch (ClassCastException e) {
+            msg = new String();
+            msg += "Passed analysis object is not of type ";
+            msg += DatalogAnalysis.class.getName() + " but ";
+            msg += analysis.getClass().getName();
+            LOGGER.error(msg, e);
+            return "";
+        }
+
+        if (datalogAnalysis == null) {
+            msg = "Passed analysis object is null.";
+            LOGGER.error(msg);
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("<div>");
+        for(var line : datalogAnalysis.getResult2().getResults()){
+            sb.append(line);
+            sb.append(".");
+            sb.append("<br>");
+        }
+        sb.append("</div>");
+        return sb.toString();
     }
 }
