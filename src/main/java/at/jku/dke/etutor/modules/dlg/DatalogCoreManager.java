@@ -4,17 +4,11 @@ import at.jku.dke.etutor.modules.dlg.util.PropertyFile;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Hashtable;
-
 /**
  * This class serves as central manager of all required resources and information which have to be
  * collected in order to set up a datalog exercise correctly.
@@ -26,8 +20,6 @@ import java.util.Hashtable;
 public class DatalogCoreManager {
 
     private PropertyFile propertyFile;
-    private DataSource dataSource;
-    private Context ctx;
     private static final Logger LOGGER = initLogger();
     private static final String LINE_SEP = System.getProperty("line.separator", "\n");
     
@@ -158,18 +150,6 @@ public class DatalogCoreManager {
 			msg = "Initializing properties file failed.";
 			LOGGER.warn(msg, e);
 		}
-    	try {
-			this.ctx = getContext();
-		} catch (Exception e) {
-			msg = "Initializing JNDI context failed.";
-			LOGGER.warn(msg, e);
-		}
-    	try {
-			this.dataSource = this.ctx != null ? getDataSource(this.ctx) : null;
-		} catch (Exception e) {
-			msg = "Initializing JDBC data source failed.";
-			LOGGER.warn(msg, e);
-		}
     }
     
     /**
@@ -269,147 +249,11 @@ public class DatalogCoreManager {
     }    
 
     /**
-     * Gets the JNDI context for retrieving resources configured in this context.
-     * 
-     * @return the JNDI context
-     * @throws InvalidResourceException if the properties file needed for 
-     * establishing the JNDI context can not be found
-     */
-    private synchronized Context getContext() throws InvalidResourceException, NamingException {
-    	String msg;
-    	PropertyFile propertyFile;
-        ClassLoader oldClassLoader;
-		ClassLoader newClassLoader;
-		Hashtable table;
-
-		propertyFile = this.getPropertyFile();
-        if (this.ctx == null && 1 == 2) {
-        	msg = "Setting up JNDI context ...";
-        	LOGGER.info(msg);
-        	//Set classloader to avoid problems with classes not found when datalog 
-        	//module is initiated by the RMI server module
-    		oldClassLoader = Thread.currentThread().getContextClassLoader();
-    		newClassLoader = this.getClass().getClassLoader();
-            Thread.currentThread().setContextClassLoader(newClassLoader);
-			this.ctx = new InitialContext(propertyFile);
-			table = this.ctx.getEnvironment();
-			
-			msg = "Main environment properties effectively set for JNDI context: " + LINE_SEP;
-			msg += Context.INITIAL_CONTEXT_FACTORY + "=";
-			msg += table.get(Context.INITIAL_CONTEXT_FACTORY) + LINE_SEP;
-			msg += Context.PROVIDER_URL + "=";
-			msg += table.get(Context.PROVIDER_URL) + LINE_SEP;
-			LOGGER.info(msg);
-    		Thread.currentThread().setContextClassLoader(oldClassLoader);
-        }
-        
-        return this.ctx;
-    }
-    
-    /**
-     * Gets the datasource for retrieving connections out of a connection pool
-     * which is configured in the JNDI context.
-     * 
-     * @return the datasource
-     * @throws InvalidResourceException if the properties file can not be found
-     * @throws NamingException exception thrown when creating the JNDI context or 
-     * looking up the data source fails
-     */
-    private synchronized DataSource getDataSource() throws InvalidResourceException, NamingException {
-    	Context ctx;
-        if (this.dataSource == null) {
-        	ctx = this.getContext();
-        	this.dataSource = ctx != null ? getDataSource(ctx) : null;
-        }
-        return this.dataSource;
-    }
-    
-    /**
-     * Gets the datasource for retrieving connections out of a connection pool
-     * which is configured in the JNDI context.
-     * 
-     * @return the datasource
-     * @throws InvalidResourceException if the properties file can not be found
-     * @throws NamingException exception thrown when looking up the data source fails
-     */
-    private synchronized DataSource getDataSource(Context ctx) throws InvalidResourceException, NamingException {
-    	String msg;
-    	String dataSourceName;
-    	PropertyFile propertyFile;
-
-		propertyFile = this.getPropertyFile();
-    	dataSourceName = propertyFile.getProperty(NAMING_DATASOURCE);
-    	msg = "Setting up JDBC data source mapped to " + dataSourceName + " ...";
-    	LOGGER.info(msg);
-		return (DataSource)ctx.lookup(dataSourceName);
-    }
-    
-    /*
-     * Creates a new connection to the database which contains exercise information.
-     * 
-     * @param dbDriver The database driver.
-     * @param dbUrl The database url.
-     * @param dbUser The database user.
-     * @param dbPwd The database password.
-     * @return The newly created database connection.
-     * @throws ClassNotFoundException if the specified database driver can not be found.
-     * @throws SQLException if an SQLException occured when trying to establish the connection.
-     * @deprecated connections are retrieved using a datasource configured in JNDI context
-     */
-    /*
-    private Connection createConnection(String dbDriver, String dbUrl, String dbUser, String dbPwd)
-            throws ClassNotFoundException, SQLException {
-        Class.forName(dbDriver);
-        Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPwd);
-        con.setAutoCommit(true);
-        return con;
-    }
-    */
-
-    /*
-     * Gets the connection to the database which contains exercise definitions.
-     * 
-     * @param reload A flag which indicates if the connection and all according parameters, like
-     *            database url ... should be reloaded from the properties file.
-     * @return Returns the connection.
-     * @throws ClassNotFoundException if the database driver specified in the properties file can
-     *             not be found.
-     * @throws SQLException if an SQLException occured when trying to establish the connection.
-     * @throws InvalidResourceException if the properties file misses some required properties or
-     *             values of properties are not applicable.
-     * @deprecated connections are retrieved using a datasource configured in JNDI context
-     */
-    /*
-    public synchronized Connection getConnection(boolean reload) throws ClassNotFoundException, SQLException,
-            InvalidResourceException {
-    	String dbDriver;
-        String dbUrl;
-        String dbUser;
-        String dbPwd;
-    	PropertyFile propertyFile;
-        if (this.connection == null || reload) {
-        	propertyFile = this.getPropertyFile(false);
-            dbDriver = propertyFile.loadProperty(KEY_DB_DRIVER);
-            dbUrl = propertyFile.loadProperty(KEY_DB_URL);
-            dbUser = propertyFile.loadProperty(KEY_DB_USER);
-            dbPwd = propertyFile.loadProperty(KEY_DB_PWD);
-            this.connection = createConnection(dbDriver, dbUrl, dbUser, dbPwd);
-        }
-        return this.connection;
-    }
-    */
-    
-    /**
-     * Gets a connection from a connection pool which is configured in the JNDI context.
-     * The retrieved connection must be closed explicitly after handling, in order to release 
-     * it for further usage.
+     * Gets a connection from a connection pool .
      * @return the pooled connection
-     * @throws NamingException indicates that the JNDI context is not configured correctly
-     * @throws InvalidResourceException indicates that properties needed for retrieving
-     * the JNDI context are not set correctly
      * @throws SQLException is thrown when trying to retrieve a connection out of the pool
      */
-    public Connection getConnection() throws NamingException, InvalidResourceException, SQLException {
+    public Connection getConnection() throws SQLException {
     	return DatalogDataSource.getConnection();
     }
 

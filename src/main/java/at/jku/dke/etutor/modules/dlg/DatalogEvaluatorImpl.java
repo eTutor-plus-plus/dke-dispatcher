@@ -6,7 +6,6 @@ import at.jku.dke.etutor.core.evaluation.Report;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.modules.dlg.analysis.ABCDatalogProcessor;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
-import at.jku.dke.etutor.modules.dlg.analysis.DatalogProcessor;
 import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseBean;
 import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseManagerImpl;
 import at.jku.dke.etutor.modules.dlg.exercise.TermDescription;
@@ -76,12 +75,8 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
     	msg += "evaluating query as student's exercise submission? ";
     	msg += isSpec ? "No " : "Yes ";
         LOGGER.info(msg);
-        
-        if (isSpec) {
-        	return analyzeSpecification(exerciseId, userId, passedAttributes, passedParameters);
-        } else  {
-        	return analyzeSubmission(exerciseId, userId, passedAttributes, passedParameters);
-        }
+
+        return analyzeSubmission(exerciseId, userId, passedAttributes, passedParameters);
     }
     
     public Analysis analyzeSubmission(int exerciseId, int userId, Map passedAttributes, Map passedParameters) throws Exception {
@@ -90,25 +85,19 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
     	String command;
     	DatalogAnalysis analysis;
         DatalogCoreManager coreManager;
-        DatalogProcessor processor;
+        ABCDatalogProcessor processor;
         DatalogExerciseBean exercise;
         DatalogExerciseManagerImpl exerciseMgr;
         PropertyFile properties;
-        String querySubmitted;
-        String exe;
-        int maxInt;
-        long timeout;
-        long interval;
+        String rulesSubmitted;
         boolean debugMode;
+        boolean notAllowFacts = false;
         String facts;
-        String queryCorrect;
-        String[] requPredicates;
-        TermDescription[] uncheckedTerms;
+        String rulesCorrect;
+        String[] queries;
 
         facts = null;
-        requPredicates = null;
-        queryCorrect = null;
-        uncheckedTerms = null;
+        queries = null;
         action = (String)passedAttributes.get(DatalogConstants.ATTR_ACTION);
         command = (String)passedAttributes.get(DatalogConstants.ATTR_COMMAND);
         
@@ -119,7 +108,7 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
         LOGGER.info(msg);
         
         try {
-			querySubmitted = (String)passedAttributes.get(DatalogConstants.ATTR_SUBMISSION);
+			rulesSubmitted = (String)passedAttributes.get(DatalogConstants.ATTR_SUBMISSION);
 		} catch (ClassCastException e) {
 			msg += "Passed attribute " + DatalogConstants.ATTR_SUBMISSION;
             msg += " is not of type " + String.class.getName() + ". ";
@@ -127,7 +116,7 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
             throw new AnalysisException(msg, e);
 		}
         
-		if (querySubmitted == null) {
+		if (rulesSubmitted == null) {
             msg = "Passed attribute " + DatalogConstants.ATTR_SUBMISSION + " is null.";
             LOGGER.error(msg);
             throw new AnalysisException(msg);
@@ -137,13 +126,6 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
         try {
             coreManager = DatalogCoreManager.getInstance();
             properties = coreManager.getPropertyFile();
-
-            /*
-             exe = properties.parseFileProperty(DatalogCoreManager.KEY_EXE);
-            timeout = properties.parseLongProperty(DatalogCoreManager.KEY_TIMEOUT);
-            interval = properties.parseLongProperty(DatalogCoreManager.KEY_INTERVAL);
-            maxInt = properties.parseIntProperty(DatalogCoreManager.KEY_MAX_INT);
-             */
             debugMode = properties.parseBooleanProperty(DatalogCoreManager.KEY_MODUS_DEBUG);
         } catch (InvalidResourceException e) {
         	msg = new String();
@@ -163,38 +145,27 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
             throw new AnalysisException(msg);
         }
 
-        queryCorrect = exercise.getQuery();
+        rulesCorrect = exercise.getQuery();
         if (exercise.getFactsId() != null) {
-        	facts = exerciseMgr.fetchFacts(exercise.getFactsId().intValue());
+        	facts = exerciseMgr.fetchFacts(exercise.getFactsId());
         }
         if (exercise.getPredicates() != null) {
-        	requPredicates = (String[])exercise.getPredicates().toArray(new String[] {});	
+        	queries = (String[])exercise.getPredicates().toArray(new String[] {});
         }
         
         if (DatalogConstants.ACTION_SUBMIT.equalsIgnoreCase(action)) {
         	msg = new String();
         	msg += "'" + action + "' mode -> ";
-            msg += "manipulating datalog facts base to check if facts ";
-            msg += "are derived from base facts or declared by the student. ";
+            msg += "submission will be checked to make sure no facts have been declared by the student.";
             msg += LINE_SEP;
-        	if (exercise.getTerms() == null || exercise.getTerms().size() < 1) {
-                msg += "No terms specified to be excluded from manipulation, ";
-                msg += "all terms will be manipulated.";
-                uncheckedTerms = new TermDescription[]{};
-        	} else {
-        		msg += exercise.getTerms().size() + " term(s) specified to be excluded ";
-                msg += "from manipulation, all other terms will be manipulated.";
-                uncheckedTerms = (TermDescription[])exercise.getTerms().toArray(new TermDescription[] {});
-        	}
         	LOGGER.info(msg);
+            notAllowFacts = true;
         }        
     	
         // Analysis, actually
         try {
-            // processor = new DatalogProcessor(facts, exe, timeout, interval, maxInt, uncheckedTerms);
-            // DLGNEW
-            processor = new ABCDatalogProcessor(facts, uncheckedTerms);
-            analysis = new DatalogAnalysis(queryCorrect, querySubmitted, requPredicates, processor, debugMode);
+            processor = new ABCDatalogProcessor(facts);
+            analysis = new DatalogAnalysis(rulesCorrect, rulesSubmitted, queries, processor, debugMode, notAllowFacts);
             analysis.setExerciseID(exerciseId);
             return analysis;
         } catch (Exception e) {
@@ -204,93 +175,6 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
         }
     }
     
-    public Analysis analyzeSpecification(int exerciseId, int userId, Map passedAttributes, Map passedParameters) throws Exception {
-    	String msg;
-    	String action;
-    	String command;
-    	DatalogAnalysis analysis;
-        DatalogCoreManager coreManager;
-        DatalogProcessor processor;
-        DatalogExerciseBean exercise;
-        DatalogExerciseManagerImpl exerciseMgr;
-        PropertyFile properties;
-        String exe;
-        int maxInt;
-        long timeout;
-        long interval;
-        boolean debugMode;
-        String facts;
-        String queryCorrect;
-        String[] requPredicates;
-        TermDescription[] uncheckedTerms;
-
-        facts = null;
-        requPredicates = null;
-        queryCorrect = null;
-        uncheckedTerms = null;
-        action = (String)passedAttributes.get(DatalogConstants.ATTR_ACTION);
-        command = (String)passedAttributes.get(DatalogConstants.ATTR_COMMAND);
-        
-        msg = new String();
-        msg += "Start analyzing with exercise ID " + exerciseId;
-    	msg += ", user ID " + userId + ", action '" + action + "'";
-    	msg += ", command " + command;
-        LOGGER.info(msg);
-        
-        try {
-			exercise = (DatalogExerciseBean)passedAttributes.get(DatalogConstants.ATTR_EXERCISE_SPECIFICATION);
-		} catch (ClassCastException e) {
-			msg = new String();
-            msg += "Passed attribute " + DatalogConstants.ATTR_EXERCISE_SPECIFICATION;
-            msg += " is not of type " + DatalogExerciseBean.class.getName() + " but ";
-            msg += passedAttributes.get(DatalogConstants.ATTR_EXERCISE_SPECIFICATION).getClass().getName();
-            LOGGER.error(msg, e);
-            throw new AnalysisException(msg, e);
-		}
-        
-		if (exercise == null) {
-            msg = "Passed attribute " + DatalogConstants.ATTR_EXERCISE_SPECIFICATION + " is null.";
-            LOGGER.error(msg);
-            throw new AnalysisException(msg);
-        }
-
-		//fetch execution properties needed for executing datalog queries
-        try {
-            coreManager = DatalogCoreManager.getInstance();
-            properties = coreManager.getPropertyFile();
-
-            exe = properties.parseFileProperty(DatalogCoreManager.KEY_EXE);
-            timeout = properties.parseLongProperty(DatalogCoreManager.KEY_TIMEOUT);
-            interval = properties.parseLongProperty(DatalogCoreManager.KEY_INTERVAL);
-            maxInt = properties.parseIntProperty(DatalogCoreManager.KEY_MAX_INT);
-            debugMode = properties.parseBooleanProperty(DatalogCoreManager.KEY_MODUS_DEBUG);
-        } catch (InvalidResourceException e) {
-            msg = "Could not fetch properties for datalog execution.";
-        	LOGGER.error(msg, e);
-            throw new AnalysisException(msg, e);
-        }
-
-        queryCorrect = exercise.getQuery();
-        if (exercise.getFactsId() != null) {
-        	exerciseMgr = new DatalogExerciseManagerImpl();
-        	facts = exerciseMgr.fetchFacts(exercise.getFactsId().intValue());
-        }
-        if (exercise.getPredicates() != null) {
-        	requPredicates = (String[])exercise.getPredicates().toArray(new String[] {});	
-        }
-        
-        // Analysis, actually
-        try {
-            processor = new DatalogProcessor(facts, exe, timeout, interval, maxInt, uncheckedTerms);
-            analysis = new DatalogAnalysis(queryCorrect, queryCorrect, requPredicates, processor, debugMode);
-            analysis.setExerciseID(exerciseId);
-            return analysis;
-        } catch (Exception e) {
-            msg = "Analysis was stopped (Exercise id: " + exerciseId + ").";
-            LOGGER.error(msg, e);
-            throw new AnalysisException(msg, e);
-        }
-    }
     
     /*
      * (non-Javadoc)

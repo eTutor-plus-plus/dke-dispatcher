@@ -51,27 +51,13 @@ public class DatalogAnalysis implements Analysis, Serializable {
 
 	private boolean correct;
 
-	private boolean hasCorrectModel;
-
 	private String[] requPredicates;
 
 	private int exerciseID;
 
-	private ArrayList missingPredicates;
-
-	private ArrayList redundantPredicates;
-
-	private ArrayList highArityPredicates;
-
-	private ArrayList lowArityPredicates;
-
 	private ArrayList missingFacts;
 
 	private ArrayList redundantFacts;
-
-	private ArrayList positiveFacts;
-
-	private ArrayList negativeFacts;
 
 	private boolean debugMode;
 
@@ -85,36 +71,6 @@ public class DatalogAnalysis implements Analysis, Serializable {
 		init(false);
 	}
 
-	/**
-	 * Creates a new analysis instance by comparing the results of two Datalog
-	 * queries.
-	 * 
-	 * @param result1
-	 *          The "correct" query result.
-	 * @param result2
-	 *          The "submitted" query result.
-	 * @param debugMode
-	 *          A flag which indicates if intermediate results, which are part of
-	 *          the analysis, grading and reporting process, should be saved to
-	 *          files.
-	 * @throws NullPointerException
-	 *           if one of the results is <code>null</code>
-	 * @throws TimeoutException
-	 *           if the correct query result object was created from a query,
-	 *           which could not be evaluated in time.
-	 * @throws QuerySyntaxException
-	 *           if the correct query result object was created from a query,
-	 *           which is syntactically incorrect.
-	 * @throws AnalysisException
-	 *           if any kind of unexpected Exception occured during analyzing the
-	 *           results.
-	 */
-	public DatalogAnalysis(DatalogResult result1, DatalogResult result2, boolean debugMode) throws NullPointerException,
-			TimeoutException, QuerySyntaxException, AnalysisException {
-		super();
-		init(debugMode);
-		this.setResults(result1, result2);
-	}
 
 	/**
 	 * Creates a new analysis instance by evaluating the given queries and
@@ -153,15 +109,16 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 *           if any kind of unexpected Exception occured during analyzing the
 	 *           results.
 	 */
-	public DatalogAnalysis(String submission1, String submission2, String[] queries, DatalogProcessor processor,
-			boolean debugMode) throws Exception {
+	public DatalogAnalysis(String submission1, String submission2, String[] queries, ABCDatalogProcessor processor,
+			boolean debugMode, boolean notAllowFacts) throws Exception {
 		super();
 		init(debugMode);
 		try {
-			DatalogResult result1 = new DatalogResult(submission1, (ABCDatalogProcessor) processor, queries);
-			DatalogResult result2 = new DatalogResult(submission2, (ABCDatalogProcessor) processor, queries);
+			DatalogResult result1 = new DatalogResult(submission1, processor, queries, false);
+			DatalogResult result2 = new DatalogResult(submission2, processor, queries, notAllowFacts);
 			this.setResults(result1, result2);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			this.correct = false;
 			LOGGER.error("Analysis error", e);
 			throw e;
@@ -228,7 +185,6 @@ public class DatalogAnalysis implements Analysis, Serializable {
 		setDebugMode(debugMode);
 		requPredicates = new String[] {};
 		this.correct = false;
-		this.hasCorrectModel = false;
 		initErrorLists();
 	}
 
@@ -236,14 +192,8 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 * Initializes all error lists.
 	 */
 	private void initErrorLists() {
-		missingPredicates = new ArrayList();
-		redundantPredicates = new ArrayList();
-		highArityPredicates = new ArrayList();
-		lowArityPredicates = new ArrayList();
 		missingFacts = new ArrayList();
 		redundantFacts = new ArrayList();
-		positiveFacts = new ArrayList();
-		negativeFacts = new ArrayList();
 	}
 
 	/**
@@ -278,177 +228,6 @@ public class DatalogAnalysis implements Analysis, Serializable {
 		}
 	}
 
-	/**
-	 * Does the analysis of two models. Found differences are stored in fields of
-	 * this <code>DatalogAnalysis</code>.
-	 * 
-	 * @param model1
-	 *          The "correct" model.
-	 * @param model2
-	 *          The "submitted" model.
-	 */
-	private void compare(WrappedModel model1, WrappedModel model2, List requPredicates) {
-		if (model1 != null && model2 != null) {
-			WrappedPredicate[] predicates2 = model2.getPredicates();
-			for (int i = 0; i < predicates2.length; i++) {
-				WrappedPredicate pred2 = predicates2[i];
-				// only compare predicates denoted by specified filters
-				if (requPredicates.contains(pred2.getName())) {
-					WrappedPredicate pred1;
-					if ((pred1 = model1.getPredicate(pred2.getName())) == null) {
-						redundantPredicates.add(pred2);
-					} else if (pred2.getArity() < pred1.getArity()) {
-						// add the correct predicate, which is used to get the
-						// correct arity for the feedback
-						lowArityPredicates.add(pred2);
-					} else if (pred2.getArity() > pred1.getArity()) {
-						// add the correct predicate, which is used to get the
-						// correct arity for the feedback
-						highArityPredicates.add(pred2);
-					}
-				}
-			}
-			// System.out.println("Checking the given solution");
-			WrappedPredicate[] predicates1 = model1.getPredicates();
-			for (int i = 0; i < predicates1.length; i++) {
-				WrappedPredicate pred1 = (WrappedPredicate) predicates1[i];
-				// only compare predicates denoted by specified filters
-				if (requPredicates.contains(pred1.getName())) {
-					WrappedPredicate pred2;
-					if ((pred2 = model2.getPredicate(pred1.getName())) == null) {
-						missingPredicates.add(pred1);
-					} else if (!highArityPredicates.contains(model2.getPredicate(pred1.getName()))
-							&& !lowArityPredicates.contains(model2.getPredicate(pred1.getName()))) {
-						comparePredicates(pred1, pred2);
-					}
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Compares two predicates with regard to the differences concerning their
-	 * facts.
-	 * 
-	 * @param p1
-	 *          The first predicate.
-	 * @param p2
-	 *          The second predicate.
-	 */
-	private void comparePredicates(WrappedPredicate p1, WrappedPredicate p2) {
-		WrappedPredicate.WrappedFact[] facts2 = p2.getFacts();
-		for (int i = 0; i < facts2.length; i++) {
-			WrappedPredicate.WrappedFact fact2 = facts2[i];
-			WrappedPredicate.WrappedFact fact1;
-			if ((fact1 = p1.getFact(fact2)) == null) {
-				redundantFacts.add(fact2);
-			} else if (fact2.isPositive() && !fact1.isPositive()) {
-				positiveFacts.add(fact2);
-			} else if (!fact2.isPositive() && fact1.isPositive()) {
-				negativeFacts.add(fact2);
-			}
-		}
-		WrappedPredicate.WrappedFact[] facts1 = p1.getFacts();
-		for (int i = 0; i < facts1.length; i++) {
-			WrappedPredicate.WrappedFact fact1 = facts1[i];
-			if (p2.getFact(fact1) == null) {
-				missingFacts.add(fact1);
-			}
-		}
-	}
-
-	/**
-	 * Returns the predicates in the correct query result, which are missing in
-	 * the submitted query result.
-	 * <p>
-	 * This is only relevant if the submitted result like the correct result
-	 * consists of exactly one model which is consistent (see
-	 * {@link DatalogResult#hasMultipleModels()} and
-	 * {@link DatalogResult#hasConsistentModel()}).
-	 * 
-	 * @return A list of {@link WrappedPredicate}objects.
-	 */
-	public ArrayList getMissingPredicates() {
-		return missingPredicates;
-	}
-
-	/**
-	 * Returns the redundant predicates in the submitted query result.
-	 * <p>
-	 * This is only relevant if the submitted result like the correct result
-	 * consists of exactly one model which is consistent (see
-	 * {@link DatalogResult#hasMultipleModels()} and
-	 * {@link DatalogResult#hasConsistentModel()}).
-	 * 
-	 * @return A list of {@link WrappedPredicate}objects.
-	 */
-	public ArrayList getRedundantPredicates() {
-		return redundantPredicates;
-	}
-
-	/**
-	 * Returns the predicates in the submitted query result, which should have
-	 * more terms.
-	 * <p>
-	 * This is only relevant if the submitted result like the correct result
-	 * consists of exactly one model which is consistent (see
-	 * {@link DatalogResult#hasMultipleModels()} and
-	 * {@link DatalogResult#hasConsistentModel()}).
-	 * 
-	 * @return A list of {@link WrappedPredicate}objects.
-	 */
-	public ArrayList getLowArityPredicates() {
-		return lowArityPredicates;
-	}
-
-	/**
-	 * Returns the predicates in the submitted query result, which should have
-	 * more terms.
-	 * <p>
-	 * This is only relevant if the submitted result like the correct result
-	 * consists of exactly one model which is consistent (see
-	 * {@link DatalogResult#hasMultipleModels()} and
-	 * {@link DatalogResult#hasConsistentModel()}).
-	 * 
-	 * @return A list of {@link WrappedPredicate}objects.
-	 */
-	public ArrayList getHighArityPredicates() {
-		return highArityPredicates;
-	}
-
-	/**
-	 * Returns the facts in the submitted query result, which should be negated
-	 * but are not.
-	 * <p>
-	 * This is only relevant if the submitted result like the correct result
-	 * consists of exactly one model which is consistent (see
-	 * {@link DatalogResult#hasMultipleModels()} and
-	 * {@link DatalogResult#hasConsistentModel()}).
-	 * 
-	 * @return A list of
-	 *         {@link WrappedPredicate.WrappedFact}
-	 *         objects.
-	 */
-	public ArrayList getPositiveFacts() {
-		return positiveFacts;
-	}
-
-	/**
-	 * Returns the facts in the submitted query result, which are falsely negated.
-	 * <p>
-	 * This is only relevant if the submitted result like the correct result
-	 * consists of exactly one model which is consistent (see
-	 * {@link DatalogResult#hasMultipleModels()} and
-	 * {@link DatalogResult#hasConsistentModel()}).
-	 * 
-	 * @return A list of
-	 *         {@link WrappedPredicate.WrappedFact}
-	 *         objects.
-	 */
-	public ArrayList getNegativeFacts() {
-		return negativeFacts;
-	}
 
 	/**
 	 * Returns the facts in the correct query result, that are missing in the
@@ -535,31 +314,9 @@ public class DatalogAnalysis implements Analysis, Serializable {
 		return new DatalogReport(this, grading, filters, diagnoseLevel);
 	}
 
-	/**
-	 * Tells if the submitted result consists of one or a number of possible
-	 * models in which the query is true plus one model among these would be
-	 * correct with regard to the correct result.
-	 * <p>
-	 * Note: The result won't be correct as long as there is more than one model.
-	 * The requirement is not only that the model is correct, but that there is no
-	 * other possible model.
-	 * 
-	 * @return true if the result consists of one or more models, where one of
-	 *         these is correct.
-	 */
-	public boolean hasCorrectModel() {
-		return hasCorrectModel;
-	}
 
 	/**
 	 * Tells if the result that was analyzed is correct. The requirements are:
-	 * <ul>
-	 * <li>{@link #isAnalyzable()}must return true</li>
-	 * <li>{@link #hasErrors()}must return true</li>
-	 * <li>{@link DatalogResult#hasMultipleModels()}must return false</li>
-	 * <li>{@link #hasCorrectModel()}must return true</li>
-	 * </ul>
-	 * <p>
 	 * Note that a call to this is only sensible if an analysis has actually been
 	 * carried out.
 	 * 
@@ -570,72 +327,13 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	}
 
 	/**
-	 * Tells if the result that was analyzed is correct. The requirements are:
-	 * <ul>
-	 * <li>{@link #isAnalyzable()}must return true</li>
-	 * <li>{@link #hasErrors()}must return false</li>
-	 * <li>{@link DatalogResult#hasMultipleModels()}must return false</li>
-	 * <li>{@link #hasCorrectModel()}must return true</li>
-	 * </ul>
-	 * 
+	 * Tells if the result that was analyzed is correct.
+	 *
 	 * @return true if the submitted query is correct. Note that a call to this is
 	 *         only sensible if queries or their results have been compared.
 	 */
 	private boolean checkCorrectness() {
 		return missingFacts.isEmpty() && redundantFacts.isEmpty();
-	}
-
-	/**
-	 * Tells if there have been found errors like missing or redundant predicates
-	 * or facts.
-	 * <p>
-	 * Note that this alone does not imply that the submitted query is correct
-	 * because there are further criteria.
-	 * 
-	 * @return true if any error entry has been added to the error lists as
-	 *         defined in this class.
-	 * @see #isCorrect()
-	 */
-	private boolean hasErrors() {
-		boolean hasErrors = (getHighArityPredicates().size() > 0) || (getLowArityPredicates().size() > 0)
-				|| (getMissingPredicates().size() > 0) || (getRedundantPredicates().size() > 0)
-				|| (getMissingFacts().size() > 0) || (getRedundantFacts().size() > 0) || (getPositiveFacts().size() > 0)
-				|| (getNegativeFacts().size() > 0);
-		return hasErrors;
-	}
-
-	/**
-	 * Provides information about whether the query results that were used for
-	 * this analysis objects are comparable and analyzable. The requirements are:
-	 * <ul>
-	 * <li>An analysis has been carried out before.</li>
-	 * <li>Both, the submitted and the correct query must be syntactically
-	 * correct and evaluated successfully before a <code>TimeoutException</code>
-	 * has been thrown.</li>
-	 * <li>The correct query result must consist of a single, consistent model,
-	 * no matter if empty or not.</li>
-	 * <li>The submitted query result must consist of at least one model, no
-	 * matter if empty, non-empty, consistent or inconsistent.</li>
-	 * </ul>
-	 * 
-	 * @return true if the results used for this analysis object are analyzable,
-	 *         otherwise false.
-	 */
-	public boolean isAnalyzable() {
-		boolean correct = result1 != null && result1.isValidResult() && result2 != null && result2.isValidResult();
-		if (correct) {
-			int cons1 = result1.getModelConsistency().getConsistency();
-			int cons2 = result2.getModelConsistency().getConsistency();
-			// The reference solution only has to consist of a single, consistent
-			// model, no matter
-			// if empty or not.
-			correct = cons1 == ModelConsistency.CONSISTENT || cons1 == ModelConsistency.CONSISTENT_EMPTY;
-			// The analyzed solution just has to be built from a valid query, no
-			// matter if the result is empty
-			// or inconsistent or has more than one models.
-			correct = correct && cons2 != ModelConsistency.DEFAULT;
-		}
-		return correct;
 	}
 
 	/**

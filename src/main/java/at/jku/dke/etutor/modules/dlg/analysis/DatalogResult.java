@@ -97,11 +97,12 @@ public class DatalogResult implements Serializable {
 
 
     public DatalogResult(
-            String submission, ABCDatalogProcessor processor, String[] queries
+            String submission, ABCDatalogProcessor processor, String[] queries, boolean notAllowFacts
     ) throws AnalysisException {
         try {
-            this.results = processor.executeQuery(submission, queries, true);
+            this.results = processor.executeQuery(submission, queries, notAllowFacts);
             this.query = submission;
+            this.requPredicates = queries;
         } catch (DatalogValidationException e) {
             e.printStackTrace();
         } catch (DatalogParseException e) {

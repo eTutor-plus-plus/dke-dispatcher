@@ -1,7 +1,6 @@
 package at.jku.dke.etutor.modules.dlg.analysis;
 
 import at.jku.dke.etutor.modules.dlg.AnalysisException;
-import at.jku.dke.etutor.modules.dlg.exercise.TermDescription;
 import edu.harvard.seas.pl.abcdatalog.ast.Clause;
 import edu.harvard.seas.pl.abcdatalog.ast.PositiveAtom;
 import edu.harvard.seas.pl.abcdatalog.ast.validation.DatalogValidationException;
@@ -14,17 +13,16 @@ import edu.harvard.seas.pl.abcdatalog.parser.DatalogTokenizer;
 import java.io.StringReader;
 import java.util.Set;
 
-public class ABCDatalogProcessor extends DatalogProcessor{
+public class ABCDatalogProcessor{
     String facts;
-    String[] queries;
 
     /**
-     * Constructs a new <code>DatalogProcessor</code>, which can be used for evaluating queries.
+     * Constructs a new <code>ABCDatalogProcessor</code>, which can be used for evaluating queries.
      *
      * @param database       The database facts or any Datalog statements, which will be appended to any
      *                       query which is evaluated using this <code>DatalogProcessor</code>.
      */
-    public ABCDatalogProcessor(String database, TermDescription[] uncheckedTerms){
+    public ABCDatalogProcessor(String database){
         this.facts=database;
     }
 
@@ -47,7 +45,6 @@ public class ABCDatalogProcessor extends DatalogProcessor{
             }
             return results;
         }
-
         return null;
     }
 
