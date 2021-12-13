@@ -5,7 +5,6 @@ import at.jku.dke.etutor.modules.dlg.QuerySyntaxException;
 import at.jku.dke.etutor.modules.dlg.ReportException;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogResult;
-import at.jku.dke.etutor.modules.dlg.analysis.ModelConsistency;
 import at.jku.dke.etutor.modules.dlg.grading.DatalogGrading;
 import at.jku.dke.etutor.modules.dlg.util.DLResources;
 import at.jku.dke.etutor.modules.dlg.util.HTMLConverter;
@@ -99,13 +98,12 @@ public class DatalogReport implements DatalogFeedback, Serializable {
         this.diagnoseLevel = checkDiagnoseLevel(diagnoseLevel);
         this.syntaxError = getSyntaxErrors(analysis);
         this.generalAnalyze = getGeneralAnalysis(analysis, diagnoseLevel);
-        this.consistencyAnalyze = getConsistencyAnalysis(analysis, diagnoseLevel);
         this.analyze = getAnalysis(analysis, diagnoseLevel);
         this.grading = getGrading(grading);
 
         DatalogResult result = analysis.getResult2();
         if (result != null) {
-            this.rawResult = analysis.getResult2().getRawResult(filters);
+            this.rawResult = analysis.getResult2().getResults().toString();
         }
         XMLReport xmlReport = createXMLReport(analysis, grading, filters, isSupplementedResult());
 
@@ -199,7 +197,6 @@ public class DatalogReport implements DatalogFeedback, Serializable {
     private String getAnalysisSummary(DatalogAnalysis analysis) {
         String summary = "";
         String generalAnalysis = this.getGeneralAnalysis(analysis, DIAGNOSE_HIGH);
-        String consistencyAnalysis = this.getConsistencyAnalysis(analysis, DIAGNOSE_HIGH);
         String detailedAnalysis = "";
         ErrorCategory[] analysisCategories = this.getAnalysis(analysis, DIAGNOSE_HIGH);
         for (int i = 0; i < analysisCategories.length; i++) {
@@ -210,9 +207,6 @@ public class DatalogReport implements DatalogFeedback, Serializable {
         }
         if (generalAnalysis.length() > 0) {
             summary += generalAnalysis + "\n";
-        }
-        if (consistencyAnalysis.length() > 0) {
-            summary += consistencyAnalysis + "\n";
         }
         if (detailedAnalysis.length() > 0) {
             summary += detailedAnalysis + "\n";
@@ -230,13 +224,7 @@ public class DatalogReport implements DatalogFeedback, Serializable {
     private String getSyntaxErrors(DatalogAnalysis analysis) {
         QuerySyntaxException syntaxException = null;
         DatalogResult result = analysis.getResult1();
-        if (result != null) {
-            syntaxException = result.getSyntaxException();
-        }
         result = analysis.getResult2();
-        if (result != null) {
-            syntaxException = result.getSyntaxException();
-        }
         if (syntaxException != null) {
             return syntaxException.getDescription();
         }
@@ -262,9 +250,6 @@ public class DatalogReport implements DatalogFeedback, Serializable {
     private String getTimeoutErrors(DatalogAnalysis analysis) {
         Exception timeoutException = null;
         DatalogResult result = analysis.getResult2();
-        if (result != null) {
-            timeoutException = result.getTimeoutException();
-        }
         if (timeoutException != null) {
             return DLResources.getString(DLResources.ERROR_TIMEOUT);
         }
@@ -282,15 +267,6 @@ public class DatalogReport implements DatalogFeedback, Serializable {
      */
     private String getGeneralAnalysis(DatalogAnalysis analysis, int diagnoseLevel) {
         DatalogResult result = analysis.getResult2();
-        if (result != null && result.getSyntaxException() != null) {
-            return DLResources.getString(DLResources.ERROR_RESULT_SYNTAX);
-        } else if (diagnoseLevel > DIAGNOSE_NONE) {
-            if (analysis.isCorrect()) {
-                return DLResources.getString(DLResources.SOLUTION_CORRECT);
-            } else {
-                return DLResources.getString(DLResources.SOLUTION_INCORRECT);
-            }
-        }
         return "";
     }
 
@@ -303,52 +279,6 @@ public class DatalogReport implements DatalogFeedback, Serializable {
         return this.renderText(this.generalAnalyze, rendered);
     }
 
-    /**
-     * This method returns an information about the difference between the submitted query result
-     * and the correct query result, with regard to their consistency.
-     * 
-     * @param analysis The analysis object which holds all information about the submitted query.
-     * @param diagnoseLevel Specifies the diagnose level, which affects how detailed the generated
-     *            message is going to be.
-     * @return The analysis text. If the diagnose is on the lowest level or on low level this
-     *         returns an empty String.
-     */
-    private String getConsistencyAnalysis(DatalogAnalysis analysis, int diagnoseLevel) {
-
-        if (diagnoseLevel != DIAGNOSE_MEDIUM && diagnoseLevel != DIAGNOSE_HIGH) {
-            return "";
-        }
-        StringBuffer analyze = new StringBuffer();
-        String[] requPredicates = analysis.getResult1().getRequPredicates();
-        int cons1 = analysis.getResult1().getModelConsistency().getConsistency();
-        int cons2 = analysis.getResult2().getModelConsistency().getConsistency();
-        //-------------- Analyze concerning whether the model should or should not be consistent
-        // -----------------
-        if (cons2 == ModelConsistency.INCONSISTENT) {
-            if (requPredicates != null && requPredicates.length > 0 && cons1 == ModelConsistency.CONSISTENT) {
-                //The model of the submitted result is inconsistent but should be consistent and non-empty 
-                analyze.append(DLResources.getString(DLResources.MODEL_CONSISTENT));    
-            } else if (cons1 == ModelConsistency.CONSISTENT_EMPTY){
-                //The model of the submitted result is inconsistent but should be consistent and empty
-                analyze.append(DLResources.getString(DLResources.MODEL_CONSISTENT_EMPTY));
-            }
-        } else if (cons2 == ModelConsistency.MULTIPLE) {
-            int size = analysis.getResult2().getWrappedModels().length;
-            
-            MessageFormat messageForm = new MessageFormat("");
-            messageForm.applyPattern(DLResources.getString(DLResources.MODEL_MULTIPLE));
-            Format[] formats = new Format[] {NumberFormat.getInstance()};
-            messageForm.setFormats(formats);
-            Object[] messageArguments = new Object[] {size};
-            analyze.append(messageForm.format(messageArguments));
-            if (analysis.hasCorrectModel()) {
-                analyze.append(" " + DLResources.getString(DLResources.MODEL_MULTIPLE_CORRECT));
-            } else {
-                analyze.append(" " + DLResources.getString(DLResources.MODEL_MULTIPLE_INCORRECT));
-            }
-        }
-        return analyze.toString();
-    }
 
     /*
      * (non-Javadoc)
@@ -382,157 +312,7 @@ public class DatalogReport implements DatalogFeedback, Serializable {
         ArrayList errorList = new ArrayList();
         //-------------- Medium and detailed analyze -----------------
 
-        ArrayList highArityPredicates = analysis.getHighArityPredicates();
-        if (highArityPredicates.size() > 0) {
-            StringBuffer detailedAnalyze = new StringBuffer();
-            if (diagnoseLevel == DIAGNOSE_MEDIUM) {
-                detailedAnalyze.append(DLResources.getString(DLResources.PREDICATES_ARITY_HIGH) + "\n");
-            } else {
-                // ---------- prepare the message --------------- //
-                String result;
-                if (highArityPredicates.size() == 1) {
-                    result = DLResources.getString(DLResources.PREDICATES_ARITY_HIGH_SI);
-                } else {
-                    MessageFormat messageForm = new MessageFormat("");
-                    messageForm.applyPattern(DLResources
-                            .getString(DLResources.PREDICATES_ARITY_HIGH_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance()};
-                    messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {highArityPredicates
-                            .size()};
-                    result = messageForm.format(messageArguments);
-                }
-
-                // ---------- apply the message --------------- //
-                detailedAnalyze.append(result + ":\n");
-                /*
-                Iterator it = highArityPredicates.iterator();
-                while (it.hasNext()) {
-                    WrappedPredicate next = (WrappedPredicate)it.next();
-                    detailedAnalyze.append("\t" + next.getName() + "\n");
-                }
-                */
-            }
-            int category = ErrorCategory.P_ARITY_HIGH;
-            String title = DLResources.getString(DLResources.PREDICATES_ARITY_HIGH_TITLE);
-            String description = detailedAnalyze.toString();
-            ErrorCategory errorCategory = new ErrorCategory(category, title);
-            errorCategory.setDescription(description);
-            errorList.add(errorCategory);
-        }
-        ArrayList lowArityPredicates = analysis.getLowArityPredicates();
-        if (lowArityPredicates.size() > 0) {
-            StringBuffer detailedAnalyze = new StringBuffer();
-            if (diagnoseLevel == DIAGNOSE_MEDIUM) {
-                detailedAnalyze.append(DLResources.getString(DLResources.PREDICATES_ARITY_LOW) + "\n");
-            } else {
-                // ---------- prepare the message --------------- //
-                String result;
-                if (lowArityPredicates.size() == 1) {
-                    result = DLResources.getString(DLResources.PREDICATES_ARITY_LOW_SI);
-                } else {
-                    MessageFormat messageForm = new MessageFormat("");
-                    messageForm
-                            .applyPattern(DLResources.getString(DLResources.PREDICATES_ARITY_LOW_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance()};
-                    messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {lowArityPredicates.size()};
-                    result = messageForm.format(messageArguments);
-                }
-
-                // ---------- apply the message --------------- //
-                detailedAnalyze.append(result + ":\n");
-                /*
-                Iterator it = lowArityPredicates.iterator();
-                while (it.hasNext()) {
-                    WrappedPredicate next = (WrappedPredicate)it.next();
-                    detailedAnalyze.append("\t" + next.getName() + "\n");
-                }
-                */
-            }
-            int category = ErrorCategory.P_ARITY_LOW;
-            String title = DLResources.getString(DLResources.PREDICATES_ARITY_LOW_TITLE);
-            String description = detailedAnalyze.toString();
-            ErrorCategory errorCategory = new ErrorCategory(category, title);
-            errorCategory.setDescription(description);
-            errorList.add(errorCategory);
-        }
-        ArrayList missingPredicates = analysis.getMissingPredicates();
-        if (missingPredicates.size() > 0) {
-            StringBuffer detailedAnalyze = new StringBuffer();
-            if (diagnoseLevel == DIAGNOSE_MEDIUM) {
-                detailedAnalyze.append(DLResources.getString(DLResources.PREDICATES_MISSING) + "\n");
-            } else {
-                // ---------- prepare the message --------------- //
-                String result;
-                if (missingPredicates.size() == 1) {
-                    result = DLResources.getString(DLResources.PREDICATES_MISSING_SI);
-                } else {
-                    MessageFormat messageForm = new MessageFormat("");
-                    messageForm.applyPattern(DLResources.getString(DLResources.PREDICATES_MISSING_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance()};
-                    messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {missingPredicates.size()};
-                    result = messageForm.format(messageArguments);
-                }
-
-                // ---------- apply the message --------------- //
-                detailedAnalyze.append(result + ":\n");
-                /*
-                Iterator it = missingPredicates.iterator();
-                while (it.hasNext()) {
-                    WrappedPredicate next = (WrappedPredicate)it.next();
-                    detailedAnalyze.append("\t" + next.getName() + "\n");
-                }
-                */
-            }
-            int category = ErrorCategory.P_MISSING;
-            String title = DLResources.getString(DLResources.PREDICATES_MISSING_TITLE);
-            String description = detailedAnalyze.toString();
-            ErrorCategory errorCategory = new ErrorCategory(category, title);
-            errorCategory.setDescription(description);
-            errorList.add(errorCategory);
-
-        }
-        ArrayList redundantPredicates = analysis.getRedundantPredicates();
-        if (redundantPredicates.size() > 0) {
-            StringBuffer detailedAnalyze = new StringBuffer();
-            if (diagnoseLevel == DIAGNOSE_MEDIUM) {
-                detailedAnalyze.append(DLResources.getString(DLResources.PREDICATES_REDUNDANT) + "\n");
-            } else {
-                // ---------- prepare the message --------------- //
-                String result;
-                if (redundantPredicates.size() == 1) {
-                    result = DLResources.getString(DLResources.PREDICATES_REDUNDANT_SI);
-                } else {
-                    MessageFormat messageForm = new MessageFormat("");
-                    messageForm
-                            .applyPattern(DLResources.getString(DLResources.PREDICATES_REDUNDANT_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance()};
-                    messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {redundantPredicates
-                            .size()};
-                    result = messageForm.format(messageArguments);
-                }
-
-                // ---------- apply the message --------------- //
-                detailedAnalyze.append(result + ":\n");
-                /*
-                Iterator it = redundantPredicates.iterator();
-                while (it.hasNext()) {
-                    WrappedPredicate next = (WrappedPredicate)it.next();
-                    detailedAnalyze.append("\t" + next.getName() + "\n");
-                }
-                */
-            }
-            int category = ErrorCategory.P_REDUNDANT;
-            String title = DLResources.getString(DLResources.PREDICATES_REDUNDANT_TITLE);
-            String description = detailedAnalyze.toString();
-            ErrorCategory errorCategory = new ErrorCategory(category, title);
-            errorCategory.setDescription(description);
-            errorList.add(errorCategory);
-        }
-        ArrayList missingFacts = analysis.getMissingFacts();
+      ArrayList missingFacts = analysis.getMissingFacts();
         if (missingFacts.size() > 0) {
             StringBuffer detailedAnalyze = new StringBuffer();
             if (diagnoseLevel == DIAGNOSE_MEDIUM) {
@@ -605,78 +385,6 @@ public class DatalogReport implements DatalogFeedback, Serializable {
             errorList.add(errorCategory);
 
         }
-        ArrayList positiveFacts = analysis.getPositiveFacts();
-        if (positiveFacts.size() > 0) {
-            StringBuffer detailedAnalyze = new StringBuffer();
-            if (diagnoseLevel == DIAGNOSE_MEDIUM) {
-                detailedAnalyze.append(DLResources.getString(DLResources.FACTS_POSITIVE) + "\n");
-            } else {
-                // ---------- prepare the message --------------- //
-                String result;
-                if (positiveFacts.size() == 1) {
-                    result = DLResources.getString(DLResources.FACTS_POSITIVE_SI);
-                } else {
-                    MessageFormat messageForm = new MessageFormat("");
-                    messageForm.applyPattern(DLResources.getString(DLResources.FACTS_POSITIVE_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance()};
-                    messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {positiveFacts.size()};
-                    result = messageForm.format(messageArguments);
-                }
-                // ---------- apply the message --------------- //
-                detailedAnalyze.append(result + ":\n");
-                /*
-                Iterator it = positiveFacts.iterator();
-                while (it.hasNext()) {
-                    WrappedFact next = (WrappedFact)it.next();
-                    detailedAnalyze.append("\t" + next.toString() + "\n");
-                }
-                */
-            }
-            int category = ErrorCategory.F_POSITIVE;
-            String title = DLResources.getString(DLResources.FACTS_POSITIVE_TITLE);
-            String description = detailedAnalyze.toString();
-            ErrorCategory errorCategory = new ErrorCategory(category, title);
-            errorCategory.setDescription(description);
-            errorList.add(errorCategory);
-        }
-        ArrayList negativeFacts = analysis.getNegativeFacts();
-        if (negativeFacts.size() > 0) {
-            StringBuffer detailedAnalyze = new StringBuffer();
-            if (diagnoseLevel == DIAGNOSE_MEDIUM) {
-                detailedAnalyze.append(DLResources.getString(DLResources.FACTS_NEGATIVE) + "\n");
-            } else {
-                // ---------- prepare the message --------------- //
-                String result;
-                if (negativeFacts.size() == 1) {
-                    result = DLResources.getString(DLResources.FACTS_NEGATIVE_SI);
-                } else {
-                    MessageFormat messageForm = new MessageFormat("");
-                    messageForm.applyPattern(DLResources.getString(DLResources.FACTS_NEGATIVE_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance()};
-                    messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {negativeFacts.size()};
-                    result = messageForm.format(messageArguments);
-                }
-                // ---------- apply the message --------------- //
-
-                detailedAnalyze.append(result + ":\n");
-                /*
-                Iterator it = negativeFacts.iterator();
-                while (it.hasNext()) {
-                    WrappedFact next = (WrappedFact)it.next();
-                    detailedAnalyze.append("\t" + next.toString() + "\n");
-                }
-                */
-            }
-            int category = ErrorCategory.F_NEGATIVE;
-            String title = DLResources.getString(DLResources.FACTS_NEGATIVE_TITLE);
-            String description = detailedAnalyze.toString();
-            ErrorCategory errorCategory = new ErrorCategory(category, title);
-            errorCategory.setDescription(description);
-            errorList.add(errorCategory);
-
-        }
         return (ErrorCategory[])errorList.toArray(new ErrorCategory[] {});
     }
 
@@ -731,7 +439,7 @@ public class DatalogReport implements DatalogFeedback, Serializable {
      * @return The query result.
      */
     private String getRawResult(DatalogResult result) {
-        return result.getRawResult();
+        return result.getResults().toString();
     }
 
     /*

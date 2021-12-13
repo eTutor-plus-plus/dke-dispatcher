@@ -81,7 +81,7 @@ public class ModelConsistency implements Serializable {
      * @throws NullPointerException if the passed object is <code>null</code>.
      */
     public void setModel(DatalogResult result) throws NullPointerException {
-        
+       /*
         WrappedModel[] models = result.getWrappedModels();
         if (result.getSyntaxException() != null || result.getTimeoutException() != null || models.length == 0) {
             this.consistency = DEFAULT;
@@ -100,6 +100,8 @@ public class ModelConsistency implements Serializable {
         } else {
             this.consistency = MULTIPLE;
         }
+
+        */
     }
 
     /**

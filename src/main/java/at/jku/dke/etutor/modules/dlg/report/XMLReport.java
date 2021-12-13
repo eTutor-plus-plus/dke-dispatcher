@@ -7,7 +7,6 @@ import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogResult;
 import at.jku.dke.etutor.modules.dlg.analysis.WrappedModel;
 import at.jku.dke.etutor.modules.dlg.analysis.WrappedPredicate;
-import at.jku.dke.etutor.modules.dlg.grading.DatalogScores;
 import ch.qos.logback.classic.Logger;
 import oracle.xml.parser.v2.*;
 import org.slf4j.LoggerFactory;
@@ -71,7 +70,7 @@ public class XMLReport {
      *            These predicates are taken from the
      *            {@link DatalogAnalysis#getResult1() correct solution}of the analysis.
      * @see DatalogCoreManager#XSL_RENDER_DATALOG
-     * @see DatalogResult#getRequPredicates()
+     * @see DatalogResult#getQueries()
      * @throws ReportException if any unexpected Exception occured when transforming contents of the
      *             analysis into an XML representation.
      */
@@ -117,10 +116,6 @@ public class XMLReport {
 
         if (result != null) {
             query = result.getQuery();
-            maxInt = result.getMaxInt();
-            syntaxError = result.getSyntaxException() != null;
-            timeoutError = result.getTimeoutException() != null;
-            hasModel = result.hasConsistentModel();
         }
         
     	NodeFactory factory = new NodeFactory();
@@ -173,15 +168,15 @@ public class XMLReport {
      *            <code>filter = "false"</code>.
      */
     private void initModels(Element resultElement, DatalogResult result, String[] filters) {
-        
-        if (result != null && result.getSyntaxException() == null
-                && result.getTimeoutException() == null) {
-            WrappedModel[] models = result.getWrappedModels();
+        if (result != null && result.getSyntaxException() == null) {
+            /*
+             WrappedModel[] models = result.getWrappedModels();
             for (int i = 0; i < models.length; i++) {
                 Element modelElement = createModelNode(models[i], filters);
                 root.appendChild(modelElement);
                 xmlNodes.put(models[i], modelElement);
             }
+             */
         }
     }
     
@@ -372,7 +367,8 @@ public class XMLReport {
         List requPredicates = Arrays.asList(analysis.getRequPredicates());
         DatalogResult result = analysis.getResult2();
         if (result != null && requPredicates != null) {
-            WrappedModel[] models = result.getWrappedModels();
+            /*
+                 WrappedModel[] models = result.getWrappedModels();
             for (int i = 0; i < models.length; i++) {
 		        WrappedPredicate[] predicates = models[i].getPredicates();
 		        if (predicates != null) {
@@ -384,6 +380,8 @@ public class XMLReport {
 		            }
 		        }
             }
+             */
+
         }
     }
 
@@ -395,8 +393,8 @@ public class XMLReport {
      *            in the <i>submitted </i> result and the analyzed errors.
      */
     private void setErrors(DatalogAnalysis analysis) {
-
-        for (int i = 0; i < analysis.getMissingPredicates().size(); i++) {
+        /*
+         for (int i = 0; i < analysis.getMissingPredicates().size(); i++) {
             WrappedModel model = analysis.getResult2().getConsistentModel();
             String error = DatalogScores.PREDICATES_MISSING;
             this.appendPredicate(model, (WrappedPredicate)analysis.getMissingPredicates().get(i), true,
@@ -420,6 +418,7 @@ public class XMLReport {
             this.setPredicateAttributes((WrappedPredicate)analysis.getHighArityPredicates().get(i),
                     true, true, error);
         }
+
 
         for (int i = 0; i < analysis.getMissingFacts().size(); i++) {
             String error = DatalogScores.FACTS_MISSING;
@@ -445,6 +444,7 @@ public class XMLReport {
             this.setFactError((WrappedPredicate.WrappedFact)analysis.getNegativeFacts().get(i), error);
         }
 
+         */
     }
 
     /**

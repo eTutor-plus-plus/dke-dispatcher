@@ -53,7 +53,7 @@ public class ABCDatalogProcessor{
         DatalogTokenizer t = new DatalogTokenizer(r);
         Set<Clause> prog = DatalogParser.parseProgram(t);
         for(Clause c : prog){
-           if (c.getBody().isEmpty()) throw new AnalysisException("Analysis stopped, as the submission contains facts.");
+           if (c.getBody().isEmpty()) throw new AnalysisException("Analysis stopped, as the submission contains fact declarations. \n "+ submission);
         }
     }
 

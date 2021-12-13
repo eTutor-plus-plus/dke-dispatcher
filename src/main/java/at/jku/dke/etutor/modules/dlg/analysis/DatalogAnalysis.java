@@ -151,7 +151,7 @@ public class DatalogAnalysis implements Analysis, Serializable {
 		LOGGER.debug("Start comparing correct and submitted result object");
 		this.result1 = result1;
 		this.result2 = result2;
-		this.requPredicates = result1.getRequPredicates();
+		this.requPredicates = result1.getQueries();
 		compare(result1, result2);
 		this.correct = this.checkCorrectness();
 		this.setSubmission(result2.getQuery());
@@ -159,10 +159,10 @@ public class DatalogAnalysis implements Analysis, Serializable {
 			LOGGER.info("Writing the correct and submitted Datalog results as files (debug mode)");
 			try {
 				File tempFile = XMLUtil.generateTempFile(this.getResult1FileParameter());
-				XMLUtil.printFile(result1.getRawResult(), tempFile);
+				XMLUtil.printFile(result1.getResults().toString(), tempFile);
 				LOGGER.info("Written to file " + tempFile.getAbsolutePath());
 				tempFile = XMLUtil.generateTempFile(this.getResult2FileParameter());
-				XMLUtil.printFile(result2.getRawResult(), tempFile);
+				XMLUtil.printFile(result2.getResults().toString(), tempFile);
 				LOGGER.info("Written to file " + tempFile.getAbsolutePath());
 			} catch (IOException e) {
 				String msg = "";

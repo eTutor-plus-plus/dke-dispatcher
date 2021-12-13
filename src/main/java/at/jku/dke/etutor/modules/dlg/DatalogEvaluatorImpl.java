@@ -174,7 +174,7 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
         }
     }
     
-    
+
     /*
      * (non-Javadoc)
      * 
