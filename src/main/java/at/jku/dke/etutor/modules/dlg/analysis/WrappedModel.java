@@ -1,10 +1,11 @@
 package at.jku.dke.etutor.modules.dlg.analysis;
 
+import edu.harvard.seas.pl.abcdatalog.ast.PositiveAtom;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-
-import DLV.Model;
+import java.util.Set;
 
 
 /**
@@ -35,11 +36,11 @@ public class WrappedModel implements Serializable {
 
     /**
      * Constructs a new <code>WrappedModel</code> from a model object, as it is returned by the processor.
-     * @param model The model object, as it is returned by the processor.
+     * @param result The model object, as it is returned by the processor.
      */
-    public WrappedModel(Model model) {
-        this.consistentModel = !model.isNoModel();
-        this.predicates = getWrappedPredicates(model);
+    public WrappedModel(Set<PositiveAtom> result) {
+        this.consistentModel = true;
+        this.predicates = getWrappedPredicates(result);
         this.predicateNames = getPredicateNames(this.predicates);
     }
     
@@ -74,17 +75,12 @@ public class WrappedModel implements Serializable {
      * @param model The model which is the original result of the query processor.
      * @return An array of customized, wrapped objects representing the predicates of the model.
      */
-    private WrappedPredicate[] getWrappedPredicates(Model model) {
-        if (model == null) {
-            return null;
+    private WrappedPredicate[] getWrappedPredicates(Set<PositiveAtom> model) {
+        if (model == null || model.isEmpty()) {
+            return new WrappedPredicate[0];
         }
-        if (model.isNoModel()) {
-            return new WrappedPredicate[] {};
-        }
-        WrappedPredicate[] predicates = new WrappedPredicate[model.getPredicateNames().length];
-        for (int i = 0; i < predicates.length; i++) {
-            predicates[i] = new WrappedPredicate(model.getPredicate(i), this);
-        }
+        WrappedPredicate[] predicates = new WrappedPredicate[1];
+        predicates[0] = new WrappedPredicate(model, this);
         return predicates;
     }
 

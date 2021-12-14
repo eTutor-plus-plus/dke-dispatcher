@@ -1,8 +1,6 @@
 package at.jku.dke.etutor.modules.dlg.util;
 
-import java.util.Enumeration;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
+import at.jku.dke.etutor.modules.dlg.InvalidResourceException;
 
 /**
  * Provides keys for message properties in a resource bundle named after this class.
@@ -70,7 +68,11 @@ public class DLResources {
 	*/
 	
 	// ------------------- UI messages -------------------------//
-	
+
+	public final static String PROPERTIES_FILE = "/dlg/properties/DLResources.properties";
+
+	private PropertyFile propertyFile;
+
 	public static final String ERROR_RESULT_SYNTAX = "error.result.syntax";
 	public static final String ERROR_TIMEOUT = "error.timeout";	
 	public static final String ERROR_ANALYZE = "error.analyze";
@@ -129,24 +131,20 @@ public class DLResources {
 	/*
 	private static final ResourceBundle bundle = PropertyResourceBundle.getBundle(PROPERTIES);
 	*/
-	private static final ResourceBundle bundle = PropertyResourceBundle.getBundle(DLResources.class.getName());
-	
 	/**
 	 * Gets the message defined in a property.
 	 * 
 	 * @param key One of the constants of this class.
 	 * @return The message found.
 	 */
-	public static String getString(String key) {
-		return bundle.getString(key);
-	}
-	
-	/**
-	 * Gets an enumeration of all keys found in the properties file.
-	 * 
-	 * @return Enumeration of all keys.
-	 */
-	public static Enumeration getKeys() {
-		return bundle.getKeys();
+	public static String getString(String key)  {
+		PropertyFile propertyFile = null;
+		try {
+			propertyFile = new PropertyFile(DLResources.class, PROPERTIES_FILE);
+			return propertyFile.loadProperty(key);
+		} catch (InvalidResourceException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 }

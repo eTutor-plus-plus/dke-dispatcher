@@ -1,14 +1,5 @@
 package at.jku.dke.etutor.modules.xquery;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-
 import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.core.evaluation.Report;
@@ -26,6 +17,15 @@ import at.jku.dke.etutor.modules.xquery.report.XQReportConfig;
 import at.jku.dke.etutor.modules.xquery.util.PropertyFile;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * This class serves as entry point for evaluating XQuery queries. There are some basic methods for
@@ -96,7 +96,10 @@ public class XQEvaluatorImpl implements XQEvaluator {
      */
     @Override
     public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
-        if(analysis instanceof XQAnalysis){
+        if(analysis instanceof XQAnalysis xqAnalysis){
+            if(passedAttributes.get("action").equals(XQConstants.ACTION_SUBMIT)) {
+                return xqAnalysis.isCorrect() ? "<div> Your solution is correct </div>" : "<Your solution seems not to be correct </div>";
+            }
             try {
                 return ((XQReport)this.report
                         (analysis, null, passedAttributes, new HashMap<String, String>(), locale))

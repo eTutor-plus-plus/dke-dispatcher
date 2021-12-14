@@ -1,10 +1,10 @@
 package at.jku.dke.etutor.modules.dlg.analysis;
 
+import edu.harvard.seas.pl.abcdatalog.ast.PositiveAtom;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import DLV.Predicate;
-import DLV.Predicate.Literal;
+import java.util.Set;
 
 /**
  * Represents the predicates of the result of a Datalog query as it is returned by a Datalog query
@@ -37,18 +37,19 @@ public class WrappedPredicate implements Serializable {
      * @since 1.0
      */
     public WrappedPredicate(
-            Predicate predicate, WrappedModel model) {
+            Set<PositiveAtom> factSet, WrappedModel model) {
+        var predicate = factSet.stream().findFirst().get();
         this.model = model;
-        this.arity = predicate.arity();
-        this.name = predicate.name();
+        this.arity = predicate.getPred().getArity();
+        this.name = predicate.getPred().getSym();
         ArrayList factList = new ArrayList();
 
         // ce: 26.5.2008
         // ATTENTION: Do not use predicate.getLiterals() as the returned 
         // enumeration is buggy in version 3 of the predicate class
         // the enumeration causes an endless loop
-        while (predicate.hasMoreLiterals()) {
-            factList.add(new WrappedFact(predicate.nextLiteral(), this));
+        for(PositiveAtom p : factSet) {
+            factList.add(new WrappedFact(p, this));
         }
         this.facts = (WrappedFact[])factList.toArray(new WrappedFact[] {});
     }
@@ -79,14 +80,14 @@ public class WrappedPredicate implements Serializable {
          * @param predicate The predicate which this instance will be assigned to.
          */
         private WrappedFact(
-            Literal fact, WrappedPredicate predicate) {
+            PositiveAtom fact, WrappedPredicate predicate) {
             this.predicate = predicate;
-            this.positive = fact.isPositive();
-            this.arity = fact.arity();
+            this.positive = true;
+            this.arity = fact.getPred().getArity();
             this.terms = new String[arity];
-            this.name = fact.name();
+            this.name = fact.getPred().getSym();
             for (int i = 0; i < arity; i++) {
-                this.terms[i] = fact.getTermAt(i);
+                this.terms[i] = fact.getArgs()[i].toString();
             }
 
         }

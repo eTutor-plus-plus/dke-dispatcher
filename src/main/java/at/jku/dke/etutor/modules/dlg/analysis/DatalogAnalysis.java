@@ -8,14 +8,13 @@ import at.jku.dke.etutor.modules.dlg.report.DatalogReport;
 import at.jku.dke.etutor.modules.dlg.util.FileParameter;
 import at.jku.dke.etutor.modules.dlg.util.XMLUtil;
 import ch.qos.logback.classic.Logger;
-import edu.harvard.seas.pl.abcdatalog.ast.PositiveAtom;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.Objects;
 
 /**
  * An instance of this class takes two queries or already the result of two
@@ -53,6 +52,8 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	private String[] requPredicates;
 
 	private int exerciseID;
+
+	private ArrayList missingPredicates;
 
 	private ArrayList missingFacts;
 
@@ -159,10 +160,10 @@ public class DatalogAnalysis implements Analysis, Serializable {
 			LOGGER.info("Writing the correct and submitted Datalog results as files (debug mode)");
 			try {
 				File tempFile = XMLUtil.generateTempFile(this.getResult1FileParameter());
-				XMLUtil.printFile(result1.getResults().toString(), tempFile);
+				XMLUtil.printFile(result1.getRawResult(), tempFile);
 				LOGGER.info("Written to file " + tempFile.getAbsolutePath());
 				tempFile = XMLUtil.generateTempFile(this.getResult2FileParameter());
-				XMLUtil.printFile(result2.getResults().toString(), tempFile);
+				XMLUtil.printFile(result2.getRawResult(), tempFile);
 				LOGGER.info("Written to file " + tempFile.getAbsolutePath());
 			} catch (IOException e) {
 				String msg = "";
@@ -191,38 +192,55 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 * Initializes all error lists.
 	 */
 	private void initErrorLists() {
+		missingPredicates = new ArrayList();
 		missingFacts = new ArrayList();
 		redundantFacts = new ArrayList();
 	}
 
-	/**
-	 * Does the analysis of two Datalog query results. Found differences are
-	 * stored in fields of this <code>DatalogAnalysis</code>.
-	 * 
-	 * @param result1
-	 *          The "correct" query result.
-	 * @param result2
-	 *          The "submitted" query result.
-	 */
+
 	private void compare(DatalogResult result1, DatalogResult result2) {
-		var results1 = result1.getResults();
-		var results2 = result2.getResults();
-		if (results1 != null) {
-			if (results2 != null) {
-				compare(results1, results2);
+		Objects.requireNonNull(result1);
+		Objects.requireNonNull(result2);
+		var model1 = result1.getConsistentModel();
+		var model2 = result2.getConsistentModel();
+		if (model1 != null && model2 != null) {
+			var predicates1 = model1.getPredicates();
+			for (int i = 0; i < predicates1.length; i++) {
+				WrappedPredicate pred1 = (WrappedPredicate) predicates1[i];
+				// only compare predicates denoted by specified filters
+				WrappedPredicate pred2;
+				if ((pred2 = model2.getPredicate(pred1.getName())) == null) {
+					missingPredicates.add(pred1);
+				} else {
+					comparePredicates(pred1, pred2);
+				}
 			}
 		}
 	}
 
-	private void compare(Set<PositiveAtom> results1, Set<PositiveAtom> results2) {
-		for(PositiveAtom p : results1){
-			if(!results2.contains(p)){
-				missingFacts.add(p);
+	/**
+	 * Compares two predicates with regard to the differences concerning their
+	 * facts.
+	 *
+	 * @param p1
+	 *          The first predicate.
+	 * @param p2
+	 *          The second predicate.
+	 */
+	private void comparePredicates(WrappedPredicate p1, WrappedPredicate p2) {
+		WrappedPredicate.WrappedFact[] facts2 = p2.getFacts();
+		for (int i = 0; i < facts2.length; i++) {
+			WrappedPredicate.WrappedFact fact2 = facts2[i];
+			WrappedPredicate.WrappedFact fact1;
+			if ((fact1 = p1.getFact(fact2)) == null) {
+				redundantFacts.add(fact2);
 			}
 		}
-		for(PositiveAtom p : results2){
-			if(!results1.contains(p)){
-				redundantFacts.add(p);
+		WrappedPredicate.WrappedFact[] facts1 = p1.getFacts();
+		for (int i = 0; i < facts1.length; i++) {
+			WrappedPredicate.WrappedFact fact1 = facts1[i];
+			if (p2.getFact(fact1) == null) {
+				missingFacts.add(fact1);
 			}
 		}
 	}
@@ -332,7 +350,7 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 *         only sensible if queries or their results have been compared.
 	 */
 	private boolean checkCorrectness() {
-		return missingFacts.isEmpty() && redundantFacts.isEmpty();
+		return missingFacts.isEmpty() && redundantFacts.isEmpty() && missingPredicates.isEmpty();
 	}
 
 	/**
@@ -403,6 +421,10 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 */
 	public void setDebugMode(boolean debugMode) {
 		this.debugMode = debugMode;
+	}
+
+	public ArrayList getMissingPredicates() {
+		return missingPredicates;
 	}
 
 	/**

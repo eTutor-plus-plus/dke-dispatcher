@@ -7,6 +7,7 @@ import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogResult;
 import at.jku.dke.etutor.modules.dlg.analysis.WrappedModel;
 import at.jku.dke.etutor.modules.dlg.analysis.WrappedPredicate;
+import at.jku.dke.etutor.modules.dlg.grading.DatalogScores;
 import ch.qos.logback.classic.Logger;
 import oracle.xml.parser.v2.*;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,6 @@ public class XMLReport {
      *            These predicates are taken from the
      *            {@link DatalogAnalysis#getResult1() correct solution}of the analysis.
      * @see DatalogCoreManager#XSL_RENDER_DATALOG
-     * @see DatalogResult#getQueries()
      * @throws ReportException if any unexpected Exception occured when transforming contents of the
      *             analysis into an XML representation.
      */
@@ -116,6 +116,8 @@ public class XMLReport {
 
         if (result != null) {
             query = result.getQuery();
+            syntaxError = result.getSyntaxException() != null;
+            hasModel = result.hasConsistentModel();
         }
         
     	NodeFactory factory = new NodeFactory();
@@ -148,9 +150,7 @@ public class XMLReport {
         root.appendChild(queryElement);
 
         setDate(date);
-        setMaxInt(maxInt);
         setSyntaxError(syntaxError);
-        setTimeoutError(timeoutError);
         setModelConsistency(hasModel);
 
         initModels(root, result, filters);
@@ -168,15 +168,14 @@ public class XMLReport {
      *            <code>filter = "false"</code>.
      */
     private void initModels(Element resultElement, DatalogResult result, String[] filters) {
+
         if (result != null && result.getSyntaxException() == null) {
-            /*
-             WrappedModel[] models = result.getWrappedModels();
+            WrappedModel[] models = result.getWrappedModels();
             for (int i = 0; i < models.length; i++) {
                 Element modelElement = createModelNode(models[i], filters);
                 root.appendChild(modelElement);
                 xmlNodes.put(models[i], modelElement);
             }
-             */
         }
     }
     
@@ -290,7 +289,7 @@ public class XMLReport {
     /**
      * Returns the XML element which is related to the specified fact object and has already been
      * appended to the XML document representing the report of this <code>XMLReport</code>.
-     * 
+     *
      * @param fact The fact object.
      * @return The XML element representing the specified fact object, if already appended to the
      *         XML document, else <code>null</code>.
@@ -367,21 +366,18 @@ public class XMLReport {
         List requPredicates = Arrays.asList(analysis.getRequPredicates());
         DatalogResult result = analysis.getResult2();
         if (result != null && requPredicates != null) {
-            /*
-                 WrappedModel[] models = result.getWrappedModels();
+            WrappedModel[] models = result.getWrappedModels();
             for (int i = 0; i < models.length; i++) {
 		        WrappedPredicate[] predicates = models[i].getPredicates();
 		        if (predicates != null) {
 		            for (int j = 0; j < predicates.length; j++) {
 		                WrappedPredicate predicate = predicates[j];
-		                boolean required = requPredicates.contains(predicate.getName());
+		                boolean required = true;
 		                this.setPredicateRequired(predicate, required);
 		                this.setPredicateFilter(predicate, true);
 		            }
 		        }
             }
-             */
-
         }
     }
 
@@ -393,14 +389,14 @@ public class XMLReport {
      *            in the <i>submitted </i> result and the analyzed errors.
      */
     private void setErrors(DatalogAnalysis analysis) {
-        /*
-         for (int i = 0; i < analysis.getMissingPredicates().size(); i++) {
+
+        for (int i = 0; i < analysis.getMissingPredicates().size(); i++) {
             WrappedModel model = analysis.getResult2().getConsistentModel();
             String error = DatalogScores.PREDICATES_MISSING;
             this.appendPredicate(model, (WrappedPredicate)analysis.getMissingPredicates().get(i), true,
                     true, error);
         }
-
+        /*
         for (int i = 0; i < analysis.getRedundantPredicates().size(); i++) {
             String error = DatalogScores.PREDICATES_REDUNDANT;
             this.setPredicateAttributes((WrappedPredicate)analysis.getRedundantPredicates().get(i),
@@ -418,8 +414,7 @@ public class XMLReport {
             this.setPredicateAttributes((WrappedPredicate)analysis.getHighArityPredicates().get(i),
                     true, true, error);
         }
-
-
+        */
         for (int i = 0; i < analysis.getMissingFacts().size(); i++) {
             String error = DatalogScores.FACTS_MISSING;
             WrappedPredicate.WrappedFact missingFact = (WrappedPredicate.WrappedFact)analysis.getMissingFacts().get(i);
@@ -434,6 +429,7 @@ public class XMLReport {
             this.setFactError((WrappedPredicate.WrappedFact)analysis.getRedundantFacts().get(i), error);
         }
 
+        /*
         for (int i = 0; i < analysis.getPositiveFacts().size(); i++) {
             String error = DatalogScores.FACTS_POSITIVE;
             this.setFactError((WrappedPredicate.WrappedFact)analysis.getPositiveFacts().get(i), error);
@@ -443,8 +439,7 @@ public class XMLReport {
             String error = DatalogScores.FACTS_NEGATIVE;
             this.setFactError((WrappedPredicate.WrappedFact)analysis.getNegativeFacts().get(i), error);
         }
-
-         */
+        */
     }
 
     /**
@@ -545,11 +540,12 @@ public class XMLReport {
         return predicateElement;
     }
 
+
     /**
      * Sets the <code>error</code> attribute of the node related to the fact. If the specified
      * String is <code>null</code> and the attribute already exists for the XML node, it is
      * removed.
-     * 
+     *
      * @param fact The fact to set.
      * @param error Sets the error value of the attribute.
      * @return the set XML element.
@@ -557,6 +553,7 @@ public class XMLReport {
     private Element setFactError(WrappedPredicate.WrappedFact fact, String error) {
         return setFactError(getElement(fact), error);
     }
+
 
     /**
      * Sets the <code>error</code> attribute of the fact node. If the specified String is

@@ -11,7 +11,9 @@ import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseManagerImpl;
 import at.jku.dke.etutor.modules.dlg.grading.DatalogGrading;
 import at.jku.dke.etutor.modules.dlg.grading.DatalogScores;
 import at.jku.dke.etutor.modules.dlg.report.DatalogFeedback;
+import at.jku.dke.etutor.modules.dlg.report.DatalogReport;
 import at.jku.dke.etutor.modules.dlg.util.PropertyFile;
+import at.jku.dke.etutor.modules.xquery.XQConstants;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +22,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -382,36 +385,20 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
         }
     }
 
-    //TODO: implement
     @Override
     public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
-        if(passedAttributes.get(DatalogConstants.ATTR_ACTION).equals(DatalogConstants.ACTION_SUBMIT)) return "";
-        String msg;
-        DatalogAnalysis datalogAnalysis;
-        try {
-            datalogAnalysis = (DatalogAnalysis)analysis;
-        } catch (ClassCastException e) {
-            msg = new String();
-            msg += "Passed analysis object is not of type ";
-            msg += DatalogAnalysis.class.getName() + " but ";
-            msg += analysis.getClass().getName();
-            LOGGER.error(msg, e);
-            return "";
+        if(analysis instanceof DatalogAnalysis datalogAnalysis){
+            if(passedAttributes.get("action").equals(XQConstants.ACTION_SUBMIT)) {
+                return datalogAnalysis.isCorrect() ? "<div> Your solution is correct </div>" : "<div> Your solution seems not to be correct </div>";
+            }
+            try {
+                return ((DatalogReport)this.report
+                        (analysis, null, passedAttributes, new HashMap<String, String>(), locale))
+                        .getRenderedResult();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
-        if (datalogAnalysis == null) {
-            msg = "Passed analysis object is null.";
-            LOGGER.error(msg);
-            return "";
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("<div>");
-        for(var line : datalogAnalysis.getResult2().getResults()){
-            sb.append(line);
-            sb.append(".");
-            sb.append("<br>");
-        }
-        sb.append("</div>");
-        return sb.toString();
+        return "";
     }
 }

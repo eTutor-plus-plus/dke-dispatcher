@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.modules.dlg.report;
 
+import at.jku.dke.etutor.core.evaluation.DefaultReport;
 import at.jku.dke.etutor.modules.dlg.ParameterException;
 import at.jku.dke.etutor.modules.dlg.QuerySyntaxException;
 import at.jku.dke.etutor.modules.dlg.ReportException;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
  * @version 1.0
  * @since 1.0
  */
-public class DatalogReport implements DatalogFeedback, Serializable {
+public class DatalogReport extends DefaultReport implements DatalogFeedback, Serializable {
 
 	/**
      * The logger used for logging.
@@ -103,7 +104,7 @@ public class DatalogReport implements DatalogFeedback, Serializable {
 
         DatalogResult result = analysis.getResult2();
         if (result != null) {
-            this.rawResult = analysis.getResult2().getResults().toString();
+            this.rawResult = analysis.getResult2().getRawResult();
         }
         XMLReport xmlReport = createXMLReport(analysis, grading, filters, isSupplementedResult());
 
@@ -181,7 +182,7 @@ public class DatalogReport implements DatalogFeedback, Serializable {
 	        xmlResult.setMaxScore(grading.getMaxPoints());
 	        xmlResult.setScore(grading.getPoints());
 	        if (grading.isReporting()) {
-	        	xmlResult.setMode("submit");
+	        	xmlResult.setMode("");
 	        }
         }
         return xmlResult;
@@ -208,6 +209,7 @@ public class DatalogReport implements DatalogFeedback, Serializable {
         if (generalAnalysis.length() > 0) {
             summary += generalAnalysis + "\n";
         }
+
         if (detailedAnalysis.length() > 0) {
             summary += detailedAnalysis + "\n";
         }
@@ -224,8 +226,15 @@ public class DatalogReport implements DatalogFeedback, Serializable {
     private String getSyntaxErrors(DatalogAnalysis analysis) {
         QuerySyntaxException syntaxException = null;
         DatalogResult result = analysis.getResult1();
+        if (result != null) {
+            syntaxException = (QuerySyntaxException) result.getSyntaxException();
+        }
         result = analysis.getResult2();
+        if (result != null) {
+            syntaxException = (QuerySyntaxException) result.getSyntaxException();
+        }
         if (syntaxException != null) {
+            this.setError(syntaxException.getDescription());
             return syntaxException.getDescription();
         }
         return "";
@@ -258,7 +267,7 @@ public class DatalogReport implements DatalogFeedback, Serializable {
 
     /**
      * Gets the general analysis text summarizing the results of the analysis.
-     * 
+     *
      * @param analysis The analysis object which holds all information about the submitted query.
      * @param diagnoseLevel Specifies the diagnose level, which affects how detailed the generated
      *            message is going to be.
@@ -267,6 +276,15 @@ public class DatalogReport implements DatalogFeedback, Serializable {
      */
     private String getGeneralAnalysis(DatalogAnalysis analysis, int diagnoseLevel) {
         DatalogResult result = analysis.getResult2();
+        if (result != null && result.getSyntaxException() != null) {
+            return DLResources.getString(DLResources.ERROR_RESULT_SYNTAX);
+        } else if (diagnoseLevel > DIAGNOSE_NONE) {
+            if (analysis.isCorrect()) {
+                return DLResources.getString(DLResources.SOLUTION_CORRECT);
+            } else {
+                return DLResources.getString(DLResources.SOLUTION_INCORRECT);
+            }
+        }
         return "";
     }
 
@@ -299,7 +317,8 @@ public class DatalogReport implements DatalogFeedback, Serializable {
      *         level this returns an empty array.
      */
     private ErrorCategory[] getAnalysis(DatalogAnalysis analysis, int diagnoseLevel) {
-
+        StringBuilder error = new StringBuilder();
+        StringBuilder description = new StringBuilder();
         if (diagnoseLevel != DIAGNOSE_MEDIUM && diagnoseLevel != DIAGNOSE_HIGH) {
             return new ErrorCategory[] {};
         }
@@ -312,16 +331,56 @@ public class DatalogReport implements DatalogFeedback, Serializable {
         ArrayList errorList = new ArrayList();
         //-------------- Medium and detailed analyze -----------------
 
+      if(!analysis.getMissingPredicates().isEmpty())  error.append(DLResources.getString(DLResources.PREDICATES_MISSING_SI));
+        ArrayList missingPredicates = analysis.getMissingPredicates();
+        if (missingPredicates.size() > 0) {
+            StringBuffer detailedAnalyze = new StringBuffer();
+            if (diagnoseLevel == DIAGNOSE_MEDIUM) {
+                detailedAnalyze.append(DLResources.getString(DLResources.PREDICATES_MISSING) + "\n");
+            } else {
+                // ---------- prepare the message --------------- //
+                String result;
+                if (missingPredicates.size() == 1) {
+                    result = DLResources.getString(DLResources.PREDICATES_MISSING_SI);
+                } else {
+                    MessageFormat messageForm = new MessageFormat("");
+                    messageForm.applyPattern(DLResources.getString(DLResources.PREDICATES_MISSING_PL));
+                    Format[] formats = new Format[] {NumberFormat.getInstance()};
+                    messageForm.setFormats(formats);
+                    Object[] messageArguments = new Object[] {missingPredicates.size()};
+                    result = messageForm.format(messageArguments);
+                }
+
+                // ---------- apply the message --------------- //
+                detailedAnalyze.append(result + ":\n");
+                /*
+                Iterator it = missingPredicates.iterator();
+                while (it.hasNext()) {
+                    WrappedPredicate next = (WrappedPredicate)it.next();
+                    detailedAnalyze.append("\t" + next.getName() + "\n");
+                }
+                */
+            }
+            int category = ErrorCategory.P_MISSING;
+            String title = DLResources.getString(DLResources.PREDICATES_MISSING_TITLE);
+            String errorDescription = detailedAnalyze.toString();
+            ErrorCategory errorCategory = new ErrorCategory(category, title);
+            errorCategory.setDescription(errorDescription);
+            errorList.add(errorCategory);
+        }
+
       ArrayList missingFacts = analysis.getMissingFacts();
         if (missingFacts.size() > 0) {
             StringBuffer detailedAnalyze = new StringBuffer();
             if (diagnoseLevel == DIAGNOSE_MEDIUM) {
                 detailedAnalyze.append(DLResources.getString(DLResources.FACTS_MISSING) + "\n");
+                description.append(DLResources.getString(DLResources.FACTS_MISSING) + "\n");
             } else {
                 // ---------- prepare the message --------------- //
                 String result;
                 if (missingFacts.size() == 1) {
                     result = DLResources.getString(DLResources.FACTS_MISSING_SI);
+                    description.append(DLResources.getString(DLResources.FACTS_MISSING)+"\n");
                 } else {
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(DLResources.getString(DLResources.FACTS_MISSING_PL));
@@ -329,6 +388,7 @@ public class DatalogReport implements DatalogFeedback, Serializable {
                     messageForm.setFormats(formats);
                     Object[] messageArguments = new Object[] {missingFacts.size()};
                     result = messageForm.format(messageArguments);
+                    description.append(result+"\n");
                 }
                 // ---------- apply the message --------------- //
 
@@ -343,9 +403,9 @@ public class DatalogReport implements DatalogFeedback, Serializable {
             }
             int category = ErrorCategory.F_MISSING;
             String title = DLResources.getString(DLResources.FACTS_MISSING_TITLE);
-            String description = detailedAnalyze.toString();
+            String errorDescription = detailedAnalyze.toString();
             ErrorCategory errorCategory = new ErrorCategory(category, title);
-            errorCategory.setDescription(description);
+            errorCategory.setDescription(errorDescription);
             errorList.add(errorCategory);
 
         }
@@ -354,6 +414,7 @@ public class DatalogReport implements DatalogFeedback, Serializable {
             StringBuffer detailedAnalyze = new StringBuffer();
             if (diagnoseLevel == DIAGNOSE_MEDIUM) {
                 detailedAnalyze.append(DLResources.getString(DLResources.FACTS_REDUNDANT) + "\n");
+                description.append(DLResources.getString(DLResources.FACTS_REDUNDANT) + "\n");
             } else {
                 // ---------- prepare the message --------------- //
                 String result;
@@ -366,6 +427,7 @@ public class DatalogReport implements DatalogFeedback, Serializable {
                     messageForm.setFormats(formats);
                     Object[] messageArguments = new Object[] {redundantFacts.size()};
                     result = messageForm.format(messageArguments);
+                    description.append(result+"\n");
                 }
                 // ---------- apply the message --------------- //
                 detailedAnalyze.append(result + ":\n");
@@ -379,12 +441,15 @@ public class DatalogReport implements DatalogFeedback, Serializable {
             }
             int category = ErrorCategory.F_REDUNDANT;
             String title = DLResources.getString(DLResources.FACTS_REDUNDANT_TITLE);
-            String description = detailedAnalyze.toString();
+            String errorDescription = detailedAnalyze.toString();
             ErrorCategory errorCategory = new ErrorCategory(category, title);
-            errorCategory.setDescription(description);
+            errorCategory.setDescription(errorDescription);
             errorList.add(errorCategory);
 
         }
+
+        this.setError(error.toString());
+        this.setDescription(description.toString());
         return (ErrorCategory[])errorList.toArray(new ErrorCategory[] {});
     }
 
