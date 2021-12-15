@@ -109,8 +109,8 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 *           if any kind of unexpected Exception occured during analyzing the
 	 *           results.
 	 */
-	public DatalogAnalysis(String submission1, String submission2, String[] queries, ABCDatalogProcessor processor,
-			boolean debugMode, boolean notAllowFacts) throws Exception {
+	public DatalogAnalysis(String submission1, String submission2, String[] queries, DatalogProcessor processor,
+			boolean debugMode, boolean notAllowFacts) {
 		super();
 		init(debugMode);
 		try {
@@ -121,7 +121,6 @@ public class DatalogAnalysis implements Analysis, Serializable {
 		catch (Exception e) {
 			this.correct = false;
 			LOGGER.error("Analysis error", e);
-			throw e;
 		}
 	}
 
@@ -206,8 +205,7 @@ public class DatalogAnalysis implements Analysis, Serializable {
 		if (model1 != null && model2 != null) {
 			var predicates1 = model1.getPredicates();
 			for (int i = 0; i < predicates1.length; i++) {
-				WrappedPredicate pred1 = (WrappedPredicate) predicates1[i];
-				// only compare predicates denoted by specified filters
+				WrappedPredicate pred1 = predicates1[i];
 				WrappedPredicate pred2;
 				if ((pred2 = model2.getPredicate(pred1.getName())) == null) {
 					missingPredicates.add(pred1);
@@ -232,7 +230,7 @@ public class DatalogAnalysis implements Analysis, Serializable {
 		for (int i = 0; i < facts2.length; i++) {
 			WrappedPredicate.WrappedFact fact2 = facts2[i];
 			WrappedPredicate.WrappedFact fact1;
-			if ((fact1 = p1.getFact(fact2)) == null) {
+			if ((p1.getFact(fact2)) == null) {
 				redundantFacts.add(fact2);
 			}
 		}

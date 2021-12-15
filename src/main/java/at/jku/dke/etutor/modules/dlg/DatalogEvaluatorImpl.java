@@ -4,8 +4,9 @@ import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.core.evaluation.Report;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.modules.dlg.analysis.ABCDatalogProcessor;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
+import at.jku.dke.etutor.modules.dlg.analysis.DatalogProcessor;
+import at.jku.dke.etutor.modules.dlg.analysis.DlvCliDatalogProcessor;
 import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseBean;
 import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseManagerImpl;
 import at.jku.dke.etutor.modules.dlg.grading.DatalogGrading;
@@ -87,7 +88,7 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
     	String command;
     	DatalogAnalysis analysis;
         DatalogCoreManager coreManager;
-        ABCDatalogProcessor processor;
+        DatalogProcessor processor;
         DatalogExerciseBean exercise;
         DatalogExerciseManagerImpl exerciseMgr;
         PropertyFile properties;
@@ -166,7 +167,8 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
     	
         // Analysis, actually
         try {
-            processor = new ABCDatalogProcessor(facts);
+            //processor = new ABCDatalogProcessor(facts);
+            processor = new DlvCliDatalogProcessor(facts);
             analysis = new DatalogAnalysis(rulesCorrect, rulesSubmitted, queries, processor, debugMode, notAllowFacts);
             analysis.setExerciseID(exerciseId);
             return analysis;

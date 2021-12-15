@@ -1,9 +1,11 @@
 package at.jku.dke.etutor.modules.dlg.analysis;
 
 import edu.harvard.seas.pl.abcdatalog.ast.PositiveAtom;
+import org.apache.logging.log4j.util.Strings;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -54,6 +56,19 @@ public class WrappedPredicate implements Serializable {
         this.facts = (WrappedFact[])factList.toArray(new WrappedFact[] {});
     }
 
+    public WrappedPredicate(String predicateName, List<String> facts, WrappedModel model){
+        if(!facts.isEmpty()){
+            this.model = model;
+            this.name = predicateName;
+            this.arity = facts.stream().findFirst().get().split(",").length;
+            var wrappedFactList = new ArrayList<>();
+            for(String s : facts){
+                if(Strings.isNotBlank(s)) wrappedFactList.add(new WrappedFact(s, this));
+            }
+            this.facts = wrappedFactList.toArray(new WrappedFact[] {});
+        }
+    }
+
     /**
      * Represents the Datalog fact which belongs to a predicate.
      * 
@@ -90,6 +105,14 @@ public class WrappedPredicate implements Serializable {
                 this.terms[i] = fact.getArgs()[i].toString();
             }
 
+        }
+
+        private WrappedFact(String facts, WrappedPredicate predicate){
+            this.predicate = predicate;
+            this.positive = true;
+            this.arity = predicate.getArity();
+            this.terms = facts.split(",");
+            this.name = predicate.getName();
         }
 
         /**

@@ -3,10 +3,7 @@ package at.jku.dke.etutor.modules.dlg.report;
 import at.jku.dke.etutor.modules.dlg.DatalogCoreManager;
 import at.jku.dke.etutor.modules.dlg.InvalidResourceException;
 import at.jku.dke.etutor.modules.dlg.ReportException;
-import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
-import at.jku.dke.etutor.modules.dlg.analysis.DatalogResult;
-import at.jku.dke.etutor.modules.dlg.analysis.WrappedModel;
-import at.jku.dke.etutor.modules.dlg.analysis.WrappedPredicate;
+import at.jku.dke.etutor.modules.dlg.analysis.*;
 import at.jku.dke.etutor.modules.dlg.grading.DatalogScores;
 import ch.qos.logback.classic.Logger;
 import oracle.xml.parser.v2.*;
@@ -621,7 +618,7 @@ public class XMLReport {
      * to the specified value.
      * 
      * @param maxInt Indicates the highest number which was set for the
-     *            {@link at.jku.dke.etutor.modules.dlg.analysis.DatalogProcessor}which was used to
+     *            {@link DLVWrappedDatalogProcessor}which was used to
      *            evaluate the query.
      */
     public void setMaxInt(int maxInt) {

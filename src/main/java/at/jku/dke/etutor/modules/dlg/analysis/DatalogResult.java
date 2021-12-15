@@ -1,13 +1,8 @@
 package at.jku.dke.etutor.modules.dlg.analysis;
 
 import at.jku.dke.etutor.modules.dlg.QuerySyntaxException;
-import edu.harvard.seas.pl.abcdatalog.ast.PositiveAtom;
-import edu.harvard.seas.pl.abcdatalog.ast.validation.DatalogValidationException;
-import edu.harvard.seas.pl.abcdatalog.parser.DatalogParseException;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 
 /**
@@ -42,8 +37,6 @@ public class DatalogResult implements Serializable {
 
     private int exerciseID;
 
-    private Set<PositiveAtom> results;
-
     private QuerySyntaxException syntaxException;
 
     private WrappedModel[] models;
@@ -51,30 +44,20 @@ public class DatalogResult implements Serializable {
     private ModelConsistency consistency;
 
     public DatalogResult(
-            String submission, ABCDatalogProcessor processor, String[] queries, boolean notAllowFacts
+            String submission, DatalogProcessor processor, String[] queries, boolean notAllowFacts
     ) throws Exception {
-        results = new HashSet<>();
         try {
-            this.results = processor.executeQuery(submission, queries, notAllowFacts);
-            this.models = getWrappedModels(results);
+            this.models = processor.executeQuery(submission, queries, notAllowFacts);
             this.submission = submission;
             this.queries = queries;
-        } catch (DatalogValidationException e) {
-            this.syntaxException = new QuerySyntaxException(e);
-            this.syntaxException.setDescription(e.getMessage());
+        } catch (QuerySyntaxException e) {
+            this.syntaxException = e;
             this.models = new WrappedModel[]{};
-        } catch (DatalogParseException e) {
-            this.syntaxException = new QuerySyntaxException(e);
-            this.syntaxException.setDescription(e.getMessage());
-            this.models = new WrappedModel[]{};
+            throw e;
         }
     }
 
-    private WrappedModel[] getWrappedModels(Set<PositiveAtom> results) {
-        WrappedModel[] wrappedModels = new WrappedModel[1];
-        wrappedModels[0] = new WrappedModel(results);
-        return wrappedModels;
-    }
+
 
     public WrappedModel[] getWrappedModels(){
         return this.models;
@@ -122,9 +105,6 @@ public class DatalogResult implements Serializable {
         this.exerciseID = exerciseID;
     }
 
-    public Set<PositiveAtom> getResults() {
-        return results;
-    }
 
     public Object getSyntaxException() {
         return this.syntaxException;
@@ -179,12 +159,7 @@ public class DatalogResult implements Serializable {
 
 
     /**
-     * Returns the complete, unfiltered evaluation result of the query. This is equivalent to
-     * invoking {@link #getRawResult(String[]) getRawResult(null)}.
-     *
-     * @param filters A set of predicate names indicating which predicates should be included in the
-     *            returned result. If this parameter is <code>null</code>, all available
-     *            predicates of the actually considered model are selected by default.
+     * Returns the complete, unfiltered evaluation result of the query.
      * @return The evaluation result of the query. This might not only be an empty String if there
      *         are no facts returned, but also if the query contains syntax errors or evaluation was
      *         stopped after reaching a time limit.

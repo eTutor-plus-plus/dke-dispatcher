@@ -504,7 +504,7 @@ public class DatalogReport extends DefaultReport implements DatalogFeedback, Ser
      * @return The query result.
      */
     private String getRawResult(DatalogResult result) {
-        return result.getResults().toString();
+        return result.getRawResult();
     }
 
     /*

@@ -3,9 +3,7 @@ package at.jku.dke.etutor.modules.dlg.analysis;
 import edu.harvard.seas.pl.abcdatalog.ast.PositiveAtom;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -41,6 +39,12 @@ public class WrappedModel implements Serializable {
     public WrappedModel(Set<PositiveAtom> result) {
         this.consistentModel = true;
         this.predicates = getWrappedPredicates(result);
+        this.predicateNames = getPredicateNames(this.predicates);
+    }
+
+    public WrappedModel(Map<String, List<String>> model){
+        this.consistentModel = true;
+        this.predicates = getWrappedPredicates(model);
         this.predicateNames = getPredicateNames(this.predicates);
     }
     
@@ -82,6 +86,23 @@ public class WrappedModel implements Serializable {
         WrappedPredicate[] predicates = new WrappedPredicate[1];
         predicates[0] = new WrappedPredicate(model, this);
         return predicates;
+    }
+
+    private WrappedPredicate[] getWrappedPredicates(Map<String, List<String>> model){
+        if (model == null || model.isEmpty()) {
+            return new WrappedPredicate[0];
+        }
+
+        var p = new ArrayList<WrappedPredicate>();
+        var iterator = model.entrySet().iterator();
+        int i = 0;
+        while(iterator.hasNext()){
+            var entry = iterator.next();
+            var key = entry.getKey();
+            var value = entry.getValue();
+            if (!value.isEmpty()) p.add(new WrappedPredicate(key, value, this));
+        }
+        return p.toArray(new WrappedPredicate[]{});
     }
 
     /**

@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.modules.dlg.analysis;
 
 import at.jku.dke.etutor.modules.dlg.AnalysisException;
+import at.jku.dke.etutor.modules.dlg.QuerySyntaxException;
 import edu.harvard.seas.pl.abcdatalog.ast.Clause;
 import edu.harvard.seas.pl.abcdatalog.ast.PositiveAtom;
 import edu.harvard.seas.pl.abcdatalog.ast.validation.DatalogValidationException;
@@ -11,9 +12,10 @@ import edu.harvard.seas.pl.abcdatalog.parser.DatalogParser;
 import edu.harvard.seas.pl.abcdatalog.parser.DatalogTokenizer;
 
 import java.io.StringReader;
+import java.util.HashSet;
 import java.util.Set;
 
-public class ABCDatalogProcessor{
+public class ABCDatalogProcessor implements DatalogProcessor{
     String facts;
 
     /**
@@ -27,25 +29,32 @@ public class ABCDatalogProcessor{
     }
 
 
-    public Set<PositiveAtom> executeQuery(String submission, String[] queries, boolean notAllowFacts) throws DatalogValidationException, DatalogParseException, AnalysisException {
-        if(notAllowFacts) checkSubmissionForFacts(submission);
-        String database = facts + "\n";
-        database += submission;
-        var r = new StringReader(database);
-        DatalogTokenizer t = new DatalogTokenizer(r);
-        Set<Clause> prog = DatalogParser.parseProgram(t);
-        // You can choose what sort of engine you want here.
-        DatalogEngine e = SemiNaiveEngine.newEngine();
-        e.init(prog);
-        for(String query : queries){
-            PositiveAtom q = makeQuery(query);
-            Set<PositiveAtom> results = e.query(q);
-            for (PositiveAtom result : results) {
-                System.out.println(result);
+    public WrappedModel[] executeQuery(String submission, String[] queries, boolean notAllowFacts) throws QuerySyntaxException {
+            try {
+                if(notAllowFacts) checkSubmissionForFacts(submission);
+                String database = facts + "\n";
+                database += submission;
+                var r = new StringReader(database);
+                DatalogTokenizer t = new DatalogTokenizer(r);
+                Set<Clause> prog = DatalogParser.parseProgram(t);
+                // You can choose what sort of engine you want here.
+                DatalogEngine e = SemiNaiveEngine.newEngine();
+                e.init(prog);
+                Set<PositiveAtom> results = new HashSet<>();
+                for(String query : queries){
+                    PositiveAtom q = makeQuery(query);
+                    results.addAll(e.query(q));
+                }
+                return getWrappedModels(results);
+            } catch (DatalogParseException | DatalogValidationException | AnalysisException e) {
+                throw new QuerySyntaxException(e);
             }
-            return results;
-        }
-        return null;
+    }
+
+    private WrappedModel[] getWrappedModels(Set<PositiveAtom> results) {
+        WrappedModel[] wrappedModels = new WrappedModel[1];
+        wrappedModels[0] = new WrappedModel(results);
+        return wrappedModels;
     }
 
     private void checkSubmissionForFacts(String submission) throws DatalogParseException, AnalysisException {
