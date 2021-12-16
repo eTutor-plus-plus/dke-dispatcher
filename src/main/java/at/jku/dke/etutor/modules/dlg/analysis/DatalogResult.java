@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.modules.dlg.analysis;
 
+import at.jku.dke.etutor.modules.dlg.InternalException;
 import at.jku.dke.etutor.modules.dlg.QuerySyntaxException;
 
 import java.io.Serializable;
@@ -45,7 +46,7 @@ public class DatalogResult implements Serializable {
 
     public DatalogResult(
             String submission, DatalogProcessor processor, String[] queries, boolean notAllowFacts
-    ) throws Exception {
+    ) throws InternalException {
         try {
             this.models = processor.executeQuery(submission, queries, notAllowFacts);
             this.submission = submission;
@@ -53,7 +54,6 @@ public class DatalogResult implements Serializable {
         } catch (QuerySyntaxException e) {
             this.syntaxException = e;
             this.models = new WrappedModel[]{};
-            throw e;
         }
     }
 

@@ -6,6 +6,7 @@ import at.jku.dke.etutor.modules.dlg.QuerySyntaxException;
 import at.jku.dke.etutor.modules.dlg.ReportException;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogResult;
+import at.jku.dke.etutor.modules.dlg.analysis.WrappedPredicate;
 import at.jku.dke.etutor.modules.dlg.grading.DatalogGrading;
 import at.jku.dke.etutor.modules.dlg.util.DLResources;
 import at.jku.dke.etutor.modules.dlg.util.HTMLConverter;
@@ -20,6 +21,7 @@ import java.text.Format;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is used for presenting the results of an analysis that was carried out on two Datalog
@@ -332,9 +334,10 @@ public class DatalogReport extends DefaultReport implements DatalogFeedback, Ser
         //-------------- Medium and detailed analyze -----------------
 
       if(!analysis.getMissingPredicates().isEmpty())  error.append(DLResources.getString(DLResources.PREDICATES_MISSING_SI));
-        ArrayList missingPredicates = analysis.getMissingPredicates();
-        if (missingPredicates.size() > 0) {
-            StringBuffer detailedAnalyze = new StringBuffer();
+
+      List<WrappedPredicate> missingPredicates = analysis.getMissingPredicates();
+        if (!missingPredicates.isEmpty()) {
+            StringBuilder detailedAnalyze = new StringBuilder();
             if (diagnoseLevel == DIAGNOSE_MEDIUM) {
                 detailedAnalyze.append(DLResources.getString(DLResources.PREDICATES_MISSING) + "\n");
             } else {
@@ -369,8 +372,8 @@ public class DatalogReport extends DefaultReport implements DatalogFeedback, Ser
             errorList.add(errorCategory);
         }
 
-      ArrayList missingFacts = analysis.getMissingFacts();
-        if (missingFacts.size() > 0) {
+      List<WrappedPredicate.WrappedFact> missingFacts = analysis.getMissingFacts();
+        if (!missingFacts.isEmpty()) {
             StringBuffer detailedAnalyze = new StringBuffer();
             if (diagnoseLevel == DIAGNOSE_MEDIUM) {
                 detailedAnalyze.append(DLResources.getString(DLResources.FACTS_MISSING) + "\n");
@@ -409,8 +412,8 @@ public class DatalogReport extends DefaultReport implements DatalogFeedback, Ser
             errorList.add(errorCategory);
 
         }
-        ArrayList redundantFacts = analysis.getRedundantFacts();
-        if (redundantFacts.size() > 0) {
+        List<WrappedPredicate.WrappedFact> redundantFacts = analysis.getRedundantFacts();
+        if (!redundantFacts.isEmpty()) {
             StringBuffer detailedAnalyze = new StringBuffer();
             if (diagnoseLevel == DIAGNOSE_MEDIUM) {
                 detailedAnalyze.append(DLResources.getString(DLResources.FACTS_REDUNDANT) + "\n");

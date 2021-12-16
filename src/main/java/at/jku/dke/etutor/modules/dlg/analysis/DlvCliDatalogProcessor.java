@@ -1,6 +1,8 @@
 package at.jku.dke.etutor.modules.dlg.analysis;
 
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.modules.dlg.AnalysisException;
+import at.jku.dke.etutor.modules.dlg.InternalException;
 import at.jku.dke.etutor.modules.dlg.QuerySyntaxException;
 import edu.harvard.seas.pl.abcdatalog.ast.Clause;
 import edu.harvard.seas.pl.abcdatalog.parser.DatalogParseException;
@@ -16,24 +18,22 @@ import java.util.*;
 public class DlvCliDatalogProcessor implements DatalogProcessor{
     private final String FACTS;
     private final String[] CMD_ARRAY;
-    private final String DLV_CMD = "C:\\Users\\Public\\dlvtest\\dlv.mingw";
-    private final String CAUTIOUS_OPTION = "-cautious";
-    private final String WORK_DIR = "C:\\Users\\Public\\dlvtest\\";
     private final File WORK_DIR_FILE;
     private final String LINE_BREAK = "\n";
-    private final int SKIP_LINES = 1;
+    private final String TEMP_FOLDER;
     private Process p;
 
-    public DlvCliDatalogProcessor(String facts){
+    public DlvCliDatalogProcessor(String facts, ApplicationProperties properties){
         this.FACTS = facts;
         this.CMD_ARRAY = new String[3];
-        this.CMD_ARRAY[0] = DLV_CMD;
-        this.CMD_ARRAY[2] = CAUTIOUS_OPTION;
-        this.WORK_DIR_FILE = new File(WORK_DIR);
+        this.CMD_ARRAY[0] = properties.getDatalog().getDLVPathAsCommand();
+        this.CMD_ARRAY[2] = properties.getDatalog().getCautiousOptionForDlv();
+        this.WORK_DIR_FILE = new File(properties.getDatalog().getWorkDirForDlv());
+        this.TEMP_FOLDER = properties.getDatalog().getTempFolder();
     }
 
     @Override
-    public WrappedModel[] executeQuery(String submission, String[] queries, boolean notAllowFacts) throws QuerySyntaxException {
+    public WrappedModel[] executeQuery(String submission, String[] queries, boolean notAllowFacts) throws QuerySyntaxException, InternalException {
         String query;
         String predicate;
         File tempDlv;
@@ -53,7 +53,7 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
                 List<String> facts = new ArrayList<>();
 
                 // Create Temp dlv file and write facts + submission + query
-                tempDlv = File.createTempFile(UUID.randomUUID().toString(), ".dlv");
+                tempDlv = File.createTempFile(UUID.randomUUID().toString(), ".dlv", new File(TEMP_FOLDER));
                 String tempFilePath = tempDlv.getAbsolutePath();
 
                 StringBuilder program = new StringBuilder();
@@ -70,29 +70,27 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
                 // Initialize process
                 ProcessBuilder pb = new ProcessBuilder(CMD_ARRAY);
                 pb.directory(WORK_DIR_FILE);
-                pb.redirectErrorStream(true);
+                pb.redirectErrorStream(false);
 
                 // Start process
                 p = pb.start();
+                //Handle error
+                var errorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                if((errorReader.readLine()) != null) handleSyntaxError(errorReader, p, tempDlv);
 
-                // Handle InputStream
-                BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                int j = 0;
+                // Handle InputStream from process
+                var resultReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 String s;
-                while ((s = br.readLine()) != null) {
-                    if(j >= SKIP_LINES) {
-                        if(s.contains("error")) handleSyntaxError(br, p, tempDlv);
-                        if(Strings.isNotBlank(s))facts.add(s);
-                    }
-                    j++;
+                resultReader.readLine();
+                while ((s = resultReader.readLine()) != null) {
+                    if(Strings.isNotBlank(s)) facts.add(s);
                 }
-                // Add to map
-                model.put(predicate, facts);
-                p.waitFor();
+                resultReader.close();
+                // Add entry to map
+                if(p.waitFor()==0) model.put(predicate, facts);
                 tempDlv.delete();
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-                //TODO: Handle IO exceptions
+                throw new InternalException(e);
             } finally {
                 p.destroy();
             }
@@ -118,9 +116,12 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
         String s;
         while (true) {
             try {
-                if ((s = br.readLine()) == null) break;
+                if ((s = br.readLine()) == null) {
+                    br.close();
+                    break;
+                }
             } catch (IOException e) {
-                e.printStackTrace();
+                p.destroy();
                 throw new QuerySyntaxException();
             }
             errorMessage.append(s);
@@ -131,7 +132,8 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
     }
 
     private String getPredicateFromQuery(String query){
-        return query.substring(0, query.indexOf("("));
+        if (query.contains("(")) return query.substring(0, query.indexOf("("));
+        else return query;
     }
 
 }

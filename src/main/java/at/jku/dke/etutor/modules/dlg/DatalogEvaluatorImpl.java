@@ -22,7 +22,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -36,22 +35,17 @@ import java.util.Map;
  * @since 1.0
  */
 public class DatalogEvaluatorImpl implements DatalogEvaluator {
-
+    private final ApplicationProperties properties;
  	private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(DatalogEvaluatorImpl.class);
 	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
 	
     /**
      * Constructs a new <code>DatalogEvaluatorImpl</code> which can be used as stub for RMI
-     * 
-     * @throws RemoteException if any RemoteException occurs.
      */
     public DatalogEvaluatorImpl(ApplicationProperties properties) {
         super();
-        //evaluator implementation is bound to RMI registry at startup process;
-        //requesting core manager instance causes creation of singleton
-        //and initialization of basic resources with configuration errors
-        //being logged
         DatalogCoreManager.getInstance();
+        this.properties = properties;
     }
 
     /*
@@ -59,17 +53,17 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
      * 
      * @see etutor.core.evaluation.Evaluator#analyze(int, int, java.util.Map, java.util.Map)
      */
-    public Analysis analyze(int exerciseId, int userId, Map passedAttributes, Map passedParameters, Locale locale) throws Exception {
+    public Analysis analyze(int exerciseId, int userId, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
     	String msg;
     	String action;
     	String command;
         boolean isSpec;
 
-        action = (String)passedAttributes.get(DatalogConstants.ATTR_ACTION);
-        command = (String)passedAttributes.get(DatalogConstants.ATTR_COMMAND);
+        action = passedAttributes.get(DatalogConstants.ATTR_ACTION);
+        command = passedAttributes.get(DatalogConstants.ATTR_COMMAND);
         isSpec = DatalogConstants.COMMAND_EVALUATE_SPEC.equals(command);
         
-        msg = new String();
+        msg = "";
         msg += "Start analyzing with exercise ID " + exerciseId;
     	msg += ", user ID " + userId + ", action '" + action + "'; " + LINE_SEP;
     	msg += "Command is '" + command + "' -> ";
@@ -82,7 +76,7 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
         return analyzeSubmission(exerciseId, userId, passedAttributes, passedParameters);
     }
     
-    public Analysis analyzeSubmission(int exerciseId, int userId, Map passedAttributes, Map passedParameters) throws Exception {
+    public Analysis analyzeSubmission(int exerciseId, int userId, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
     	String msg;
     	String action;
     	String command;
@@ -101,24 +95,17 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
 
         facts = null;
         queries = null;
-        action = (String)passedAttributes.get(DatalogConstants.ATTR_ACTION);
-        command = (String)passedAttributes.get(DatalogConstants.ATTR_COMMAND);
+        action = passedAttributes.get(DatalogConstants.ATTR_ACTION);
+        command = passedAttributes.get(DatalogConstants.ATTR_COMMAND);
         
-        msg = new String();
+        msg = "";
         msg += "Start analyzing with exercise ID " + exerciseId;
     	msg += ", user ID " + userId + ", action '" + action + "'";
     	msg += ", command " + command;
         LOGGER.info(msg);
         
-        try {
-			rulesSubmitted = (String)passedAttributes.get(DatalogConstants.ATTR_SUBMISSION);
-		} catch (ClassCastException e) {
-			msg += "Passed attribute " + DatalogConstants.ATTR_SUBMISSION;
-            msg += " is not of type " + String.class.getName() + ". ";
-            LOGGER.error(msg, e);
-            throw new AnalysisException(msg, e);
-		}
-        
+        rulesSubmitted = passedAttributes.get(DatalogConstants.ATTR_SUBMISSION);
+
 		if (rulesSubmitted == null) {
             msg = "Passed attribute " + DatalogConstants.ATTR_SUBMISSION + " is null.";
             LOGGER.error(msg);
@@ -167,9 +154,8 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
     	
         // Analysis, actually
         try {
-            //processor = new ABCDatalogProcessor(facts);
-            processor = new DlvCliDatalogProcessor(facts);
-            analysis = new DatalogAnalysis(rulesCorrect, rulesSubmitted, queries, processor, debugMode, notAllowFacts);
+            processor = new DlvCliDatalogProcessor(facts, this.properties);
+            analysis = new DatalogAnalysis(rulesCorrect, rulesSubmitted, queries, processor, debugMode, notAllowFacts, this.properties);
             analysis.setExerciseID(exerciseId);
             return analysis;
         } catch (Exception e) {
@@ -186,7 +172,7 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
      * @see etutor.core.evaluation.Evaluator#grade(etutor.core.evaluation.Analysis, int,
      *      java.util.Map, java.util.Map)
      */
-    public Grading grade(Analysis analysis, int taskId, Map passedAttributes, Map passedParameters)
+    public Grading grade(Analysis analysis, int taskId, Map<String, String> passedAttributes, Map<String, String> passedParameters)
             throws Exception {
     	String msg;
     	String action;
@@ -219,7 +205,7 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
         msg += ", exercise ID " + exerciseId;
         LOGGER.info(msg);
 
-        action = (String)passedAttributes.get(DatalogConstants.ATTR_ACTION);
+        action = passedAttributes.get(DatalogConstants.ATTR_ACTION);
         if (DatalogConstants.ACTION_SUBMIT.equalsIgnoreCase(action) || DatalogConstants.ACTION_DIAGNOSE.equalsIgnoreCase(action)
                 || DatalogConstants.ACTION_RUN.equalsIgnoreCase(action)
                 || DatalogConstants.ACTION_CHECK.equalsIgnoreCase(action)) {
@@ -254,13 +240,13 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
      * @see etutor.core.evaluation.Evaluator#report(etutor.core.evaluation.Analysis,
      *      etutor.core.evaluation.Grading, java.util.Map, java.util.Map)
      */
-    public Report report(Analysis analysis, Grading grading, Map passedAttributes,
-                         Map passedParameters, Locale locale) throws Exception {
+    public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes,
+                         Map<String, String> passedParameters, Locale locale) throws Exception {
         String msg;
         DatalogAnalysis datalogAnalysis;
         DatalogGrading datalogGrading;
         DatalogFeedback fb;
-        Object diagnoseLevelObj;
+        String diagnoseLevelStr;
         int diagnoseLevel;
         int exerciseId;
         
@@ -299,8 +285,8 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
     	msg += "Start reporting with exerciseID " + exerciseId;
         LOGGER.info(msg);
 
-        diagnoseLevelObj = passedAttributes.get(DatalogConstants.ATTR_DIAGNOSE_LEVEL);
-        if (diagnoseLevelObj == null || !(diagnoseLevelObj instanceof String)) {
+        diagnoseLevelStr = passedAttributes.get(DatalogConstants.ATTR_DIAGNOSE_LEVEL);
+        if (diagnoseLevelStr == null) {
             msg = new String();
             msg += "Report processing was stopped.\n";
             msg += "Passed attribute " + DatalogConstants.ATTR_DIAGNOSE_LEVEL;
@@ -309,11 +295,11 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
             throw new ReportException(msg);
         }
         try {
-            diagnoseLevel = Integer.parseInt((String)diagnoseLevelObj);
+            diagnoseLevel = Integer.parseInt(diagnoseLevelStr);
         } catch (NumberFormatException e) {
         	msg = new String();
             msg += "Report processing was stopped.\n ";
-            msg += "No valid diagnose level: " + diagnoseLevelObj + ".";
+            msg += "No valid diagnose level: " + diagnoseLevelStr + ".";
             LOGGER.error(msg);
             throw new ReportException(msg);
         }
@@ -395,7 +381,7 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
             }
             try {
                 return ((DatalogReport)this.report
-                        (analysis, null, passedAttributes, new HashMap<String, String>(), locale))
+                        (analysis, null, passedAttributes, new HashMap<>(), locale))
                         .getRenderedResult();
             } catch (Exception e) {
                 e.printStackTrace();

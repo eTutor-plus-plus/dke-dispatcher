@@ -29,21 +29,6 @@ public class DatalogCoreManager {
     private static DatalogCoreManager coreManager;
     
     /**
-     * Location of the folder for temp files which are created when analyzing Datalog queries.
-     */
-    public final static String TEMP_FOLDER = "C:/apache-tomcat-6.0.24/lib/";
-
-    /**
-     * Location of the configuration file for logging
-     */
-    public final static String LOG4J_PROPERTIES = "/etutor/resources/modules/datalog/properties/log4j.properties";
-
-    /**
-     * Location of the datasource within the JNDI context which is used for retrieving pooled connections
-     */
-    public final static String NAMING_DATASOURCE = "dlg.java.naming.datasource";
-    
-    /**
      * Location of the properties file from which to get basic information for setting up a datalog
      * exercise.
      */
@@ -60,24 +45,6 @@ public class DatalogCoreManager {
      * of a Datalog result or the analysis of this result in HTML format.
      */
     public final static String XSL_RENDER_DATALOG = "/dlg/xml/render-datalog.xsl";
-
-    /**
-     * Property key for the executable file of the datalog processor.
-     */
-    public final static String KEY_EXE = "datalog.exe";
-
-    /**
-     * Property key for the time limit for processing queries, which is interpreted as milliseconds
-     * given by a <code>long</code> number.
-     */
-    public final static String KEY_TIMEOUT = "datalog.timeout";
-
-    /**
-     * Property key for the interval, which indicates the period of checking whether the processor
-     * has finished analyzing the query. This is also interpreted as milliseconds given by a
-     * <code>long</code> number.
-     */
-    public final static String KEY_INTERVAL = "datalog.interval";
 
     /**
      * Property key for the database table name which holds the exercise definitions.
@@ -116,14 +83,6 @@ public class DatalogCoreManager {
      */
     public final static String KEY_TABLE_TERMS_UNCHECKED = "table.terms.encryption";    
 
-    /**
-     * Property key for the highest integer which should be considered when processing datalog
-     * queries. This is relevant when arithmetic functions are part of querying, dealing with
-     * numbers. If the processor comes across any number which exceeds the defined highest integer,
-     * an exception is thrown which is wrapped in a {@link at.jku.dke.etutor.modules.dlg.QuerySyntaxException} and is
-     * therefor treated as if the query contains syntax errors.
-     */
-    public final static String KEY_MAX_INT = "datalog.max.int";
 
     /**
      * Property key which indicates whether the module is run in debug modus. The implication of
@@ -207,6 +166,7 @@ public class DatalogCoreManager {
      * @throws InvalidResourceException if the resource can not be found
      */
     public static URL getResource(String resource) throws InvalidResourceException {
+        // URL url = DatalogCoreManager.class.getClassLoader().getResource(resource);
         URL url = DatalogCoreManager.class.getResource(resource);
         URL baseURL = null;
         if (url == null) {
@@ -266,7 +226,6 @@ public class DatalogCoreManager {
      * log4j.properties into the working directory. 
      * 
      * @return the initialized <code>Logger</code>.
-     * @see #LOG4J_PROPERTIES
      */
     private static Logger initLogger() {
         Logger logger;

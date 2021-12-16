@@ -1,7 +1,11 @@
 package at.jku.dke.etutor.modules.dlg.analysis;
 
 import at.jku.dke.etutor.core.evaluation.Analysis;
-import at.jku.dke.etutor.modules.dlg.*;
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.modules.dlg.AnalysisException;
+import at.jku.dke.etutor.modules.dlg.ParameterException;
+import at.jku.dke.etutor.modules.dlg.QuerySyntaxException;
+import at.jku.dke.etutor.modules.dlg.ReportException;
 import at.jku.dke.etutor.modules.dlg.grading.DatalogGrading;
 import at.jku.dke.etutor.modules.dlg.report.DatalogFeedback;
 import at.jku.dke.etutor.modules.dlg.report.DatalogReport;
@@ -14,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -34,12 +39,14 @@ import java.util.Objects;
  * @version 1.0
  * @since 1.0
  */
-public class DatalogAnalysis implements Analysis, Serializable {
+public class DatalogAnalysis implements Analysis {
 
 	/**
 	 * The logger used for logging.
 	 */
 	private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(DatalogAnalysis.class);
+
+	private final String TEMP_FOLDER;
 
 	private Serializable submission;
 
@@ -53,11 +60,11 @@ public class DatalogAnalysis implements Analysis, Serializable {
 
 	private int exerciseID;
 
-	private ArrayList missingPredicates;
+	private ArrayList<WrappedPredicate> missingPredicates;
 
-	private ArrayList missingFacts;
+	private ArrayList<WrappedPredicate.WrappedFact> missingFacts;
 
-	private ArrayList redundantFacts;
+	private ArrayList<WrappedPredicate.WrappedFact> redundantFacts;
 
 	private boolean debugMode;
 
@@ -68,6 +75,7 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 */
 	public DatalogAnalysis() {
 		super();
+		this.TEMP_FOLDER="";
 		init(false);
 	}
 
@@ -81,11 +89,7 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 * @param submission2
 	 *          The "submitted" query.
 	 * @param queries
-	 *          A number of predicates which are required to be present in the
-	 *          result of both queries, and so to be considered when analyzing.
-	 *          This may be an empty array or even <code>null</code>, which
-	 *          would imply that any result is correct, no matter how different it
-	 *          is from the correct solution.
+	 *          A number of queries which are executed for both submissions, and so to be considered when analyzing.
 	 * @param processor
 	 *          The processor object to use for evaluating the queries. This holds
 	 *          the common database for both queries.
@@ -93,30 +97,16 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 *          A flag which indicates if intermediate results, which are part of
 	 *          the analysis, grading and reporting process, should be saved to
 	 *          files.
-	 * @throws ParameterException
-	 *           if the specified predicates, which should be considered when
-	 *           analyzing do not even exist in the result of the "correct" query.
-	 * @throws InitException
-	 *           if the processor can not be set up properly for evaluating the
-	 *           queries.
-	 * @throws TimeoutException
-	 *           if the correct query result object was created from a query,
-	 *           which could not be evaluated in time.
-	 * @throws QuerySyntaxException
-	 *           if the correct query result object was created from a query,
-	 *           which is syntactically incorrect.
-	 * @throws AnalysisException
-	 *           if any kind of unexpected Exception occured during analyzing the
-	 *           results.
 	 */
 	public DatalogAnalysis(String submission1, String submission2, String[] queries, DatalogProcessor processor,
-			boolean debugMode, boolean notAllowFacts) {
+						   boolean debugMode, boolean notAllowFacts, ApplicationProperties properties) {
 		super();
+		this.TEMP_FOLDER = properties.getDatalog().getTempFolder();
 		init(debugMode);
 		try {
-			DatalogResult result1 = new DatalogResult(submission1, processor, queries, false);
-			DatalogResult result2 = new DatalogResult(submission2, processor, queries, notAllowFacts);
-			this.setResults(result1, result2);
+			var r1 = new DatalogResult(submission1, processor, queries, false);
+			var r2 = new DatalogResult(submission2, processor, queries, notAllowFacts);
+			this.setResults(r1, r2);
 		}
 		catch (Exception e) {
 			this.correct = false;
@@ -133,9 +123,6 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 *          The "submitted" query result.
 	 * @throws NullPointerException
 	 *           if one of the results is <code>null</code>
-	 * @throws TimeoutException
-	 *           if the correct query result object was created from a query,
-	 *           which could not be evaluated in time.
 	 * @throws QuerySyntaxException
 	 *           if the correct query result object was created from a query,
 	 *           which is syntactically incorrect.
@@ -146,15 +133,25 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 *           inconsistent model, or if any kind of unexpected Exception
 	 *           occured when analyzing the results.
 	 */
-	public void setResults(DatalogResult result1, DatalogResult result2) throws NullPointerException, TimeoutException,
+	public void setResults(DatalogResult result1, DatalogResult result2) throws NullPointerException,
 			QuerySyntaxException, AnalysisException {
 		LOGGER.debug("Start comparing correct and submitted result object");
+		Objects.requireNonNull(result1);
+		Objects.requireNonNull(result2);
+
 		this.result1 = result1;
 		this.result2 = result2;
 		this.requPredicates = result1.getQueries();
+
+		if(result1.getSyntaxException() != null || result2.getSyntaxException() != null){
+			this.correct = false;
+			return;
+		}
+
 		compare(result1, result2);
 		this.correct = this.checkCorrectness();
 		this.setSubmission(result2.getQuery());
+
 		if (isDebugMode()) {
 			LOGGER.info("Writing the correct and submitted Datalog results as files (debug mode)");
 			try {
@@ -191,21 +188,18 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 * Initializes all error lists.
 	 */
 	private void initErrorLists() {
-		missingPredicates = new ArrayList();
-		missingFacts = new ArrayList();
-		redundantFacts = new ArrayList();
+		missingPredicates = new ArrayList<>();
+		missingFacts = new ArrayList<>();
+		redundantFacts = new ArrayList<>();
 	}
 
 
-	private void compare(DatalogResult result1, DatalogResult result2) {
-		Objects.requireNonNull(result1);
-		Objects.requireNonNull(result2);
+	private void compare(DatalogResult result1, DatalogResult result2) throws AnalysisException {
 		var model1 = result1.getConsistentModel();
 		var model2 = result2.getConsistentModel();
 		if (model1 != null && model2 != null) {
 			var predicates1 = model1.getPredicates();
-			for (int i = 0; i < predicates1.length; i++) {
-				WrappedPredicate pred1 = predicates1[i];
+			for (WrappedPredicate pred1 : predicates1) {
 				WrappedPredicate pred2;
 				if ((pred2 = model2.getPredicate(pred1.getName())) == null) {
 					missingPredicates.add(pred1);
@@ -213,7 +207,7 @@ public class DatalogAnalysis implements Analysis, Serializable {
 					comparePredicates(pred1, pred2);
 				}
 			}
-		}
+		}else throw new AnalysisException("Analysis stopped, as one of the results does not contain a consistent model");
 	}
 
 	/**
@@ -227,16 +221,14 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 */
 	private void comparePredicates(WrappedPredicate p1, WrappedPredicate p2) {
 		WrappedPredicate.WrappedFact[] facts2 = p2.getFacts();
-		for (int i = 0; i < facts2.length; i++) {
-			WrappedPredicate.WrappedFact fact2 = facts2[i];
+		for (WrappedPredicate.WrappedFact fact2 : facts2) {
 			WrappedPredicate.WrappedFact fact1;
 			if ((p1.getFact(fact2)) == null) {
 				redundantFacts.add(fact2);
 			}
 		}
 		WrappedPredicate.WrappedFact[] facts1 = p1.getFacts();
-		for (int i = 0; i < facts1.length; i++) {
-			WrappedPredicate.WrappedFact fact1 = facts1[i];
+		for (WrappedPredicate.WrappedFact fact1 : facts1) {
 			if (p2.getFact(fact1) == null) {
 				missingFacts.add(fact1);
 			}
@@ -250,14 +242,13 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 * <p>
 	 * This is only relevant if the submitted result like the correct result
 	 * consists of exactly one model which is consistent (see
-	 * {@link DatalogResult#hasMultipleModels()} and
 	 * {@link DatalogResult#hasConsistentModel()}).
 	 * 
 	 * @return A list of
 	 *         {@link WrappedPredicate.WrappedFact}
 	 *         objects.
 	 */
-	public ArrayList getMissingFacts() {
+	public List<WrappedPredicate.WrappedFact> getMissingFacts() {
 		return missingFacts;
 	}
 
@@ -266,14 +257,13 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	 * <p>
 	 * This is only relevant if the submitted result like the correct result
 	 * consists of exactly one model which is consistent (see
-	 * {@link DatalogResult#hasMultipleModels()}and
 	 * {@link DatalogResult#hasConsistentModel()}).
 	 * 
 	 * @return A list of
 	 *         {@link WrappedPredicate.WrappedFact}
 	 *         objects.
 	 */
-	public ArrayList getRedundantFacts() {
+	public List<WrappedPredicate.WrappedFact> getRedundantFacts() {
 		return redundantFacts;
 	}
 
@@ -421,7 +411,7 @@ public class DatalogAnalysis implements Analysis, Serializable {
 		this.debugMode = debugMode;
 	}
 
-	public ArrayList getMissingPredicates() {
+	public List<WrappedPredicate> getMissingPredicates() {
 		return missingPredicates;
 	}
 
@@ -436,10 +426,9 @@ public class DatalogAnalysis implements Analysis, Serializable {
 	private FileParameter createDefaultFileParameter() {
 		boolean defaultOnError = false;
 		boolean deleteOnExit = false;
-		String folder = DatalogCoreManager.TEMP_FOLDER;
 		String prefix = null;
 		String suffix = null;
-		return new FileParameter(folder, prefix, suffix, deleteOnExit, defaultOnError);
+		return new FileParameter(TEMP_FOLDER, prefix, suffix, deleteOnExit, defaultOnError);
 	}
 
 	/**

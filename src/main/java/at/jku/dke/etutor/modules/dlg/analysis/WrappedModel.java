@@ -33,7 +33,7 @@ public class WrappedModel implements Serializable {
 
 
     /**
-     * Constructs a new <code>WrappedModel</code> from a model object, as it is returned by the processor.
+     * Constructs a new <code>WrappedModel</code> from a set of PositiveAtoms as returned by the ABCDatalogProcessor.
      * @param result The model object, as it is returned by the processor.
      */
     public WrappedModel(Set<PositiveAtom> result) {
@@ -42,6 +42,10 @@ public class WrappedModel implements Serializable {
         this.predicateNames = getPredicateNames(this.predicates);
     }
 
+    /**
+     * Constructs a new <code>WrappedModel</code> from a Map as returned by the DlvCliDatalogProcessor.
+     * @param model The model object, as it is returned by the processor. Maps predicates to lists of facts
+     */
     public WrappedModel(Map<String, List<String>> model){
         this.consistentModel = true;
         this.predicates = getWrappedPredicates(model);

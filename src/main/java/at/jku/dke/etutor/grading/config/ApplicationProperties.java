@@ -73,6 +73,10 @@ public class ApplicationProperties {
 
     public static class Datalog{
         private String connUrl;
+        private String DLVPathAsCommand;
+        private String cautiousOptionForDlv;
+        private String workDirForDlv;
+        private String tempFolder;
 
         public String getConnUrl() {
             return connUrl;
@@ -80,6 +84,38 @@ public class ApplicationProperties {
 
         public void setConnUrl(String connUrl) {
             this.connUrl = connUrl;
+        }
+
+        public String getDLVPathAsCommand() {
+            return DLVPathAsCommand;
+        }
+
+        public void setDLVPathAsCommand(String DLVPathAsCommand) {
+            this.DLVPathAsCommand = DLVPathAsCommand;
+        }
+
+        public String getCautiousOptionForDlv() {
+            return cautiousOptionForDlv;
+        }
+
+        public void setCautiousOptionForDlv(String cautiousOptionForDlv) {
+            this.cautiousOptionForDlv = cautiousOptionForDlv;
+        }
+
+        public String getWorkDirForDlv() {
+            return workDirForDlv;
+        }
+
+        public void setWorkDirForDlv(String workDirForDlv) {
+            this.workDirForDlv = workDirForDlv;
+        }
+
+        public String getTempFolder() {
+            return tempFolder;
+        }
+
+        public void setTempFolder(String tempFolder) {
+            this.tempFolder = tempFolder;
         }
     }
     /**

@@ -97,6 +97,11 @@
             <version>1.0</version>
         </dependency>
         <dependency>
+            <groupId>edu.harvard.seas.pl</groupId>
+            <artifactId>abcdatalog</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>xml-apis</artifactId>
             <version>1.0</version>
