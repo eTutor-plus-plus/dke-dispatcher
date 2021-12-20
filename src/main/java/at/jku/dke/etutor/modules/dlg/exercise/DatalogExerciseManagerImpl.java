@@ -1,37 +1,29 @@
 package at.jku.dke.etutor.modules.dlg.exercise;
 
-import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
-
+import at.jku.dke.etutor.grading.rest.dto.DatalogTaskGroupDTO;
 import at.jku.dke.etutor.modules.dlg.DatalogCoreManager;
+import at.jku.dke.etutor.modules.dlg.ExerciseManagementException;
 import at.jku.dke.etutor.modules.dlg.GradingException;
 import at.jku.dke.etutor.modules.dlg.grading.DatalogScores;
 import at.jku.dke.etutor.modules.dlg.util.PropertyFile;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
-public class DatalogExerciseManagerImpl extends UnicastRemoteObject implements DatalogExerciseManager {
+import java.io.Serializable;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
+
+@Service
+public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 	
 	private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(DatalogExerciseManagerImpl.class);
 	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
 
-	public DatalogExerciseManagerImpl() throws RemoteException { 
-		super();
-        //evaluator implementation is bound to RMI registry at startup process; 
-        //requesting core manager instance causes creation of singleton
-        //and initialization of basic resources with configuration errors
-        //being logged
+	public DatalogExerciseManagerImpl() {
         DatalogCoreManager.getInstance();
 	}
 	
@@ -931,4 +923,62 @@ public class DatalogExerciseManagerImpl extends UnicastRemoteObject implements D
 
         return scores;
     }
+
+	public int createTaskGroup(DatalogTaskGroupDTO facts) throws ExerciseManagementException {
+		String msg;
+		DatalogCoreManager coreManager;
+		PropertyFile properties;
+		String factsTable;
+		int factId;
+
+
+		msg = "";
+		msg += "Try obtaining facts id for new task group:  "+facts;
+		LOGGER.info(msg);
+
+		try {
+			coreManager = DatalogCoreManager.getInstance();
+			properties = coreManager.getPropertyFile();
+			factsTable = properties.loadProperty(DatalogCoreManager.KEY_TABLE_FACTS);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			throw new ExerciseManagementException(e);
+		}
+
+		String query = "SELECT max(id) AS id FROM "+ factsTable;
+
+		try (Connection conn = coreManager.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(query);
+				ResultSet resultSet = stmt.executeQuery()){
+			if(resultSet.next()){
+				factId = resultSet.getInt("id");
+				factId++;
+			}else throw new ExerciseManagementException("Could not fetch available facts id");
+		} catch (SQLException throwables) {
+			LOGGER.error(throwables.getMessage());
+			throw new ExerciseManagementException(throwables);
+		}
+
+		msg = "";
+		msg += "Found available facts id for new task group: "+factId + "\n";
+		msg += "Trying to insert facts.";
+		LOGGER.info(msg);
+
+		String update = "INSERT INTO "+factsTable + "(id, facts, name) VALUES (?,?, ?)";
+		try(Connection conn = coreManager.getConnection();
+		PreparedStatement stmt = conn.prepareStatement(update)){
+			stmt.setInt(1, factId);
+			stmt.setString(2, facts.getFacts());
+			stmt.setString(3, facts.getName());
+			stmt.executeUpdate();
+			conn.commit();
+		}catch (SQLException throwables) {
+			LOGGER.error(throwables.getMessage());
+			throw new ExerciseManagementException(throwables);
+		}
+		msg = "";
+		msg += "Facts have been inserted";
+		LOGGER.info(msg);
+		return factId;
+	}
 }
