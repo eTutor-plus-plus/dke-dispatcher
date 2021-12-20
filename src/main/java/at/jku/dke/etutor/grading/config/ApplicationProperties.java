@@ -77,6 +77,7 @@ public class ApplicationProperties {
         private String cautiousOptionForDlv;
         private String workDirForDlv;
         private String tempFolder;
+        private String factEncodingSuffix;
 
         public String getConnUrl() {
             return connUrl;
@@ -116,6 +117,14 @@ public class ApplicationProperties {
 
         public void setTempFolder(String tempFolder) {
             this.tempFolder = tempFolder;
+        }
+
+        public String getFactEncodingSuffix() {
+            return factEncodingSuffix;
+        }
+
+        public void setFactEncodingSuffix(String factEncodingSuffix) {
+            this.factEncodingSuffix = factEncodingSuffix;
         }
     }
     /**

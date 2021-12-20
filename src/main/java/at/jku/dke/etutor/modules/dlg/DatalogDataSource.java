@@ -14,7 +14,7 @@ public class DatalogDataSource {
     private static HikariDataSource ds;
 
 
-    public static Connection getConnection() throws SQLException {
+    public static synchronized Connection getConnection() throws SQLException {
         return ds.getConnection();
     }
 

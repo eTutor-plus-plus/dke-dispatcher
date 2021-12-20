@@ -1,10 +1,10 @@
 package at.jku.dke.etutor.modules.dlg.exercise;
 
+
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 
 /**
@@ -18,8 +18,8 @@ public class DatalogExerciseBean implements Serializable {
 	private Integer factsId;
 	private Double points;
 	private String query;
-	private List predicates;
-	private List terms;
+	private List<String> predicates;
+	private List<TermDescription> terms;
 	private Map facts;
 	private String predicateToAdd;
 	private TermDescription termToAdd;
@@ -60,7 +60,6 @@ public class DatalogExerciseBean implements Serializable {
 
 	/**
 	 * Sets the ID of the facts base for the exercise specification. Should be 
-	 * one of the IDs as set in {@link #setFacts(TreeMap)}.
 	 * @param factsId the ID of the facts base to set
 	 */
 	public void setFactsId(Integer factsId) {
@@ -73,7 +72,7 @@ public class DatalogExerciseBean implements Serializable {
 	 * @return a list of <code>String</code> objects representing the name 
 	 * of required predicates
 	 */
-	public List getPredicates() {
+	public List<String> getPredicates() {
 		return predicates;
 	}
 
@@ -83,7 +82,7 @@ public class DatalogExerciseBean implements Serializable {
 	 * @param predicates a list of <code>String</code> objects representing the name 
 	 * of required predicates 
 	 */
-	public void setPredicates(List predicates) {
+	public void setPredicates(List<String> predicates) {
 		this.predicates = predicates;
 	}
 
@@ -110,7 +109,7 @@ public class DatalogExerciseBean implements Serializable {
 	 * @return a list of terms, represented by an array of term descriptions, which
 	 * identify the term.
 	 */
-	public List getTerms() {
+	public List<TermDescription> getTerms() {
 		return terms;
 	}
 
@@ -120,7 +119,7 @@ public class DatalogExerciseBean implements Serializable {
 	 * @param terms a list of terms, represented by an array of term descriptions, which
 	 * identify the term.
 	 */
-	public void setTerms(List terms) {
+	public void setTerms(List<TermDescription> terms) {
 		this.terms = terms;
 	}
 

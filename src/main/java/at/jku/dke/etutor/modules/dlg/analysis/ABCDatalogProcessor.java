@@ -29,9 +29,9 @@ public class ABCDatalogProcessor implements DatalogProcessor{
     }
 
 
-    public WrappedModel[] executeQuery(String submission, String[] queries, boolean notAllowFacts) throws QuerySyntaxException {
+    public WrappedModel[] executeQuery(String submission, String[] queries) throws QuerySyntaxException {
             try {
-                if(notAllowFacts) checkSubmissionForFacts(submission);
+                checkSubmissionForFacts(submission);
                 String database = facts + "\n";
                 database += submission;
                 var r = new StringReader(database);

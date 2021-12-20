@@ -104,6 +104,4 @@ public class ETutorDLGController {
         }
         return ResponseEntity.ok(facts);
     }
-
-
 }

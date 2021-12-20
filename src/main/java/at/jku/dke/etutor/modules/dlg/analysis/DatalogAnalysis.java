@@ -99,13 +99,13 @@ public class DatalogAnalysis implements Analysis {
 	 *          files.
 	 */
 	public DatalogAnalysis(String submission1, String submission2, String[] queries, DatalogProcessor processor,
-						   boolean debugMode, boolean notAllowFacts, ApplicationProperties properties) {
+						   boolean debugMode,  ApplicationProperties properties) {
 		super();
 		this.TEMP_FOLDER = properties.getDatalog().getTempFolder();
 		init(debugMode);
 		try {
-			var r1 = new DatalogResult(submission1, processor, queries, false);
-			var r2 = new DatalogResult(submission2, processor, queries, notAllowFacts);
+			var r1 = new DatalogResult(submission1, processor, queries);
+			var r2 = new DatalogResult(submission2, processor, queries);
 			this.setResults(r1, r2);
 		}
 		catch (Exception e) {

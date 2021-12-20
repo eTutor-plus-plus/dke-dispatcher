@@ -154,8 +154,8 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
     	
         // Analysis, actually
         try {
-            processor = new DlvCliDatalogProcessor(facts, this.properties);
-            analysis = new DatalogAnalysis(rulesCorrect, rulesSubmitted, queries, processor, debugMode, notAllowFacts, this.properties);
+            processor = new DlvCliDatalogProcessor(facts, exercise.getTerms(), notAllowFacts, this.properties);
+            analysis = new DatalogAnalysis(rulesCorrect, rulesSubmitted, queries, processor, debugMode, this.properties);
             analysis.setExerciseID(exerciseId);
             return analysis;
         } catch (Exception e) {

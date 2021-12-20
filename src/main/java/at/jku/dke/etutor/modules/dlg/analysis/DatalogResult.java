@@ -45,10 +45,10 @@ public class DatalogResult implements Serializable {
     private ModelConsistency consistency;
 
     public DatalogResult(
-            String submission, DatalogProcessor processor, String[] queries, boolean notAllowFacts
+            String submission, DatalogProcessor processor, String[] queries
     ) throws InternalException {
         try {
-            this.models = processor.executeQuery(submission, queries, notAllowFacts);
+            this.models = processor.executeQuery(submission, queries);
             this.submission = submission;
             this.queries = queries;
         } catch (QuerySyntaxException e) {

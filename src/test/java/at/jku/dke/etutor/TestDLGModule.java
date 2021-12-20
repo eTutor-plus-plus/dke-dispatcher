@@ -37,7 +37,7 @@ public class TestDLGModule {
     private String CONN_USER;
     private String CONN_PWD;
 
-    private final String ACTION_STRING = "submit";
+    private final String[] ACTION_STRINGS = {"diagnose", "submit"};
     private final String DIAGNOSE_LEVEL = "3";
     private final String TASK_TYPE = "dlg";
     private final String EXERCISE_CONSTRAINTS = "" ;
@@ -64,17 +64,19 @@ public class TestDLGModule {
      * @throws SQLException
      */
     @Test
-    void whenSubmissionIsSolution_thenAllPoints() throws IOException, InterruptedException, SQLException {
+    void whenSubmissionIsSolution_thenAllPoints() throws  InterruptedException, SQLException {
         ResultSet exercises = getExercisesResultSet();
         while (exercises.next()) {
             int id = exercises.getInt("id");
             String solution = exercises.getString("query");
-            Submission submission = prepareSubmission(id, solution);
+            Submission submission = prepareSubmission(id, solution, ACTION_STRINGS[0]);
             assertNotNull(submission);
             evaluateSubmission(submission);
-            Thread.sleep(350);
+            submission = prepareSubmission(id, solution, ACTION_STRINGS[1]);
+            assertNotNull(submission);
+            evaluateSubmission(submission);
         }
-        Thread.sleep(350);
+        Thread.sleep(10000);
         getGradings();
         System.out.println(ids.size());
     }
@@ -98,10 +100,10 @@ public class TestDLGModule {
         }
     }
 
-    Submission prepareSubmission(int id, String solution) {
+    Submission prepareSubmission(int id, String solution, String action) {
         Submission submission = new Submission();
         HashMap<String, String> attributeMap = new HashMap<>();
-        attributeMap.put("action", ACTION_STRING);
+        attributeMap.put("action", action);
         attributeMap.put("diagnoseLevel", DIAGNOSE_LEVEL);
         attributeMap.put("submission", solution);
         submission.setPassedAttributes(attributeMap);

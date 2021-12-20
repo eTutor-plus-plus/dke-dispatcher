@@ -1,56 +1,54 @@
 package at.jku.dke.etutor.modules.dlg.analysis;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.modules.dlg.AnalysisException;
 import at.jku.dke.etutor.modules.dlg.InternalException;
 import at.jku.dke.etutor.modules.dlg.QuerySyntaxException;
-import edu.harvard.seas.pl.abcdatalog.ast.Clause;
-import edu.harvard.seas.pl.abcdatalog.parser.DatalogParseException;
-import edu.harvard.seas.pl.abcdatalog.parser.DatalogParser;
-import edu.harvard.seas.pl.abcdatalog.parser.DatalogTokenizer;
+import at.jku.dke.etutor.modules.dlg.exercise.TermDescription;
 import org.apache.logging.log4j.util.Strings;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
 public class DlvCliDatalogProcessor implements DatalogProcessor{
     private final String FACTS;
+    private final List<TermDescription> UNCHECKED_TERMS;
     private final String[] CMD_ARRAY;
     private final File WORK_DIR_FILE;
     private final String LINE_BREAK = "\n";
     private final String TEMP_FOLDER;
+    private final String SUFFIX;
     private Process p;
 
-    public DlvCliDatalogProcessor(String facts, ApplicationProperties properties){
-        this.FACTS = facts;
+    public DlvCliDatalogProcessor(String facts, List<TermDescription> uncheckedTerms, boolean encodeFacts, ApplicationProperties properties){
         this.CMD_ARRAY = new String[3];
         this.CMD_ARRAY[0] = properties.getDatalog().getDLVPathAsCommand();
         this.CMD_ARRAY[2] = properties.getDatalog().getCautiousOptionForDlv();
         this.WORK_DIR_FILE = new File(properties.getDatalog().getWorkDirForDlv());
         this.TEMP_FOLDER = properties.getDatalog().getTempFolder();
+        this.UNCHECKED_TERMS = uncheckedTerms;
+        this.SUFFIX = properties.getDatalog().getFactEncodingSuffix();
+        if(encodeFacts) {
+            this.FACTS = encodeFacts(facts);
+        }else this.FACTS = facts;
     }
 
     @Override
-    public WrappedModel[] executeQuery(String submission, String[] queries, boolean notAllowFacts) throws QuerySyntaxException, InternalException {
+    public WrappedModel[] executeQuery(String submission, String[] queries) throws QuerySyntaxException, InternalException {
         String query;
         String predicate;
         File tempDlv;
         Map<String, List<String>> model = new HashMap<>();
-        if(notAllowFacts) {
-            try {
-                checkSubmissionForFacts(submission);
-            } catch (DatalogParseException | AnalysisException e) {
-                throw new QuerySyntaxException(e);
-            }
-        }
 
         for(int i = 0; i<queries.length; i++){
             query = queries[i];
             predicate = getPredicateFromQuery(query);
             try {
-                List<String> facts = new ArrayList<>();
+                List<String> resultFacts = new ArrayList<>();
 
                 // Create Temp dlv file and write facts + submission + query
                 tempDlv = File.createTempFile(UUID.randomUUID().toString(), ".dlv", new File(TEMP_FOLDER));
@@ -83,11 +81,11 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
                 String s;
                 resultReader.readLine();
                 while ((s = resultReader.readLine()) != null) {
-                    if(Strings.isNotBlank(s)) facts.add(s);
+                    if(Strings.isNotBlank(s)) resultFacts.add(s);
                 }
                 resultReader.close();
                 // Add entry to map
-                if(p.waitFor()==0) model.put(predicate, facts);
+                if(p.waitFor()==0) model.put(predicate, resultFacts);
                 tempDlv.delete();
             } catch (IOException | InterruptedException e) {
                 throw new InternalException(e);
@@ -102,13 +100,51 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
         return wrappedModel;
     }
 
-    private void checkSubmissionForFacts(String submission) throws DatalogParseException, AnalysisException {
-        var r = new StringReader(submission);
-        DatalogTokenizer t = new DatalogTokenizer(r);
-        Set<Clause> prog = DatalogParser.parseProgram(t);
-        for(Clause c : prog){
-            if (c.getBody().isEmpty()) throw new AnalysisException("Analysis stopped, as the submission contains fact declarations: \n "+ c);
-        }
+    private String encodeFacts(String factString){
+      var facts = Arrays.stream(factString.split("\\.")).toList();
+      var newFacts = new StringBuilder();
+      for(String fact : facts){
+          if(Strings.isBlank(fact)) {
+              newFacts.append("\n");
+              continue;
+          }
+
+          var index = fact.indexOf("(");
+          var predicate = fact
+                  .substring(0, index != -1 ? index : fact.length())
+                  .replace("\n", "")
+                  .replace("\r", "")
+                  .replace(" ", "");
+          var newFact = new StringBuilder();
+          newFact.append(predicate);
+
+          if(index != -1){
+              var terms = fact.substring(index+1, fact.indexOf(")")).split(",");
+              newFact.append("(");
+              for(int i = 0; i < terms.length; i++){
+                  int termPosition = i+1;
+                  int finalI = i;
+                  var subList = UNCHECKED_TERMS
+                          .stream()
+                          .filter(term -> term.getPredicate().equals(predicate))
+                          .filter(term -> term.getPosition().equals(termPosition+""))
+                          .filter(term -> term.getTerm().replace(" ", "").equals(terms[finalI].replace(" ", "")))
+                          .toList();
+                  if(i > 0){
+                      newFact.append(",");
+                  }
+
+                  newFact.append(terms[i]);
+
+                  if(subList.isEmpty()){
+                      newFact.append(SUFFIX);
+                  }
+              }
+              newFact.append(").").append("\n");
+          }
+          newFacts.append(newFact);
+      }
+      return newFacts.toString();
     }
 
     private void handleSyntaxError(BufferedReader br, Process p, File file) throws QuerySyntaxException {

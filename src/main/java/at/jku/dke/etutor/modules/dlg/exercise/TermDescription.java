@@ -7,6 +7,7 @@
 package at.jku.dke.etutor.modules.dlg.exercise;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author nitsche
@@ -59,5 +60,18 @@ public class TermDescription implements Serializable {
 	 */
 	public void setTerm(String term) {
 		this.term = term;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		TermDescription that = (TermDescription) o;
+		return predicate.equals(that.predicate);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(predicate);
 	}
 }
