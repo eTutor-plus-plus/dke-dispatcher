@@ -981,4 +981,42 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 		LOGGER.info(msg);
 		return factId;
 	}
+
+	public void deleteTaskGroup(int id) throws ExerciseManagementException {
+		String msg;
+		DatalogCoreManager coreManager;
+		PropertyFile properties;
+		String factsTable;
+		String exerciseTable;
+
+		msg = "";
+		msg += "Try deleting task group and exercises for facts id: "+ id;
+		LOGGER.info(msg);
+
+		try {
+			coreManager = DatalogCoreManager.getInstance();
+			properties = coreManager.getPropertyFile();
+			factsTable = properties.loadProperty(DatalogCoreManager.KEY_TABLE_FACTS);
+			exerciseTable = properties.loadProperty(DatalogCoreManager.KEY_TABLE_EXERCISE);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			throw new ExerciseManagementException(e);
+		}
+		String deleteGroup = "DELETE FROM "+factsTable + " WHERE id = ?";
+		String deleteTasks = "DELETE FROM "+exerciseTable + " WHERE facts = ?";
+		try(Connection con = coreManager.getConnection();
+		PreparedStatement stmtGroup = con.prepareStatement(deleteGroup);
+		PreparedStatement stmtTasks = con.prepareStatement(deleteTasks)){
+			stmtGroup.setInt(1, id);
+			stmtTasks.setInt(1, id);
+			stmtGroup.executeUpdate();
+			stmtTasks.executeUpdate();
+			con.commit();
+		} catch (SQLException throwables) {
+			LOGGER.warn(throwables.getMessage());
+			throw new ExerciseManagementException(throwables);
+		}
+		msg= "Deleted facts and exercises for id "+id;
+		LOGGER.info(msg);
+	}
 }

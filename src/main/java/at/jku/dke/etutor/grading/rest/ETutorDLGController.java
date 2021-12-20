@@ -8,10 +8,7 @@ import ch.qos.logback.classic.Logger;
 import edu.harvard.seas.pl.abcdatalog.parser.DatalogParseException;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/datalog")
@@ -35,9 +32,14 @@ public class ETutorDLGController {
         return ResponseEntity.ok(id);
     }
 
-    public void deleteTaskGroup(){
-        // taskgroup=facts löschen
-        //alle exercises von facts löschen
+    @DeleteMapping("/taskgroup/{id}")
+    public ResponseEntity<String> deleteTaskGroup(@PathVariable int id){
+       try{
+           service.deleteTaskGroup(id);
+           return ResponseEntity.ok("Deleted task group with id "+ id);
+       }catch(ExerciseManagementException e){
+           return ResponseEntity.status(500).body("Could not delete task group with id "+ id);
+       }
     }
 
     public void createExercise(int factsId){

@@ -34,4 +34,8 @@ public class DatalogResourceService {
         DatalogTokenizer t = new DatalogTokenizer(r);
         DatalogParser.parseProgram(t);
     }
+
+    public void deleteTaskGroup(int id) throws ExerciseManagementException {
+        exerciseManager.deleteTaskGroup(id);
+    }
 }
