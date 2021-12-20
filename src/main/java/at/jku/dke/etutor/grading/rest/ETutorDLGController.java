@@ -33,14 +33,24 @@ public class ETutorDLGController {
     }
 
     @DeleteMapping("/taskgroup/{id}")
-    public ResponseEntity<String> deleteTaskGroup(@PathVariable int id){
+    public ResponseEntity<String> deleteTaskGroup(@PathVariable int id, @RequestParam(required = false, value = "withTasks", defaultValue = "true") boolean deleteTasks){
        try{
-           service.deleteTaskGroup(id);
+           service.deleteTaskGroup(id, deleteTasks);
            return ResponseEntity.ok("Deleted task group with id "+ id);
        }catch(ExerciseManagementException e){
            return ResponseEntity.status(500).body("Could not delete task group with id "+ id);
        }
     }
+
+    @PostMapping("/taskgroup/{id}")
+    public void updateTaskGroup(@PathVariable int id, @RequestBody String newFacts){
+        try {
+            service.updateTaskGroup(id, newFacts);
+        } catch (DatalogParseException | ExerciseManagementException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void createExercise(int factsId){
         // exercise anlegen

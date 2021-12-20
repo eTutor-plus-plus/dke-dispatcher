@@ -982,7 +982,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 		return factId;
 	}
 
-	public void deleteTaskGroup(int id) throws ExerciseManagementException {
+	public void deleteTaskGroup(int id, boolean deleteTasks) throws ExerciseManagementException {
 		String msg;
 		DatalogCoreManager coreManager;
 		PropertyFile properties;
@@ -1002,21 +1002,57 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 			LOGGER.error(e.getMessage());
 			throw new ExerciseManagementException(e);
 		}
-		String deleteGroup = "DELETE FROM "+factsTable + " WHERE id = ?";
-		String deleteTasks = "DELETE FROM "+exerciseTable + " WHERE facts = ?";
+		String deleteGroupQu = "DELETE FROM "+factsTable + " WHERE id = ?";
+		String deleteTasksQu = "DELETE FROM "+exerciseTable + " WHERE facts = ?";
 		try(Connection con = coreManager.getConnection();
-		PreparedStatement stmtGroup = con.prepareStatement(deleteGroup);
-		PreparedStatement stmtTasks = con.prepareStatement(deleteTasks)){
+		PreparedStatement stmtGroup = con.prepareStatement(deleteGroupQu);
+		PreparedStatement stmtTasks = con.prepareStatement(deleteTasksQu)){
 			stmtGroup.setInt(1, id);
 			stmtTasks.setInt(1, id);
 			stmtGroup.executeUpdate();
-			stmtTasks.executeUpdate();
+			if(deleteTasks) stmtTasks.executeUpdate();
 			con.commit();
 		} catch (SQLException throwables) {
 			LOGGER.warn(throwables.getMessage());
 			throw new ExerciseManagementException(throwables);
 		}
 		msg= "Deleted facts and exercises for id "+id;
+		LOGGER.info(msg);
+	}
+
+
+	public void updateTaskGroup(int id, String newFacts) throws ExerciseManagementException {
+		String update;
+		DatalogCoreManager coreManager;
+		PropertyFile properties;
+		String factsTable;
+		String msg;
+		msg = "";
+		msg += "Try updating task group: "+ id;
+		LOGGER.info(msg);
+
+		try {
+			coreManager = DatalogCoreManager.getInstance();
+			properties = coreManager.getPropertyFile();
+			factsTable = properties.loadProperty(DatalogCoreManager.KEY_TABLE_FACTS);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			throw new ExerciseManagementException(e);
+		}
+
+		update = "UPDATE "+ factsTable + " SET facts = ? WHERE id = ?";
+		try(var con = coreManager.getConnection();
+		var stmt = con.prepareStatement(update)){
+			stmt.setString(1, newFacts);
+			stmt.setInt(2, id);
+			stmt.executeUpdate();
+			con.commit();
+		} catch (SQLException throwables) {
+			LOGGER.warn(throwables.getMessage());
+			throw new ExerciseManagementException(throwables);
+		}
+		msg = "";
+		msg += "Updated task group: "+ id;
 		LOGGER.info(msg);
 	}
 }

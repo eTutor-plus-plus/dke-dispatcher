@@ -35,7 +35,16 @@ public class DatalogResourceService {
         DatalogParser.parseProgram(t);
     }
 
-    public void deleteTaskGroup(int id) throws ExerciseManagementException {
-        exerciseManager.deleteTaskGroup(id);
+    public void deleteTaskGroup(int id, boolean deleteTasks) throws ExerciseManagementException {
+        exerciseManager.deleteTaskGroup(id, deleteTasks);
+    }
+
+    public void updateTaskGroup(int id, String newFacts) throws DatalogParseException, ExerciseManagementException {
+        if(!newFacts.contains("-")){
+            validate(newFacts);
+        }
+
+        exerciseManager.updateTaskGroup(id, newFacts);
+
     }
 }
