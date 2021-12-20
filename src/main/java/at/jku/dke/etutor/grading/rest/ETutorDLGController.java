@@ -83,5 +83,27 @@ public class ETutorDLGController {
         }
     }
 
+    @GetMapping("/exercise/{id}")
+    public ResponseEntity<DatalogExerciseBean> getExercise(@PathVariable int id){
+        DatalogExerciseBean exercise = null;
+        try {
+            exercise = service.fetchExercise(id);
+            return ResponseEntity.ok(exercise);
+        } catch (ExerciseManagementException e) {
+            return ResponseEntity.status(500).body(exercise);
+        }
+    }
+
+    @GetMapping("/taskgroup/{id}")
+    public ResponseEntity<String> getFacts(@PathVariable int id){
+        String facts = null;
+        try {
+            facts = service.fetchFacts(id);
+        } catch (ExerciseManagementException e) {
+            return ResponseEntity.status(500).body(facts);
+        }
+        return ResponseEntity.ok(facts);
+    }
+
 
 }

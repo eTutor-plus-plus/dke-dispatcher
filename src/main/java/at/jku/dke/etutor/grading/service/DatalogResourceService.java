@@ -60,4 +60,12 @@ public class DatalogResourceService {
     public boolean deleteExercise(int id) throws ExerciseManagementException {
         return exerciseManager.deleteExercise(id);
     }
+
+    public DatalogExerciseBean fetchExercise(int id) throws ExerciseManagementException {
+        return exerciseManager.fetchExercise(id);
+    }
+
+    public String fetchFacts(int id) throws ExerciseManagementException {
+        return exerciseManager.fetchFacts(id);
+    }
 }

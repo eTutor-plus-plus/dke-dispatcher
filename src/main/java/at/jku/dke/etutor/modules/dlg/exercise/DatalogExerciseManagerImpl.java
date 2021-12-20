@@ -469,7 +469,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 		return null;
 	}
 
-	public DatalogExerciseBean fetchExercise(int exerciseId) throws Exception {
+	public DatalogExerciseBean fetchExercise(int exerciseId) throws ExerciseManagementException {
 		DatalogExerciseBean exercise;
 		String factsTable;
 		String exerciseTable;
@@ -503,7 +503,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
             termsTable = properties.loadProperty(DatalogCoreManager.KEY_TABLE_TERMS_UNCHECKED);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            throw e;
+            throw new ExerciseManagementException(e);
         }
 
 		sql = new String();
@@ -575,7 +575,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 			msg += "Stopped processing command 'fetch exercise' ";
 			msg += "for id " + exerciseId + ". ";
 			LOGGER.error(msg, e);
-			throw e;
+			throw new ExerciseManagementException(e);
 		} finally {
 			if (rset != null){
 				try {
@@ -701,7 +701,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 		return exercise;
 	}
 	
-    public String fetchFacts(int factsId) throws Exception {
+    public String fetchFacts(int factsId) throws ExerciseManagementException{
     	String msg;
     	String sql;
     	String facts;
@@ -727,7 +727,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
             factsTable = properties.loadProperty(DatalogCoreManager.KEY_TABLE_FACTS);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            throw e;
+            throw new ExerciseManagementException(e);
         }
 
         sql = new String();
@@ -753,7 +753,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 			msg = new String();
 			msg += "Stopped processing command 'get facts'. ";
 			LOGGER.error(msg, e);
-			throw e;
+			throw new ExerciseManagementException(e);
 		} finally {
 			if (rset != null) {
                 try {
