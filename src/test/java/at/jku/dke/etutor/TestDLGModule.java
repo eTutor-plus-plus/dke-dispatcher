@@ -37,7 +37,7 @@ public class TestDLGModule {
     private String CONN_USER;
     private String CONN_PWD;
 
-    private final String ACTION_STRING = "diagnose";
+    private final String ACTION_STRING = "submit";
     private final String DIAGNOSE_LEVEL = "3";
     private final String TASK_TYPE = "dlg";
     private final String EXERCISE_CONSTRAINTS = "" ;

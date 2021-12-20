@@ -14,7 +14,6 @@ import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TreeMap;
 
 @Service
@@ -27,7 +26,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
         DatalogCoreManager.getInstance();
 	}
 	
-	public int createExercise(Serializable exercise, Map attributes, Map parameters) throws Exception {
+	public int createExercise(Serializable exercise) throws ExerciseManagementException {
 		String termsTable;
 		String predicatesTable;
 		String exerciseTable;
@@ -77,7 +76,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
             predicatesTable = properties.loadProperty(DatalogCoreManager.KEY_TABLE_PREDICATES);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            throw e;
+            throw new ExerciseManagementException(e);
         }
         
 		datalogExercise = (DatalogExerciseBean)exercise;
@@ -101,8 +100,8 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 			}
 			
 			sql = new String();
-			sql += "INSERT INTO	" + exerciseTable + " e " + LINE_SEP;
-			sql += "(e.id, e.query, e.facts, e.points, e.gradings)" + LINE_SEP;
+			sql += "INSERT INTO	" + exerciseTable + LINE_SEP;
+			sql += "(id, query, facts, points, gradings)" + LINE_SEP;
 			sql += "VALUES (?, ?, ?, ?, ?)" + LINE_SEP;
 			pStmt = conn.prepareStatement(sql);
 			index = 1;
@@ -123,8 +122,8 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 			
 			if (datalogExercise.getTerms() != null && datalogExercise.getTerms().size() > 0) {
 				sql = new String();
-				sql += "INSERT INTO	" + termsTable + " t " + LINE_SEP;
-				sql += "(t.predicate, t.term, t.position, t.exercise)" + LINE_SEP;
+				sql += "INSERT INTO	" + termsTable + LINE_SEP;
+				sql += "(predicate, term, position, exercise)" + LINE_SEP;
 				sql += "VALUES (?, ?, ?, ?)" + LINE_SEP;
 				pStmt.close();
 				pStmt = null;
@@ -142,8 +141,8 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 			
 			if (datalogExercise.getPredicates() != null && datalogExercise.getPredicates().size() > 0) {
 				sql = new String();
-				sql += "INSERT INTO	" + predicatesTable + " p " + LINE_SEP;
-				sql += "(p.name, p.exercise)" + LINE_SEP;
+				sql += "INSERT INTO	" + predicatesTable + LINE_SEP;
+				sql += "(name, exercise)" + LINE_SEP;
 				sql += "VALUES (?, ?)" + LINE_SEP;
 				pStmt.close();
 				pStmt = null;
@@ -163,7 +162,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 			msg += "Created Datalog exercise with id " + exerciseID;
 			LOGGER.info(msg);
 			return exerciseID;			
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			msg = new String();
 			msg += "Stopped processing command 'createExercise'. ";
 			LOGGER.error(msg, e);
@@ -197,7 +196,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 		return -1;
 	}
 	
-	public boolean deleteExercise(int exerciseId) throws Exception {
+	public boolean deleteExercise(int exerciseId) throws ExerciseManagementException {
 		String termsTable;
 		String predicatesTable;
 		String exerciseTable;
@@ -226,7 +225,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
             predicatesTable = properties.loadProperty(DatalogCoreManager.KEY_TABLE_PREDICATES);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            throw e;
+            throw new ExerciseManagementException(e);
         }
         
         msg = new String();
@@ -294,7 +293,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 		return false;
 	}
 
-	public boolean modifyExercise(int exerciseId, Serializable exercise, Map attributes, Map parameters) throws Exception{
+	public boolean modifyExercise(int exerciseId, Serializable exercise) throws ExerciseManagementException{
 		String termsTable;
 		String predicatesTable;
 		String exerciseTable;
@@ -344,7 +343,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
             predicatesTable = properties.loadProperty(DatalogCoreManager.KEY_TABLE_PREDICATES);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            throw e;
+            throw new ExerciseManagementException(e);
         }
         
 		datalogExercise = (DatalogExerciseBean)exercise;
@@ -354,10 +353,10 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 			conn.setAutoCommit(false);
 			
 			sql = new String();
-			sql += "UPDATE 	" + exerciseTable + " e " + LINE_SEP;
-			sql += "SET 	e.query = ?, e.facts = ?, e.points = ?, " + LINE_SEP;
-			sql += "		e.gradings = ? " + LINE_SEP;
-			sql += "WHERE 	e.id = ?" + LINE_SEP;
+			sql += "UPDATE 	" + exerciseTable + LINE_SEP;
+			sql += "SET 	query = ?, facts = ?, points = ?, " + LINE_SEP;
+			sql += "		gradings = ? " + LINE_SEP;
+			sql += "WHERE 	id = ?" + LINE_SEP;
 			pStmt = conn.prepareStatement(sql);
 			index = 1;
 			pStmt.setString(index++, datalogExercise.getQuery());
@@ -376,16 +375,16 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 			pStmt.executeUpdate();
 			
 			sql = new String();
-			sql += "DELETE FROM " + termsTable + " t " + LINE_SEP;
-			sql += "WHERE t.exercise = " + exerciseId + LINE_SEP;
+			sql += "DELETE FROM " + termsTable + LINE_SEP;
+			sql += "WHERE exercise = " + exerciseId + LINE_SEP;
 			pStmt.close();
 			pStmt = null;
 			pStmt = conn.prepareStatement(sql);
 			pStmt.executeUpdate();
 			
 			sql = new String();
-			sql += "DELETE FROM " + predicatesTable + " p " + LINE_SEP;
-			sql += "WHERE p.exercise = " + exerciseId + LINE_SEP;
+			sql += "DELETE FROM " + predicatesTable + LINE_SEP;
+			sql += "WHERE exercise = " + exerciseId + LINE_SEP;
 			pStmt.close();
 			pStmt = null;
 			pStmt = conn.prepareStatement(sql);
@@ -393,8 +392,8 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 			
 			if (datalogExercise.getTerms() != null && datalogExercise.getTerms().size() > 0) {
 				sql = new String();
-				sql += "INSERT INTO	" + termsTable + " t " + LINE_SEP;
-				sql += "(t.predicate, t.term, t.position, t.exercise)" + LINE_SEP;
+				sql += "INSERT INTO	" + termsTable + LINE_SEP;
+				sql += "(predicate, term, position, exercise)" + LINE_SEP;
 				sql += "VALUES (?, ?, ?, ?)" + LINE_SEP;
 				pStmt.close();
 				pStmt = null;
@@ -412,8 +411,8 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 			
 			if (datalogExercise.getPredicates() != null && datalogExercise.getPredicates().size() > 0) {
 				sql = new String();
-				sql += "INSERT INTO	" + predicatesTable + " p " + LINE_SEP;
-				sql += "(p.name, p.exercise)" + LINE_SEP;
+				sql += "INSERT INTO	" + predicatesTable + LINE_SEP;
+				sql += "(name, exercise)" + LINE_SEP;
 				sql += "VALUES (?, ?)" + LINE_SEP;
 				pStmt.close();
 				pStmt = null;
@@ -470,7 +469,7 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 		return null;
 	}
 
-	public Serializable fetchExercise(int exerciseId) throws Exception {
+	public DatalogExerciseBean fetchExercise(int exerciseId) throws Exception {
 		DatalogExerciseBean exercise;
 		String factsTable;
 		String exerciseTable;

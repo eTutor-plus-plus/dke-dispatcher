@@ -165,6 +165,8 @@ public class ApplicationProperties {
         private String username;
         private String password;
         private String driverClassName;
+        private long maxLifetime;
+        private int maxPoolSize;
 
         public DataSource(){
 
@@ -200,6 +202,22 @@ public class ApplicationProperties {
 
         public void setDriverClassName(String driver) {
             this.driverClassName = driver;
+        }
+
+        public long getMaxLifetime() {
+            return maxLifetime;
+        }
+
+        public void setMaxLifetime(long maxLifetime) {
+            this.maxLifetime = maxLifetime;
+        }
+
+        public int getMaxPoolSize() {
+            return maxPoolSize;
+        }
+
+        public void setMaxPoolSize(int maxPoolSize) {
+            this.maxPoolSize = maxPoolSize;
         }
     }
     /**

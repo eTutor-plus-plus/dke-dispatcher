@@ -3,6 +3,7 @@ package at.jku.dke.etutor.grading.service;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.dto.DatalogTaskGroupDTO;
 import at.jku.dke.etutor.modules.dlg.ExerciseManagementException;
+import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseBean;
 import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseManagerImpl;
 import edu.harvard.seas.pl.abcdatalog.parser.DatalogParseException;
 import edu.harvard.seas.pl.abcdatalog.parser.DatalogParser;
@@ -46,5 +47,17 @@ public class DatalogResourceService {
 
         exerciseManager.updateTaskGroup(id, newFacts);
 
+    }
+
+    public int createExercise(DatalogExerciseBean exerciseBean) throws ExerciseManagementException {
+        return exerciseManager.createExercise(exerciseBean);
+    }
+
+    public boolean modifyExercise(int id, DatalogExerciseBean exerciseBean) throws ExerciseManagementException {
+        return exerciseManager.modifyExercise(id, exerciseBean);
+    }
+
+    public boolean deleteExercise(int id) throws ExerciseManagementException {
+        return exerciseManager.deleteExercise(id);
     }
 }

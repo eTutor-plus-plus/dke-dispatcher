@@ -23,8 +23,8 @@ public class DatalogDataSource {
         config.setJdbcUrl(properties.getDatalog().getConnUrl());
         config.setUsername(properties.getDatasource().getUsername());
         config.setPassword(properties.getDatasource().getPassword());
-        config.setMaxLifetime(120000);
-        config.setMaximumPoolSize(5);
+        config.setMaxLifetime(properties.getDatasource().getMaxLifetime());
+        config.setMaximumPoolSize(10);
         config.setAutoCommit(false);
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");

@@ -33,36 +33,54 @@ public class ETutorDLGController {
     }
 
     @DeleteMapping("/taskgroup/{id}")
-    public ResponseEntity<String> deleteTaskGroup(@PathVariable int id, @RequestParam(required = false, value = "withTasks", defaultValue = "true") boolean deleteTasks){
+    public ResponseEntity<Void> deleteTaskGroup(@PathVariable int id, @RequestParam(required = false, value = "withTasks", defaultValue = "true") boolean deleteTasks){
        try{
            service.deleteTaskGroup(id, deleteTasks);
-           return ResponseEntity.ok("Deleted task group with id "+ id);
+           return ResponseEntity.ok().build();
        }catch(ExerciseManagementException e){
-           return ResponseEntity.status(500).body("Could not delete task group with id "+ id);
+           return ResponseEntity.status(500).build();
        }
     }
 
     @PostMapping("/taskgroup/{id}")
-    public void updateTaskGroup(@PathVariable int id, @RequestBody String newFacts){
+    public ResponseEntity<Void> updateTaskGroup(@PathVariable int id, @RequestBody String newFacts){
         try {
             service.updateTaskGroup(id, newFacts);
         } catch (DatalogParseException | ExerciseManagementException e) {
-            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/exercise")
+    public ResponseEntity<Integer> createExercise(@RequestBody DatalogExerciseBean exerciseBean){
+        int id;
+        try {
+            id = service.createExercise(exerciseBean);
+        } catch (ExerciseManagementException e) {
+            return ResponseEntity.status(500).body(-1);
+        }
+        return ResponseEntity.ok(id);
+    }
+
+    @PostMapping("/exercise/{id}")
+    public ResponseEntity<Void> modifyExercise(@RequestBody DatalogExerciseBean exerciseBean, @PathVariable int id){
+        try{
+            if(service.modifyExercise(id, exerciseBean)) return ResponseEntity.ok().build();
+            else return ResponseEntity.status(500).build();
+        }catch(ExerciseManagementException e){
+            return ResponseEntity.status(500).build();
         }
     }
 
-
-    public void createExercise(int factsId){
-        // exercise anlegen
-        // exercise id zurückgeben
-    }
-
-    public void modifyExercise(DatalogExerciseBean exerciseBean){
-
-    }
-
-    public void deleteExercise(int id){
-
+    @DeleteMapping("/exercise/{id}")
+    public ResponseEntity<Void> deleteExercise(@PathVariable int id){
+        try{
+            if(service.deleteExercise(id))return ResponseEntity.ok().build();
+            else return ResponseEntity.status(500).build();
+        }catch(ExerciseManagementException e){
+            return ResponseEntity.status(500).build();
+        }
     }
 
 

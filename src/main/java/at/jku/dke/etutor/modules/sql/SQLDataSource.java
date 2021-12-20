@@ -23,8 +23,8 @@ public class SQLDataSource {
         config.setJdbcUrl(properties.getSql().getConnUrl());
         config.setUsername(properties.getSql().getConnUser());
         config.setPassword(properties.getSql().getConnPwd());
-        config.setMaxLifetime(120000);
-        config.setMaximumPoolSize(20);
+        config.setMaxLifetime(properties.getDatasource().getMaxLifetime());
+        config.setMaximumPoolSize(10);
         config.setAutoCommit(false);
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
