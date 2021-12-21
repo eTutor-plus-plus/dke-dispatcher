@@ -10,23 +10,8 @@ import java.io.Serializable;
  * Represents the evaluation result of a Datalog query as it is returned by a Datalog query
  * processor. The results, which are produced by the underlying query processor, are customized,
  * wrapped and transformed into an internal representation so that analysis, grading and reporting
- * can be carried out. The term "result" stands for the following elements: <br>
- * <ul>
- * <li>The result might consist of a number of <i>models </i>. Each of these models is detected by
- * the Datalog processor as satisfying the query. The cases are:
- * <ul>
- * <li>In the context of this class, there is <b>no </b> model at all, if the query has syntactical
- * errors or caused timeout errors.</li>
- * <li>There is <b>no consistent </b> model, if the query is inconsistent. This is indicated by a
- * model returned by this <code>DatalogResult</code>, which infact is no consistent model.</li>
- * <li>There is exactly <b>one consistent </b> model, which is the normal case.</li>
- * <li>There is <b>more than one </b> model, which usually is the consequence of a query, which
- * consists of some <i>non-stratified </i> or <i>disjunctive </i> rules.</li>
- * </ul>
- * </li>
- * </ul>
- * 
- * @author Georg Nitsche
+ * can be carried out.
+ * @author Georg Nitsche, Kevin Schütz
  * @version 1.0
  * @since 1.0
  */
@@ -42,8 +27,14 @@ public class DatalogResult implements Serializable {
 
     private WrappedModel[] models;
 
-    private ModelConsistency consistency;
 
+    /**
+     * Initializes a new instance
+     * @param submission the submission
+     * @param processor the {@link at.jku.dke.etutor.modules.dlg.analysis.DatalogProcessor} used to execute the query
+     * @param queries the queries that need to be evaluated
+     * @throws InternalException if an internal exception occurs
+     */
     public DatalogResult(
             String submission, DatalogProcessor processor, String[] queries
     ) throws InternalException {
@@ -58,19 +49,18 @@ public class DatalogResult implements Serializable {
     }
 
 
-
+    /**
+     * Returns the wrapped models
+     * @return the {@link #models}
+     */
     public WrappedModel[] getWrappedModels(){
         return this.models;
     }
 
 
     /**
-     * Gets the names of predicates which are considered, if this <code>DatalogResult</code>
-     * serves as the "correct" solution for an analysis. The <code>DatalogResult</code>, which is
-     * compared with this result object will have to contain the predicates specified here, in order
-     * to be correct. All additional predicates will not influence the analysis in any way.
-     * 
-     * @return The set predicate names.
+     * Gets the queries that have been evaluated
+     * @return The set queries.
      */
     public String[] getQueries() {
         return queries;
@@ -128,9 +118,7 @@ public class DatalogResult implements Serializable {
      * consists of a single model, which is consistent and thus can be used for analyzing it to
      * another query result. In any other case this returns <code>null</code>.
      *
-     * @return the model object, if the query is not contradictory in any sense, so that there is a
-     *         single model in which the query is satisfied, else <code>null</code>.
-     * @see ModelConsistency
+     * @return the model object
      */
     public WrappedModel getConsistentModel() {
         if (this.models.length == 1) {
@@ -150,7 +138,6 @@ public class DatalogResult implements Serializable {
      *
      * @return true, if the query is not contradictory in any sense, so that there is a single model
      *         in which the query is satisfied, else false.
-     * @see ModelConsistency
      */
     public boolean hasConsistentModel() {
         return getConsistentModel() != null;

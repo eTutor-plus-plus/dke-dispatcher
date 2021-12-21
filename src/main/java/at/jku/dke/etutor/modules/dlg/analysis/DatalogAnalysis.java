@@ -4,7 +4,6 @@ import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.modules.dlg.AnalysisException;
 import at.jku.dke.etutor.modules.dlg.ParameterException;
-import at.jku.dke.etutor.modules.dlg.QuerySyntaxException;
 import at.jku.dke.etutor.modules.dlg.ReportException;
 import at.jku.dke.etutor.modules.dlg.grading.DatalogGrading;
 import at.jku.dke.etutor.modules.dlg.report.DatalogFeedback;
@@ -29,12 +28,7 @@ import java.util.Objects;
  * as the " <i>submitted </i>" one, which has to be compared with the correct
  * solution. This numbering is used throughout the module to identify the
  * correct and the submitted solution. <br>
- * The correct query must be syntactically correct and evaluated by the query
- * processor before a defined time limit has been reached, otherwise an
- * Exception is thrown. On the other hand, if the <i>submitted </i>query is
- * syntactically incorrect or takes too long to evaluate, this is part of the
- * analysis and will not cause an Exception to be thrown.
- * 
+ *
  * @author Georg Nitsche
  * @version 1.0
  * @since 1.0
@@ -55,8 +49,6 @@ public class DatalogAnalysis implements Analysis {
 	private DatalogResult result2;
 
 	private boolean correct;
-
-	private String[] requPredicates;
 
 	private int exerciseID;
 
@@ -123,9 +115,6 @@ public class DatalogAnalysis implements Analysis {
 	 *          The "submitted" query result.
 	 * @throws NullPointerException
 	 *           if one of the results is <code>null</code>
-	 * @throws QuerySyntaxException
-	 *           if the correct query result object was created from a query,
-	 *           which is syntactically incorrect.
 	 * @throws AnalysisException
 	 *           This exception is thrown if the correct solution is not
 	 *           applicable for serving as reference solution, because it consists
@@ -133,17 +122,15 @@ public class DatalogAnalysis implements Analysis {
 	 *           inconsistent model, or if any kind of unexpected Exception
 	 *           occured when analyzing the results.
 	 */
-	public void setResults(DatalogResult result1, DatalogResult result2) throws NullPointerException,
-			QuerySyntaxException, AnalysisException {
+	public void setResults(DatalogResult result1, DatalogResult result2) throws NullPointerException, AnalysisException {
 		LOGGER.debug("Start comparing correct and submitted result object");
 		Objects.requireNonNull(result1);
 		Objects.requireNonNull(result2);
 
 		this.result1 = result1;
 		this.result2 = result2;
-		this.requPredicates = result1.getQueries();
 
-		if(result1.getSyntaxException() != null || result2.getSyntaxException() != null){
+		if(result2.getSyntaxException() != null){
 			this.correct = false;
 			return;
 		}
@@ -179,7 +166,6 @@ public class DatalogAnalysis implements Analysis {
 	 */
 	private void init(boolean debugMode) {
 		setDebugMode(debugMode);
-		requPredicates = new String[] {};
 		this.correct = false;
 		initErrorLists();
 	}
@@ -193,7 +179,12 @@ public class DatalogAnalysis implements Analysis {
 		redundantFacts = new ArrayList<>();
 	}
 
-
+	/**
+	 * Compares the consisten models of two {@link DatalogResult}
+	 * @param result1 the "correct" result
+	 * @param result2 the submitted result
+	 * @throws AnalysisException if one of the results does not contain a consisten model
+	 */
 	private void compare(DatalogResult result1, DatalogResult result2) throws AnalysisException {
 		var model1 = result1.getConsistentModel();
 		var model2 = result2.getConsistentModel();
@@ -339,17 +330,6 @@ public class DatalogAnalysis implements Analysis {
 	 */
 	private boolean checkCorrectness() {
 		return missingFacts.isEmpty() && redundantFacts.isEmpty() && missingPredicates.isEmpty();
-	}
-
-	/**
-	 * Returns the names of the predicates that were set for the analysis. If set,
-	 * these predicates have to be in the result of a query result, in order to be
-	 * correct.
-	 * 
-	 * @return An array of predicate names.
-	 */
-	public String[] getRequPredicates() {
-		return requPredicates;
 	}
 
 	/*

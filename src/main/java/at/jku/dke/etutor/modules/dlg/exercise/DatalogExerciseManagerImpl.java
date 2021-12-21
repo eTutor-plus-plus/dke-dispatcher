@@ -923,6 +923,12 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
         return scores;
     }
 
+	/**
+	 * Creates a task group and returns the assigned id for the group
+	 * @param facts the facts of the task group
+	 * @return the id
+	 * @throws ExerciseManagementException if any error occurs
+	 */
 	public int createTaskGroup(DatalogTaskGroupDTO facts) throws ExerciseManagementException {
 		String msg;
 		DatalogCoreManager coreManager;
@@ -981,6 +987,12 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 		return factId;
 	}
 
+	/**
+	 * Deletes a task group, identified by the id
+	 * @param id the id
+	 * @param deleteTasks flag indicating if all tasks referencing the task group should be deleted as well
+	 * @throws ExerciseManagementException if any error occurs
+	 */
 	public void deleteTaskGroup(int id, boolean deleteTasks) throws ExerciseManagementException {
 		String msg;
 		DatalogCoreManager coreManager;
@@ -1019,7 +1031,12 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 		LOGGER.info(msg);
 	}
 
-
+	/**
+	 * Updates the facts of a task group
+	 * @param id the id of the task group/facts
+	 * @param newFacts the new facts
+	 * @throws ExerciseManagementException if any error occurs
+	 */
 	public void updateTaskGroup(int id, String newFacts) throws ExerciseManagementException {
 		String update;
 		DatalogCoreManager coreManager;

@@ -28,15 +28,13 @@ public class WrappedPredicate implements Serializable {
     private WrappedModel model;
 
     /**
+     * @deprecated
      * Creates a new Wrapper for a Datalog predicate. Most important information is extracted, like
      * information about the facts, predicate name or number of terms.
      * 
-     * @param predicate The predicate to be wrapped.
+     * @param factSet The facts.
      * @param model The model which this instance will be assigned to.
      * 
-     * @author Georg Nitsche, Christian Eichinger
-     * @version 1.1
-     * @since 1.0
      */
     public WrappedPredicate(
             Set<PositiveAtom> factSet, WrappedModel model) {
@@ -56,6 +54,12 @@ public class WrappedPredicate implements Serializable {
         this.facts = (WrappedFact[])factList.toArray(new WrappedFact[] {});
     }
 
+    /**
+     * Initializes a wrapped predicate
+     * @param predicateName the name of the predicate
+     * @param facts a list of facts for this predicate
+     * @param model the model reference
+     */
     public WrappedPredicate(String predicateName, List<String> facts, WrappedModel model){
         if(!facts.isEmpty()){
             this.model = model;
@@ -89,6 +93,7 @@ public class WrappedPredicate implements Serializable {
         private String name;
 
         /**
+         * @deprecated
          * Creates a new instance which represents the fact of a certain predicate.
          * 
          * @param fact The fact to be wrapped.
@@ -107,11 +112,16 @@ public class WrappedPredicate implements Serializable {
 
         }
 
-        private WrappedFact(String facts, WrappedPredicate predicate){
+        /**
+         * Initializes a wrapped fact
+         * @param fact the terms
+         * @param predicate the predicate
+         */
+        private WrappedFact(String fact, WrappedPredicate predicate){
             this.predicate = predicate;
             this.positive = true;
             this.arity = predicate.getArity();
-            this.terms = facts.split(",");
+            this.terms = fact.split(",");
             this.name = predicate.getName();
         }
 

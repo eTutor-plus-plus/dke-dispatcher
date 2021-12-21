@@ -47,9 +47,7 @@ public class DatalogGrading implements Serializable, Grading {
      * 
      * @param analysis The analysis object containing information about the analyzed query and
      *            detected errors.
-     * @param scores Parameters used for grading, most of all the minus points for different error
-     *            categories and the strategy of how often errors of the same category are
-     *            considered - for each occurence, once for the whole category or as K.O. criterion.
+     * @param scores Parameters used for grading.
      */
     public DatalogGrading(
             DatalogAnalysis analysis, DatalogScores scores) {

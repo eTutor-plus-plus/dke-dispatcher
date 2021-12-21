@@ -3,7 +3,10 @@ package at.jku.dke.etutor.modules.dlg.report;
 import at.jku.dke.etutor.modules.dlg.DatalogCoreManager;
 import at.jku.dke.etutor.modules.dlg.InvalidResourceException;
 import at.jku.dke.etutor.modules.dlg.ReportException;
-import at.jku.dke.etutor.modules.dlg.analysis.*;
+import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
+import at.jku.dke.etutor.modules.dlg.analysis.DatalogResult;
+import at.jku.dke.etutor.modules.dlg.analysis.WrappedModel;
+import at.jku.dke.etutor.modules.dlg.analysis.WrappedPredicate;
 import at.jku.dke.etutor.modules.dlg.grading.DatalogScores;
 import ch.qos.logback.classic.Logger;
 import oracle.xml.parser.v2.*;
@@ -359,10 +362,8 @@ public class XMLReport {
      * @see DatalogAnalysis#getResult2()
      */
     private void setRequPredicates(DatalogAnalysis analysis) {
-
-        List requPredicates = Arrays.asList(analysis.getRequPredicates());
         DatalogResult result = analysis.getResult2();
-        if (result != null && requPredicates != null) {
+        if (result != null) {
             WrappedModel[] models = result.getWrappedModels();
             for (int i = 0; i < models.length; i++) {
 		        WrappedPredicate[] predicates = models[i].getPredicates();
@@ -607,7 +608,6 @@ public class XMLReport {
      * 
      * @param isConsistent Indicates, if there is a single and consistent model in the Datalog result meaning that
      *            there are no contradictions in the query and the result is unique.
-     * @see at.jku.dke.etutor.modules.dlg.analysis.ModelConsistency
      */
     private void setModelConsistency(boolean isConsistent) {
         root.setAttribute("analyzable", Boolean.toString(isConsistent));

@@ -52,7 +52,6 @@ public interface DatalogFeedback extends Report {
      * @param rendered Indicates if the returned message should escape specific characters for HTML
      *            compatibility.
      * @return The consistency analysis text which may be an empty String.
-     * @see at.jku.dke.etutor.modules.dlg.analysis.ModelConsistency
      */
     public String getConsistencyAnalysis(boolean rendered);
 

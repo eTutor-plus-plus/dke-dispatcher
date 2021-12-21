@@ -58,7 +58,6 @@ public class WrappedModel implements Serializable {
      * 
      * @return true, if the query is not contradictory in any sense, so that there is a model in
      *         which the query is satisfied, else false.
-     * @see ModelConsistency
      */
     public boolean isConsistent() {
         return consistentModel;
