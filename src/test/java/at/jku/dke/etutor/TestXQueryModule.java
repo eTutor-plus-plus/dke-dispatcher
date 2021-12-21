@@ -4,25 +4,16 @@ import at.jku.dke.etutor.grading.ETutorGradingApplication;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
-import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
 import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
-import at.jku.dke.etutor.grading.service.RepositoryService;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
-import at.jku.dke.etutor.modules.sql.SQLConstants;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.sql.*;
 import java.util.*;
 
@@ -48,8 +39,8 @@ public class TestXQueryModule {
     private String CONN_URL;
     private String CONN_USER;
     private String CONN_PWD;
-    private final String EXERCISE_CONSTRAINTS = " where id < 14326 ";
-    private final String ACTION_STRING = "diagnose";
+    private final String EXERCISE_CONSTRAINTS = " where id < 14326 AND id NOT IN (13043, 13044, 13045, 13058, 14319) ";
+    private final String[] ACTION_STRINGS = {"diagnose", "submit"};
     private final String DIAGNOSE_LEVEL = "3";
     private final String TASK_TYPE = "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#XQTask";
 
@@ -78,12 +69,16 @@ public class TestXQueryModule {
         while (exercises.next()) {
             int id = exercises.getInt("id");
             String solution = exercises.getString("query");
-            Submission submission = prepareSubmission(id, solution);
+            Submission submission = prepareSubmission(id, solution, ACTION_STRINGS[0]);
             assertFalse(submission == null);
             evaluateSubmission(submission);
-            Thread.sleep(500);
+            Thread.sleep(2000);
+            submission = prepareSubmission(id, solution, ACTION_STRINGS[1]);
+            assertFalse(submission == null);
+            evaluateSubmission(submission);
+            Thread.sleep(2000);
         }
-        Thread.sleep(1000);
+        Thread.sleep(10000);
         getGradings();
         System.out.println(ids.size());
     }
@@ -105,6 +100,7 @@ public class TestXQueryModule {
     void getGradings()  {
         for (String id : ids) {
             Optional<GradingDTO> optGrading = gradingRepo.findById(id);
+            System.out.println(id);
             assertTrue(optGrading.isPresent());
             GradingDTO grading = optGrading.get();
             System.out.println(id);
@@ -117,10 +113,10 @@ public class TestXQueryModule {
 
 
 
-    Submission prepareSubmission(int id, String solution) {
+    Submission prepareSubmission(int id, String solution, String action) {
         Submission submission = new Submission();
         HashMap<String, String> attributeMap = new HashMap<>();
-        attributeMap.put("action", ACTION_STRING);
+        attributeMap.put("action", action);
         attributeMap.put("diagnoseLevel", DIAGNOSE_LEVEL);
         attributeMap.put("submission", solution);
         submission.setPassedAttributes(attributeMap);

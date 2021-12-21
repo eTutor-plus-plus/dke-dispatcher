@@ -39,7 +39,7 @@ public class TestSQLModule {
     private String CONN_USER;
     private String CONN_PWD;
 
-    private final String ACTION_STRING = "diagnose";
+    private final String[] ACTION_STRINGS = {"diagnose", "submit"};
     private final String DIAGNOSE_LEVEL = "3";
     private final String TASK_TYPE = "sql";
     private final String EXERCISE_CONSTRAINTS = " WHERE id < 13914 AND id NOT IN (65, 13089, 13883, 13884, 13885, 13887, 13901, 13902, 13903, 13904, 13905" +
@@ -71,7 +71,10 @@ public class TestSQLModule {
         while (exercises.next()) {
             int id = exercises.getInt("id");
             String solution = exercises.getString("solution");
-            Submission submission = prepareSubmission(id, solution);
+            Submission submission = prepareSubmission(id, solution, ACTION_STRINGS[0]);
+            assertNotNull(submission);
+            evaluateSubmission(submission);
+            submission = prepareSubmission(id, solution, ACTION_STRINGS[1]);
             assertNotNull(submission);
             evaluateSubmission(submission);
             Thread.sleep(350);
@@ -100,10 +103,10 @@ public class TestSQLModule {
         }
     }
 
-    Submission prepareSubmission(int id, String solution) {
+    Submission prepareSubmission(int id, String solution, String action) {
         Submission submission = new Submission();
         HashMap<String, String> attributeMap = new HashMap<>();
-        attributeMap.put("action", ACTION_STRING);
+        attributeMap.put("action", action);
         attributeMap.put("diagnoseLevel", DIAGNOSE_LEVEL);
         attributeMap.put("submission", solution);
         submission.setPassedAttributes(attributeMap);

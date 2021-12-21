@@ -1,10 +1,10 @@
 package at.jku.dke.etutor.modules.xquery.grading;
 
-import java.io.Serializable;
-
 import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.modules.xquery.analysis.NodeErrorList;
 import at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis;
+
+import java.io.Serializable;
 
 /**
  * This class represents the grading of an analyzed query.
@@ -46,7 +46,8 @@ public class XQGrading implements Serializable, Grading {
             XQAnalysis analysis, XQGradingConfig config) {
         this.setSolutionIsCorrect(analysis.isCorrect());
         this.maxPoints = config.getMaxScore();
-        if (analysis.isAnalyzable() && analysis.isValidSolution()) {
+        if(analysis.isCorrect()) this.points=this.maxPoints;
+        else if (analysis.isAnalyzable() && analysis.isValidSolution()) {
         	double minusPoints = countMinusPoints(analysis, config);
             this.points = this.maxPoints - minusPoints;
             this.points = Math.max(0, this.points);
