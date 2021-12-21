@@ -9,7 +9,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
@@ -148,7 +147,7 @@ public class XQCoreManager {
      * 
      * @return The <code>XQCoreManager </code> singleton.
      */
-    public synchronized static XQCoreManager getInstance(ApplicationProperties applicationProperties) {
+    public static synchronized XQCoreManager getInstance(ApplicationProperties applicationProperties) {
         if (coreManager == null) {
             coreManager = new XQCoreManager(applicationProperties);
         }
@@ -159,9 +158,8 @@ public class XQCoreManager {
      * Gets the only instance of this class.
      * @return The <code>XQCoreManager</code> singleton
      */
-    public synchronized  static  XQCoreManager getInstance(){
-        if(coreManager != null) return coreManager;
-        else return null;
+    public static synchronized XQCoreManager getInstance(){
+        return coreManager;
     }
 
     /**
@@ -170,7 +168,7 @@ public class XQCoreManager {
      * @return the properties file object related to this <code>XQCoreManager </code>.
      * @throws InvalidResourceException if the properties file can not be found.
      */
-    public PropertyFile getPropertyFile() throws InvalidResourceException {
+    public synchronized PropertyFile getPropertyFile() throws InvalidResourceException {
         return this.getPropertyFile(false);
     }
 
@@ -182,7 +180,7 @@ public class XQCoreManager {
      * @return the properties file object related to this <code>XQCoreManager </code>.
      * @throws InvalidResourceException if the properties file can not be found.
      */
-    public PropertyFile getPropertyFile(boolean reload) throws InvalidResourceException {
+    public synchronized PropertyFile getPropertyFile(boolean reload) throws InvalidResourceException {
         if (propertyFile == null || reload) {
             propertyFile = new PropertyFile(this.getClass(), PROPERTIES_FILE);
         }
@@ -206,7 +204,7 @@ public class XQCoreManager {
      * @return the resource as URL
      * @throws InvalidResourceException if the resource can not be found
      */
-    public static URL getResource(String resource) throws InvalidResourceException {
+    public static synchronized URL getResource(String resource) throws InvalidResourceException {
         //TODO: uncomment upper URL version for production
         URL url = XQCoreManager.class.getClassLoader().getResource(resource);
         //URL url = XQCoreManager.class.getResource(resource);
@@ -227,7 +225,7 @@ public class XQCoreManager {
         			file = new File(parent, resource);
         			if (file.exists()) {
         				try {
-							url = file.toURL();
+							url = file.toURI().toURL();
 						} catch (MalformedURLException e) {
 						}
         			}
@@ -256,59 +254,10 @@ public class XQCoreManager {
      * @throws InvalidResourceException indicates that properties are not set correctly
      * @throws SQLException is thrown when trying to retrieve a connection out of the pool
      */
-    //TODO: create and retrieve from datasource
-    public Connection getConnection() throws InvalidResourceException, SQLException {
-        return DriverManager.getConnection(applicationProperties.getXquery().getConnUrl(),
-                applicationProperties.getXquery().getConnUser(),
-                applicationProperties.getXquery().getConnPwd());
+    public synchronized Connection getConnection() throws InvalidResourceException, SQLException {
+        return XQDataSource.getConnection();
     }
-    
-    /*
-     * Gets the connection to the database which contains exercise definitions.
-     *
-     * @param dbDriver The database driver.
-     * @param dbUrl The database url.
-     * @param dbUser The database user.
-     * @param dbPwd The database password.
-     * @return The newly created database connection.
-     * @throws ClassNotFoundException if the specified database driver can not be found.
-     * @throws SQLException if an SQLException occured when trying to establish the connection.
-     */
-    /*
-    private Connection createConnection(String dbDriver, String dbUrl, String dbUser, String dbPwd)
-            throws ClassNotFoundException, SQLException {
-        Class.forName(dbDriver);
-        Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPwd);
-        return con;
-    }
-    */
 
-    /*
-     * Gets the connection to the database which contains exercise definitions.
-     * 
-     * @param reload A flag which indicates if the connection and all according parameters, like
-     *            database url ... should be reloaded from the properties file.
-     * @return Returns the connection.
-     * @throws ClassNotFoundException if the database driver specified in the properties file can
-     *             not be found.
-     * @throws SQLException if an SQLException occured when trying to establish the connection.
-     * @throws InvalidResourceException if the properties file misses some required properties or
-     *             values of properties are not applicable.
-     */
-    /*
-    public Connection getConnection(boolean reload) throws ClassNotFoundException, SQLException,
-            InvalidResourceException {
-        //TODO: newConnection
-        if (connection == null || reload) {
-            String dbDriver = getDbDriver(true);
-            String dbUrl = getDbUrl(true);
-            String dbUser = getDbUser(true);
-            String dbPwd = getDbPwd(true);
-            connection = createConnection(dbDriver, dbUrl, dbUser, dbPwd);
-        }
-        return connection;
-    }
-    */
 
     /**
      * Sets up the logger used for logging within the datalog module.

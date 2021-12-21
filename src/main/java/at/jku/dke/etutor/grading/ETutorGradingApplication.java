@@ -17,6 +17,7 @@ import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLDataSource;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
 import at.jku.dke.etutor.modules.sql.report.SQLReporter;
+import at.jku.dke.etutor.modules.xquery.XQDataSource;
 import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseManagerImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -58,7 +59,8 @@ import java.util.List;
         XQueryResourceService.class,
         XQExerciseManagerImpl.class,
         DatalogDataSource.class,
-        SQLDataSource.class
+        SQLDataSource.class,
+        XQDataSource.class
 })
 @EnableConfigurationProperties({ApplicationProperties.class})
 @SpringBootApplication

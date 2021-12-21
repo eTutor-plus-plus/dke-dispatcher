@@ -116,7 +116,7 @@ public class DatalogCoreManager {
      * 
      * @return The <code>DatalogCoreManager </code> singleton.
      */
-    public synchronized static DatalogCoreManager getInstance() {
+    public static synchronized DatalogCoreManager getInstance() {
     	if (coreManager == null) {
             coreManager = new DatalogCoreManager();
         }
@@ -129,7 +129,7 @@ public class DatalogCoreManager {
      * @return the properties file object related to this <code>DatalogCoreManager </code>.
      * @throws InvalidResourceException if the properties file can not be found.
      */
-    public PropertyFile getPropertyFile() throws InvalidResourceException {
+    public synchronized PropertyFile getPropertyFile() throws InvalidResourceException {
         return this.getPropertyFile(false);
     }
     
@@ -165,7 +165,7 @@ public class DatalogCoreManager {
      * @return the resource as URL
      * @throws InvalidResourceException if the resource can not be found
      */
-    public static URL getResource(String resource) throws InvalidResourceException {
+    public static synchronized URL getResource(String resource) throws InvalidResourceException {
         // URL url = DatalogCoreManager.class.getClassLoader().getResource(resource);
         URL url = DatalogCoreManager.class.getResource(resource);
         URL baseURL = null;
