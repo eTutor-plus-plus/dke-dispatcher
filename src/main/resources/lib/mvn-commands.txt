@@ -1,4 +1,5 @@
-// Pfade ersetzen
+// Diese jars müssen in einem lokalen Maven-Repository installiert werden bevor sie über die pom.xml eingebunden werden können
+// Die Pfade des -Dfile Arguments müssen ersetzt werden
 
 
 mvn install:install-file -Dfile=<path-to-/resources/lib/xml.jar> -DgroupId=javax -DartifactId=xml -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
@@ -22,3 +23,7 @@ mvn install:install-file -Dfile=<path-to-/resources/xquery/reflect/DDbE.jar> -Dg
 &&
 
 mvn install:install-file -Dfile=<path-to-/resources/xquery/reflect/xerces.jar> -DgroupId=javax -DartifactId=xerces -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+
+&&
+
+mvn install:install-file -Dfile=<path-to-/resources/lib/AbcDatalog-0.5.0.jar> -DgroupId=edu.harvard.seas.pl -DartifactId=abcdatalog -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true

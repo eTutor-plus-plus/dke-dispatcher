@@ -13,6 +13,8 @@ public class ApplicationProperties {
 
     private DataSource datasource = new DataSource();
 
+    private Datalog datalog = new Datalog();
+
     private XQueryProps xquery = new XQueryProps();
 
     private Grading grading = new Grading();
@@ -57,6 +59,74 @@ public class ApplicationProperties {
         this.datasource = datasource;
     }
 
+    public Datalog getDatalog() {
+        return datalog;
+    }
+
+    public void setDatalog(Datalog datalog) {
+        this.datalog = datalog;
+    }
+
+    /**
+     * Properties for the Datalog module
+     */
+
+    public static class Datalog{
+        private String connUrl;
+        private String DLVPathAsCommand;
+        private String cautiousOptionForDlv;
+        private String workDirForDlv;
+        private String tempFolder;
+        private String factEncodingSuffix;
+
+        public String getConnUrl() {
+            return connUrl;
+        }
+
+        public void setConnUrl(String connUrl) {
+            this.connUrl = connUrl;
+        }
+
+        public String getDLVPathAsCommand() {
+            return DLVPathAsCommand;
+        }
+
+        public void setDLVPathAsCommand(String DLVPathAsCommand) {
+            this.DLVPathAsCommand = DLVPathAsCommand;
+        }
+
+        public String getCautiousOptionForDlv() {
+            return cautiousOptionForDlv;
+        }
+
+        public void setCautiousOptionForDlv(String cautiousOptionForDlv) {
+            this.cautiousOptionForDlv = cautiousOptionForDlv;
+        }
+
+        public String getWorkDirForDlv() {
+            return workDirForDlv;
+        }
+
+        public void setWorkDirForDlv(String workDirForDlv) {
+            this.workDirForDlv = workDirForDlv;
+        }
+
+        public String getTempFolder() {
+            return tempFolder;
+        }
+
+        public void setTempFolder(String tempFolder) {
+            this.tempFolder = tempFolder;
+        }
+
+        public String getFactEncodingSuffix() {
+            return factEncodingSuffix;
+        }
+
+        public void setFactEncodingSuffix(String factEncodingSuffix) {
+            this.factEncodingSuffix = factEncodingSuffix;
+        }
+    }
     /**
      * The properties needed to configure the async TaskExecutor
      */
@@ -104,6 +174,8 @@ public class ApplicationProperties {
         private String username;
         private String password;
         private String driverClassName;
+        private long maxLifetime;
+        private int maxPoolSize;
 
         public DataSource(){
 
@@ -139,6 +211,22 @@ public class ApplicationProperties {
 
         public void setDriverClassName(String driver) {
             this.driverClassName = driver;
+        }
+
+        public long getMaxLifetime() {
+            return maxLifetime;
+        }
+
+        public void setMaxLifetime(long maxLifetime) {
+            this.maxLifetime = maxLifetime;
+        }
+
+        public int getMaxPoolSize() {
+            return maxPoolSize;
+        }
+
+        public void setMaxPoolSize(int maxPoolSize) {
+            this.maxPoolSize = maxPoolSize;
         }
     }
     /**

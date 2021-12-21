@@ -1,0 +1,3 @@
+person(peter).
+
+person(X)?

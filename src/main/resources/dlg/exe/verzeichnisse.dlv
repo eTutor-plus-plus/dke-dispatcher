@@ -1,0 +1,54 @@
+verzeichnis(kontinente, root).
+verzeichnis(europa, kontinente).
+verzeichnis(afrika, kontinente).
+verzeichnis(amerika, kontinente).
+verzeichnis(suedamerika, amerika).
+verzeichnis(nordamerika, amerika).
+verzeichnis(usa, nordamerika).
+verzeichnis(kanada, nordamerika).
+verzeichnis(oesterreich, europa).
+verzeichnis(frankreich, europa).
+verzeichnis(polen, europa).
+verzeichnis(ungarn, europa).
+verzeichnis(ozeane, root).
+verzeichnis(atlantik, ozeane).
+verzeichnis(pazifik, ozeane).
+datei(landkarte11, bild, europa).
+datei(landkarte12, bild, amerika).
+datei(landkarte51, bild, europa).
+datei(landkarte61, bild, oesterreich).
+datei(landkarte62, bild, frankreich).
+datei(landkarte63, bild, polen).
+datei(landkarte70, bild, nordamerika).
+datei(staedte100, text, oesterreich).
+datei(staedte101, text, frankreich).
+datei(staedte102, text, ungarn).
+datei(staedte105, text, amerika).
+datei(staedte110, text, nordamerika).
+datei(staedte120, text, suedamerika).
+datei(inseln1, text, atlantik).
+datei(inseln2, text, pazifik).
+datei(hymne500, musik, europa).
+datei(hymne501, musik, oesterreich).
+datei(hymne502, musik, frankreich).
+datei(hymne505, musik, nordamerika).
+datei(hymne510, musik, atlantik).
+datei(film1, video, ungarn).
+datei(film2, video, oesterreich).
+datei(film4, video, nordamerika).
+
+
+hatSubVerzeichnis(V1, V2) :- verzeichnis(V2, V1).
+hatSubVerzeichnis(V1, V3) :- hatSubVerzeichnis(V1, V2), hatSubVerzeichnis(V2, V3).
+
+hatDateiTyp(V, T) :- datei(_, T, V).
+hatDateiTyp(V, T) :- datei(_, T, V1), hatSubVerzeichnis(V, V1).
+
+hatTextDatei(V) :- hatDateiTyp(V, text).
+hatAndereDatei(V) :- hatDateiTyp(V, T), T != text.
+
+hatNurTexte(VID) :- hatTextDatei(VID), not hatAndereDatei(VID).
+
+hatNurTexte(V)?
+% hatTextDatei(V)?
+% hatDateiTyp(V, T) ?

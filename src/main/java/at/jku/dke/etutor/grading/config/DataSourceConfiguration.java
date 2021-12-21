@@ -28,6 +28,8 @@ public class DataSourceConfiguration {
         dataSource.setUsername(properties.getDatasource().getUsername());
         dataSource.setPassword(properties.getDatasource().getPassword());
         dataSource.setUrl(properties.getDatasource().getUrl());
+        dataSource.setMaxConnLifetimeMillis(properties.getDatasource().getMaxLifetime());
+        dataSource.setMaxTotal(properties.getDatasource().getMaxPoolSize());
 
         return dataSource;
     }

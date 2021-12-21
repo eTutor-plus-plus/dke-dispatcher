@@ -1,0 +1,239 @@
+"ID","QUERY","FACTS","GRADINGS","POINTS"
+14328,"auftragRadprofi(X) :- 	
+	auftrag(X,Y), 
+	hatBezeichnung(Y,radprofi_gmbh).",3,,1
+14329,"kundeBez(X,Y) :- 	
+	kundeInland(X), 
+	hatBezeichnung(X,Y).
+	
+kundeBez(X,Y) :-	
+	kundeExport(X),
+	hatBezeichnung(X,Y).",3,,1
+14330,"verbautesProdukt(X) :- 
+	produkt(X), 
+	stueli(_,X).
+
+fertigprodukt(X) :- 
+	produkt(X), 
+	not verbautesProdukt(X).",3,,1
+14332,"verbautesProdukt(X) :- 
+	produkt(X), 
+	stueli(_,X).
+
+fertigprodukt(X) :- 
+	produkt(X), 
+	not verbautesProdukt(X).
+
+produkteEbene3(E3) :- 
+	fertigprodukt(E1), 
+	stueli(E1,E2), 
+	stueli(E2,E3). ",3,,1
+14333,"stueliAufl(X,Y) :- stueli(X,Y).
+
+stueliAufl(X,Y) :- 
+	stueli(X,Z), 
+	stueliAufl(Z,Y).
+	
+verbautInMTB(Y) :- 
+	stueliAufl(X,Y), 
+	hatBezeichnung(X,mtb_extreme_downhill).",3,,1
+14334,"stueliAufl(X,Y) :- stueli(X,Y).
+
+stueliAufl(X,Y) :- 
+	stueli(X,Z), 
+	stueliAufl(Z,Y).
+
+exportierteProdukte(X,Bez):- 	
+	kundeExport(K), 
+	auftrag(A,K),  
+	auftragpos(P,A,X,_),
+	hatBezeichnung(X,Bez). 
+	
+exportierteProdukte(X,Bez):- 	
+	kundeExport(K), 
+	auftrag(A,K), 
+	auftragpos(P,A,FP,_),
+	stueliAufl(FP,X),
+	hatBezeichnung(X,Bez).",3,,1
+14335,"verbautesProdukt(X) :- 
+	produkt(X), 
+	stueli(_,X).
+
+fertigprodukt(X) :- 
+	produkt(X), 
+	not verbautesProdukt(X).
+
+kunde(K) :- kundeExport(K).
+kunde(K) :- kundeInland(K).
+
+produktKunde(Pr,K) :- 	
+	auftrag(A,K),
+	auftragpos(Pos,A,Pr,_).
+
+produktNichtAnAlleVerkauft(P) :- 
+	fertigprodukt(P), 
+	kunde(K), 
+	not produktKunde(P,K).
+							
+produktAnAlleVerkauft(P) :- 	
+	fertigprodukt(P), 
+	not produktNichtAnAlleVerkauft(P).",3,,1
+12001,"alleSuperVerzeichnisse (V,S) :- verzeichnis(V,S), S <> root.
+alleSuperVerzeichnisse (V,S) :- verzeichnis(V,Z), alleSuperVerzeichnisse(Z,S), S <> root.
+
+keinBlattVerzeichnis(S) :- verzeichnis(V,S).
+blattVerzeichnis(V) :- verzeichnis(V,S), not keinBlattVerzeichnis(V).
+
+gleichTiefeHierarchienTemp(V1,V2) :-  verzeichnis(V1,GS), verzeichnis(V2,GS).
+gleichTiefeHierarchien(V1,V2) :- gleichTiefeHierarchienTemp(V1,V2), V1 < V2.
+gleichTiefeHierarchien(V1,V2) :- gleichTiefeHierarchienTemp(S1,S2), verzeichnis(V1,S1), verzeichnis(V2,S2), V1 < V2.
+
+dtInVerzDatei(VID,T) :- datei(D,T,VID).
+verzMitFehlendenDateiTypen(VID) :- verzeichnis(VID,S), datei(DL,T,VL), not dtInVerzDatei(VID,T).
+enthaeltAlleDateiTypen (VID) :- verzeichnis(VID,S), not verzMitFehlendenDateiTypen(VID).
+
+
+habenGemeinsameDateiTypen (VID1, VID2) :- dtInVerzDatei(VID1, T), dtInVerzDatei(VID2, T).
+habenKeineGemeinsamenDateitypen (VID1, VID2) :- verzeichnis(VID1,S1), datei(D1,T1,VID1), verzeichnis(VID2,S2), datei(D2,T2,VID2), not habenGemeinsameDateiTypen(VID1,VID2), VID1 < VID2.
+
+enthaeltDatei(V,T) :- datei(D,T,V).
+enthaeltDatei(V,T) :- datei(D,T,V1), alleSuperVerzeichnisse(V1,V).
+enthaeltNichtTextDatei(V) :- enthaeltDatei(V,T), T <> text.
+hatNurTexte(V) :- enthaeltDatei(V,text), not enthaeltNichtTextDatei(V).",1,,1
+12002,"alleSuperVerzeichnisse (V,S) :- verzeichnis(V,S), S <> root.
+alleSuperVerzeichnisse (V,S) :- verzeichnis(V,Z), alleSuperVerzeichnisse(Z,S), S <> root.
+
+keinBlattVerzeichnis(S) :- verzeichnis(V,S).
+blattVerzeichnis(V) :- verzeichnis(V,S), not keinBlattVerzeichnis(V).
+
+gleichTiefeHierarchienTemp(V1,V2) :-  verzeichnis(V1,GS), verzeichnis(V2,GS).
+gleichTiefeHierarchien(V1,V2) :- gleichTiefeHierarchienTemp(V1,V2), V1 < V2.
+gleichTiefeHierarchien(V1,V2) :- gleichTiefeHierarchienTemp(S1,S2), verzeichnis(V1,S1), verzeichnis(V2,S2), V1 < V2.
+
+dtInVerzDatei(VID,T) :- datei(D,T,VID).
+verzMitFehlendenDateiTypen(VID) :- verzeichnis(VID,S), datei(DL,T,VL), not dtInVerzDatei(VID,T).
+enthaeltAlleDateiTypen (VID) :- verzeichnis(VID,S), not verzMitFehlendenDateiTypen(VID).
+
+
+habenGemeinsameDateiTypen (VID1, VID2) :- dtInVerzDatei(VID1, T), dtInVerzDatei(VID2, T).
+habenKeineGemeinsamenDateitypen (VID1, VID2) :- verzeichnis(VID1,S1), datei(D1,T1,VID1), verzeichnis(VID2,S2), datei(D2,T2,VID2), not habenGemeinsameDateiTypen(VID1,VID2), VID1 < VID2.
+
+enthaeltDatei(V,T) :- datei(D,T,V).
+enthaeltDatei(V,T) :- datei(D,T,V1), alleSuperVerzeichnisse(V1,V).
+enthaeltNichtTextDatei(V) :- enthaeltDatei(V,T), T <> text.
+hatNurTexte(V) :- enthaeltDatei(V,text), not enthaeltNichtTextDatei(V).",1,,1
+12003,"alleSuperVerzeichnisse (V,S) :- verzeichnis(V,S), S <> root.
+alleSuperVerzeichnisse (V,S) :- verzeichnis(V,Z), alleSuperVerzeichnisse(Z,S), S <> root.
+
+keinBlattVerzeichnis(S) :- verzeichnis(V,S).
+blattVerzeichnis(V) :- verzeichnis(V,S), not keinBlattVerzeichnis(V).
+
+gleichTiefeHierarchienTemp(V1,V2) :-  verzeichnis(V1,GS), verzeichnis(V2,GS).
+gleichTiefeHierarchien(V1,V2) :- gleichTiefeHierarchienTemp(V1,V2), V1 < V2.
+gleichTiefeHierarchien(V1,V2) :- gleichTiefeHierarchienTemp(S1,S2), verzeichnis(V1,S1), verzeichnis(V2,S2), V1 < V2.
+
+dtInVerzDatei(VID,T) :- datei(D,T,VID).
+verzMitFehlendenDateiTypen(VID) :- verzeichnis(VID,S), datei(DL,T,VL), not dtInVerzDatei(VID,T).
+enthaeltAlleDateiTypen (VID) :- verzeichnis(VID,S), not verzMitFehlendenDateiTypen(VID).
+
+
+habenGemeinsameDateiTypen (VID1, VID2) :- dtInVerzDatei(VID1, T), dtInVerzDatei(VID2, T).
+habenKeineGemeinsamenDateitypen (VID1, VID2) :- verzeichnis(VID1,S1), datei(D1,T1,VID1), verzeichnis(VID2,S2), datei(D2,T2,VID2), not habenGemeinsameDateiTypen(VID1,VID2), VID1 < VID2.
+
+enthaeltDatei(V,T) :- datei(D,T,V).
+enthaeltDatei(V,T) :- datei(D,T,V1), alleSuperVerzeichnisse(V1,V).
+enthaeltNichtTextDatei(V) :- enthaeltDatei(V,T), T <> text.
+hatNurTexte(V) :- enthaeltDatei(V,text), not enthaeltNichtTextDatei(V).",1,,1
+12004,"alleSuperVerzeichnisse (V,S) :- verzeichnis(V,S), S <> root.
+alleSuperVerzeichnisse (V,S) :- verzeichnis(V,Z), alleSuperVerzeichnisse(Z,S), S <> root.
+
+keinBlattVerzeichnis(S) :- verzeichnis(V,S).
+blattVerzeichnis(V) :- verzeichnis(V,S), not keinBlattVerzeichnis(V).
+
+gleichTiefeHierarchienTemp(V1,V2) :-  verzeichnis(V1,GS), verzeichnis(V2,GS).
+gleichTiefeHierarchien(V1,V2) :- gleichTiefeHierarchienTemp(V1,V2), V1 < V2.
+gleichTiefeHierarchien(V1,V2) :- gleichTiefeHierarchienTemp(S1,S2), verzeichnis(V1,S1), verzeichnis(V2,S2), V1 < V2.
+
+dtInVerzDatei(VID,T) :- datei(D,T,VID).
+verzMitFehlendenDateiTypen(VID) :- verzeichnis(VID,S), datei(DL,T,VL), not dtInVerzDatei(VID,T).
+enthaeltAlleDateiTypen (VID) :- verzeichnis(VID,S), not verzMitFehlendenDateiTypen(VID).
+
+
+habenGemeinsameDateiTypen (VID1, VID2) :- dtInVerzDatei(VID1, T), dtInVerzDatei(VID2, T).
+habenKeineGemeinsamenDateitypen (VID1, VID2) :- verzeichnis(VID1,S1), datei(D1,T1,VID1), verzeichnis(VID2,S2), datei(D2,T2,VID2), not habenGemeinsameDateiTypen(VID1,VID2), VID1 < VID2.
+
+enthaeltDatei(V,T) :- datei(D,T,V).
+enthaeltDatei(V,T) :- datei(D,T,V1), alleSuperVerzeichnisse(V1,V).
+enthaeltNichtTextDatei(V) :- enthaeltDatei(V,T), T <> text.
+hatNurTexte(V) :- enthaeltDatei(V,text), not enthaeltNichtTextDatei(V).",1,,1
+12005,"alleSuperVerzeichnisse (V,S) :- verzeichnis(V,S), S <> root.
+alleSuperVerzeichnisse (V,S) :- verzeichnis(V,Z), alleSuperVerzeichnisse(Z,S), S <> root.
+
+keinBlattVerzeichnis(S) :- verzeichnis(V,S).
+blattVerzeichnis(V) :- verzeichnis(V,S), not keinBlattVerzeichnis(V).
+
+gleichTiefeHierarchienTemp(V1,V2) :-  verzeichnis(V1,GS), verzeichnis(V2,GS).
+gleichTiefeHierarchien(V1,V2) :- gleichTiefeHierarchienTemp(V1,V2), V1 < V2.
+gleichTiefeHierarchien(V1,V2) :- gleichTiefeHierarchienTemp(S1,S2), verzeichnis(V1,S1), verzeichnis(V2,S2), V1 < V2.
+
+dtInVerzDatei(VID,T) :- datei(D,T,VID).
+verzMitFehlendenDateiTypen(VID) :- verzeichnis(VID,S), datei(DL,T,VL), not dtInVerzDatei(VID,T).
+enthaeltAlleDateiTypen (VID) :- verzeichnis(VID,S), not verzMitFehlendenDateiTypen(VID).
+
+
+habenGemeinsameDateiTypen (VID1, VID2) :- dtInVerzDatei(VID1, T), dtInVerzDatei(VID2, T).
+habenKeineGemeinsamenDateitypen (VID1, VID2) :- verzeichnis(VID1,S1), datei(D1,T1,VID1), verzeichnis(VID2,S2), datei(D2,T2,VID2), not habenGemeinsameDateiTypen(VID1,VID2), VID1 < VID2.
+
+enthaeltDatei(V,T) :- datei(D,T,V).
+enthaeltDatei(V,T) :- datei(D,T,V1), alleSuperVerzeichnisse(V1,V).
+enthaeltNichtTextDatei(V) :- enthaeltDatei(V,T), T <> text.
+hatNurTexte(V) :- enthaeltDatei(V,text), not enthaeltNichtTextDatei(V).",1,,1
+14254,"verkauft(A) :- artikel(A,_), verkauf(_,A).
+ladenH(A) :- artikel(A,_), not verkauft(A).
+",2,,1
+14256,"verkauft(A) :- artikel(A,_), verkauf(_,A).
+ladenH(A) :- artikel(A,_), not verkauft(A).
+lowPerformer(K) :- kategorie(K), artikel(Y,K), ladenH(Y).
+highPerformer(X) :- kategorie(X), not lowPerformer(X).
+",2,,1
+14255,"verkauft(A) :- artikel(A,_), verkauf(_,A).
+ladenH(A) :- artikel(A,_), not verkauft(A).
+lowPerformer(K) :- kategorie(K), artikel(Y,K), ladenH(Y).
+",2,,1
+14257,"katInTrans(K,T) :- verkauf(T,A), artikel(A,K).
+katNotInTrans(K,T) :- kategorie(K), transaktion(T), not katInTrans(K,T).
+both(T) :- katInTrans(_,T), katNotInTrans(_,T).
+alleKategorienTrans(T) :- katInTrans(_,T), not both(T).
+",2,,1
+14251,"brotOderMilch(T) :- verkauf(T,brot).
+brotOderMilch(T) :- verkauf(T,milch).",2,,1
+14252,"anzProdJeTrans(T,N) :- transaktion(T), #count{A: verkauf(Y,A), Y=T}=N.",2,,1
+14253,"anzProdJeTrans(T,N) :- transaktion(T), #count{A: verkauf(Y,A), Y=T}=N.
+tMitMehrAlsZweiArt(T) :- anzProdJeTrans(T,N), N>2.",2,,1
+14258,"katTransOhneLebensmittel(T) :- verkauf(T,A), artikel(A,K), K<>lebensmittel.
+katTransLebensmittel(T) :- verkauf(T,A), artikel(A,K), K=lebensmittel.
+allesLebensmittelTrans(T) :- not katTransOhneLebensmittel(T), katTransLebensmittel(T), transaktion(T).",2,,1
+12000,"alleSuperVerzeichnisse (V,S) :- verzeichnis(V,S), S <> root.
+alleSuperVerzeichnisse (V,S) :- verzeichnis(V,Z), alleSuperVerzeichnisse(Z,S), S <> root.
+
+keinBlattVerzeichnis(S) :- verzeichnis(V,S).
+blattVerzeichnis(V) :- verzeichnis(V,S), not keinBlattVerzeichnis(V).
+
+gleichTiefeHierarchienTemp(V1,V2) :-  verzeichnis(V1,GS), verzeichnis(V2,GS).
+gleichTiefeHierarchien(V1,V2) :- gleichTiefeHierarchienTemp(V1,V2), V1 < V2.
+gleichTiefeHierarchien(V1,V2) :- gleichTiefeHierarchienTemp(S1,S2), verzeichnis(V1,S1), verzeichnis(V2,S2), V1 < V2.
+
+dtInVerzDatei(VID,T) :- datei(D,T,VID).
+verzMitFehlendenDateiTypen(VID) :- verzeichnis(VID,S), datei(DL,T,VL), not dtInVerzDatei(VID,T).
+enthaeltAlleDateiTypen (VID) :- verzeichnis(VID,S), not verzMitFehlendenDateiTypen(VID).
+
+
+habenGemeinsameDateiTypen (VID1, VID2) :- dtInVerzDatei(VID1, T), dtInVerzDatei(VID2, T).
+habenKeineGemeinsamenDateitypen (VID1, VID2) :- verzeichnis(VID1,S1), datei(D1,T1,VID1), verzeichnis(VID2,S2), datei(D2,T2,VID2), not habenGemeinsameDateiTypen(VID1,VID2), VID1 < VID2.
+
+enthaeltDatei(V,T) :- datei(D,T,V).
+enthaeltDatei(V,T) :- datei(D,T,V1), alleSuperVerzeichnisse(V1,V).
+enthaeltNichtTextDatei(V) :- enthaeltDatei(V,T), T <> text.
+hatNurTexte(V) :- enthaeltDatei(V,text), not enthaeltNichtTextDatei(V).",1,,1
+14337,"auftraege(X,Y) :- auftrag(X,Y).",3,,1
+14336,"auftraege(X,Y) :- auftrag(X,Y).",3,,1

@@ -1,7 +1,13 @@
 package at.jku.dke.etutor.grading.service;
 
-import at.jku.dke.etutor.core.evaluation.*;
-import at.jku.dke.etutor.grading.rest.dto.*;
+import at.jku.dke.etutor.core.evaluation.Analysis;
+import at.jku.dke.etutor.core.evaluation.DefaultReport;
+import at.jku.dke.etutor.core.evaluation.Evaluator;
+import at.jku.dke.etutor.core.evaluation.Grading;
+import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
+import at.jku.dke.etutor.grading.rest.dto.ReportDTO;
+import at.jku.dke.etutor.grading.rest.dto.Submission;
+import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
 import at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +60,7 @@ public class SubmissionDispatcherService {
             GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading);
             gradingDTO.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes(), locale));
 
-            if((grading.getPoints()<grading.getMaxPoints() || grading.getPoints() == 0 ) && !(analysis instanceof XQAnalysis)) {
+            if((grading.getPoints()<grading.getMaxPoints() || grading.getPoints() == 0 ) && !(analysis instanceof XQAnalysis) && !(analysis instanceof DatalogAnalysis)) {
                     logger.info("Requesting report");
                     DefaultReport report = getReport(evaluator, grading, analysis, submission, locale);
                     logger.debug("Received report");

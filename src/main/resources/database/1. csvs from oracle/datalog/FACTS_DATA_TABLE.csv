@@ -1,0 +1,116 @@
+"FACTS","ID","NAME"
+"kundeInland(k1).
+kundeInland(k2).
+
+kundeExport(k3).
+
+hatBezeichnung(k1,radprofi_gmbh).
+hatBezeichnung(k2,bike_palast).
+hatBezeichnung(k3,velo_schwyz).
+
+produkt(eb341234).
+produkt(eb123123).
+produkt(zb120000).
+produkt(t1).
+produkt(t2).
+produkt(t3).
+produkt(t4).
+
+hatBezeichnung(eb341234,mtb_extreme_downhill).
+hatBezeichnung(eb123123,cb_comfort).
+hatBezeichnung(zb120000,mtb_super_cross).
+hatBezeichnung(t1,vorderrad_12).
+hatBezeichnung(t2,speiche_12).
+hatBezeichnung(t3,nabe_12).
+hatBezeichnung(t4,kugellager_12).
+
+stueli(eb341234,t1).
+stueli(eb123123,t1).
+stueli(t1,t2).
+stueli(t1,t3).
+stueli(t2,t4).
+
+auftrag(ar123,k1).
+auftrag(ar125,k3).
+auftrag(ar128,k2).
+
+auftragpos(pos1,ar123,eb341234,3).
+auftragpos(pos2,ar123,eb123123,2).
+auftragpos(pos3,ar123,zb120000,4).
+auftragpos(pos4,ar125,eb341234,2).
+auftragpos(pos5,ar125,zb120000,1).
+auftragpos(pos6,ar128,eb341234,5).",3,"Auftragsverwaltung"
+"verzeichnis(kontinente, root).
+verzeichnis(europa, kontinente).
+verzeichnis(afrika, kontinente).
+verzeichnis(amerika, kontinente).
+verzeichnis(suedamerika, amerika).
+verzeichnis(nordamerika, amerika).
+verzeichnis(usa, nordamerika).
+verzeichnis(kanada, nordamerika).
+verzeichnis(oesterreich, europa).
+verzeichnis(frankreich, europa).
+verzeichnis(polen, europa).
+verzeichnis(ungarn, europa).
+verzeichnis(ozeane, root).
+verzeichnis(atlantik, ozeane).
+verzeichnis(pazifik, ozeane).
+
+datei(landkarte11, bild, europa).
+datei(landkarte12, bild, amerika).
+datei(landkarte51, bild, europa).
+datei(landkarte61, bild, oesterreich).
+datei(landkarte62, bild, frankreich).
+datei(landkarte63, bild, polen).
+datei(landkarte70, bild, nordamerika).
+datei(staedte100, text, oesterreich).
+datei(staedte101, text, frankreich).
+datei(staedte102, text, ungarn).
+datei(staedte105, text, amerika).
+datei(staedte110, text, nordamerika).
+datei(staedte120, text, suedamerika).
+datei(inseln1, text, atlantik).
+datei(inseln2, text, pazifik).
+datei(hymne500, musik, europa).
+datei(hymne501, musik, oesterreich).
+datei(hymne502, musik, frankreich).
+datei(hymne505, musik, nordamerika).
+datei(hymne510, musik, atlantik).
+datei(film1, video, ungarn).
+datei(film2, video, oesterreich).
+datei(film4, video, nordamerika).",1,"Verzeichnisse"
+"kategorie(lebensmittel). 
+kategorie(getraenke). 
+kategorie(haushaltsartikel). 
+
+artikel(chips, lebensmittel). 
+artikel(brot, lebensmittel). 
+artikel(milch, lebensmittel). 
+artikel(fisch, lebensmittel). 
+artikel(cola, getraenke). 
+artikel(mineralwasser, getraenke). 
+artikel(bier, getraenke). 
+artikel(servietten, haushaltsartikel). 
+artikel(messer, haushaltsartikel). 
+artikel(teller, haushaltsartikel). 
+
+verkauf(t1, brot). 
+verkauf(t1, milch). 
+verkauf(t2, brot). 
+verkauf(t2, cola). 
+verkauf(t2, servietten). 
+verkauf(t3, chips). 
+verkauf(t3, brot). 
+verkauf(t3, fisch). 
+verkauf(t3, milch). 
+verkauf(t4, fisch). 
+verkauf(t4, bier). 
+verkauf(t4, teller). 
+verkauf(t5, milch). 
+verkauf(t5, teller). 
+
+transaktion(t1). 
+transaktion(t2). 
+transaktion(t3). 
+transaktion(t4). 
+transaktion(t5).",2,"Verkaeufe"

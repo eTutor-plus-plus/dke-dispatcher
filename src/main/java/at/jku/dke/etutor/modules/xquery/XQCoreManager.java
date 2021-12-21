@@ -256,6 +256,7 @@ public class XQCoreManager {
      * @throws InvalidResourceException indicates that properties are not set correctly
      * @throws SQLException is thrown when trying to retrieve a connection out of the pool
      */
+    //TODO: create and retrieve from datasource
     public Connection getConnection() throws InvalidResourceException, SQLException {
         return DriverManager.getConnection(applicationProperties.getXquery().getConnUrl(),
                 applicationProperties.getXquery().getConnUser(),
