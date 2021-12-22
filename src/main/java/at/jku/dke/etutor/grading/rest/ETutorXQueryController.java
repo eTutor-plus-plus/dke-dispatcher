@@ -2,6 +2,7 @@ package at.jku.dke.etutor.grading.rest;
 
 import at.jku.dke.etutor.grading.ETutorCORSPolicy;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.dto.XMLDefinitionDTO;
 import at.jku.dke.etutor.grading.rest.dto.XQExerciseDTO;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
@@ -180,5 +181,15 @@ public class ETutorXQueryController {
             LOGGER.error(e.getMessage());
         }
         return ResponseEntity.status(500).body("Could not delete exercise with id "+id);
+    }
+    @GetMapping("/grading/{exercise_id}/{action}/{diagnose_level}")
+    public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level){
+        try {
+            GradingDTO grading = xQueryResourceService.getGradingForExercise(exercise_id, action, diagnose_level);
+            return ResponseEntity.ok(grading);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

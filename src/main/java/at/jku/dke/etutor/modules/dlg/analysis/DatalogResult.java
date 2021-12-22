@@ -43,7 +43,8 @@ public class DatalogResult implements Serializable {
             this.submission = submission;
             this.queries = queries;
         } catch (QuerySyntaxException e) {
-            this.syntaxException = e;
+            this.syntaxException = new QuerySyntaxException(e);
+            this.syntaxException.setDescription(e.getMessage());
             this.models = new WrappedModel[]{};
         }
     }

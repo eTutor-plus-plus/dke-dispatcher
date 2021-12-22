@@ -1,8 +1,11 @@
 package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
+import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.dto.XMLDefinitionDTO;
 import at.jku.dke.etutor.grading.rest.dto.XQExerciseDTO;
+import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
 import at.jku.dke.etutor.modules.xquery.analysis.UrlContentMap;
 import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseBean;
 import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseManagerImpl;
@@ -13,7 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.*;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Service class for handling xQuery resources
@@ -22,13 +25,18 @@ import java.util.Objects;
 public class XQueryResourceService {
     private ApplicationProperties properties;
     private XQExerciseManagerImpl xqExerciseManager;
+    private SubmissionDispatcherService dispatcherService;
+    private GradingDTORepository gradingDTORepository;
+    private final String TASK_TYPE = "xq";
     private final String URL;
     private final String USER;
     private final String PWD;
 
-    public XQueryResourceService(ApplicationProperties properties, XQExerciseManagerImpl xqExerciseManager){
+    public XQueryResourceService(SubmissionDispatcherService dispatcherService, GradingDTORepository gradingDTORepository, ApplicationProperties properties, XQExerciseManagerImpl xqExerciseManager){
         this.properties = properties;
         this.xqExerciseManager = xqExerciseManager;
+        this.dispatcherService = dispatcherService;
+        this.gradingDTORepository = gradingDTORepository;
         URL = properties.getXquery().getConnUrl();
         USER = properties.getXquery().getConnUser();
         PWD = properties.getXquery().getConnPwd();
@@ -414,5 +422,35 @@ public class XQueryResourceService {
      */
     public boolean deleteExercise(int id) throws Exception {
         return xqExerciseManager.deleteExercise(id);
+    }
+
+    public GradingDTO getGradingForExercise(int exercise_id, String action, String diagnose_level) throws Exception {
+        Submission submission = new Submission();
+        String id = UUID.randomUUID().toString();
+        submission.setSubmissionId(id);
+        submission.setExerciseId(exercise_id);
+        submission.setTaskType(TASK_TYPE);
+        submission.setMaxPoints(1);
+
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("diagnoseLevel", diagnose_level);
+        attributes.put("action", action);
+
+        var exercise = xqExerciseManager.fetchExercise(exercise_id);
+
+        if (exercise==null) return null;
+
+        if(exercise instanceof XQExerciseBean xqExerciseBean) {
+            String submissionStr = "";
+            submissionStr = xqExerciseBean.getQuery();
+            attributes.put("submission", submissionStr);
+        }
+        else return null;
+
+        submission.setPassedAttributes(attributes);
+        submission.setPassedParameters(new HashMap<>());
+        dispatcherService.run(submission, Locale.GERMAN);
+        Thread.sleep(10000);
+        return gradingDTORepository.findById(id).isPresent() ? gradingDTORepository.findById(id).get() : null;
     }
 }

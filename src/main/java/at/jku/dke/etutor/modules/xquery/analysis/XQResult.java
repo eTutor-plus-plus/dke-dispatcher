@@ -9,6 +9,7 @@ import com.ibm.DDbEv2.Models.DDModel;
 import com.ibm.DDbEv2.Utilities.Parameter;
 import oracle.xml.parser.v2.XMLDocument;
 import oracle.xml.parser.v2.XSLException;
+import org.basex.core.BaseXException;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -94,6 +95,8 @@ public class XQResult implements Serializable {
                 //LOGGER.debug("EXECUTING NOT DECODED QUERY: " + query);
             }
             //LOGGER.debug("RAW RESULT: " + rawResult);
+        }catch(BaseXException e){
+            this.syntaxException = createQuerySyntaxException(e.getMessage());
         } catch (UrlContentException e) {
             this.urlContentException = e;
         }

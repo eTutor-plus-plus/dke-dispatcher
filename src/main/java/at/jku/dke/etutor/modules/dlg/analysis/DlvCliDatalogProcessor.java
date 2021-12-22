@@ -113,12 +113,13 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
                 // Start process
                 p = pb.start();
                 //Handle error
+                String s;
                 var errorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-                if((errorReader.readLine()) != null) handleSyntaxError(errorReader, p, tempDlv);
+                if((s= errorReader.readLine()) != null) handleSyntaxError(s, errorReader, p, tempDlv);
 
                 // Handle InputStream from process
                 var resultReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                String s;
+
                 resultReader.readLine();
                 while ((s = resultReader.readLine()) != null) {
                     if(Strings.isNotBlank(s)) resultFacts.add(s);
@@ -194,13 +195,13 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
     }
 
     /**
-     * Handles a syntax error thrown wille executing a query by {@link #executeQuery(String, String[])}
+     * Handles a syntax error thrown while executing a query by {@link #executeQuery(String, String[])}
      * @param br the {@link BufferedReader} wrapping the error stream
      * @param p the {@link Process} that threw the error
      * @param file the {@link File} that threw the error
      * @throws QuerySyntaxException to indicate the error
      */
-    private void handleSyntaxError(BufferedReader br, Process p, File file) throws QuerySyntaxException {
+    private void handleSyntaxError(String firstLine, BufferedReader br, Process p, File file) throws QuerySyntaxException {
         StringBuilder errorMessage = new StringBuilder();
         String s;
         while (true) {

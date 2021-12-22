@@ -97,7 +97,9 @@ public class DatalogResourceService {
 
         if (exercise==null) return null;
 
-        attributes.put("submission", exercise.getQuery());
+        String sub = "asd";
+        //sub = exercise.getQuery();
+        attributes.put("submission", sub);
 
         submission.setPassedAttributes(attributes);
         submission.setPassedParameters(new HashMap<>());
