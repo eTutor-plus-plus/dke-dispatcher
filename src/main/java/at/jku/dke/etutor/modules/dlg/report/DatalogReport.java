@@ -321,7 +321,7 @@ public class DatalogReport extends DefaultReport implements DatalogFeedback, Ser
     private ErrorCategory[] getAnalysis(DatalogAnalysis analysis, int diagnoseLevel) {
         StringBuilder error = new StringBuilder();
         StringBuilder description = new StringBuilder();
-        if (diagnoseLevel != DIAGNOSE_MEDIUM && diagnoseLevel != DIAGNOSE_HIGH) {
+        if (diagnoseLevel == DIAGNOSE_NONE ) {
             return new ErrorCategory[] {};
         }
         //TODO: textual output on the highest level is actually not needed any more as errors are depicted graphically
@@ -338,7 +338,7 @@ public class DatalogReport extends DefaultReport implements DatalogFeedback, Ser
       List<WrappedPredicate> missingPredicates = analysis.getMissingPredicates();
         if (!missingPredicates.isEmpty()) {
             StringBuilder detailedAnalyze = new StringBuilder();
-            if (diagnoseLevel == DIAGNOSE_MEDIUM) {
+            if (diagnoseLevel == DIAGNOSE_LOW) {
                 detailedAnalyze.append(DLResources.getString(DLResources.PREDICATES_MISSING) + "\n");
             } else {
                 // ---------- prepare the message --------------- //
@@ -375,7 +375,7 @@ public class DatalogReport extends DefaultReport implements DatalogFeedback, Ser
       List<WrappedPredicate.WrappedFact> missingFacts = analysis.getMissingFacts();
         if (!missingFacts.isEmpty()) {
             StringBuffer detailedAnalyze = new StringBuffer();
-            if (diagnoseLevel == DIAGNOSE_MEDIUM) {
+            if (diagnoseLevel == DIAGNOSE_LOW) {
                 detailedAnalyze.append(DLResources.getString(DLResources.FACTS_MISSING) + "\n");
                 description.append(DLResources.getString(DLResources.FACTS_MISSING) + "\n");
             } else {
@@ -415,7 +415,7 @@ public class DatalogReport extends DefaultReport implements DatalogFeedback, Ser
         List<WrappedPredicate.WrappedFact> redundantFacts = analysis.getRedundantFacts();
         if (!redundantFacts.isEmpty()) {
             StringBuffer detailedAnalyze = new StringBuffer();
-            if (diagnoseLevel == DIAGNOSE_MEDIUM) {
+            if (diagnoseLevel == DIAGNOSE_LOW) {
                 detailedAnalyze.append(DLResources.getString(DLResources.FACTS_REDUNDANT) + "\n");
                 description.append(DLResources.getString(DLResources.FACTS_REDUNDANT) + "\n");
             } else {

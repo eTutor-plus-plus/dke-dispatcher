@@ -6,10 +6,7 @@ import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -21,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes= ETutorGradingApplication.class)
 @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
-//@Disabled
+@Disabled
 public class TestDLGModule {
 
     private List<String> ids = new ArrayList<>();

@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.grading.rest;
 
 import at.jku.dke.etutor.grading.rest.dto.DatalogTaskGroupDTO;
+import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.service.DatalogResourceService;
 import at.jku.dke.etutor.modules.dlg.ExerciseManagementException;
 import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseBean;
@@ -103,5 +104,15 @@ public class ETutorDLGController {
             return ResponseEntity.status(500).body(facts);
         }
         return ResponseEntity.ok(facts);
+    }
+
+    @GetMapping("/grading/{exercise_id}/{action}/{diagnose_level}")
+    public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level){
+        try {
+            GradingDTO grading = service.getGradingForExercise(exercise_id, action, diagnose_level);
+            return ResponseEntity.ok(grading);
+        } catch (ExerciseManagementException | InterruptedException e) {
+            return null;
+        }
     }
 }
