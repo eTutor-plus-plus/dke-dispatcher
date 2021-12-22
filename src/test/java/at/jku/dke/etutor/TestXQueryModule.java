@@ -7,7 +7,6 @@ import at.jku.dke.etutor.grading.rest.dto.Submission;
 import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @SpringBootTest(classes= ETutorGradingApplication.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Disabled
+//@Disabled
 public class TestXQueryModule {
     private List<String> ids = new ArrayList<>();
 
@@ -39,7 +38,7 @@ public class TestXQueryModule {
     private String CONN_URL;
     private String CONN_USER;
     private String CONN_PWD;
-    private final String EXERCISE_CONSTRAINTS = " where id < 14326 AND id NOT IN (13043, 13044, 13045, 13058, 14319) ";
+    private final String EXERCISE_CONSTRAINTS = " where id < 14326";
     private final String[] ACTION_STRINGS = {"diagnose", "submit"};
     private final String DIAGNOSE_LEVEL = "3";
     private final String TASK_TYPE = "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#XQTask";
