@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.grading.rest;
 
 import at.jku.dke.etutor.grading.ETutorCORSPolicy;
+import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.dto.SqlDataDefinitionDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceService;
@@ -343,6 +344,24 @@ public class ETutorSQLController {
        }catch(DatabaseException e){
            logger.error("Exit: getHTMLTable() with status 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+        }
+    }
+
+    /**
+     * Endpoint for debugging: triggers the evaluation of an existing exercise, using the persisted solution as submission
+     * @param exercise_id the id
+     * @param action the desired action
+     * @param diagnose_level the diagnose level
+     * @return {@link GradingDTO} the grading
+     */
+    @GetMapping("/grading/{exercise_id}/{action}/{diagnose_level}")
+    public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level){
+        try {
+            GradingDTO grading = resourceManager.getGradingForExercise(exercise_id, action, diagnose_level);
+            return ResponseEntity.ok(grading);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

@@ -182,6 +182,7 @@ public class ETutorXQueryController {
         }
         return ResponseEntity.status(500).body("Could not delete exercise with id "+id);
     }
+
     @GetMapping("/grading/{exercise_id}/{action}/{diagnose_level}")
     public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level){
         try {

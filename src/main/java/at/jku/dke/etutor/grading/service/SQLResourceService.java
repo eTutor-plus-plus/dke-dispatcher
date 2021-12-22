@@ -1,14 +1,15 @@
 package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
+import at.jku.dke.etutor.grading.rest.dto.Submission;
+import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Service used to manipulate schemas and exercises for the SQL module
@@ -28,6 +29,10 @@ public class SQLResourceService {
     private final String DIAGNOSE_SUFFIX;
     private final String JDBC_SCHEMA_OPTION = "?currentSchema=";
 
+    private final String TASK_TYPE = "sql";
+    private final SubmissionDispatcherService dispatcherService;
+    private final GradingDTORepository gradingDTORepository;
+
     private final Logger logger;
 
     /**
@@ -35,9 +40,11 @@ public class SQLResourceService {
      * @param properties the injected application properties
      * @throws ClassNotFoundException if class not found
      */
-    public SQLResourceService(ApplicationProperties properties) throws ClassNotFoundException {
+    public SQLResourceService(SubmissionDispatcherService dispatcherService, GradingDTORepository gradingDTORepository, ApplicationProperties properties) throws ClassNotFoundException {
         Class.forName(properties.getGrading().getJDBCDriver());
         this.logger= (Logger) LoggerFactory.getLogger("at.jku.dke.etutor.sqlexercisemanager");
+        this.dispatcherService=dispatcherService;
+        this.gradingDTORepository=gradingDTORepository;
 
         SQL_BASE_URL=properties.getSql().getConnBaseUrl();
         SQL_ADMINISTRATION_URL=properties.getSql().getConnUrl();
@@ -866,5 +873,33 @@ public class SQLResourceService {
             con.commit();
         }catch(SQLException ignore){
         }
+    }
+
+    /**
+     * Triggers the evaluation for a given exercise
+     * @param exercise_id the id of the exercise
+     * @param action the action for the evaluation
+     * @param diagnose_level the diagnose level for the evaluation
+     * @return {@link GradingDTO} that wraps the result
+     */
+    public GradingDTO getGradingForExercise(int exercise_id, String action, String diagnose_level)  {
+        Submission submission = new Submission();
+        String id = UUID.randomUUID().toString();
+        submission.setSubmissionId(id);
+        submission.setExerciseId(exercise_id);
+        submission.setTaskType(TASK_TYPE);
+        submission.setMaxPoints(1);
+
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("diagnoseLevel", diagnose_level);
+        attributes.put("action", action);
+
+        attributes.put("submission", getSolution(exercise_id));
+
+        submission.setPassedAttributes(attributes);
+        submission.setPassedParameters(new HashMap<>());
+        dispatcherService.run(submission, Locale.GERMAN);
+        Thread.sleep(10000);
+        return gradingDTORepository.findById(id).isPresent() ? gradingDTORepository.findById(id).get() : null;
     }
 }
