@@ -1,13 +1,6 @@
 package at.jku.dke.etutor.modules.sql;
 
-import java.sql.*;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-
 import at.jku.dke.etutor.core.evaluation.*;
-
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalyzer;
 import at.jku.dke.etutor.modules.sql.analysis.SQLAnalyzerConfig;
@@ -20,12 +13,13 @@ import at.jku.dke.etutor.modules.sql.report.SQLReporter;
 import at.jku.dke.etutor.modules.sql.report.SQLReporterConfig;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Service;
+
+import java.sql.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Implementation of the Evaluator Interface for SQL Submissions
@@ -101,6 +95,7 @@ public class SQLEvaluator implements Evaluator {
 		//ESTABLISHING CONNECTION TO SQL DATABASE
 		//Connection conn = DriverManager.getConnection(constants.getConnURL(), constants.getConnUser(), constants.getConnPwd())
 		try(Connection conn = SQLDataSource.getConnection()){
+			var x = Class.forName("org.postgresql.Driver");
 			conn.setAutoCommit(true);
 
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE

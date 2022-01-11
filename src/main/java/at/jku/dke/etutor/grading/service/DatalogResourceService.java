@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.grading.rest.dto.DatalogExerciseDTO;
 import at.jku.dke.etutor.grading.rest.dto.DatalogTaskGroupDTO;
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.dto.Submission;
@@ -98,23 +99,44 @@ public class DatalogResourceService {
 
     /**
      * Creates an exercise
-     * @param exerciseBean the {@link DatalogExerciseBean} representing the exercise
+     * @param exerciseDTO the {@link DatalogExerciseDTO} representing the exercise
      * @return the id of the created exercise
      * @throws ExerciseManagementException if an error occurs while persisting the exercise
      */
-    public int createExercise(DatalogExerciseBean exerciseBean) throws ExerciseManagementException {
+    public int createExercise(DatalogExerciseDTO exerciseDTO) throws ExerciseManagementException {
+        var exerciseBean = new DatalogExerciseBean();
+        exerciseBean.setFactsId(exerciseDTO.getFactsId());
+        exerciseBean.setQuery(exerciseDTO.getSolution());
+        exerciseBean.setPredicates(exerciseDTO.getQueries());
+        exerciseBean.setTerms(exerciseDTO.getUncheckedTerms());
+        exerciseBean.setPoints(1.0);
         return exerciseManager.createExercise(exerciseBean);
+    }
+
+    /**
+     * Transforms a DatalogExerciseDTO into an DatalogExerciseBean
+     * @param exerciseDTO the {@link DatalogExerciseDTO}
+     * @return the {@link DatalogExerciseBean}
+     */
+    private DatalogExerciseBean parseExerciseBean(DatalogExerciseDTO exerciseDTO){
+        var exerciseBean = new DatalogExerciseBean();
+        exerciseBean.setFactsId(exerciseDTO.getFactsId());
+        exerciseBean.setQuery(exerciseDTO.getSolution());
+        exerciseBean.setPredicates(exerciseDTO.getQueries());
+        exerciseBean.setTerms(exerciseDTO.getUncheckedTerms());
+        exerciseBean.setPoints(1.0);
+        return exerciseBean;
     }
 
     /**
      * Updates an exercise
      * @param id the id
-     * @param exerciseBean the {@link DatalogExerciseBean} representing the exercise
+     * @param exerciseDTO the {@link DatalogExerciseBean} representing the exercise
      * @return a {@link Boolean} indicating if updating has been successful
      * @throws ExerciseManagementException if an error occurs while updating exercise
      */
-    public boolean modifyExercise(int id, DatalogExerciseBean exerciseBean) throws ExerciseManagementException {
-        return exerciseManager.modifyExercise(id, exerciseBean);
+    public boolean modifyExercise(int id, DatalogExerciseDTO exerciseDTO) throws ExerciseManagementException {
+        return exerciseManager.modifyExercise(id, parseExerciseBean(exerciseDTO));
     }
 
     /**
@@ -133,8 +155,9 @@ public class DatalogResourceService {
      * @return the exercise
      * @throws ExerciseManagementException if an error occurs
      */
-    public DatalogExerciseBean fetchExercise(int id) throws ExerciseManagementException {
-        return exerciseManager.fetchExercise(id);
+    public DatalogExerciseDTO fetchExercise(int id) throws ExerciseManagementException {
+        var bean =  exerciseManager.fetchExercise(id);
+        return new DatalogExerciseDTO(bean);
     }
 
     /**
@@ -173,7 +196,7 @@ public class DatalogResourceService {
         if (exercise==null) return null;
 
         String sub = "asd";
-        //sub = exercise.getQuery();
+        sub = exercise.getQuery();
         attributes.put("submission", sub);
 
         submission.setPassedAttributes(attributes);

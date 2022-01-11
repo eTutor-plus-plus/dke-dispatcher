@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.grading.rest;
 
+import at.jku.dke.etutor.grading.rest.dto.DatalogExerciseDTO;
 import at.jku.dke.etutor.grading.rest.dto.DatalogTaskGroupDTO;
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.service.DatalogResourceService;
@@ -40,6 +41,7 @@ public class ETutorDLGController {
         try {
             id = service.createTaskGroup(facts);
         } catch (DatalogParseException | ExerciseManagementException e) {
+            logger.warn(e.getMessage());
             return ResponseEntity.status(500).body(-1);
         }
         return ResponseEntity.ok(id);
@@ -57,6 +59,7 @@ public class ETutorDLGController {
            service.deleteTaskGroup(id, deleteTasks);
            return ResponseEntity.ok().build();
        }catch(ExerciseManagementException e){
+           logger.warn(e.getMessage());
            return ResponseEntity.status(500).build();
        }
     }
@@ -72,6 +75,7 @@ public class ETutorDLGController {
         try {
             service.updateTaskGroup(id, newFacts);
         } catch (DatalogParseException | ExerciseManagementException e) {
+            logger.warn(e.getMessage());
             return ResponseEntity.status(500).build();
         }
         return ResponseEntity.ok().build();
@@ -79,15 +83,16 @@ public class ETutorDLGController {
 
     /**
      * Creates a datalog exercise
-     * @param exerciseBean an {@link DatalogExerciseBean} wrapping the required information
+     * @param exerciseDTO an {@link DatalogExerciseDTO} wrapping the required information
      * @return the id of the created exercise
      */
     @PostMapping("/exercise")
-    public ResponseEntity<Integer> createExercise(@RequestBody DatalogExerciseBean exerciseBean){
+    public ResponseEntity<Integer> createExercise(@RequestBody DatalogExerciseDTO exerciseDTO){
         int id;
         try {
-            id = service.createExercise(exerciseBean);
+            id = service.createExercise(exerciseDTO);
         } catch (ExerciseManagementException e) {
+            logger.warn(e.getMessage());
             return ResponseEntity.status(500).body(-1);
         }
         return ResponseEntity.ok(id);
@@ -95,18 +100,18 @@ public class ETutorDLGController {
 
     /**
      * Updates an exercise
-     * @param exerciseBean a {@link DatalogExerciseBean} wrapping the required attributes
+     * @param exerciseDTO a {@link DatalogExerciseBean} wrapping the required attributes
      * @param id the id of the exercise
      * @return a {@link ResponseEntity} indicating if updating has been successful
      */
     @PostMapping("/exercise/{id}")
-    public ResponseEntity<Void> modifyExercise(@RequestBody DatalogExerciseBean exerciseBean, @PathVariable int id){
+    public ResponseEntity<Void> modifyExercise(@RequestBody DatalogExerciseDTO exerciseDTO, @PathVariable int id){
         try{
-            if(service.modifyExercise(id, exerciseBean)) return ResponseEntity.ok().build();
-            else return ResponseEntity.status(500).build();
+            if(service.modifyExercise(id, exerciseDTO)) return ResponseEntity.ok().build();
         }catch(ExerciseManagementException e){
-            return ResponseEntity.status(500).build();
+            logger.warn(e.getMessage());
         }
+        return ResponseEntity.status(500).build();
     }
 
     /**
@@ -120,6 +125,7 @@ public class ETutorDLGController {
             if(service.deleteExercise(id))return ResponseEntity.ok().build();
             else return ResponseEntity.status(500).build();
         }catch(ExerciseManagementException e){
+            logger.warn(e.getMessage());
             return ResponseEntity.status(500).build();
         }
     }
@@ -130,12 +136,13 @@ public class ETutorDLGController {
      * @return a {@link DatalogExerciseBean} representing the exercise
      */
     @GetMapping("/exercise/{id}")
-    public ResponseEntity<DatalogExerciseBean> getExercise(@PathVariable int id){
-        DatalogExerciseBean exercise = null;
+    public ResponseEntity<DatalogExerciseDTO> getExercise(@PathVariable int id){
+        DatalogExerciseDTO exercise = null;
         try {
             exercise = service.fetchExercise(id);
             return ResponseEntity.ok(exercise);
         } catch (ExerciseManagementException e) {
+            logger.warn(e.getMessage());
             return ResponseEntity.status(500).body(exercise);
         }
     }
@@ -149,11 +156,12 @@ public class ETutorDLGController {
     public ResponseEntity<String> getFacts(@PathVariable int id){
         String facts = null;
         try {
-            facts = service.fetchFacts(id);
+            facts = "<p>" + service.fetchFacts(id).replace("\r", "").replace("\n", "<br>") +"</p>";
+            return ResponseEntity.ok(facts);
         } catch (ExerciseManagementException e) {
+            logger.warn(e.getMessage());
             return ResponseEntity.status(500).body(facts);
         }
-        return ResponseEntity.ok(facts);
     }
 
     /**
@@ -169,6 +177,7 @@ public class ETutorDLGController {
             GradingDTO grading = service.getGradingForExercise(exercise_id, action, diagnose_level);
             return ResponseEntity.ok(grading);
         } catch (ExerciseManagementException | InterruptedException e) {
+            logger.warn(e.getMessage());
             return null;
         }
     }

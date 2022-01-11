@@ -91,7 +91,8 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
                 List<String> resultFacts = new ArrayList<>();
 
                 // Create Temp dlv file and write facts + submission + query
-                tempDlv = File.createTempFile(UUID.randomUUID().toString(), ".dlv", new File(TEMP_FOLDER));
+                String fileId = UUID.randomUUID().toString();
+                tempDlv = File.createTempFile(fileId, ".dlv", new File(TEMP_FOLDER));
                 String tempFilePath = tempDlv.getAbsolutePath();
 
                 StringBuilder program = new StringBuilder();
@@ -115,7 +116,7 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
                 //Handle error
                 String s;
                 var errorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-                if((s= errorReader.readLine()) != null) handleSyntaxError(s, errorReader, p, tempDlv);
+                if((s= errorReader.readLine()) != null) handleSyntaxError(fileId+".dlv", s, errorReader, p, tempDlv);
 
                 // Handle InputStream from process
                 var resultReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -201,7 +202,7 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
      * @param file the {@link File} that threw the error
      * @throws QuerySyntaxException to indicate the error
      */
-    private void handleSyntaxError(String firstLine, BufferedReader br, Process p, File file) throws QuerySyntaxException {
+    private void handleSyntaxError(String fileName, String firstLine, BufferedReader br, Process p, File file) throws QuerySyntaxException {
         StringBuilder errorMessage = new StringBuilder();
         String s;
         while (true) {
@@ -214,7 +215,8 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
                 p.destroy();
                 throw new QuerySyntaxException();
             }
-            errorMessage.append(s);
+            var index = s.contains(".dlv") ? s.indexOf(".dlv")+4 : 0;
+            errorMessage.append(s.substring(index)).append("\n");
         }
         p.destroy();
         file.delete();

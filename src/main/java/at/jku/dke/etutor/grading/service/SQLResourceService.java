@@ -882,7 +882,7 @@ public class SQLResourceService {
      * @param diagnose_level the diagnose level for the evaluation
      * @return {@link GradingDTO} that wraps the result
      */
-    public GradingDTO getGradingForExercise(int exercise_id, String action, String diagnose_level)  {
+    public GradingDTO getGradingForExercise(int exercise_id, String action, String diagnose_level) throws DatabaseException, InterruptedException {
         Submission submission = new Submission();
         String id = UUID.randomUUID().toString();
         submission.setSubmissionId(id);
