@@ -689,15 +689,17 @@ public class SQLResourceService {
         var ids = new ArrayList<Integer>();
         var query = "SELECT connection " +
                 "FROM connectionmapping " +
-                "WHERE schema = '"+taskGroup.toLowerCase() +
-                "' OR database = '"+taskGroup.toLowerCase() + "'";
+                "WHERE schema = ? or database = ?";
 
-        try(PreparedStatement stmt = con.prepareStatement(query);
-        ResultSet rset = stmt.executeQuery()){
-            while(rset.next()){
-                var id = rset.getInt("connection");
-                logger.debug("Found connection {}",id);
-                ids.add(id);
+        try(PreparedStatement stmt = con.prepareStatement(query)){
+            stmt.setString(1, taskGroup.toLowerCase());
+            stmt.setString(2, taskGroup.toLowerCase());
+            try(ResultSet rset = stmt.executeQuery()){
+                while(rset.next()){
+                    var id = rset.getInt("connection");
+                    logger.debug("Found connection {}",id);
+                    ids.add(id);
+                }
             }
         }catch(SQLException e){
             logger.error("SQLException in getConnectionsForTaskGroup()", e);
