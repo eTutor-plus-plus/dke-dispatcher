@@ -20,6 +20,13 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
+-- DATALOG database
+CREATE DATABASE datalog WITH TEMPLATE = template0 ENCODING = 'UTF8';
+
+
+ALTER DATABASE datalog OWNER TO etutor;
+
+\connect datalog
 --
 -- Name: error_categories; Type: TABLE; Schema: public; Owner: postgres
 --

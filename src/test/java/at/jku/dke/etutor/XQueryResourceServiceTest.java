@@ -12,7 +12,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -24,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes= ETutorGradingApplication.class)
 @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
+//@Disabled
 public class XQueryResourceServiceTest {
     @Autowired
     private XQueryResourceService service;

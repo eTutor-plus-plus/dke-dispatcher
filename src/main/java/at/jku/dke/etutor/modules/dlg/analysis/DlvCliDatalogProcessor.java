@@ -4,7 +4,9 @@ import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.modules.dlg.InternalException;
 import at.jku.dke.etutor.modules.dlg.QuerySyntaxException;
 import at.jku.dke.etutor.modules.dlg.exercise.TermDescription;
+import ch.qos.logback.classic.Logger;
 import org.apache.logging.log4j.util.Strings;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,6 +21,7 @@ import java.util.*;
  * @author Kevin Schütz 2021
  */
 public class DlvCliDatalogProcessor implements DatalogProcessor{
+   private final Logger LOGGER =  (Logger) LoggerFactory.getLogger(DlvCliDatalogProcessor.class);
     /**
      * The facts of the program
      */
@@ -31,6 +34,7 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
      * Array holding the commands to execute a query
      */
     private final String[] CMD_ARRAY;
+    private int cmdArrayCount = 0;
     /**
      * The working directory for the process
      */
@@ -57,9 +61,11 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
      * @param properties the application properties
      */
     public DlvCliDatalogProcessor(String facts, List<TermDescription> uncheckedTerms, boolean encodeFacts, ApplicationProperties properties){
-        this.CMD_ARRAY = new String[3];
-        this.CMD_ARRAY[0] = properties.getDatalog().getDLVPathAsCommand();
-        this.CMD_ARRAY[2] = properties.getDatalog().getCautiousOptionForDlv();
+        cmdArrayCount = 0;
+        this.CMD_ARRAY=new String[3];
+        this.CMD_ARRAY[cmdArrayCount] = properties.getDatalog().getDLVPathAsCommand();
+        cmdArrayCount+=2;
+        this.CMD_ARRAY[cmdArrayCount] = properties.getDatalog().getCautiousOptionForDlv();
         this.WORK_DIR_FILE = new File(properties.getDatalog().getWorkDirForDlv());
         this.TEMP_FOLDER = properties.getDatalog().getTempFolder();
         this.UNCHECKED_TERMS = uncheckedTerms;
@@ -79,6 +85,8 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
      */
     @Override
     public WrappedModel[] executeQuery(String submission, String[] queries) throws QuerySyntaxException, InternalException {
+        LOGGER.debug("Executing Datalog Query");
+        int cmdIndexForFilePath = this.cmdArrayCount-1;
         String query;
         String predicate;
         File tempDlv;
@@ -102,17 +110,26 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
                 program.append(LINE_BREAK);
                 program.append(query);
                 Files.writeString(Path.of(tempFilePath), program.toString());
+                LOGGER.debug("Temp-File has been written");
+                LOGGER.debug(tempFilePath);
+                LOGGER.debug(Path.of(tempFilePath).toString());
 
                 // Set temp file in command array
-                CMD_ARRAY[1] = tempFilePath;
+                CMD_ARRAY[cmdIndexForFilePath] = tempFilePath;
+                LOGGER.debug("\n" + "COMMANDARRAY: " + Arrays.toString(CMD_ARRAY));
 
                 // Initialize process
                 ProcessBuilder pb = new ProcessBuilder(CMD_ARRAY);
                 pb.directory(WORK_DIR_FILE);
                 pb.redirectErrorStream(false);
 
+                LOGGER.debug("Initialized ProcessBuilder "+pb.directory());
+                LOGGER.debug("Commands:");
+                pb.command().forEach(LOGGER::debug);
+
                 // Start process
                 p = pb.start();
+                LOGGER.debug("Process started");
                 //Handle error
                 String s;
                 var errorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -130,6 +147,7 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
                 if(p.waitFor()==0) model.put(predicate, resultFacts);
                 tempDlv.delete();
             } catch (IOException | InterruptedException e) {
+                LOGGER.warn(e.getMessage());
                 throw new InternalException(e);
             } finally {
                 p.destroy();
@@ -231,6 +249,25 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
     private String getPredicateFromQuery(String query){
         if (query.contains("(")) return query.substring(0, query.indexOf("("));
         else return query;
+    }
+
+
+    public static final class OsUtils
+    {
+        private static String OS = null;
+        public static String getOsName()
+        {
+            if(OS == null) { OS = System.getProperty("os.name"); }
+            return OS;
+        }
+        public static boolean isWindows()
+        {
+            return getOsName().startsWith("Windows");
+        }
+
+        public static boolean isUnix() {
+            return !isWindows();
+        }
     }
 
 }

@@ -78,6 +78,7 @@ public class ApplicationProperties {
         private String workDirForDlv;
         private String tempFolder;
         private String factEncodingSuffix;
+        private String factUrlForLink;
 
         public String getConnUrl() {
             return connUrl;
@@ -125,6 +126,14 @@ public class ApplicationProperties {
 
         public void setFactEncodingSuffix(String factEncodingSuffix) {
             this.factEncodingSuffix = factEncodingSuffix;
+        }
+
+        public String getFactUrlForLink() {
+            return factUrlForLink;
+        }
+
+        public void setFactUrlForLink(String factUrlForLink) {
+            this.factUrlForLink = factUrlForLink;
         }
     }
     /**
@@ -240,6 +249,7 @@ public class ApplicationProperties {
         private String submissionSuffix;
         private String diagnoseSuffix;
         private String exerciseDatabase;
+        private String tableUrlForLink;
 
         public String getConnPwd() {
             return connPwd;
@@ -296,6 +306,14 @@ public class ApplicationProperties {
         public void setExerciseDatabase(String exerciseDatabase) {
             this.exerciseDatabase = exerciseDatabase;
         }
+
+        public String getTableUrlForLink() {
+            return tableUrlForLink;
+        }
+
+        public void setTableUrlForLink(String tableUrlForLink) {
+            this.tableUrlForLink = tableUrlForLink;
+        }
     }
 
     /**
@@ -317,6 +335,7 @@ public class ApplicationProperties {
         private String xercesJarPath;
         private String DDbeJarPath;
         private String xsdFileScoresPath;
+        private String xmlUrlForLink;
 
         public XQTable getTable() {
             return table;
@@ -436,6 +455,14 @@ public class ApplicationProperties {
 
         public void setXsdFileScoresPath(String xsdFileScoresPath) {
             this.xsdFileScoresPath = xsdFileScoresPath;
+        }
+
+        public String getXmlUrlForLink() {
+            return xmlUrlForLink;
+        }
+
+        public void setXmlUrlForLink(String xmlUrlForLink) {
+            this.xmlUrlForLink = xmlUrlForLink;
         }
 
         /**

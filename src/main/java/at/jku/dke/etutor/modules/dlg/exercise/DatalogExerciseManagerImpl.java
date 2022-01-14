@@ -351,19 +351,27 @@ public class DatalogExerciseManagerImpl implements DatalogExerciseManager {
 		try {
 			conn = coreManager.getConnection();
 			conn.setAutoCommit(false);
-			
+
 			sql = new String();
 			sql += "UPDATE 	" + exerciseTable + LINE_SEP;
-			sql += "SET 	query = ?, facts = ?, points = ?, " + LINE_SEP;
+			boolean notUpdateFactsId = datalogExercise.getFactsId() == -1;
+			boolean updateFactsId = !notUpdateFactsId;
+			if (notUpdateFactsId){
+				sql += "SET 	query = ?, points = ?, " + LINE_SEP;
+			}else{
+				sql += "SET 	query = ?, facts = ?, points = ?, " + LINE_SEP;
+			}
 			sql += "		gradings = ? " + LINE_SEP;
 			sql += "WHERE 	id = ?" + LINE_SEP;
 			pStmt = conn.prepareStatement(sql);
 			index = 1;
 			pStmt.setString(index++, datalogExercise.getQuery());
-			if (datalogExercise.getFactsId() != null) {
-				pStmt.setInt(index++, datalogExercise.getFactsId().intValue());
-			} else {
-				pStmt.setNull(index++, Types.INTEGER);
+			if(updateFactsId){
+				if (datalogExercise.getFactsId() != null) {
+					pStmt.setInt(index++, datalogExercise.getFactsId().intValue());
+				} else {
+					pStmt.setNull(index++, Types.INTEGER);
+				}
 			}
 			if (datalogExercise.getPoints() != null) {
 				pStmt.setDouble(index++, datalogExercise.getPoints().doubleValue());

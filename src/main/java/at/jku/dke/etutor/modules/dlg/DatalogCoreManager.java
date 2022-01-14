@@ -166,8 +166,8 @@ public class DatalogCoreManager {
      * @throws InvalidResourceException if the resource can not be found
      */
     public static synchronized URL getResource(String resource) throws InvalidResourceException {
-        // URL url = DatalogCoreManager.class.getClassLoader().getResource(resource);
-        URL url = DatalogCoreManager.class.getResource(resource);
+        URL url = DatalogCoreManager.class.getClassLoader().getResource(resource);
+        if(url==null) url = DatalogCoreManager.class.getResource(resource);
         URL baseURL = null;
         if (url == null) {
         	// get the base directory
