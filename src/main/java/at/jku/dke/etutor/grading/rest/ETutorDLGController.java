@@ -148,7 +148,7 @@ public class ETutorDLGController {
     }
 
     /**
-     * Returns the facts for a task group
+     * Returns the facts for a task group in HTML format
      * @param id the id if the group
      * @return a String with the facts
      */
@@ -157,6 +157,23 @@ public class ETutorDLGController {
         String facts = null;
         try {
             facts = "<p>" + service.fetchFacts(id).replace("\r", "").replace("\n", "<br>") +"</p>";
+            return ResponseEntity.ok(facts);
+        } catch (ExerciseManagementException e) {
+            logger.warn(e.getMessage());
+            return ResponseEntity.status(500).body(facts);
+        }
+    }
+
+    /**
+     * Returns the facts for a task group as string
+     * @param id the id if the group
+     * @return a String with the facts
+     */
+    @GetMapping("/taskgroup/{id}/raw")
+    public ResponseEntity<String> getFactsAsString(@PathVariable int id){
+        String facts = null;
+        try {
+            facts = service.fetchFacts(id);
             return ResponseEntity.ok(facts);
         } catch (ExerciseManagementException e) {
             logger.warn(e.getMessage());
