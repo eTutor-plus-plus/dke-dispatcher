@@ -23,56 +23,56 @@ import java.text.MessageFormat;
 @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
 public class ETutorSQLController {
     private final Logger logger;
-    private final SQLResourceService resourceManager;
+    private final SQLResourceService resourceService;
 
 
     /**
      * The constructor
-      * @param resourceManager the injected SQLResourceManager providing methods for manipulating data related to the SQL module
+      * @param resourceService the injected SQLResourceManager providing methods for manipulating data related to the SQL module
      */
-    public ETutorSQLController(SQLResourceService resourceManager){
+    public ETutorSQLController(SQLResourceService resourceService){
 
         this.logger= (Logger) LoggerFactory.getLogger(ETutorSQLController.class);
-        this.resourceManager=resourceManager;
+        this.resourceService = resourceService;
     }
 
     /**
      * Creates a schema, tables and inserts data
      * @param ddl the Object containing the statements
-     * @return ResponseEntity
+     * @return a {@link ResponseEntity<Integer>}wrapping the diagnose-connection id identifying the schema
      */
     @PostMapping("/schema")
     public ResponseEntity<String> executeDDL(@RequestBody SqlDataDefinitionDTO ddl){
         logger.info("Enter executeDDL() for schema {} ",ddl.getSchemaName());
         try {
-            resourceManager.deleteSchemas(ddl.getSchemaName());
-            resourceManager.createSchemas(ddl.getSchemaName());
+            resourceService.deleteSchemas(ddl.getSchemaName());
+            resourceService.createSchemas(ddl.getSchemaName());
             for(String stmt : ddl.getCreateStatements()){
                 try {
-                    resourceManager.createTables(ddl.getSchemaName(), stmt.trim());
+                    resourceService.createTables(ddl.getSchemaName(), stmt.trim());
                 } catch (StatementValidationException e) {
                    logger.warn(e.getMessage());
                 }
             }
             for(String stmt : ddl.getInsertStatementsSubmission()){
                 try {
-                    resourceManager.insertDataSubmission(ddl.getSchemaName(), stmt.trim());
+                    resourceService.insertDataSubmission(ddl.getSchemaName(), stmt.trim());
                 } catch (StatementValidationException e) {
                    logger.warn(e.getMessage());
                 }
             }
             for(String stmt : ddl.getInsertStatementsDiagnose()){
                 try {
-                    resourceManager.insertDataDiagnose(ddl.getSchemaName(), stmt.trim());
+                    resourceService.insertDataDiagnose(ddl.getSchemaName(), stmt.trim());
                 } catch (StatementValidationException e) {
                    logger.warn(e.getMessage());
                 }
             }
             logger.info("Exit executeDDL() with Status 200");
-            return ResponseEntity.ok("DDL Executed");
+            return ResponseEntity.ok("DDL executed");
         } catch (DatabaseException e) {
             logger.error("Exit executeDDL() with Status 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
@@ -84,7 +84,7 @@ public class ETutorSQLController {
     public ResponseEntity<String> createSchema(@PathVariable String schemaName){
         logger.info("Enter: createSchema() {}",schemaName);
         try {
-           resourceManager.createSchemas(schemaName);
+           resourceService.createSchemas(schemaName);
             logger.info("Exit: createSchema() with Status Code 200");
             return ResponseEntity.ok("Schema created");
         } catch (DatabaseException  e) {
@@ -101,7 +101,7 @@ public class ETutorSQLController {
     public ResponseEntity<String> dropSchema(@PathVariable String schemaName){
         logger.info("Enter: dropSchema() {}",schemaName);
         try {
-            resourceManager.deleteSchemas(schemaName);
+            resourceService.deleteSchemas(schemaName);
             logger.info("Exit: dropSchema() with Status Code 200");
             return ResponseEntity.ok("Schema deleted");
         } catch (DatabaseException e) {
@@ -120,7 +120,7 @@ public class ETutorSQLController {
     public ResponseEntity<String> deleteConnection(@PathVariable String schemaName){
        logger.info("Enter: deleteConnection() {}",schemaName);
         try {
-            resourceManager.deleteConnection(schemaName);
+            resourceService.deleteConnection(schemaName);
             logger.info("Exit: deleteConnection() with status 200");
             return ResponseEntity.ok("Connection deleted");
         } catch (DatabaseException e) {
@@ -140,7 +140,7 @@ public class ETutorSQLController {
             String[] queryArray = queries.trim().split(";");
             for(String s: queryArray){
                 try {
-                    resourceManager.createTables(schemaName, s);
+                    resourceService.createTables(schemaName, s);
                 } catch (StatementValidationException e) {
                    logger.warn(e.getMessage());
                 }
@@ -162,7 +162,7 @@ public class ETutorSQLController {
     public ResponseEntity<String> dropTable(@PathVariable String schemaName, @PathVariable String tableName){
         logger.info("Enter: dropTable() "+tableName);
         try {
-            resourceManager.deleteTables(schemaName, tableName);
+            resourceService.deleteTables(schemaName, tableName);
             logger.info("Exit: dropTable() with Status Code 200");
             return ResponseEntity.ok("Table deleted");
         } catch (DatabaseException e) {
@@ -183,7 +183,7 @@ public class ETutorSQLController {
             String[] queryArray = queries.trim().split(";");
             for(String s: queryArray){
                 try {
-                    resourceManager.insertDataSubmission(schemaName, s);
+                    resourceService.insertDataSubmission(schemaName, s);
                 } catch (StatementValidationException e) {
                    logger.warn(e.getMessage());
                 }
@@ -207,7 +207,7 @@ public class ETutorSQLController {
             String[] queryArray = queries.trim().split(";");
             for(String s: queryArray){
                 try {
-                    resourceManager.insertDataDiagnose(schemaName, s);
+                    resourceService.insertDataDiagnose(schemaName, s);
                 } catch (StatementValidationException e) {
                    logger.warn(e.getMessage());
                 }
@@ -229,7 +229,7 @@ public class ETutorSQLController {
     public ResponseEntity<Integer> createExercise( @PathVariable String schemaName, @RequestBody String solution) {
         logger.info("Enter: createExercise() {}");
         try {
-            int id = resourceManager.createExercise(schemaName, solution);
+            int id = resourceService.createExercise(schemaName, solution);
             logger.info("Exit: createExercise() {} with Status Code 200");
             return ResponseEntity.ok(id);
         } catch (DatabaseException e) {
@@ -246,7 +246,7 @@ public class ETutorSQLController {
     public ResponseEntity<String> deleteExercise(@PathVariable int id)  {
         logger.info("Enter: deleteExercise(): {}", id);
         try {
-            resourceManager.deleteExercise(id);
+            resourceService.deleteExercise(id);
             logger.info("Exit: deleteExercise() with Status Code 200");
             return ResponseEntity.ok("Exercise deleted");
         } catch (DatabaseException e) {
@@ -265,7 +265,7 @@ public class ETutorSQLController {
     public ResponseEntity<String> updateExerciseSolution(@PathVariable int id, @RequestBody String newSolution){
         logger.info("Enter: updateExerciseSolution(): {}",id);
         try{
-            resourceManager.updateExerciseSolution(id, newSolution);
+            resourceService.updateExerciseSolution(id, newSolution);
             logger.info("Exit: updateExerciseSolution() with Status Code 200");
             return ResponseEntity.ok("Solution updated");
         }catch(DatabaseException e){
@@ -282,7 +282,7 @@ public class ETutorSQLController {
     public ResponseEntity<String> reserveExerciseID(){
         logger.info("Enter: reserveExercise() ");
         try {
-            int id = resourceManager.getAvailableExerciseId();
+            int id = resourceService.getAvailableExerciseId();
             logger.info("Exit: reserveExercise() with status 200 and id {}",id);
             return ResponseEntity.ok(""+id);
         } catch (DatabaseException e) {
@@ -300,7 +300,7 @@ public class ETutorSQLController {
     public ResponseEntity<String> getSolution(@PathVariable int id){
         logger.info("Enter: getSolution()");
         try{
-            String solution = resourceManager.getSolution(id);
+            String solution = resourceService.getSolution(id);
             if(!solution.equals("")){
                 logger.info("Exit: getSolution() with status 200");
                 return ResponseEntity.ok(solution);
@@ -327,11 +327,11 @@ public class ETutorSQLController {
        String table = "";
        try{
             if(exerciseId != -1){
-                table = resourceManager.getHTMLTableByExerciseID(exerciseId, tableName);
+                table = resourceService.getHTMLTableByExerciseID(exerciseId, tableName);
             }else if(!taskGroup.equals("")){
-                table = resourceManager.getHTMLTableByTaskGroup(taskGroup, tableName);
+                table = resourceService.getHTMLTableByTaskGroup(taskGroup, tableName);
             }else{
-                table = resourceManager.getHTMLTable(tableName);
+                table = resourceService.getHTMLTable(tableName);
             }
 
             if(!table.equals("")){
@@ -357,7 +357,7 @@ public class ETutorSQLController {
     @GetMapping("/grading/{exercise_id}/{action}/{diagnose_level}")
     public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level){
         try {
-            GradingDTO grading = resourceManager.getGradingForExercise(exercise_id, action, diagnose_level);
+            GradingDTO grading = resourceService.getGradingForExercise(exercise_id, action, diagnose_level);
             return ResponseEntity.ok(grading);
         } catch (Exception e) {
             e.printStackTrace();
