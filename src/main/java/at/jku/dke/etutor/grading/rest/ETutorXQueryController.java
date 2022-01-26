@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.Objects;
 
@@ -44,6 +47,7 @@ public class ETutorXQueryController {
         Objects.requireNonNull(xmls);
         int diagnoseFileId;
         int submissionFileId;
+        taskGroup = decode(taskGroup);
 
         int[] fileIds;
         try {
@@ -71,6 +75,7 @@ public class ETutorXQueryController {
      */
     @DeleteMapping("/xml/taskGroup/{taskGroup}")
     public ResponseEntity<String> deleteXMLOfTaskGroup(@PathVariable String taskGroup){
+        taskGroup = decode(taskGroup);
         try{
             xQueryResourceService.deleteTaskGroup(taskGroup);
             return ResponseEntity.ok("XML for taskGroup deleted");
@@ -97,24 +102,6 @@ public class ETutorXQueryController {
     }
 
     /**
-     * Returns the diagnose-xml for a task group
-     * @param taskGroup the UUID of the task group
-     * @return a String containing the xml
-     */
-    @GetMapping("/xml/taskGroup/{taskGroup}")
-    public ResponseEntity<String> getXML(@PathVariable String taskGroup){
-        Objects.requireNonNull(taskGroup);
-        String xml = null;
-        try {
-            xml = xQueryResourceService.getXML(taskGroup);
-            return ResponseEntity.ok(xml);
-        } catch (SQLException throwables) {
-           LOGGER.error(throwables.getMessage());
-           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(throwables.getMessage());
-        }
-    }
-
-    /**
      * Creates an exercise for a task group
      * @param taskGroup the task group
      * @param dto the dto
@@ -122,6 +109,7 @@ public class ETutorXQueryController {
      */
     @PostMapping("/exercise/taskGroup/{taskGroup}")
     public ResponseEntity<Integer> createExercise(@PathVariable String taskGroup, @RequestBody XQExerciseDTO dto){
+        taskGroup = decode(taskGroup);
         var id = -1;
         try {
             id = xQueryResourceService.createExercise(taskGroup, dto);
@@ -191,6 +179,20 @@ public class ETutorXQueryController {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * Decodes a string from an URL that has been encoded
+     * @param value the value to decode
+     * @return the string
+     */
+    private String decode(String value) {
+        try {
+            return URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return  value;
         }
     }
 }

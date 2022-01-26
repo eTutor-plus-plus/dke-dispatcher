@@ -2,6 +2,7 @@ package at.jku.dke.etutor.grading.rest;
 
 import at.jku.dke.etutor.grading.ETutorCORSPolicy;
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
+import at.jku.dke.etutor.grading.rest.dto.SQLExerciseDTO;
 import at.jku.dke.etutor.grading.rest.dto.SqlDataDefinitionDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceService;
@@ -12,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.MessageFormat;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 
 /**
@@ -77,23 +80,6 @@ public class ETutorSQLController {
     }
 
     /**
-     * Creates two schemas with the specified name and the submission-suffix and diagnose-suffix respectively
-     * @param schemaName the schema to be created
-     * @return ResponseEntity
-     */
-    public ResponseEntity<String> createSchema(@PathVariable String schemaName){
-        logger.info("Enter: createSchema() {}",schemaName);
-        try {
-           resourceService.createSchemas(schemaName);
-            logger.info("Exit: createSchema() with Status Code 200");
-            return ResponseEntity.ok("Schema created");
-        } catch (DatabaseException  e) {
-            logger.error("Exit: createSchema() with Status Code 500 ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
-        }
-    }
-
-    /**
      * Deletes the diagnose and submission schemas with the specified prefix
      * @param schemaName the schema to be deleted
      */
@@ -101,7 +87,7 @@ public class ETutorSQLController {
     public ResponseEntity<String> dropSchema(@PathVariable String schemaName){
         logger.info("Enter: dropSchema() {}",schemaName);
         try {
-            resourceService.deleteSchemas(schemaName);
+            resourceService.deleteSchemas(decode(schemaName));
             logger.info("Exit: dropSchema() with Status Code 200");
             return ResponseEntity.ok("Schema deleted");
         } catch (DatabaseException e) {
@@ -120,7 +106,7 @@ public class ETutorSQLController {
     public ResponseEntity<String> deleteConnection(@PathVariable String schemaName){
        logger.info("Enter: deleteConnection() {}",schemaName);
         try {
-            resourceService.deleteConnection(schemaName);
+            resourceService.deleteConnection(decode(schemaName));
             logger.info("Exit: deleteConnection() with status 200");
             return ResponseEntity.ok("Connection deleted");
         } catch (DatabaseException e) {
@@ -128,112 +114,20 @@ public class ETutorSQLController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
     }
-    /**
-     * Creates a table in the submission- and diagnose version of the  specified schema
-     * @param schemaName the name of the schema where a table has to be created
-     * @param queries the create table query
-     */
-    @PutMapping("/schema/{schemaName}/table")
-    public ResponseEntity<String> createTables(@PathVariable String schemaName, @RequestBody String queries){
-        logger.info(MessageFormat.format("Enter: createTable() {}", schemaName));
-        try {
-            String[] queryArray = queries.trim().split(";");
-            for(String s: queryArray){
-                try {
-                    resourceService.createTables(schemaName, s);
-                } catch (StatementValidationException e) {
-                   logger.warn(e.getMessage());
-                }
-            }
-            logger.info("Exit: createTable() with Status Code 200");
-            return ResponseEntity.ok("Tables Created");
-        } catch (DatabaseException e) {
-            logger.error("Exit: createTable() with Status Code 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
-        }
-    }
-
-    /**
-     * Deletes a table in the specified schmema
-     * @param schemaName the name of the schema where a table has to be deleted
-     * @param tableName the name of the table to be deleted
-     */
-    @DeleteMapping("/schema/{schemaName}/table/{tableName}")
-    public ResponseEntity<String> dropTable(@PathVariable String schemaName, @PathVariable String tableName){
-        logger.info("Enter: dropTable() "+tableName);
-        try {
-            resourceService.deleteTables(schemaName, tableName);
-            logger.info("Exit: dropTable() with Status Code 200");
-            return ResponseEntity.ok("Table deleted");
-        } catch (DatabaseException e) {
-            logger.error("Exit: dropTable() with Status Code 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
-        }
-    }
-
-    /**
-     * Inserts data in the specified table in the submission-version of the specified schema
-     * @param schemaName the name of the schema
-     * @param queries the insert query
-     */
-    @PostMapping("/schema/{schemaName}/submission/data")
-    public ResponseEntity<String> insertDataSubmission(@PathVariable String schemaName, @RequestBody String queries){
-        logger.info("Enter: insertDataSubmission()");
-        try {
-            String[] queryArray = queries.trim().split(";");
-            for(String s: queryArray){
-                try {
-                    resourceService.insertDataSubmission(schemaName, s);
-                } catch (StatementValidationException e) {
-                   logger.warn(e.getMessage());
-                }
-            }
-            logger.info("Exit: insertDataSubmission() with Status Code 200");
-            return ResponseEntity.ok("Data inserted");
-        } catch (DatabaseException e) {
-            logger.error("Exit: insertDataSubmission() with Status Code 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
-        }
-    }
-    /**
-     * Inserts data in the specified table in the diagnose-version of the specified schema
-     * @param schemaName the name of the schame
-     * @param queries the insert query
-     */
-    @PostMapping("/schema/{schemaName}/diagnose/data")
-    public ResponseEntity<String> insertDataDiagnose(@PathVariable String schemaName, @RequestBody String queries){
-        logger.info("Enter: insertDataDiagnose()");
-        try {
-            String[] queryArray = queries.trim().split(";");
-            for(String s: queryArray){
-                try {
-                    resourceService.insertDataDiagnose(schemaName, s);
-                } catch (StatementValidationException e) {
-                   logger.warn(e.getMessage());
-                }
-            }
-            logger.info("Exit: insertDataDiagnose() with Status Code 200");
-            return ResponseEntity.ok("Insert completed");
-        } catch (DatabaseException e) {
-            logger.error("Exit: insertDataDiagnose() with Status Code 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
-        }
-    }
 
     /**
      * Adds an exercise for the specified schema
-     * @param schemaName the name of the schema for which the exercise has to be created
-     * @param solution the solution for the exercise
+     * @param  exerciseDTO the {@link SQLExerciseDTO} wrapping the schema-name and solution
      */
-    @PutMapping("/exercise/{schemaName}")
-    public ResponseEntity<Integer> createExercise( @PathVariable String schemaName, @RequestBody String solution) {
-        logger.info("Enter: createExercise() {}");
+    @PutMapping("/exercise")
+    public ResponseEntity<Integer> createExercise(@RequestBody SQLExerciseDTO exerciseDTO) {
+        logger.info("Enter: createExercise() {}", "for schema "+exerciseDTO.getSchemaName());
         try {
-            int id = resourceService.createExercise(schemaName, solution);
-            logger.info("Exit: createExercise() {} with Status Code 200");
+            int id = resourceService.createExercise(exerciseDTO.getSchemaName(), exerciseDTO.getSolution());
+            logger.info("Exit: createExercise() {} with Status Code 200", id);
             return ResponseEntity.ok(id);
         } catch (DatabaseException e) {
-            logger.error("Exit: createExercise() {} with Status Code 500", e);
+            logger.error("Exit: createExercise() with Status Code 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1);
         }
     }
@@ -275,23 +169,6 @@ public class ETutorSQLController {
     }
 
     /**
-     * Fetches an available exercise id
-     * @return the exercise id
-     */
-    @GetMapping("/exercise/reservation")
-    public ResponseEntity<String> reserveExerciseID(){
-        logger.info("Enter: reserveExercise() ");
-        try {
-            int id = resourceService.getAvailableExerciseId();
-            logger.info("Exit: reserveExercise() with status 200 and id {}",id);
-            return ResponseEntity.ok(""+id);
-        } catch (DatabaseException e) {
-            logger.error("Exit: reserveExercise() with Status Code 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
-        }
-    }
-
-    /**
      * Returns the persisted solution for a given exercise
      * @param id the id
      * @return the solution
@@ -325,6 +202,7 @@ public class ETutorSQLController {
     public ResponseEntity<String> getHTMLTable(@PathVariable String tableName, @RequestParam(defaultValue = "") String taskGroup, @RequestParam(defaultValue = "-1") int exerciseId){
        logger.info("Enter: getHTMLTable() for table {}", tableName);
        String table = "";
+       tableName = decode(tableName);
        try{
             if(exerciseId != -1){
                 table = resourceService.getHTMLTableByExerciseID(exerciseId, tableName);
@@ -362,6 +240,20 @@ public class ETutorSQLController {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * Decodes a string from an URL that has been encoded
+     * @param value the value to decode
+     * @return the string
+     */
+    private String decode(String value) {
+        try {
+            return URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return  value;
         }
     }
 }
