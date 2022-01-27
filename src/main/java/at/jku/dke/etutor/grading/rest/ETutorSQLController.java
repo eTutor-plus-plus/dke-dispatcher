@@ -3,6 +3,7 @@ package at.jku.dke.etutor.grading.rest;
 import at.jku.dke.etutor.grading.ETutorCORSPolicy;
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.rest.dto.SQLExerciseDTO;
+import at.jku.dke.etutor.grading.rest.dto.SQLSchemaInfoDTO;
 import at.jku.dke.etutor.grading.rest.dto.SqlDataDefinitionDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceService;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -45,18 +48,25 @@ public class ETutorSQLController {
      * @return a {@link ResponseEntity<Integer>}wrapping the diagnose-connection id identifying the schema
      */
     @PostMapping("/schema")
-    public ResponseEntity<String> executeDDL(@RequestBody SqlDataDefinitionDTO ddl){
+    public ResponseEntity<SQLSchemaInfoDTO> executeDDL(@RequestBody SqlDataDefinitionDTO ddl){
         logger.info("Enter executeDDL() for schema {} ",ddl.getSchemaName());
+        var schemaInfo = new SQLSchemaInfoDTO();
         try {
+            // delete (if exists) and recreate schema
             resourceService.deleteSchemas(ddl.getSchemaName());
-            resourceService.createSchemas(ddl.getSchemaName());
+            schemaInfo.setDiagnoseConnectionId(resourceService.createSchemas(ddl.getSchemaName()));
+
+            // create tables
+            var tableColumns = new HashMap<String, List<String>>();
             for(String stmt : ddl.getCreateStatements()){
                 try {
-                    resourceService.createTables(ddl.getSchemaName(), stmt.trim());
+                    tableColumns.putAll(resourceService.createTables(ddl.getSchemaName(), stmt.trim()));
                 } catch (StatementValidationException e) {
                    logger.warn(e.getMessage());
                 }
             }
+            schemaInfo.setTableColumns(tableColumns);
+            //add data to submission schema
             for(String stmt : ddl.getInsertStatementsSubmission()){
                 try {
                     resourceService.insertDataSubmission(ddl.getSchemaName(), stmt.trim());
@@ -64,6 +74,7 @@ public class ETutorSQLController {
                    logger.warn(e.getMessage());
                 }
             }
+            //add data to diagnose schema
             for(String stmt : ddl.getInsertStatementsDiagnose()){
                 try {
                     resourceService.insertDataDiagnose(ddl.getSchemaName(), stmt.trim());
@@ -72,10 +83,10 @@ public class ETutorSQLController {
                 }
             }
             logger.info("Exit executeDDL() with Status 200");
-            return ResponseEntity.ok("DDL executed");
+            return ResponseEntity.ok(schemaInfo);
         } catch (DatabaseException e) {
             logger.error("Exit executeDDL() with Status 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(schemaInfo);
         }
     }
 
@@ -98,7 +109,7 @@ public class ETutorSQLController {
     }
 
     /**
-     * Deletes a connection
+     * Deletes a connection, the exercises referencing this connection, and the connection id from to table containing the diagnose id of all connections
      * @param schemaName the schemaName
      * @return an ResponseEntity containing a wrapped message
      */
@@ -199,16 +210,21 @@ public class ETutorSQLController {
      * @return the HTML-table
      */
     @GetMapping("/table/{tableName}")
-    public ResponseEntity<String> getHTMLTable(@PathVariable String tableName, @RequestParam(defaultValue = "") String taskGroup, @RequestParam(defaultValue = "-1") int exerciseId){
+    public ResponseEntity<String> getHTMLTable(@PathVariable String tableName, @RequestParam(defaultValue = "") String taskGroup, @RequestParam(defaultValue="") String connId, @RequestParam(defaultValue = "-1") int exerciseId){
        logger.info("Enter: getHTMLTable() for table {}", tableName);
        String table = "";
        tableName = decode(tableName);
        try{
-            if(exerciseId != -1){
+            if(!connId.isBlank()){
+                var id = Integer.parseInt(connId);
+                table = resourceService.getHTMLTableByConnId(id, tableName);
+            } else if(exerciseId != -1){
                 table = resourceService.getHTMLTableByExerciseID(exerciseId, tableName);
             }else if(!taskGroup.equals("")){
                 table = resourceService.getHTMLTableByTaskGroup(taskGroup, tableName);
-            }else{
+            }
+
+            if (table.equals("")){
                 table = resourceService.getHTMLTable(tableName);
             }
 

@@ -35,6 +35,27 @@ public class SQLResourceService {
 
     private final Logger logger;
 
+    private final String QUERY_TABLE_COLUMNS = "SELECT\n" +
+            "        a.attname as \"column\",\n" +
+            "        pg_catalog.format_type(a.atttypid, a.atttypmod) as \"datatype\"\n" +
+            "                                --more attributes\n" +
+            "    FROM\n" +
+            "        pg_catalog.pg_attribute a\n" +
+            "    WHERE\n" +
+            "        a.attnum > 0\n" +
+            "        AND NOT a.attisdropped\n" +
+            "        AND a.attrelid = (\n" +
+            "            SELECT c.oid\n" +
+            "            FROM pg_catalog.pg_class c\n" +
+            "                LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace\n" +
+            "            WHERE c.relname = ?\n" +
+            "                AND pg_catalog.pg_table_is_visible(c.oid)\n" +
+            "        );\n";
+
+    private final String QUERY_TABLE_COLUMNS_2 = "SELECT column_name as column\n" +
+            "  FROM information_schema.columns\n" +
+            " WHERE table_schema = ?\n" +
+            "   AND table_name   = ?;\n";
     /**
      * The constructor
      * @param properties the injected application properties
@@ -63,11 +84,23 @@ public class SQLResourceService {
      * @param schemaName the schema-prefix
      * @throws DatabaseException if an SQLException occurs
      */
-    public void createSchemas(String schemaName) throws DatabaseException {
+    public int createSchemas(String schemaName) throws DatabaseException {
         logger.debug("Creating schemas with prefix {}", schemaName);
         createSchema(schemaName + SUBMISSION_SUFFIX);
         createSchema(schemaName + DIAGNOSE_SUFFIX);
         logger.debug("Schemas with prefix {} created", schemaName);
+        logger.debug("Fetching/Creating connection");
+        int id = -1;
+        try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
+            id = fetchConnection(con, schemaName+DIAGNOSE_SUFFIX);
+            if (id == -1){
+                id = createConnection(con, schemaName+DIAGNOSE_SUFFIX);
+                addConnectionMapping(schemaName, id);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return id;
     }
 
     /**
@@ -171,14 +204,14 @@ public class SQLResourceService {
      */
     private void deleteConnectionUtil(Connection con, String schemaName) throws DatabaseException {
         final String deleteExercisesQuery = "DELETE FROM exercises WHERE practise_db = ?";
-        final String deleteConnQuery = "DELETE FROM connections WHERE conn_string LIKE '%?currentSchema="+schemaName+"_%'";
+        final String deleteConnQuery = "DELETE FROM connections WHERE conn_string LIKE '%?currentSchema="+schemaName+"_diagnose%' OR conn_string LIKE '%?currentSchema="+schemaName+"_submission%'";
         final String deleteConnMappingQuery = "DELETE FROM connectionmapping WHERE connection = ?";
 
         try(PreparedStatement deleteExercisesStmt = con.prepareStatement(deleteExercisesQuery);
             PreparedStatement deleteConnStmt = con.prepareStatement(deleteConnQuery);
             PreparedStatement deleteConnMappingStmt = con.prepareStatement(deleteConnMappingQuery)){
 
-            int connId = fetchConnection(con, schemaName+"_diagnose");
+            int connId = fetchConnection(con, schemaName+DIAGNOSE_SUFFIX);
             if(connId != -1) {
                 deleteExercisesStmt.setInt(1, connId);
                 logger.debug("Query for deleting exercises: {}",deleteExercisesStmt);
@@ -224,7 +257,7 @@ public class SQLResourceService {
      * @param query the query to be executed
      * @throws DatabaseException if an SQLException occurs or the query does not contain "create table"
      */
-    public void createTables(String schemaName, String query) throws DatabaseException, StatementValidationException {
+    public Map<String, List<String>> createTables(String schemaName, String query) throws DatabaseException, StatementValidationException {
         logger.debug("Query for creating table: {}", query);
         if (!query.replace(" ", "").toLowerCase().contains("createtable")) {
             logger.warn("Not a crate-table-statement");
@@ -237,6 +270,32 @@ public class SQLResourceService {
         executeUpdate(schemaName + SUBMISSION_SUFFIX, query);
         executeUpdate(schemaName + DIAGNOSE_SUFFIX, query);
         logger.debug("Tables in schemas with prefix {} created", schemaName);
+        return getTableSchema(schemaName, query);
+    }
+
+    private Map<String, List<String>> getTableSchema(String schemaName, String query) {
+        query = query.toLowerCase().replace(" ", "");
+        var createIndex = query.indexOf("createtable");
+        var paraIndex = query.indexOf("(");
+        if ( createIndex == -1 || paraIndex == -1) return new HashMap<>();
+        Map<String, List<String>> map = new HashMap<>();
+
+        String tableName = query.substring(createIndex+"createtable".length(), paraIndex).trim();
+        try(Connection con = DriverManager.getConnection(SQL_EXERCISE_URL, CONN_SUPER_USER, CONN_SUPER_PWD);
+        PreparedStatement stmt = con.prepareStatement(QUERY_TABLE_COLUMNS_2)
+        ){
+            stmt.setString(1, schemaName+DIAGNOSE_SUFFIX);
+            stmt.setString(2, tableName);
+            var set = stmt.executeQuery();
+            List<String> columnList = new ArrayList<>();
+            while(set.next()){
+                columnList.add(set.getString("column"));
+            }
+            map.put(tableName, columnList);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return map;
     }
 
     /**
@@ -559,6 +618,7 @@ public class SQLResourceService {
      * @throws DatabaseException if an SQLException occurs
      */
     private void executeUpdate(String schemaName, String query) throws DatabaseException {
+        if(query.isBlank() || query.trim().length() < 2) return;
         try(Connection con = DriverManager.getConnection(SQL_EXERCISE_URL+ JDBC_SCHEMA_OPTION + schemaName, CONN_SUPER_USER, CONN_SUPER_PWD);){
             con.setAutoCommit(false);
             executeUpdateUtil(con, query);
@@ -758,7 +818,7 @@ public class SQLResourceService {
                     try(PreparedStatement tableStmt = tmpCon.prepareStatement(tableQuery);
                     ResultSet tableRset = tableStmt.executeQuery()){
                         logger.debug("Table found in connection with id "+id);
-                        return generateHTMLTable(tableRset);
+                        return generateHTMLTable(tableRset, tableName);
                     }catch(SQLException ignore){
                     }
                 }catch(SQLException ignore){
@@ -777,11 +837,11 @@ public class SQLResourceService {
      * @return the table as HTML-table
      * @throws SQLException if an error occurs
      */
-    private String generateHTMLTable(ResultSet tableRset) throws SQLException {
+    private String generateHTMLTable(ResultSet tableRset, String tableName) throws SQLException {
         logger.debug("Generating HTML table from ResultSet");
         ResultSetMetaData metaData = tableRset.getMetaData();
         var columnCount = metaData.getColumnCount();
-        var tableStart = "<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\" >";
+        var tableStart = "<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\">";
         var tableEnd = "</table>";
         var tableRowStart = "<tr>";
         var tableRowEnd = "</tr>";
@@ -792,7 +852,8 @@ public class SQLResourceService {
 
 
         StringBuilder table = new StringBuilder();
-
+        table.append("<div align=\"center\">");
+        table.append("<h1>"+tableName+"</h1>");
         table.append(tableStart);
         table.append(tableRowStart);
         for(var i = 1; i<=columnCount; i++){
@@ -812,6 +873,7 @@ public class SQLResourceService {
             table.append(tableRowEnd);
         }
         table.append(tableEnd);
+        table.append("</div>");
 
         logger.debug("Table generated");
         return table.toString();
@@ -903,5 +965,44 @@ public class SQLResourceService {
         dispatcherService.run(submission, Locale.GERMAN);
         Thread.sleep(10000);
         return gradingDTORepository.findById(id).isPresent() ? gradingDTORepository.findById(id).get() : null;
+    }
+
+    /**
+     * Returns an HTML Table, uses the connection id to reduce the searchable pool
+     * @param id the connection id
+     * @param tableName the name of the table
+     * @return an HTML String representing the table
+     */
+    public String getHTMLTableByConnId(int id, String tableName) {
+        try(Connection con = DriverManager.getConnection(SQL_ADMINISTRATION_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
+            if(!isConnIdPublic(con, id)) return "";
+            var list = new ArrayList<Integer>();
+            list.add(id);
+            return getHTMLTableUtil(con, list, tableName);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
+     * Verifies if a connection id is marked as public, meaning it refers to a diagnose connection id
+     * @param con the Connection to execute the query
+     * @param id the id of the connection
+     * @return true if id is public
+     */
+    private boolean isConnIdPublic(Connection con, int id) {
+        String query = "SELECT connection FROM connectionmapping";
+        var isPublic = false;
+        try(PreparedStatement stmt = con.prepareStatement(query);
+        var set = stmt.executeQuery()){
+            while(set.next()){
+                if(set.getInt("connection") == id) isPublic = true;
+            }
+            return isPublic;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
     }
 }

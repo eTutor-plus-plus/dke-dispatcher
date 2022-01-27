@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(classes= ETutorGradingApplication.class)
 @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
 //@Disabled
+//TODO Test for DLGResourceService also!
 public class XQueryResourceServiceTest {
     @Autowired
     private XQueryResourceService service;
