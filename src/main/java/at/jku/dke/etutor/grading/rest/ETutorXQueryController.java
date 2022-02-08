@@ -37,9 +37,9 @@ public class ETutorXQueryController {
     /**
      * Adds the XML files for a specific taskGroup to the filesystem and adds the necessary data to the database,
      * namely the mapping of the taskGroup-UUID to the file-ids and the XML's to the xmldocs table.
-     * @param taskGroup the UUID identifying the task
+     * @param taskGroup the name of the task group
      * @param xmls wrapper dto for the diagnose-xml and submission-xml
-     * @return
+     * @return the url identifying the task group
      */
     @PostMapping(value = "/xml/taskGroup/{taskGroup}")
     public ResponseEntity<String> addXMLForTaskGroup(@PathVariable String taskGroup, @RequestBody XMLDefinitionDTO xmls){

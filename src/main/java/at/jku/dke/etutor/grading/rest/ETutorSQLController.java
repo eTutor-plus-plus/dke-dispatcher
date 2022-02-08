@@ -50,6 +50,15 @@ public class ETutorSQLController {
     @PostMapping("/schema")
     public ResponseEntity<SQLSchemaInfoDTO> executeDDL(@RequestBody SqlDataDefinitionDTO ddl){
         logger.info("Enter executeDDL() for schema {} ",ddl.getSchemaName());
+        // check if statements are null and abort if so
+        if(ddl.getCreateStatements() == null){
+            return ResponseEntity.status(500).body(null);
+        }
+
+        // If no diagnose/submission statements are provided, the one provided will be used
+        var statementsSubmission = ddl.getInsertStatementsSubmission() != null ? ddl.getInsertStatementsSubmission() : ddl.getInsertStatementsDiagnose();
+        var statementsDiagnose = ddl.getInsertStatementsDiagnose() != null ? ddl.getInsertStatementsDiagnose() : ddl.getInsertStatementsSubmission();
+
         var schemaInfo = new SQLSchemaInfoDTO();
         try {
             // delete (if exists) and recreate schema
@@ -67,7 +76,7 @@ public class ETutorSQLController {
             }
             schemaInfo.setTableColumns(tableColumns);
             //add data to submission schema
-            for(String stmt : ddl.getInsertStatementsSubmission()){
+            for(String stmt : statementsSubmission){
                 try {
                     resourceService.insertDataSubmission(ddl.getSchemaName(), stmt.trim());
                 } catch (StatementValidationException e) {
@@ -75,7 +84,7 @@ public class ETutorSQLController {
                 }
             }
             //add data to diagnose schema
-            for(String stmt : ddl.getInsertStatementsDiagnose()){
+            for(String stmt : statementsDiagnose){
                 try {
                     resourceService.insertDataDiagnose(ddl.getSchemaName(), stmt.trim());
                 } catch (StatementValidationException e) {

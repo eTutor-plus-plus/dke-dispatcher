@@ -10,6 +10,7 @@ import at.jku.dke.etutor.modules.xquery.analysis.UrlContentMap;
 import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseBean;
 import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseManagerImpl;
 import at.jku.dke.etutor.modules.xquery.util.XMLUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -68,6 +69,8 @@ public class XQueryResourceService {
      * @throws SQLException if an error occurs while accessing the database
      */
     public int[] addXMLToDatabase(String taskGroup, XMLDefinitionDTO xmls) throws SQLException {
+        if(StringUtils.isBlank(xmls.getSubmissionXML())) xmls.setSubmissionXML(xmls.getDiagnoseXML());
+        if(StringUtils.isBlank(xmls.getDiagnoseXML())) xmls.setDiagnoseXML(xmls.getSubmissionXML());
         boolean isNew ;
         int[] result = new int[2];
 
