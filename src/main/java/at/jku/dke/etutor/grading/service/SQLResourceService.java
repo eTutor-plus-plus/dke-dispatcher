@@ -284,7 +284,7 @@ public class SQLResourceService {
         try(Connection con = DriverManager.getConnection(SQL_EXERCISE_URL, CONN_SUPER_USER, CONN_SUPER_PWD);
         PreparedStatement stmt = con.prepareStatement(QUERY_TABLE_COLUMNS_2)
         ){
-            stmt.setString(1, schemaName+DIAGNOSE_SUFFIX);
+            stmt.setString(1, schemaName.toLowerCase()+DIAGNOSE_SUFFIX);
             stmt.setString(2, tableName);
             var set = stmt.executeQuery();
             List<String> columnList = new ArrayList<>();
