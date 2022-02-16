@@ -7,6 +7,7 @@ import at.jku.dke.etutor.grading.rest.dto.XMLDefinitionDTO;
 import at.jku.dke.etutor.grading.rest.dto.XQExerciseDTO;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
 import ch.qos.logback.classic.Logger;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,13 @@ public class ETutorXQueryController {
         int diagnoseFileId;
         int submissionFileId;
         taskGroup = decode(taskGroup);
+
+        if(StringUtils.isBlank(xmls.getDiagnoseXML()) && StringUtils.isBlank(xmls.getSubmissionXML())){
+            return ResponseEntity.status(412).build();
+        }
+
+        if(StringUtils.isBlank(xmls.getDiagnoseXML())) xmls.setDiagnoseXML(xmls.getSubmissionXML());
+        if(StringUtils.isBlank(xmls.getSubmissionXML())) xmls.setSubmissionXML(xmls.getDiagnoseXML());
 
         int[] fileIds;
         try {

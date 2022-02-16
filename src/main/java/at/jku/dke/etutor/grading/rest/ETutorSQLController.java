@@ -9,6 +9,7 @@ import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceService;
 import at.jku.dke.etutor.grading.service.StatementValidationException;
 import ch.qos.logback.classic.Logger;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,12 +53,14 @@ public class ETutorSQLController {
         logger.info("Enter executeDDL() for schema {} ",ddl.getSchemaName());
         // check if statements are null and abort if so
         if(ddl.getCreateStatements() == null){
-            return ResponseEntity.status(500).body(null);
+            return ResponseEntity.status(412).body(null);
         }
 
         // If no diagnose/submission statements are provided, the one provided will be used
-        var statementsSubmission = ddl.getInsertStatementsSubmission() != null ? ddl.getInsertStatementsSubmission() : ddl.getInsertStatementsDiagnose();
-        var statementsDiagnose = ddl.getInsertStatementsDiagnose() != null ? ddl.getInsertStatementsDiagnose() : ddl.getInsertStatementsSubmission();
+        var statementsSubmission = ddl.getInsertStatementsSubmission().size() == 1
+                && StringUtils.isBlank(ddl.getInsertStatementsSubmission().stream().findFirst().get()) ? ddl.getInsertStatementsDiagnose() : ddl.getInsertStatementsSubmission();
+        var statementsDiagnose =ddl.getInsertStatementsDiagnose().size() == 1
+                && StringUtils.isBlank(ddl.getInsertStatementsDiagnose().stream().findFirst().get()) ? ddl.getInsertStatementsSubmission() : ddl.getInsertStatementsDiagnose();
 
         var schemaInfo = new SQLSchemaInfoDTO();
         try {
