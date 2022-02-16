@@ -6,6 +6,7 @@ import at.jku.dke.etutor.grading.rest.dto.SQLExerciseDTO;
 import at.jku.dke.etutor.grading.rest.dto.SQLSchemaInfoDTO;
 import at.jku.dke.etutor.grading.rest.dto.SqlDataDefinitionDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
+import at.jku.dke.etutor.grading.service.ExerciseNotValidException;
 import at.jku.dke.etutor.grading.service.SQLResourceService;
 import at.jku.dke.etutor.grading.service.StatementValidationException;
 import ch.qos.logback.classic.Logger;
@@ -58,45 +59,44 @@ public class ETutorSQLController {
 
         // If no diagnose/submission statements are provided, the one provided will be used
         var statementsSubmission = ddl.getInsertStatementsSubmission().size() == 1
-                && StringUtils.isBlank(ddl.getInsertStatementsSubmission().stream().findFirst().get()) ? ddl.getInsertStatementsDiagnose() : ddl.getInsertStatementsSubmission();
-        var statementsDiagnose =ddl.getInsertStatementsDiagnose().size() == 1
-                && StringUtils.isBlank(ddl.getInsertStatementsDiagnose().stream().findFirst().get()) ? ddl.getInsertStatementsSubmission() : ddl.getInsertStatementsDiagnose();
+                && StringUtils.isBlank(ddl.getInsertStatementsSubmission().stream().findFirst().get())
+                ?
+                ddl.getInsertStatementsDiagnose()
+                :
+                ddl.getInsertStatementsSubmission();
+        var statementsDiagnose = ddl.getInsertStatementsDiagnose().size() == 1
+                && StringUtils.isBlank(ddl.getInsertStatementsDiagnose().stream().findFirst().get())
+                ?
+                ddl.getInsertStatementsSubmission()
+                :
+                ddl.getInsertStatementsDiagnose();
 
         var schemaInfo = new SQLSchemaInfoDTO();
         try {
             // delete (if exists) and recreate schema
             resourceService.deleteSchemas(ddl.getSchemaName());
+
             schemaInfo.setDiagnoseConnectionId(resourceService.createSchemas(ddl.getSchemaName()));
 
-            // create tables
+            // create tables and set schema info
             var tableColumns = new HashMap<String, List<String>>();
             for(String stmt : ddl.getCreateStatements()){
-                try {
-                    tableColumns.putAll(resourceService.createTables(ddl.getSchemaName(), stmt.trim()));
-                } catch (StatementValidationException e) {
-                   logger.warn(e.getMessage());
-                }
+                tableColumns.putAll(resourceService.createTables(ddl.getSchemaName(), stmt.trim()));
             }
             schemaInfo.setTableColumns(tableColumns);
+
             //add data to submission schema
             for(String stmt : statementsSubmission){
-                try {
-                    resourceService.insertDataSubmission(ddl.getSchemaName(), stmt.trim());
-                } catch (StatementValidationException e) {
-                   logger.warn(e.getMessage());
-                }
+                resourceService.insertDataSubmission(ddl.getSchemaName(), stmt.trim());
             }
+
             //add data to diagnose schema
             for(String stmt : statementsDiagnose){
-                try {
-                    resourceService.insertDataDiagnose(ddl.getSchemaName(), stmt.trim());
-                } catch (StatementValidationException e) {
-                   logger.warn(e.getMessage());
-                }
+                resourceService.insertDataDiagnose(ddl.getSchemaName(), stmt.trim());
             }
             logger.info("Exit executeDDL() with Status 200");
             return ResponseEntity.ok(schemaInfo);
-        } catch (DatabaseException e) {
+        } catch (DatabaseException | StatementValidationException e) {
             logger.error("Exit executeDDL() with Status 500", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(schemaInfo);
         }
@@ -143,14 +143,20 @@ public class ETutorSQLController {
      * @param  exerciseDTO the {@link SQLExerciseDTO} wrapping the schema-name and solution
      */
     @PutMapping("/exercise")
-    public ResponseEntity<Integer> createExercise(@RequestBody SQLExerciseDTO exerciseDTO) {
+    public ResponseEntity<Integer> createExercise(@RequestBody SQLExerciseDTO exerciseDTO, @RequestParam(required = false, defaultValue = "false") boolean checkSyntax) {
         logger.info("Enter: createExercise() {}", "for schema "+exerciseDTO.getSchemaName());
         try {
             int id = resourceService.createExercise(exerciseDTO.getSchemaName(), exerciseDTO.getSolution());
+
+            if(checkSyntax) resourceService.testExercise(id);
+
             logger.info("Exit: createExercise() {} with Status Code 200", id);
             return ResponseEntity.ok(id);
-        } catch (DatabaseException e) {
+
+        } catch (DatabaseException | ExerciseNotValidException e) {
             logger.error("Exit: createExercise() with Status Code 500", e);
+            logger.info("Deleting exercise");
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1);
         }
     }

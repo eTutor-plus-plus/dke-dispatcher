@@ -1005,4 +1005,13 @@ public class SQLResourceService {
             return false;
         }
     }
+
+    public void testExercise(int id) throws ExerciseNotValidException {
+        try {
+            var grading = this.getGradingForExercise(id, "diagnose", "3");
+            if (grading == null || grading.getPoints() == 0) throw new ExerciseNotValidException("Exercise has syntax errors");
+        } catch (DatabaseException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

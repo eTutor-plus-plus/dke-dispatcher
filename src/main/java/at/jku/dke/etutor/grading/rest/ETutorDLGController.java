@@ -4,6 +4,7 @@ import at.jku.dke.etutor.grading.rest.dto.DatalogExerciseDTO;
 import at.jku.dke.etutor.grading.rest.dto.DatalogTaskGroupDTO;
 import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
 import at.jku.dke.etutor.grading.service.DatalogResourceService;
+import at.jku.dke.etutor.grading.service.ExerciseNotValidException;
 import at.jku.dke.etutor.modules.dlg.ExerciseManagementException;
 import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseBean;
 import ch.qos.logback.classic.Logger;
@@ -87,11 +88,14 @@ public class ETutorDLGController {
      * @return the id of the created exercise
      */
     @PostMapping("/exercise")
-    public ResponseEntity<Integer> createExercise(@RequestBody DatalogExerciseDTO exerciseDTO){
+    public ResponseEntity<Integer> createExercise(@RequestBody DatalogExerciseDTO exerciseDTO, @RequestParam(required = false, defaultValue = "false") boolean checkSyntax){
         int id;
         try {
             id = service.createExercise(exerciseDTO);
-        } catch (ExerciseManagementException e) {
+
+            if(checkSyntax) service.testExercise(id);
+
+        } catch (ExerciseManagementException | ExerciseNotValidException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(500).body(-1);
         }
@@ -177,7 +181,7 @@ public class ETutorDLGController {
             return ResponseEntity.ok(facts);
         } catch (ExerciseManagementException e) {
             logger.warn(e.getMessage());
-            return ResponseEntity.status(500).body(facts);
+            return ResponseEntity.status(500).body(null);
         }
     }
 

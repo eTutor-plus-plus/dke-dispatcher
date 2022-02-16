@@ -205,4 +205,15 @@ public class DatalogResourceService {
         Thread.sleep(10000);
         return gradingDTORepository.findById(id).isPresent() ? gradingDTORepository.findById(id).get() : null;
     }
+
+    public void testExercise(int id) throws ExerciseNotValidException {
+        try {
+            var grading = getGradingForExercise(id, "diagnose", "3");
+            if(grading == null || grading.getPoints() == 0) throw new ExerciseNotValidException("Exercise has syntax errors");
+        } catch (ExerciseManagementException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

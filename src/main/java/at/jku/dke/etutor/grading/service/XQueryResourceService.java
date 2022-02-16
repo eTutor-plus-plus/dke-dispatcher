@@ -12,10 +12,16 @@ import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseManagerImpl;
 import at.jku.dke.etutor.modules.xquery.util.XMLUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.*;
 
@@ -33,7 +39,11 @@ public class XQueryResourceService {
     private final String USER;
     private final String PWD;
 
-    public XQueryResourceService(SubmissionDispatcherService dispatcherService, GradingDTORepository gradingDTORepository, ApplicationProperties properties, XQExerciseManagerImpl xqExerciseManager){
+    public XQueryResourceService(SubmissionDispatcherService dispatcherService,
+                                 GradingDTORepository gradingDTORepository,
+                                 ApplicationProperties properties,
+                                 XQExerciseManagerImpl xqExerciseManager
+                                 ){
         this.properties = properties;
         this.xqExerciseManager = xqExerciseManager;
         this.dispatcherService = dispatcherService;
@@ -455,5 +465,31 @@ public class XQueryResourceService {
         dispatcherService.run(submission, Locale.GERMAN);
         Thread.sleep(10000);
         return gradingDTORepository.findById(id).isPresent() ? gradingDTORepository.findById(id).get() : null;
+    }
+
+    public void checkXMLStrings(XMLDefinitionDTO xmls) throws SAXException {
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = null;
+        try {
+            dBuilder = dbFactory.newDocumentBuilder();
+            dBuilder.parse(new ByteArrayInputStream(xmls.getDiagnoseXML().getBytes(StandardCharsets.UTF_8)));
+            dBuilder.parse(new ByteArrayInputStream(xmls.getSubmissionXML().getBytes(StandardCharsets.UTF_8)));
+        } catch (ParserConfigurationException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Checks if a newly created exercise can be evaluated
+     * @param id the id of the exercise
+     * @throws Exception if exercise cannot be evaluated
+     */
+    // TODO: make it that XQ-Tasks with syntax errors are not evaluated as correct
+    public void testNewlyCreatedExercise(int id) throws Exception {
+        GradingDTO grading = null;
+        grading = this.getGradingForExercise(id, "diagnose", "3");
+        if(grading == null || grading.getPoints() != grading.getMaxPoints() || grading.getMaxPoints() == 0){
+            throw new ExerciseNotValidException("Exercise has syntax errors");
+        }
     }
 }

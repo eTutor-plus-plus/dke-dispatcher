@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -46,32 +47,43 @@ public class ETutorXQueryController {
     public ResponseEntity<String> addXMLForTaskGroup(@PathVariable String taskGroup, @RequestBody XMLDefinitionDTO xmls){
         Objects.requireNonNull(taskGroup);
         Objects.requireNonNull(xmls);
+
+        taskGroup = decode(taskGroup);
         int diagnoseFileId;
         int submissionFileId;
-        taskGroup = decode(taskGroup);
 
+        // Return if both xml-strings are blank
         if(StringUtils.isBlank(xmls.getDiagnoseXML()) && StringUtils.isBlank(xmls.getSubmissionXML())){
             return ResponseEntity.status(412).build();
         }
 
+        // if one of the xml-strings is blank, use the other one
         if(StringUtils.isBlank(xmls.getDiagnoseXML())) xmls.setDiagnoseXML(xmls.getSubmissionXML());
         if(StringUtils.isBlank(xmls.getSubmissionXML())) xmls.setSubmissionXML(xmls.getDiagnoseXML());
 
+
         int[] fileIds;
-        try {
+        try{
+            // check for valid xml
+            xQueryResourceService.checkXMLStrings(xmls);
+
+            // add xml to database
             fileIds = xQueryResourceService.addXMLToDatabase(taskGroup, xmls);
             diagnoseFileId = fileIds[0];
             submissionFileId = fileIds[1];
-            try {
-                xQueryResourceService.addXMLToFileSystem(xmls, diagnoseFileId, submissionFileId);
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage());
-                xQueryResourceService.deleteTaskGroup(taskGroup);
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1+"");
-            }
+
+            // add xml to file system
+            xQueryResourceService.addXMLToFileSystem(xmls, diagnoseFileId, submissionFileId);
+
             return ResponseEntity.ok(properties.getXquery().getXmlFileURLPrefix()+diagnoseFileId);
-        } catch (SQLException throwables) {
-            LOGGER.error(throwables.getMessage());
+
+        } catch (SQLException | SAXException | IOException e) {
+            LOGGER.error(e.getMessage());
+            try {
+                xQueryResourceService.deleteTaskGroup(taskGroup);
+            } catch (SQLException ex) {
+                LOGGER.info(ex.getMessage());
+            }
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1+"");
         }
     }
@@ -116,13 +128,19 @@ public class ETutorXQueryController {
      * @return a ResponseEntity
      */
     @PostMapping("/exercise/taskGroup/{taskGroup}")
-    public ResponseEntity<Integer> createExercise(@PathVariable String taskGroup, @RequestBody XQExerciseDTO dto){
+    public ResponseEntity<Integer> createExercise(@PathVariable String taskGroup, @RequestBody XQExerciseDTO dto, @RequestParam(required = false, defaultValue = "false") boolean checkSyntax){
         taskGroup = decode(taskGroup);
         var id = -1;
         try {
             id = xQueryResourceService.createExercise(taskGroup, dto);
+            xQueryResourceService.testNewlyCreatedExercise(id);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
+            try {
+                xQueryResourceService.deleteExercise(id);
+            } catch (Exception ex) {
+                LOGGER.warn(e.getMessage());
+            }
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(id);
         }
         return ResponseEntity.ok(id);
