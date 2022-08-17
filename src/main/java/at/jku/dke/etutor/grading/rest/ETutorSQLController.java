@@ -50,7 +50,7 @@ public class ETutorSQLController {
      * @return a {@link ResponseEntity<Integer>}wrapping the diagnose-connection id identifying the schema
      */
     @PostMapping("/schema")
-    public ResponseEntity<SQLSchemaInfoDTO> executeDDL(@RequestBody SqlDataDefinitionDTO ddl){
+    public ResponseEntity<SQLSchemaInfoDTO> executeDDL(@RequestBody SqlDataDefinitionDTO ddl) throws ApiException {
         logger.info("Enter executeDDL() for schema {} ",ddl.getSchemaName());
         // check if statements are null and abort if so
         if(ddl.getCreateStatements() == null){
@@ -98,7 +98,7 @@ public class ETutorSQLController {
             return ResponseEntity.ok(schemaInfo);
         } catch (DatabaseException | StatementValidationException e) {
             logger.error("Exit executeDDL() with Status 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(schemaInfo);
+            throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -107,7 +107,7 @@ public class ETutorSQLController {
      * @param schemaName the schema to be deleted
      */
     @DeleteMapping("/schema/{schemaName}")
-    public ResponseEntity<String> dropSchema(@PathVariable String schemaName){
+    public ResponseEntity<String> dropSchema(@PathVariable String schemaName) throws ApiException {
         logger.info("Enter: dropSchema() {}",schemaName);
         try {
             resourceService.deleteSchemas(decode(schemaName));
@@ -115,10 +115,11 @@ public class ETutorSQLController {
             return ResponseEntity.ok("Schema deleted");
         } catch (DatabaseException e) {
             logger.error("Exit: dropSchema() with Status Code 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+            throw new ApiException(500, e.toString(), null);
         }
-
     }
+
+
 
     /**
      * Deletes a connection, the exercises referencing this connection, and the connection id from to table containing the diagnose id of all connections
@@ -126,7 +127,7 @@ public class ETutorSQLController {
      * @return an ResponseEntity containing a wrapped message
      */
     @DeleteMapping("/schema/{schemaName}/connection")
-    public ResponseEntity<String> deleteConnection(@PathVariable String schemaName){
+    public ResponseEntity<String> deleteConnection(@PathVariable String schemaName) throws ApiException {
        logger.info("Enter: deleteConnection() {}",schemaName);
         try {
             resourceService.deleteConnection(decode(schemaName));
@@ -134,7 +135,7 @@ public class ETutorSQLController {
             return ResponseEntity.ok("Connection deleted");
         } catch (DatabaseException e) {
             logger.error("Exit: deleteConnection() with status 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+            throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -143,7 +144,7 @@ public class ETutorSQLController {
      * @param  exerciseDTO the {@link SQLExerciseDTO} wrapping the schema-name and solution
      */
     @PutMapping("/exercise")
-    public ResponseEntity<Integer> createExercise(@RequestBody SQLExerciseDTO exerciseDTO, @RequestParam(required = false, defaultValue = "false") boolean checkSyntax) {
+    public ResponseEntity<Integer> createExercise(@RequestBody SQLExerciseDTO exerciseDTO, @RequestParam(required = false, defaultValue = "false") boolean checkSyntax) throws ApiException {
         logger.info("Enter: createExercise() {}", "for schema "+exerciseDTO.getSchemaName());
         try {
             int id = resourceService.createExercise(exerciseDTO.getSchemaName(), exerciseDTO.getSolution());
@@ -152,12 +153,10 @@ public class ETutorSQLController {
 
             logger.info("Exit: createExercise() {} with Status Code 200", id);
             return ResponseEntity.ok(id);
-
         } catch (DatabaseException | ExerciseNotValidException e) {
             logger.error("Exit: createExercise() with Status Code 500", e);
             logger.info("Deleting exercise");
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1);
+            throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -166,7 +165,7 @@ public class ETutorSQLController {
      * @param id the id of the exercise
      */
     @DeleteMapping("/exercise/{id}")
-    public ResponseEntity<String> deleteExercise(@PathVariable int id)  {
+    public ResponseEntity<String> deleteExercise(@PathVariable int id) throws ApiException {
         logger.info("Enter: deleteExercise(): {}", id);
         try {
             resourceService.deleteExercise(id);
@@ -174,7 +173,7 @@ public class ETutorSQLController {
             return ResponseEntity.ok("Exercise deleted");
         } catch (DatabaseException e) {
             logger.error("Exit: deleteExercise() with Status Code 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+            throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -185,7 +184,7 @@ public class ETutorSQLController {
      * @return a response entity
      */
     @PostMapping("/exercise/{id}/solution")
-    public ResponseEntity<String> updateExerciseSolution(@PathVariable int id, @RequestBody String newSolution){
+    public ResponseEntity<String> updateExerciseSolution(@PathVariable int id, @RequestBody String newSolution) throws ApiException {
         logger.info("Enter: updateExerciseSolution(): {}",id);
         try{
             resourceService.updateExerciseSolution(id, newSolution);
@@ -193,7 +192,7 @@ public class ETutorSQLController {
             return ResponseEntity.ok("Solution updated");
         }catch(DatabaseException e){
             logger.error("Exit: updateExerciseSolution() with Status Code 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+            throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -203,7 +202,7 @@ public class ETutorSQLController {
      * @return the solution
      */
     @GetMapping("/exercise/{id}/solution")
-    public ResponseEntity<String> getSolution(@PathVariable int id){
+    public ResponseEntity<String> getSolution(@PathVariable int id) throws ApiException {
         logger.info("Enter: getSolution()");
         try{
             String solution = resourceService.getSolution(id);
@@ -216,7 +215,7 @@ public class ETutorSQLController {
             }
         }catch(DatabaseException e){
             logger.error("Exit: getSolution() with status 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+            throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -228,7 +227,7 @@ public class ETutorSQLController {
      * @return the HTML-table
      */
     @GetMapping("/table/{tableName}")
-    public ResponseEntity<String> getHTMLTable(@PathVariable String tableName, @RequestParam(defaultValue = "") String taskGroup, @RequestParam(defaultValue="") String connId, @RequestParam(defaultValue = "-1") int exerciseId){
+    public ResponseEntity<String> getHTMLTable(@PathVariable String tableName, @RequestParam(defaultValue = "") String taskGroup, @RequestParam(defaultValue="") String connId, @RequestParam(defaultValue = "-1") int exerciseId) throws ApiException {
        logger.info("Enter: getHTMLTable() for table {}", tableName);
        String table = "";
        tableName = decode(tableName);
@@ -255,7 +254,7 @@ public class ETutorSQLController {
             }
        }catch(DatabaseException e){
            logger.error("Exit: getHTMLTable() with status 500", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+            throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -267,13 +266,13 @@ public class ETutorSQLController {
      * @return {@link GradingDTO} the grading
      */
     @GetMapping("/grading/{exercise_id}/{action}/{diagnose_level}")
-    public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level){
+    public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level) throws ApiException {
         try {
             GradingDTO grading = resourceService.getGradingForExercise(exercise_id, action, diagnose_level);
             return ResponseEntity.ok(grading);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new ApiException(500, e.toString(), null);
         }
     }
 

@@ -7,6 +7,7 @@ import at.jku.dke.etutor.grading.rest.dto.XMLDefinitionDTO;
 import at.jku.dke.etutor.grading.rest.dto.XQExerciseDTO;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
 import ch.qos.logback.classic.Logger;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public class ETutorXQueryController {
      * @return the url identifying the task group
      */
     @PostMapping(value = "/xml/taskGroup/{taskGroup}")
-    public ResponseEntity<String> addXMLForTaskGroup(@PathVariable String taskGroup, @RequestBody XMLDefinitionDTO xmls){
+    public ResponseEntity<String> addXMLForTaskGroup(@PathVariable String taskGroup, @RequestBody XMLDefinitionDTO xmls) throws ApiException {
         Objects.requireNonNull(taskGroup);
         Objects.requireNonNull(xmls);
 
@@ -84,7 +85,7 @@ public class ETutorXQueryController {
             } catch (SQLException ex) {
                 LOGGER.info(ex.getMessage());
             }
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1+"");
+            throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -94,14 +95,14 @@ public class ETutorXQueryController {
      * @return an ResponseEntity
      */
     @DeleteMapping("/xml/taskGroup/{taskGroup}")
-    public ResponseEntity<String> deleteXMLOfTaskGroup(@PathVariable String taskGroup){
+    public ResponseEntity<String> deleteXMLOfTaskGroup(@PathVariable String taskGroup) throws ApiException {
         taskGroup = decode(taskGroup);
         try{
             xQueryResourceService.deleteTaskGroup(taskGroup);
             return ResponseEntity.ok("XML for taskGroup deleted");
         } catch (SQLException throwables) {
             LOGGER.error(throwables.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(throwables.getMessage());
+            throw new ApiException(500, throwables.toString(), null);
         }
     }
 
@@ -111,13 +112,13 @@ public class ETutorXQueryController {
      * @return a String representation of the xml
      */
     @GetMapping("/xml/fileid/{id}")
-    public ResponseEntity<String> getXMLById(@PathVariable int id){
+    public ResponseEntity<String> getXMLById(@PathVariable int id) throws ApiException {
         try{
             String xml = xQueryResourceService.getXMLById(id);
             return ResponseEntity.ok(xml);
         } catch (Exception throwables) {
             LOGGER.error(throwables.getMessage());
-            return ResponseEntity.status(500).body(throwables.getMessage());
+            throw new ApiException(500, throwables.toString(), null);
         }
     }
 
@@ -128,7 +129,7 @@ public class ETutorXQueryController {
      * @return a ResponseEntity
      */
     @PostMapping("/exercise/taskGroup/{taskGroup}")
-    public ResponseEntity<Integer> createExercise(@PathVariable String taskGroup, @RequestBody XQExerciseDTO dto, @RequestParam(required = false, defaultValue = "false") boolean checkSyntax){
+    public ResponseEntity<Integer> createExercise(@PathVariable String taskGroup, @RequestBody XQExerciseDTO dto, @RequestParam(required = false, defaultValue = "false") boolean checkSyntax) throws ApiException {
         taskGroup = decode(taskGroup);
         var id = -1;
         try {
@@ -141,7 +142,7 @@ public class ETutorXQueryController {
             } catch (Exception ex) {
                 LOGGER.warn(e.getMessage());
             }
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(id);
+            throw new ApiException(500, e.toString(), null);
         }
         return ResponseEntity.ok(id);
     }
@@ -152,13 +153,13 @@ public class ETutorXQueryController {
      * @return an XQExerciseDTO
      */
     @GetMapping("/exercise/solution/id/{id}")
-    public ResponseEntity<XQExerciseDTO> getSolutionAndSorting(@PathVariable int id){
+    public ResponseEntity<XQExerciseDTO> getSolutionAndSorting(@PathVariable int id) throws ApiException {
         try {
             XQExerciseDTO exercise = xQueryResourceService.fetchExercise(id);
             return ResponseEntity.ok(exercise);
         } catch (Exception e) {
            LOGGER.error(e.getMessage());
-           return ResponseEntity.status(500).body(null);
+           throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -169,14 +170,14 @@ public class ETutorXQueryController {
      * @return a ResponseEntity
      */
     @PostMapping("exercise/id/{id}")
-    public ResponseEntity<String> updateExercise(@RequestBody XQExerciseDTO dto, @PathVariable int id, HttpServletRequest request){
+    public ResponseEntity<String> updateExercise(@RequestBody XQExerciseDTO dto, @PathVariable int id, HttpServletRequest request) throws ApiException {
         LOGGER.info(dto.getQuery());
         LOGGER.info(dto.getSortedNodes().toString());
         try {
             return ResponseEntity.ok(xQueryResourceService.updateExercise(dto, id));
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            return ResponseEntity.status(500).body("Could not update exercise");
+            throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -186,25 +187,25 @@ public class ETutorXQueryController {
      * @return a ResponseEntity
      */
     @DeleteMapping("exercise/id/{id}")
-    public ResponseEntity<String> deleteExercise(@PathVariable int id){
+    public ResponseEntity<String> deleteExercise(@PathVariable int id) throws ApiException {
         var response = "Exercise with id "+id +" deleted";
         try {
             xQueryResourceService.deleteExercise(id);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
+            throw new ApiException(500, e.toString(), null);
         }
-        return ResponseEntity.status(500).body("Could not delete exercise with id "+id);
     }
 
     @GetMapping("/grading/{exercise_id}/{action}/{diagnose_level}")
-    public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level){
+    public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level) throws ApiException {
         try {
             GradingDTO grading = xQueryResourceService.getGradingForExercise(exercise_id, action, diagnose_level);
             return ResponseEntity.ok(grading);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new ApiException(500, e.toString(), null);
         }
     }
 

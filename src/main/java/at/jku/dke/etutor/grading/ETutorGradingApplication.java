@@ -7,6 +7,7 @@ import at.jku.dke.etutor.grading.config.DataSourceConfiguration;
 import at.jku.dke.etutor.grading.rest.ETutorGradingController;
 import at.jku.dke.etutor.grading.rest.ETutorSQLController;
 import at.jku.dke.etutor.grading.rest.ETutorSubmissionController;
+import at.jku.dke.etutor.grading.rest.ExceptionHandler;
 import at.jku.dke.etutor.grading.service.ModuleService;
 import at.jku.dke.etutor.grading.service.RepositoryService;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
@@ -60,7 +61,8 @@ import java.util.List;
         XQExerciseManagerImpl.class,
         DatalogDataSource.class,
         SQLDataSource.class,
-        XQDataSource.class
+        XQDataSource.class,
+        ExceptionHandler.class
 })
 @EnableConfigurationProperties({ApplicationProperties.class})
 @SpringBootApplication

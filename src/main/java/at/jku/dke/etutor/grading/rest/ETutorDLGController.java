@@ -37,13 +37,13 @@ public class ETutorDLGController {
      * @return the id of the facts
      */
     @PostMapping("/taskgroup")
-    public ResponseEntity<Integer> createTaskGroup(@RequestBody DatalogTaskGroupDTO facts){
+    public ResponseEntity<Integer> createTaskGroup(@RequestBody DatalogTaskGroupDTO facts) throws ApiException {
         int id;
         try {
             id = service.createTaskGroup(facts);
         } catch (DatalogParseException | ExerciseManagementException e) {
             logger.warn(e.getMessage());
-            return ResponseEntity.status(500).body(-1);
+            throw new ApiException(500, e.toString(), null);
         }
         return ResponseEntity.ok(id);
     }
@@ -55,13 +55,13 @@ public class ETutorDLGController {
      * @return a {@link ResponseEntity} indicating if deleting has been successful
      */
     @DeleteMapping("/taskgroup/{id}")
-    public ResponseEntity<Void> deleteTaskGroup(@PathVariable int id, @RequestParam(required = false, value = "withTasks", defaultValue = "true") boolean deleteTasks){
+    public ResponseEntity<Void> deleteTaskGroup(@PathVariable int id, @RequestParam(required = false, value = "withTasks", defaultValue = "true") boolean deleteTasks) throws ApiException {
        try{
            service.deleteTaskGroup(id, deleteTasks);
            return ResponseEntity.ok().build();
        }catch(ExerciseManagementException e){
            logger.warn(e.getMessage());
-           return ResponseEntity.status(500).build();
+           throw new ApiException(500, e.toString(), null);
        }
     }
 
@@ -72,12 +72,12 @@ public class ETutorDLGController {
      * @return a {@link ResponseEntity} indicating if updating has been successful
      */
     @PostMapping("/taskgroup/{id}")
-    public ResponseEntity<Void> updateTaskGroup(@PathVariable int id, @RequestBody String newFacts){
+    public ResponseEntity<Void> updateTaskGroup(@PathVariable int id, @RequestBody String newFacts) throws ApiException {
         try {
             service.updateTaskGroup(id, newFacts);
         } catch (DatalogParseException | ExerciseManagementException e) {
             logger.warn(e.getMessage());
-            return ResponseEntity.status(500).build();
+            throw new ApiException(500, e.toString(), null);
         }
         return ResponseEntity.ok().build();
     }
@@ -88,7 +88,7 @@ public class ETutorDLGController {
      * @return the id of the created exercise
      */
     @PostMapping("/exercise")
-    public ResponseEntity<Integer> createExercise(@RequestBody DatalogExerciseDTO exerciseDTO, @RequestParam(required = false, defaultValue = "false") boolean checkSyntax){
+    public ResponseEntity<Integer> createExercise(@RequestBody DatalogExerciseDTO exerciseDTO, @RequestParam(required = false, defaultValue = "false") boolean checkSyntax) throws ApiException {
         int id;
         try {
             id = service.createExercise(exerciseDTO);
@@ -97,7 +97,7 @@ public class ETutorDLGController {
 
         } catch (ExerciseManagementException | ExerciseNotValidException e) {
             logger.warn(e.getMessage());
-            return ResponseEntity.status(500).body(-1);
+            throw new ApiException(500, e.toString(), null);
         }
         return ResponseEntity.ok(id);
     }
@@ -109,11 +109,12 @@ public class ETutorDLGController {
      * @return a {@link ResponseEntity} indicating if updating has been successful
      */
     @PostMapping("/exercise/{id}")
-    public ResponseEntity<Void> modifyExercise(@RequestBody DatalogExerciseDTO exerciseDTO, @PathVariable int id){
+    public ResponseEntity<Void> modifyExercise(@RequestBody DatalogExerciseDTO exerciseDTO, @PathVariable int id) throws ApiException {
         try{
             if(service.modifyExercise(id, exerciseDTO)) return ResponseEntity.ok().build();
         }catch(ExerciseManagementException e){
             logger.warn(e.getMessage());
+            throw new ApiException(500, e.toString(), null);
         }
         return ResponseEntity.status(500).build();
     }
@@ -124,13 +125,13 @@ public class ETutorDLGController {
      * @return a {@link ResponseEntity} indicating if deletion has been successful
      */
     @DeleteMapping("/exercise/{id}")
-    public ResponseEntity<Void> deleteExercise(@PathVariable int id){
+    public ResponseEntity<Void> deleteExercise(@PathVariable int id) throws ApiException {
         try{
             if(service.deleteExercise(id))return ResponseEntity.ok().build();
             else return ResponseEntity.status(500).build();
         }catch(ExerciseManagementException e){
             logger.warn(e.getMessage());
-            return ResponseEntity.status(500).build();
+            throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -140,14 +141,14 @@ public class ETutorDLGController {
      * @return a {@link DatalogExerciseBean} representing the exercise
      */
     @GetMapping("/exercise/{id}")
-    public ResponseEntity<DatalogExerciseDTO> getExercise(@PathVariable int id){
+    public ResponseEntity<DatalogExerciseDTO> getExercise(@PathVariable int id) throws ApiException {
         DatalogExerciseDTO exercise = null;
         try {
             exercise = service.fetchExercise(id);
             return ResponseEntity.ok(exercise);
         } catch (ExerciseManagementException e) {
             logger.warn(e.getMessage());
-            return ResponseEntity.status(500).body(exercise);
+            throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -157,14 +158,14 @@ public class ETutorDLGController {
      * @return a String with the facts
      */
     @GetMapping("/taskgroup/{id}")
-    public ResponseEntity<String> getFacts(@PathVariable int id){
+    public ResponseEntity<String> getFacts(@PathVariable int id) throws ApiException {
         String facts = null;
         try {
             facts = "<p>" + service.fetchFacts(id).replace("\r", "").replace("\n", "<br>") +"</p>";
             return ResponseEntity.ok(facts);
         } catch (ExerciseManagementException e) {
             logger.warn(e.getMessage());
-            return ResponseEntity.status(500).body(facts);
+            throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -174,14 +175,14 @@ public class ETutorDLGController {
      * @return a String with the facts
      */
     @GetMapping("/taskgroup/{id}/raw")
-    public ResponseEntity<String> getFactsAsString(@PathVariable int id){
+    public ResponseEntity<String> getFactsAsString(@PathVariable int id) throws ApiException {
         String facts = null;
         try {
             facts = service.fetchFacts(id);
             return ResponseEntity.ok(facts);
         } catch (ExerciseManagementException e) {
             logger.warn(e.getMessage());
-            return ResponseEntity.status(500).body(null);
+            throw new ApiException(500, e.toString(), null);
         }
     }
 
@@ -193,13 +194,13 @@ public class ETutorDLGController {
      * @return the grading {@link GradingDTO}
      */
     @GetMapping("/grading/{exercise_id}/{action}/{diagnose_level}")
-    public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level){
+    public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level) throws ApiException {
         try {
             GradingDTO grading = service.getGradingForExercise(exercise_id, action, diagnose_level);
             return ResponseEntity.ok(grading);
         } catch (ExerciseManagementException | InterruptedException e) {
             logger.warn(e.getMessage());
-            return null;
+            throw new ApiException(500, e.toString(), null);
         }
     }
 }
