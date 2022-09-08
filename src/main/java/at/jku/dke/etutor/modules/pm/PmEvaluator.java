@@ -10,14 +10,23 @@ import java.util.Map;
 
 public class PmEvaluator implements Evaluator {
 
-    // -> may use PmAnalysis as return type
+    // -> may use PmAnalysis instead of Analysis as return type
     @Override
-    public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
+    public PmAnalysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
         return null;
     }
 
     @Override
     public Grading grade(Analysis analysis, int maxPoints, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
+        // cast Analysis to use PmAnalysis
+        PmAnalysis pmAnalysis;
+        if(analysis instanceof PmAnalysis)
+            pmAnalysis = (PmAnalysis) analysis;
+        else
+            return null; // or Exception
+            
+        // Todo: grade based on analysis
+
         return null;
     }
 
