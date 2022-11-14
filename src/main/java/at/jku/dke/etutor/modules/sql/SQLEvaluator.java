@@ -1,10 +1,7 @@
 package at.jku.dke.etutor.modules.sql;
 
 import at.jku.dke.etutor.core.evaluation.*;
-import at.jku.dke.etutor.modules.sql.analysis.SQLAnalysis;
-import at.jku.dke.etutor.modules.sql.analysis.SQLAnalyzer;
-import at.jku.dke.etutor.modules.sql.analysis.SQLAnalyzerConfig;
-import at.jku.dke.etutor.modules.sql.analysis.SQLCriterionAnalysis;
+import at.jku.dke.etutor.modules.sql.analysis.*;
 import at.jku.dke.etutor.modules.sql.grading.GradingScope;
 import at.jku.dke.etutor.modules.sql.grading.SQLCriterionGradingConfig;
 import at.jku.dke.etutor.modules.sql.grading.SQLGrader;
@@ -376,9 +373,17 @@ public class SQLEvaluator implements Evaluator {
 		StringBuilder result = new StringBuilder();
 
 		if (analysis instanceof SQLAnalysis) {
+			// Create no table if a cartesian product is suspected
 			SQLAnalysis sqlAnalysis = (SQLAnalysis)analysis;
 			SQLCriterionAnalysis cartesianProduct = sqlAnalysis.getCriterionAnalysis(SQLEvaluationCriterion.CARTESIAN_PRODUCT);
 			if(cartesianProduct != null && !cartesianProduct.isCriterionSatisfied()) return null;
+
+			// Just add the syntax exception if there is one
+			SyntaxAnalysis correctSyntaxCriterion = (SyntaxAnalysis) sqlAnalysis.getCriterionAnalysis(SQLEvaluationCriterion.CORRECT_SYNTAX);
+			if(!correctSyntaxCriterion.isCriterionSatisfied()) {
+				result.append("<br><strong>").append(correctSyntaxCriterion.getSyntaxErrorDescription()).append("</strong>").append("<br>");
+				return result.toString();
+			}
 
 			if(locale == Locale.GERMAN) result.append("<strong> Das Ergebnis Ihrer Abfrage: </strong><br>");
 			else result.append("<strong>The result of your query: </strong><br>");
