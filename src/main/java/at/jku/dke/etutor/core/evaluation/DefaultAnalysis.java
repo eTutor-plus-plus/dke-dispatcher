@@ -11,7 +11,7 @@ public class DefaultAnalysis implements Analysis {
 	 */
 	private Serializable submission;
 	/**
-	 * Boolean determining wheter the submission suits the solution
+	 * Boolean determining whether the submission suits the solution
 	 */
 	private boolean submissionSuitsSolution;
 

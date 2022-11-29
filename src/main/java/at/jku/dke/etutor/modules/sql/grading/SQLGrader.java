@@ -89,13 +89,15 @@ public class SQLGrader {
 				throw new MissingGradingCriterionConfigException(criterion, message);
 			}
 		}
-		
+
+
+		// note: theme full points/ no points at all
 		SQLCriterionAnalysis next;
 		boolean isAllRight = true;
 		Iterator<SQLCriterionAnalysis> i = analysis.iterCriterionAnalyses();
 		while (i.hasNext()){
 			next = i.next();
-			if (next != null && !next.isCriterionSatisfied()){
+			if (next != null && !next.isCriterionSatisfied()){		// note: check if all criteria are satisfied
 				isAllRight = false;
 			}
 		}
@@ -103,9 +105,9 @@ public class SQLGrader {
 		grading.setMaxPoints(1);
 		
 		if (isAllRight){
-			grading.setPoints(1);
+			grading.setPoints(1);		//note: should be called points
 		} else {
-			grading.setPoints(0);
+			grading.setPoints(0);		//note: as soon as one criterion is not satisfied -> 0 points
 		}
 		
 		return grading;

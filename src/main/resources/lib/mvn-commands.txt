@@ -2,28 +2,36 @@
 // Die Pfade des -Dfile Arguments müssen ersetzt werden
 
 
-mvn install:install-file -Dfile=C:\Users\dke\Documents\eTutor-Grading\src\main\resources\lib\xml.jar -DgroupId=javax -DartifactId=xml -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=/Users/Falk/dke-dispatcher/src/main/resources/lib/xml.jar -DgroupId=javax -DartifactId=xml -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 
 &&
 
-mvn install:install-file -Dfile=C:\Users\dke\Documents\eTutor-Grading\src\main\resources\lib\xml-apis.jar -DgroupId=javax -DartifactId=xml-apis -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=/Users/Falk/dke-dispatcher/src/main/resources/lib/xml-apis.jar -DgroupId=javax -DartifactId=xml-apis -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 
 &&
 
-mvn install:install-file -Dfile=C:\Users\dke\Documents\eTutor-Grading\src\main\resources\lib\xmlParserAPIs.jar -DgroupId=javax -DartifactId=parsers -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=/Users/Falk/dke-dispatcher/src/main/resources/lib/xmlParserAPIs.jar -DgroupId=javax -DartifactId=parsers -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 
 &&
 
-mvn install:install-file -Dfile=C:\Users\dke\Documents\eTutor-Grading\src\main\resources\lib\xmlparserv2.jar -DgroupId=javax -DartifactId=parsersv2 -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=/Users/Falk/dke-dispatcher/src/main/resources/lib/xmlparserv2.jar -DgroupId=javax -DartifactId=parsersv2 -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 
 &&
 
-mvn install:install-file -Dfile=C:\Users\dke\Documents\eTutor-Grading\src\main\resources\xquery\reflect\DDbE.jar -DgroupId=com.ibm -DartifactId=DDbE -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=/Users/Falk/dke-dispatcher/src/main/resources/xquery/reflect/DDbE.jar -DgroupId=com.ibm -DartifactId=DDbE -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 
 &&
 
-mvn install:install-file -Dfile=C:\Users\dke\Documents\eTutor-Grading\src\main\resources\xquery\reflect\xerces.jar -DgroupId=javax -DartifactId=xerces -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=/Users/Falk/dke-dispatcher/src/main/resources/xquery/reflect/xerces.jar -DgroupId=javax -DartifactId=xerces -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 
 &&
 
-mvn install:install-file -Dfile=C:\Users\dke\Documents\eTutor-Grading\src\main\resources\lib\AbcDatalog-0.5.0.jar -DgroupId=edu.harvard.seas.pl -DartifactId=abcdatalog -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=/Users/Falk/dke-dispatcher/src/main/resources/lib/AbcDatalog-0.5.0.jar -DgroupId=edu.harvard.seas.pl -DartifactId=abcdatalog -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+
+&&
+
+mvn install:install-file -Dfile=/Users/Falk/dke-dispatcher/src/main/java/at/jku/dke/etutor/modules/pm/lib/OpenXES/OpenXES.jar -DgroupId=org.deckfour -DartifactId=OpenXES -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+
+&&
+
+mvn install:install-file -Dfile=/Users/Falk/dke-dispatcher/src/main/java/at/jku/dke/etutor/modules/pm/lib/OpenXES/Spex.jar -DgroupId=org.deckfour -DartifactId=Spex -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true

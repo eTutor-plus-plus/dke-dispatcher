@@ -40,7 +40,7 @@ public class ModuleService {
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#RATask", "ra" -> new RAEvaluator(new SQLEvaluator(sqlConstants), new SQLReporter());
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#XQTask", "xq" -> new XQEvaluatorImpl(properties);
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#DLGTask", "dlg" -> new DatalogEvaluatorImpl(properties);
-            case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#PMTask", "pm" -> new PmEvaluator();
+            case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#PmTask", "pm" -> new PmEvaluator();
             default -> null;
         };
     }
