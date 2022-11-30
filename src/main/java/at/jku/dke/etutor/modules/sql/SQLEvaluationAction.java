@@ -4,6 +4,10 @@ public class SQLEvaluationAction {
 
 	private String action;
 
+
+	// note: possible actions (correspond to buttons?)
+	// note: run, test, check?
+	// note: modi wie die analyze erfolgt -> aktuell nur submit oder diagnose
 	public static final SQLEvaluationAction RUN = new SQLEvaluationAction("RUN");
 	public static final SQLEvaluationAction TEST = new SQLEvaluationAction("TEST");
 	public static final SQLEvaluationAction CHECK = new SQLEvaluationAction("CHECK");

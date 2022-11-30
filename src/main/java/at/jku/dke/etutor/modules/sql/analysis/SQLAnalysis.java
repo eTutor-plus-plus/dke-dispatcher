@@ -30,8 +30,11 @@ public class SQLAnalysis extends DefaultAnalysis implements Analysis {
 		super();
 
 		this.exception = null;
-		this.queryResultTuples = new ArrayList<>();
 		this.criterionAnalyses = new HashMap<>();
+
+		// note: specific SQL content:
+		// here the results of the submitted query are stored
+		this.queryResultTuples = new ArrayList<>();
 		this.queryResultColumnLabels = new ArrayList<>();
 	}
 

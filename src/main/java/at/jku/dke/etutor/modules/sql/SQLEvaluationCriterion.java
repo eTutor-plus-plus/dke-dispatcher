@@ -1,5 +1,8 @@
 package at.jku.dke.etutor.modules.sql;
 
+//note: start by defining evaluation criterion
+// note: question: difference in those eval criteria
+
 public class SQLEvaluationCriterion {
 
 	private String name;

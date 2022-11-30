@@ -11,6 +11,8 @@ public class ApplicationProperties {
 
     private SQL sql = new SQL();
 
+    private ProcessMining processMining = new ProcessMining();
+
     private DataSource datasource = new DataSource();
 
     private Datalog datalog = new Datalog();
@@ -33,6 +35,14 @@ public class ApplicationProperties {
 
     public void setSql(SQL sql) {
         this.sql = sql;
+    }
+
+    public ProcessMining getProcessMining(){
+        return processMining;
+    }
+
+    public void setProcessMining(ProcessMining processMining) {
+        this.processMining = processMining;
     }
 
     public XQueryProps getXquery() {
@@ -315,6 +325,36 @@ public class ApplicationProperties {
             this.tableUrlForLink = tableUrlForLink;
         }
     }
+
+    /**
+     * The properties for the Process Mining module
+     */
+    public static class ProcessMining{
+        private String connPwd;
+        private String connUser;
+        private String connUrl;
+
+        public String getConnPwd() {
+            return connPwd;
+        }
+        public String getConnUrl() {
+            return connUrl;
+        }
+        public String getConnUser() {
+            return connUser;
+        }
+        public void setConnPwd(String connPwd) {
+            this.connPwd = connPwd;
+        }
+        public void setConnUrl(String connUrl) {
+            this.connUrl = connUrl;
+        }
+        public void setConnUser(String connUser) {
+            this.connUser = connUser;
+        }
+    }
+
+
 
     /**
      * The properties for the XQuery-module

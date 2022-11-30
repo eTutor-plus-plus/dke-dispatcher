@@ -4,15 +4,14 @@ package at.jku.dke.etutor.grading;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.config.AsyncConfiguration;
 import at.jku.dke.etutor.grading.config.DataSourceConfiguration;
-import at.jku.dke.etutor.grading.rest.ETutorGradingController;
-import at.jku.dke.etutor.grading.rest.ETutorSQLController;
-import at.jku.dke.etutor.grading.rest.ETutorSubmissionController;
-import at.jku.dke.etutor.grading.rest.ExceptionHandler;
+import at.jku.dke.etutor.grading.rest.*;
 import at.jku.dke.etutor.grading.service.ModuleService;
 import at.jku.dke.etutor.grading.service.RepositoryService;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
 import at.jku.dke.etutor.modules.dlg.DatalogDataSource;
+import at.jku.dke.etutor.modules.pm.PmDataSource;
+import at.jku.dke.etutor.modules.pm.PmEvaluator;
 import at.jku.dke.etutor.modules.ra2sql.RAEvaluator;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLDataSource;
@@ -62,7 +61,11 @@ import java.util.List;
         DatalogDataSource.class,
         SQLDataSource.class,
         XQDataSource.class,
-        ExceptionHandler.class
+        ExceptionHandler.class,
+        PmDataSource.class,
+        ETutorPMController.class,
+        PmEvaluator.class
+
 })
 @EnableConfigurationProperties({ApplicationProperties.class})
 @SpringBootApplication

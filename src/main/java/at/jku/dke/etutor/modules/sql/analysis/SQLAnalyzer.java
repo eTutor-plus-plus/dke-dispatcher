@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The Analyzer that takes an SQLAnalyzerConfig configuration and performs the analysis according to it
  */
+// note: here the actual/ real analysis is happening
 public class SQLAnalyzer {
 	private final String INTERNAL_ERROR = "This is an internal system error.";
 	private final String CONTACT_ADMIN = "Please contact the system administrator.";
@@ -49,6 +50,7 @@ public class SQLAnalyzer {
 		analysis = new SQLAnalysis();
 		analysis.setSubmission(submission);
 
+		// note: check for null case
 		if (submission == null) {
 			message ="";
 			message = message.concat("Analsis stopped with errors. ");
@@ -61,6 +63,7 @@ public class SQLAnalyzer {
 			return analysis;
 		}
 
+		// note: check for type string
 		if (submission instanceof String) {
 			submittedQuery = (String)submission;
 		} else {
@@ -87,9 +90,13 @@ public class SQLAnalyzer {
 			return analysis;
 		}
 
+		// note: actual analysis (from the strongest to the weakest criterion)
+		// note: important: the result of submission is analyzed for correctness NOT the submitted string by itself
+		// note: check correct syntax
 		if (config.isCriterionToAnalyze(SQLEvaluationCriterion.CORRECT_SYNTAX)) {
 			criterionAnalysis = this.analyzeSyntax(config, submittedQuery, analysis);
 			analysis.addCriterionAnalysis(SQLEvaluationCriterion.CORRECT_SYNTAX, criterionAnalysis);
+			// note: if syntax is wrong:
 			if ((criterionAnalysis.getAnalysisException() != null) || (!criterionAnalysis.isCriterionSatisfied())) {
 				analysis.setAnalysisException(criterionAnalysis.getAnalysisException());
 				return analysis;
@@ -143,6 +150,7 @@ public class SQLAnalyzer {
 	 * @param analysis the analysis
 	 * @return the SQLCriterionAnalysis for the SQLEvaluationCriterion.CORRECT_SYNTAX
 	 */
+	// note: here, only syntax is analyzed (whether it is executable or not), it is not analyzed, if syntax is correct in terms of the exercise
 	private SQLCriterionAnalysis analyzeSyntax(SQLAnalyzerConfig config, String submittedQuery, SQLAnalysis analysis) {
 		List<String> tuple;
 		ResultSetMetaData rsmd;
