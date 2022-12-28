@@ -8,8 +8,8 @@
         <version>2.4.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>at.jku.dke.etutor.grading</groupId>
-    <artifactId>etutor-grading</artifactId>
+    <groupId>at.jku.dke.etutor</groupId>
+    <artifactId>dke-grading</artifactId>
     <version>0.0.1</version>
     <name>eTutor-at.jku.dke.etutor.core.evaluation.Grading</name>
     <description>The eTutor grading component</description>
@@ -94,40 +94,43 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
         </dependency>
-        <!-- dependencies from resources/lib -->
+
+        <!-- LEGACY DEPENDENCIES -->
+        <!-- The jars have to be installed to your local maven repository. -->
+        <!-- Execute install_legacy_jars.bat or execute the commands therein to do so. -->
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>xml</artifactId>
+            <groupId>at.jku.dke.etutor</groupId>
+            <artifactId>legacy.javax.xml</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>edu.harvard.seas.pl</groupId>
-            <artifactId>abcdatalog</artifactId>
+            <groupId>at.jku.dke.etutor</groupId>
+            <artifactId>legacy.edu.harvard.seas.pl.abcdatalog</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>xml-apis</artifactId>
+            <groupId>at.jku.dke.etutor</groupId>
+            <artifactId>legacy.javax.xml-apis</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>parsers</artifactId>
+            <groupId>at.jku.dke.etutor</groupId>
+            <artifactId>legacy.javax.parsers</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>parsersv2</artifactId>
+            <groupId>at.jku.dke.etutor</groupId>
+            <artifactId>legacy.javax.parsersv2</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>xerces</artifactId>
+            <groupId>at.jku.dke.etutor</groupId>
+            <artifactId>legacy.javax.xerces</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>com.ibm</groupId>
-            <artifactId>DDbE</artifactId>
+            <groupId>at.jku.dke.etutor</groupId>
+            <artifactId>legacy.com.ibm.DDbE</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>
@@ -148,5 +151,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
