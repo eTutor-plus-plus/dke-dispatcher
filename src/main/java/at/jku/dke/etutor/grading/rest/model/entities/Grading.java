@@ -29,6 +29,8 @@ public class Grading {
      */
     private double maxPoints;
 
+    private boolean submissionSuitsSolution;
+
     /**
      * The result
      */
@@ -93,6 +95,14 @@ public class Grading {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    public boolean isSubmissionSuitsSolution() {
+        return submissionSuitsSolution;
+    }
+
+    public void setSubmissionSuitsSolution(boolean submissionSuitsSolution) {
+        this.submissionSuitsSolution = submissionSuitsSolution;
     }
 
     @Override

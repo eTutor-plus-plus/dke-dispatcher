@@ -56,16 +56,17 @@ public class SubmissionDispatcherService {
             logger.debug("Finished grading submission");
             logger.debug("Finished evaluating submission");
 
-            Grading gradingDTO = new Grading(submission.getSubmissionId(), grading);
-            gradingDTO.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes(), locale));
+            Grading gradingEntity = new Grading(submission.getSubmissionId(), grading);
+            gradingEntity.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes(), locale));
 
-            if((grading.getPoints()<grading.getMaxPoints() || grading.getPoints() == 0 ) && !(analysis instanceof XQAnalysis) && !(analysis instanceof DatalogAnalysis)) {
+            if((gradingEntity.getPoints()<gradingEntity.getMaxPoints() || gradingEntity.getPoints() == 0 ) && !(analysis instanceof XQAnalysis) && !(analysis instanceof DatalogAnalysis)) {
                     logger.info("Requesting report");
                     DefaultReport report = getReport(evaluator, grading, analysis, submission, locale);
                     logger.debug("Received report");
-                    gradingDTO.setReport(new Report(submission.getSubmissionId(), report));
+                    gradingEntity.setReport(new Report(submission.getSubmissionId(), report));
             }
-            persistGrading(gradingDTO);
+            gradingEntity.setSubmissionSuitsSolution(analysis.submissionSuitsSolution());
+            persistGrading(gradingEntity);
         } catch(Exception e){
             logger.warn("Stopped Evaluation due to errors", e);
         }

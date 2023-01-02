@@ -79,6 +79,7 @@ public class ETutorGradingController {
             gradingDTO.setMaxPoints(grading.getMaxPoints());
             gradingDTO.setResult(grading.getResult());
             gradingDTO.setSubmissionId(grading.getSubmissionId());
+            gradingDTO.setSubmissionSuitsSolution(grading.isSubmissionSuitsSolution());
             return ResponseEntity.ok(EntityModel.of(gradingDTO,
                     linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId)).withRel("self")));
         } else  {
