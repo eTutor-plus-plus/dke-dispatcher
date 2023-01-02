@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.grading.config;
 
-import at.jku.dke.etutor.grading.rest.dto.Submission;
+import at.jku.dke.etutor.grading.rest.model.entities.Submission;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;

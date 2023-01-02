@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.dlg.exercise;
 
-import at.jku.dke.etutor.grading.rest.dto.DatalogTaskGroupDTO;
+import at.jku.dke.etutor.objects.dispatcher.dlg.DatalogTaskGroupDTO;
 import at.jku.dke.etutor.modules.dlg.DatalogCoreManager;
 import at.jku.dke.etutor.modules.dlg.ExerciseManagementException;
 import at.jku.dke.etutor.modules.dlg.GradingException;

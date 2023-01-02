@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.grading.rest.dto;
+package at.jku.dke.etutor.grading.rest.model.entities;
 
 import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.DefaultReport;
@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name= "report")
-public class ReportDTO {
+public class Report {
     /**
      * The submission id identifying the report
      */
@@ -38,11 +38,11 @@ public class ReportDTO {
     @Column(length = 8192)
     private String description;
 
-    public ReportDTO(){
+    public Report(){
 
     }
 
-    public ReportDTO(String submissionId, DefaultReport report){
+    public Report(String submissionId, DefaultReport report){
         this.hint = report.getHint();
         this.error = report.getError();
         this.description = report.getDescription();
@@ -85,8 +85,8 @@ public class ReportDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        ReportDTO reportDTO = (ReportDTO) o;
-        return submissionId != null && Objects.equals(submissionId, reportDTO.submissionId);
+        Report report = (Report) o;
+        return submissionId != null && Objects.equals(submissionId, report.submissionId);
     }
 
     @Override

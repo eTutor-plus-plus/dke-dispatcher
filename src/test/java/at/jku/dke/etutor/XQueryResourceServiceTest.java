@@ -2,8 +2,8 @@ package at.jku.dke.etutor;
 
 import at.jku.dke.etutor.grading.ETutorGradingApplication;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.grading.rest.dto.XMLDefinitionDTO;
-import at.jku.dke.etutor.grading.rest.dto.XQExerciseDTO;
+import at.jku.dke.etutor.objects.dispatcher.xq.XMLDefinitionDTO;
+import at.jku.dke.etutor.objects.dispatcher.xq.XQExerciseDTO;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

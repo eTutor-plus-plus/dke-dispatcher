@@ -1,6 +1,5 @@
-package at.jku.dke.etutor.grading.rest.dto;
+package at.jku.dke.etutor.grading.rest.model.entities;
 
-import at.jku.dke.etutor.core.evaluation.Grading;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 
@@ -12,7 +11,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name="grading")
-public class GradingDTO {
+public class Grading {
 
     /**
      * The id identifying the submission
@@ -40,27 +39,27 @@ public class GradingDTO {
      * The report containing information about potential errors
      */
     @OneToOne(cascade=CascadeType.ALL)
-    private ReportDTO report;
+    private Report report;
 
-    public GradingDTO(){}
+    public Grading(){}
 
-    public GradingDTO(String submissionId, double points, double maxPoints){
+    public Grading(String submissionId, double points, double maxPoints){
         this.points = points;
         this.maxPoints= maxPoints;
         this.submissionId=submissionId;
     }
 
-    public GradingDTO(String submissionId, Grading grading){
+    public Grading(String submissionId, at.jku.dke.etutor.core.evaluation.Grading grading){
         this.submissionId=submissionId;
         this.points = grading.getPoints();
         this.maxPoints = grading.getMaxPoints();
     }
 
-    public ReportDTO getReport() {
+    public Report getReport() {
         return report;
     }
 
-    public void setReport(ReportDTO report) {
+    public void setReport(Report report) {
         this.report = report;
     }
 
@@ -100,7 +99,7 @@ public class GradingDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        GradingDTO that = (GradingDTO) o;
+        Grading that = (Grading) o;
         return submissionId != null && Objects.equals(submissionId, that.submissionId);
     }
 

@@ -2,9 +2,9 @@ package at.jku.dke.etutor;
 
 import at.jku.dke.etutor.grading.ETutorGradingApplication;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
-import at.jku.dke.etutor.grading.rest.dto.Submission;
-import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
+import at.jku.dke.etutor.grading.rest.model.entities.Grading;
+import at.jku.dke.etutor.grading.rest.model.entities.Submission;
+import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -99,10 +99,10 @@ public class TestXQueryModule {
      */
     void getGradings()  {
         for (String id : ids) {
-            Optional<GradingDTO> optGrading = gradingRepo.findById(id);
+            Optional<Grading> optGrading = gradingRepo.findById(id);
             System.out.println(id);
             assertTrue(optGrading.isPresent());
-            GradingDTO grading = optGrading.get();
+            Grading grading = optGrading.get();
             System.out.println(id);
             System.out.println("Result " + "\n" + grading.getResult());
             assertEquals(1, grading.getPoints());

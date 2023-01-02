@@ -1,11 +1,11 @@
 package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
-import at.jku.dke.etutor.grading.rest.dto.Submission;
-import at.jku.dke.etutor.grading.rest.dto.XMLDefinitionDTO;
-import at.jku.dke.etutor.grading.rest.dto.XQExerciseDTO;
-import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
+import at.jku.dke.etutor.grading.rest.model.entities.Grading;
+import at.jku.dke.etutor.grading.rest.model.entities.Submission;
+import at.jku.dke.etutor.objects.dispatcher.xq.XMLDefinitionDTO;
+import at.jku.dke.etutor.objects.dispatcher.xq.XQExerciseDTO;
+import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 import at.jku.dke.etutor.modules.xquery.analysis.UrlContentMap;
 import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseBean;
 import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseManagerImpl;
@@ -437,7 +437,7 @@ public class XQueryResourceService {
         return xqExerciseManager.deleteExercise(id);
     }
 
-    public GradingDTO getGradingForExercise(int exercise_id, String action, String diagnose_level) throws Exception {
+    public Grading getGradingForExercise(int exercise_id, String action, String diagnose_level) throws Exception {
         Submission submission = new Submission();
         String id = UUID.randomUUID().toString();
         submission.setSubmissionId(id);
@@ -486,7 +486,7 @@ public class XQueryResourceService {
      */
     // TODO: make it that XQ-Tasks with syntax errors are not evaluated as correct
     public void testNewlyCreatedExercise(int id) throws Exception {
-        GradingDTO grading = null;
+        Grading grading = null;
         grading = this.getGradingForExercise(id, "diagnose", "3");
         if(grading == null || grading.getPoints() != grading.getMaxPoints() || grading.getMaxPoints() == 0){
             throw new ExerciseNotValidException("Exercise has syntax errors");

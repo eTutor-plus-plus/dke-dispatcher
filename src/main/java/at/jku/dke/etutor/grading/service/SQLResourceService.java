@@ -1,9 +1,9 @@
 package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
-import at.jku.dke.etutor.grading.rest.dto.Submission;
-import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
+import at.jku.dke.etutor.grading.rest.model.entities.Grading;
+import at.jku.dke.etutor.grading.rest.model.entities.Submission;
+import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -944,9 +944,9 @@ public class SQLResourceService {
      * @param exercise_id the id of the exercise
      * @param action the action for the evaluation
      * @param diagnose_level the diagnose level for the evaluation
-     * @return {@link GradingDTO} that wraps the result
+     * @return {@link Grading} that wraps the result
      */
-    public GradingDTO getGradingForExercise(int exercise_id, String action, String diagnose_level) throws DatabaseException, InterruptedException {
+    public Grading getGradingForExercise(int exercise_id, String action, String diagnose_level) throws DatabaseException, InterruptedException {
         Submission submission = new Submission();
         String id = UUID.randomUUID().toString();
         submission.setSubmissionId(id);

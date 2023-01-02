@@ -1,8 +1,8 @@
 package at.jku.dke.etutor.grading.rest;
 
-import at.jku.dke.etutor.grading.rest.dto.DatalogExerciseDTO;
-import at.jku.dke.etutor.grading.rest.dto.DatalogTaskGroupDTO;
-import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
+import at.jku.dke.etutor.objects.dispatcher.dlg.DatalogExerciseDTO;
+import at.jku.dke.etutor.objects.dispatcher.dlg.DatalogTaskGroupDTO;
+import at.jku.dke.etutor.grading.rest.model.entities.Grading;
 import at.jku.dke.etutor.grading.service.DatalogResourceService;
 import at.jku.dke.etutor.grading.service.ExerciseNotValidException;
 import at.jku.dke.etutor.modules.dlg.ExerciseManagementException;
@@ -191,12 +191,12 @@ public class ETutorDLGController {
      * @param exercise_id the id of the exercise
      * @param action the action
      * @param diagnose_level the diagnose level
-     * @return the grading {@link GradingDTO}
+     * @return the grading {@link Grading}
      */
     @GetMapping("/grading/{exercise_id}/{action}/{diagnose_level}")
-    public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level) throws ApiException {
+    public ResponseEntity<Grading> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level) throws ApiException {
         try {
-            GradingDTO grading = service.getGradingForExercise(exercise_id, action, diagnose_level);
+            Grading grading = service.getGradingForExercise(exercise_id, action, diagnose_level);
             return ResponseEntity.ok(grading);
         } catch (ExerciseManagementException | InterruptedException e) {
             logger.warn(e.getMessage());

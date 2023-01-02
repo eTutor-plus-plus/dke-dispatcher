@@ -2,15 +2,13 @@ package at.jku.dke.etutor.grading.rest;
 
 import at.jku.dke.etutor.grading.ETutorCORSPolicy;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
-import at.jku.dke.etutor.grading.rest.dto.XMLDefinitionDTO;
-import at.jku.dke.etutor.grading.rest.dto.XQExerciseDTO;
+import at.jku.dke.etutor.grading.rest.model.entities.Grading;
+import at.jku.dke.etutor.objects.dispatcher.xq.XMLDefinitionDTO;
+import at.jku.dke.etutor.objects.dispatcher.xq.XQExerciseDTO;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
 import ch.qos.logback.classic.Logger;
-import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.xml.sax.SAXException;
@@ -199,9 +197,9 @@ public class ETutorXQueryController {
     }
 
     @GetMapping("/grading/{exercise_id}/{action}/{diagnose_level}")
-    public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level) throws ApiException {
+    public ResponseEntity<Grading> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level) throws ApiException {
         try {
-            GradingDTO grading = xQueryResourceService.getGradingForExercise(exercise_id, action, diagnose_level);
+            Grading grading = xQueryResourceService.getGradingForExercise(exercise_id, action, diagnose_level);
             return ResponseEntity.ok(grading);
         } catch (Exception e) {
             e.printStackTrace();

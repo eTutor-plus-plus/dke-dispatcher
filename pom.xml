@@ -24,6 +24,11 @@
             <version>2.4.4</version>
         </dependency>
         <dependency>
+            <groupId>at.jku.dke.etutor</groupId>
+            <artifactId>etutor-objects</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>javax.persistence-api</artifactId>
             <version>2.2</version>

@@ -1,10 +1,10 @@
 package at.jku.dke.etutor.grading.rest;
 
 import at.jku.dke.etutor.grading.ETutorCORSPolicy;
-import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
-import at.jku.dke.etutor.grading.rest.dto.SQLExerciseDTO;
-import at.jku.dke.etutor.grading.rest.dto.SQLSchemaInfoDTO;
-import at.jku.dke.etutor.grading.rest.dto.SqlDataDefinitionDTO;
+import at.jku.dke.etutor.grading.rest.model.entities.Grading;
+import at.jku.dke.etutor.objects.dispatcher.sql.SQLExerciseDTO;
+import at.jku.dke.etutor.objects.dispatcher.sql.SQLSchemaInfoDTO;
+import at.jku.dke.etutor.objects.dispatcher.sql.SqlDataDefinitionDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.ExerciseNotValidException;
 import at.jku.dke.etutor.grading.service.SQLResourceService;
@@ -263,12 +263,12 @@ public class ETutorSQLController {
      * @param exercise_id the id
      * @param action the desired action
      * @param diagnose_level the diagnose level
-     * @return {@link GradingDTO} the grading
+     * @return {@link Grading} the grading
      */
     @GetMapping("/grading/{exercise_id}/{action}/{diagnose_level}")
-    public ResponseEntity<GradingDTO> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level) throws ApiException {
+    public ResponseEntity<Grading> triggerEvaluation(@PathVariable int exercise_id, @PathVariable String action, @PathVariable String diagnose_level) throws ApiException {
         try {
-            GradingDTO grading = resourceService.getGradingForExercise(exercise_id, action, diagnose_level);
+            Grading grading = resourceService.getGradingForExercise(exercise_id, action, diagnose_level);
             return ResponseEntity.ok(grading);
         } catch (Exception e) {
             e.printStackTrace();

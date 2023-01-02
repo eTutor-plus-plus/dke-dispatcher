@@ -1,10 +1,10 @@
 package at.jku.dke.etutor.grading.service;
 
 
-import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
-import at.jku.dke.etutor.grading.rest.dto.Submission;
-import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
-import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
+import at.jku.dke.etutor.grading.rest.model.entities.Grading;
+import at.jku.dke.etutor.grading.rest.model.entities.Submission;
+import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
+import at.jku.dke.etutor.grading.rest.model.repositories.SubmissionRepository;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,7 +38,7 @@ public class RepositoryService {
      * Persists a GradingDTO
      * @param grading the grading
      */
-    public  void persistGrading(GradingDTO grading){
+    public  void persistGrading(Grading grading){
         gradingRepository.save(grading);
     }
 

@@ -1,6 +1,7 @@
-package at.jku.dke.etutor.grading.rest.dto;
+package at.jku.dke.etutor.grading.rest.model.entities;
 
 
+import at.jku.dke.etutor.objects.dispatcher.SubmissionDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 

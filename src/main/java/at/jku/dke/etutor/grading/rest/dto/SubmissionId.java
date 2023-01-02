@@ -1,5 +1,7 @@
 package at.jku.dke.etutor.grading.rest.dto;
 
+import at.jku.dke.etutor.grading.rest.model.entities.Submission;
+
 import java.util.UUID;
 
 /**

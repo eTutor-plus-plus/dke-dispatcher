@@ -3,10 +3,9 @@ package at.jku.dke.etutor.grading.service;
 import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.DefaultReport;
 import at.jku.dke.etutor.core.evaluation.Evaluator;
-import at.jku.dke.etutor.core.evaluation.Grading;
-import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
-import at.jku.dke.etutor.grading.rest.dto.ReportDTO;
-import at.jku.dke.etutor.grading.rest.dto.Submission;
+import at.jku.dke.etutor.grading.rest.model.entities.Grading;
+import at.jku.dke.etutor.grading.rest.model.entities.Report;
+import at.jku.dke.etutor.grading.rest.model.entities.Submission;
 import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
 import at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis;
 import ch.qos.logback.classic.Logger;
@@ -53,18 +52,18 @@ public class SubmissionDispatcherService {
             Analysis analysis = getAnalysis(evaluator, submission, locale);
             logger.debug("Finished analyzing submission");
             logger.debug("Grading submission");
-            Grading grading = getGrading(evaluator, analysis, submission);
+            at.jku.dke.etutor.core.evaluation.Grading grading = getGrading(evaluator, analysis, submission);
             logger.debug("Finished grading submission");
             logger.debug("Finished evaluating submission");
 
-            GradingDTO gradingDTO = new GradingDTO(submission.getSubmissionId(), grading);
+            Grading gradingDTO = new Grading(submission.getSubmissionId(), grading);
             gradingDTO.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes(), locale));
 
             if((grading.getPoints()<grading.getMaxPoints() || grading.getPoints() == 0 ) && !(analysis instanceof XQAnalysis) && !(analysis instanceof DatalogAnalysis)) {
                     logger.info("Requesting report");
                     DefaultReport report = getReport(evaluator, grading, analysis, submission, locale);
                     logger.debug("Received report");
-                    gradingDTO.setReport(new ReportDTO(submission.getSubmissionId(), report));
+                    gradingDTO.setReport(new Report(submission.getSubmissionId(), report));
             }
             persistGrading(gradingDTO);
         } catch(Exception e){
@@ -80,7 +79,7 @@ public class SubmissionDispatcherService {
      * @return the Grading
      * @throws Exception if an error occurs
      */
-    public Grading getGrading(Evaluator evaluator, Analysis analysis, Submission submission) throws Exception {
+    public at.jku.dke.etutor.core.evaluation.Grading getGrading(Evaluator evaluator, Analysis analysis, Submission submission) throws Exception {
         return  evaluator
                 .grade(analysis, submission.getMaxPoints(),
                         submission.getPassedAttributes(), submission.getPassedParameters());
@@ -109,7 +108,7 @@ public class SubmissionDispatcherService {
      * @return the report
      * @throws Exception if an error occurs
      */
-    public DefaultReport getReport(Evaluator evaluator, Grading grading, Analysis analysis,Submission submission, Locale locale) throws Exception {
+    public DefaultReport getReport(Evaluator evaluator, at.jku.dke.etutor.core.evaluation.Grading grading, Analysis analysis, Submission submission, Locale locale) throws Exception {
         return (DefaultReport) evaluator.report
                 (analysis, grading, submission.getPassedAttributes(),
                         submission.getPassedParameters(), locale);
@@ -117,12 +116,12 @@ public class SubmissionDispatcherService {
 
     /**
      * Persists the grading
-     * @param gradingDTO the grading
+     * @param grading the grading
      */
-    public void persistGrading(GradingDTO gradingDTO){
+    public void persistGrading(Grading grading){
         try{
             logger.debug("Saving grading to database");
-            repositoryService.persistGrading(gradingDTO);
+            repositoryService.persistGrading(grading);
             logger.debug("Finished saving grading to database");
         }catch(Exception e){
             logger.error("Could not save grading");

@@ -1,14 +1,16 @@
 package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.grading.rest.dto.DatalogExerciseDTO;
-import at.jku.dke.etutor.grading.rest.dto.DatalogTaskGroupDTO;
-import at.jku.dke.etutor.grading.rest.dto.GradingDTO;
-import at.jku.dke.etutor.grading.rest.dto.Submission;
-import at.jku.dke.etutor.grading.rest.repositories.GradingDTORepository;
+import at.jku.dke.etutor.modules.dlg.exercise.TermDescription;
+import at.jku.dke.etutor.objects.dispatcher.dlg.DatalogExerciseDTO;
+import at.jku.dke.etutor.objects.dispatcher.dlg.DatalogTaskGroupDTO;
+import at.jku.dke.etutor.grading.rest.model.entities.Grading;
+import at.jku.dke.etutor.grading.rest.model.entities.Submission;
+import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 import at.jku.dke.etutor.modules.dlg.ExerciseManagementException;
 import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseBean;
 import at.jku.dke.etutor.modules.dlg.exercise.DatalogExerciseManagerImpl;
+import at.jku.dke.etutor.objects.dispatcher.dlg.DatalogTermDescriptionDTO;
 import edu.harvard.seas.pl.abcdatalog.parser.DatalogParseException;
 import edu.harvard.seas.pl.abcdatalog.parser.DatalogParser;
 import edu.harvard.seas.pl.abcdatalog.parser.DatalogTokenizer;
@@ -34,7 +36,7 @@ public class DatalogResourceService {
     /**
      * Initializes the bean
      * @param dispatcherService the {@link SubmissionDispatcherService} for evaluation of exercises
-     * @param gradingDTORepository the {@link GradingDTORepository} for handling {@link GradingDTO} entities
+     * @param gradingDTORepository the {@link GradingDTORepository} for handling {@link Grading} entities
      * @param properties the {@link ApplicationProperties} properties of the application
      * @param exerciseManager the {@link DatalogExerciseManagerImpl} for handling resources
      */
@@ -108,7 +110,13 @@ public class DatalogResourceService {
         exerciseBean.setFactsId(exerciseDTO.getFactsId());
         exerciseBean.setQuery(exerciseDTO.getSolution());
         exerciseBean.setPredicates(exerciseDTO.getQueries());
-        exerciseBean.setTerms(exerciseDTO.getUncheckedTerms());
+        exerciseBean.setTerms(exerciseDTO.getUncheckedTerms().stream().map(termDTO -> {
+            TermDescription term = new TermDescription();
+            term.setPosition(termDTO.getPosition());
+            term.setPredicate(termDTO.getPredicate());
+            term.setTerm(termDTO.getTerm());
+            return term;
+        }).toList());
         exerciseBean.setPoints(1.0);
         return exerciseManager.createExercise(exerciseBean);
     }
@@ -123,7 +131,13 @@ public class DatalogResourceService {
         exerciseBean.setFactsId(exerciseDTO.getFactsId());
         exerciseBean.setQuery(exerciseDTO.getSolution());
         exerciseBean.setPredicates(exerciseDTO.getQueries());
-        exerciseBean.setTerms(exerciseDTO.getUncheckedTerms());
+        exerciseBean.setTerms(exerciseDTO.getUncheckedTerms().stream().map(termDTO -> {
+            TermDescription term = new TermDescription();
+            term.setPosition(termDTO.getPosition());
+            term.setPredicate(termDTO.getPredicate());
+            term.setTerm(termDTO.getTerm());
+            return term;
+        }).toList());
         exerciseBean.setPoints(1.0);
         return exerciseBean;
     }
@@ -157,7 +171,19 @@ public class DatalogResourceService {
      */
     public DatalogExerciseDTO fetchExercise(int id) throws ExerciseManagementException {
         var bean =  exerciseManager.fetchExercise(id);
-        return new DatalogExerciseDTO(bean);
+        var dto = new DatalogExerciseDTO();
+        dto.setSolution(bean.getQuery());
+        dto.setQueries(bean.getPredicates());
+        dto.setFactsId(bean.getFactsId());
+        dto.setUncheckedTerms(bean.getTerms().stream().map(term -> {
+            var termDTO = new DatalogTermDescriptionDTO();
+            termDTO.setTerm(term.getTerm());
+            termDTO.setPredicate(term.getPredicate());
+            termDTO.setPosition(term.getPosition());
+            return termDTO;
+        }).toList());
+
+        return dto;
     }
 
     /**
@@ -171,15 +197,15 @@ public class DatalogResourceService {
     }
 
     /**
-     * Gets the {@link GradingDTO} for an exercise, using the solution as submission.
+     * Gets the {@link Grading} for an exercise, using the solution as submission.
      * @param exercise_id the id
      * @param action the action for the evaluation
      * @param diagnose_level the diagnose-level for the evaluation
-     * @return the {@link GradingDTO}
+     * @return the {@link Grading}
      * @throws ExerciseManagementException if an error occurs while fetching exercise information
      * @throws InterruptedException if an error occurs while waiting for the evaluation to finish
      */
-    public GradingDTO getGradingForExercise(int exercise_id, String action, String diagnose_level) throws ExerciseManagementException, InterruptedException {
+    public Grading getGradingForExercise(int exercise_id, String action, String diagnose_level) throws ExerciseManagementException, InterruptedException {
         Submission submission = new Submission();
         String id = UUID.randomUUID().toString();
         submission.setSubmissionId(id);

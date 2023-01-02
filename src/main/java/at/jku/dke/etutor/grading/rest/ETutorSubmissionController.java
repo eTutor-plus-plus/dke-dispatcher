@@ -2,10 +2,10 @@ package at.jku.dke.etutor.grading.rest;
 
 
 import at.jku.dke.etutor.grading.ETutorCORSPolicy;
-import at.jku.dke.etutor.grading.rest.dto.SubmissionDTO;
+import at.jku.dke.etutor.objects.dispatcher.SubmissionDTO;
 import at.jku.dke.etutor.grading.rest.dto.SubmissionId;
-import at.jku.dke.etutor.grading.rest.dto.Submission;
-import at.jku.dke.etutor.grading.rest.repositories.SubmissionRepository;
+import at.jku.dke.etutor.grading.rest.model.entities.Submission;
+import at.jku.dke.etutor.grading.rest.model.repositories.SubmissionRepository;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,11 +72,20 @@ public class ETutorSubmissionController {
      * @return a ResponseEntity containing the submission
      */
     @GetMapping("/{submissionUUID}")
-    public ResponseEntity<Submission> getSubmission(@PathVariable String submissionUUID){
+    public ResponseEntity<SubmissionDTO> getSubmission(@PathVariable String submissionUUID){
         Optional<Submission> optionalSubmission = this.submissionRepository.findById(submissionUUID);
-        Submission submission = optionalSubmission.orElse(null);
-        if(submission != null) return ResponseEntity.ok(submission);
-        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        if(optionalSubmission.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
+        SubmissionDTO submissionDTO = new SubmissionDTO();
+        var submission = optionalSubmission.get();
+        submissionDTO.setSubmissionId(submission.getSubmissionId());
+        submissionDTO.setMaxPoints(submission.getMaxPoints());
+        submissionDTO.setExerciseId(submission.getExerciseId());
+        submissionDTO.setTaskType(submission.getTaskType());
+        submissionDTO.setPassedParameters(submission.getPassedParameters());
+        submissionDTO.setPassedAttributes(submission.getPassedAttributes());
+        return ResponseEntity.ok(submissionDTO);
     }
 
 
