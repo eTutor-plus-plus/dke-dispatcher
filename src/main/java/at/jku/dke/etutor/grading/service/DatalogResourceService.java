@@ -110,13 +110,15 @@ public class DatalogResourceService {
         exerciseBean.setFactsId(exerciseDTO.getFactsId());
         exerciseBean.setQuery(exerciseDTO.getSolution());
         exerciseBean.setPredicates(exerciseDTO.getQueries());
-        exerciseBean.setTerms(exerciseDTO.getUncheckedTerms().stream().map(termDTO -> {
-            TermDescription term = new TermDescription();
-            term.setPosition(termDTO.getPosition());
-            term.setPredicate(termDTO.getPredicate());
-            term.setTerm(termDTO.getTerm());
-            return term;
-        }).toList());
+        if(exerciseDTO.getUncheckedTerms() != null){
+            exerciseBean.setTerms(exerciseDTO.getUncheckedTerms().stream().map(termDTO -> {
+                TermDescription term = new TermDescription();
+                term.setPosition(termDTO.getPosition());
+                term.setPredicate(termDTO.getPredicate());
+                term.setTerm(termDTO.getTerm());
+                return term;
+            }).toList());
+        }
         exerciseBean.setPoints(1.0);
         return exerciseManager.createExercise(exerciseBean);
     }
@@ -131,13 +133,15 @@ public class DatalogResourceService {
         exerciseBean.setFactsId(exerciseDTO.getFactsId());
         exerciseBean.setQuery(exerciseDTO.getSolution());
         exerciseBean.setPredicates(exerciseDTO.getQueries());
-        exerciseBean.setTerms(exerciseDTO.getUncheckedTerms().stream().map(termDTO -> {
-            TermDescription term = new TermDescription();
-            term.setPosition(termDTO.getPosition());
-            term.setPredicate(termDTO.getPredicate());
-            term.setTerm(termDTO.getTerm());
-            return term;
-        }).toList());
+        if(exerciseDTO.getUncheckedTerms() != null){
+            exerciseBean.setTerms(exerciseDTO.getUncheckedTerms().stream().map(termDTO -> {
+                TermDescription term = new TermDescription();
+                term.setPosition(termDTO.getPosition());
+                term.setPredicate(termDTO.getPredicate());
+                term.setTerm(termDTO.getTerm());
+                return term;
+            }).toList());
+        }
         exerciseBean.setPoints(1.0);
         return exerciseBean;
     }
@@ -175,13 +179,15 @@ public class DatalogResourceService {
         dto.setSolution(bean.getQuery());
         dto.setQueries(bean.getPredicates());
         dto.setFactsId(bean.getFactsId());
-        dto.setUncheckedTerms(bean.getTerms().stream().map(term -> {
-            var termDTO = new DatalogTermDescriptionDTO();
-            termDTO.setTerm(term.getTerm());
-            termDTO.setPredicate(term.getPredicate());
-            termDTO.setPosition(term.getPosition());
-            return termDTO;
-        }).toList());
+        if(bean.getTerms() != null){
+            dto.setUncheckedTerms(bean.getTerms().stream().map(term -> {
+                var termDTO = new DatalogTermDescriptionDTO();
+                termDTO.setTerm(term.getTerm());
+                termDTO.setPredicate(term.getPredicate());
+                termDTO.setPosition(term.getPosition());
+                return termDTO;
+            }).toList());
+        }
 
         return dto;
     }
