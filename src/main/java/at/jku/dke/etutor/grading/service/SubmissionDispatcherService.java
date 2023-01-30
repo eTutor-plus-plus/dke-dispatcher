@@ -43,6 +43,7 @@ public class SubmissionDispatcherService {
         logger.debug("Finished saving submission to database");
         try {
             logger.debug("Evaluating submission");
+            //note: für das Modul
             Evaluator evaluator = moduleService.getEvaluator(submission.getTaskType());
             if (evaluator == null) {
                 logger.warn("Could not find evaluator for tasktype: {}", submission.getTaskType());

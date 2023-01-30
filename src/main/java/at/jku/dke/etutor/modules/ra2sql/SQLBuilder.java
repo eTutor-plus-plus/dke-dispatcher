@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import at.jku.dke.etutor.modules.ra2sql.model.*;
 
+// todo: relational algebra(RA) to(2) SQL => ra2sql
 
 public class SQLBuilder {
 

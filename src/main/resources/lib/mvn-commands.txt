@@ -30,7 +30,7 @@ mvn install:install-file -Dfile=/Users/Falk/dke-dispatcher/src/main/resources/li
 
 &&
 
-mvn install:install-file -Dfile=./src/main/java/at/jku/dke/etutor/modules/pm/lib/OpenXES/OpenXES.jar -DgroupId=org.deckfour -DartifactId=OpenXES -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=/Users/Falk/dke-dispatcher/src/main/java/at/jku/dke/etutor/modules/pm/lib/OpenXES/OpenXES.jar -DgroupId=org.deckfour -DartifactId=OpenXES -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 
 &&
 

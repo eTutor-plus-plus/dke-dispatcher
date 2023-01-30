@@ -11,9 +11,11 @@ import at.jku.dke.etutor.modules.sql.SQLEvaluationCriterion;
  */
 public class SQLAnalyzerConfig {
 
+	// note: what is the meaning of the different diagnose levels?
 	private int diagnoseLevel;
 	private String correctQuery;
 	private Connection connection;
+	// note: most import (Set of Criteria to analyse)
 	private HashSet<SQLEvaluationCriterion> criteriaToAnalyze;
 
 	public SQLAnalyzerConfig() {
@@ -21,6 +23,7 @@ public class SQLAnalyzerConfig {
 		this.diagnoseLevel = 0;
 		this.correctQuery = "";
 		this.connection = null;
+		// note: might be multiple
 		this.criteriaToAnalyze = new HashSet<>();
 	}
 	

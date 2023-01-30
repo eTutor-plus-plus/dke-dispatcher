@@ -27,15 +27,18 @@ public class Report {
     /**
      * The hint
      */
+    @Column(length = 8192)
     private String hint;
     /**
      * The error message
      */
+    @Column(length = 8192)
     private String error;
     /**
      * The description
      */
-    @Column(length = 8192)
+    //@Column(length = 8192)
+    @Column(length = 12000)
     private String description;
 
     public Report(){

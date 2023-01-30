@@ -49,8 +49,11 @@ public class SQLEvaluator implements Evaluator {
 	 * @return the Analysis
 	 * @throws Exception if an error occurs
 	 */
+
 	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
+		// logger content
 		logger.info("exerciseID: {}", exerciseID);
+		// log passed attributes and parameters
 		logPassedAttributes(passedAttributes, passedParameters);
 		
 		String action;
@@ -67,8 +70,11 @@ public class SQLEvaluator implements Evaluator {
 
 		analysis = new SQLAnalysis();
 		analyzerConfig = new SQLAnalyzerConfig();
-		
+
+		// return value to corresponding key
+		// key "action" has two values: either diagnose (test) or submit (see Frontend) -> see line 114
 		action_Param = passedAttributes.get("action");
+		// submission == sql statement?
 		submission_Param = passedAttributes.get("submission");
 		diagnoseLevel_Param = passedAttributes.get("diagnoseLevel");
 
@@ -76,8 +82,10 @@ public class SQLEvaluator implements Evaluator {
 		diagnoseLevel = Integer.parseInt(diagnoseLevel_Param);
 		
 		//SETTING THE SUBMISSION
+		// note: important: set submission (in this case: inserted sql query)
 		analysis.setSubmission((submission_Param).replace(";",""));
 
+		// note: from here:
 		String query;
 		Connection referenceConn;
 
@@ -96,13 +104,17 @@ public class SQLEvaluator implements Evaluator {
 			conn.setAutoCommit(true);
 
 			//FETCHING CONNECT_DATA TO EXERCISE SPECIFIC REFERENCE DATABASE
+			// note: question: generate query -> for which purpose? => Verbindungsdaten zur Datenbank wo die Aufgabe liegt
+			// query for reading connection data
+			// note: question: what kind of data base? how does database looks like?
 			query = "";
 
+			// diagnose modus
 			if (action.equalsIgnoreCase("test")){
 				query = query.concat("SELECT	c.conn_string, c.conn_user, c.conn_pwd " + LINE_SEP);
 				query = query.concat("FROM 		connections c " + LINE_SEP);
 				query = query.concat("WHERE 	c.id = " + passedAttributes.get("selected_trial_db") + LINE_SEP);
-			} else {
+			} else {	// submit modus
 				query = query.concat("SELECT	c.conn_string, c.conn_user, c.conn_pwd " + LINE_SEP);
 				query = query.concat("FROM 		connections c, exercises e " + LINE_SEP);
 				query = query.concat("WHERE 	e.id = " + exerciseID + " AND " + LINE_SEP);
@@ -119,6 +131,7 @@ public class SQLEvaluator implements Evaluator {
 			stmt = conn.createStatement();
 			rset = stmt.executeQuery(query);
 
+			// get user data
 			if (rset.next()){
 				referenceConnUser = rset.getString("conn_user");
 				referenceConnPwd = rset.getString("conn_pwd");
@@ -133,9 +146,12 @@ public class SQLEvaluator implements Evaluator {
 			referenceConn.setAutoCommit(true);
 
 			//DETERMINING CORRECT QUERY
+			// note: get correct solution for corresponding exercise (defined by exerciseID)
+			// note: question: what does test and run imply
 			if ((action.equalsIgnoreCase("test")) || (action.equalsIgnoreCase("run"))){
+				// note: this is the submission query for exercise
 				correctQuery = analysis.getSubmission().toString();
-			} else {
+			} else {	// note: question: submit?
 				query = "";
 				query = query.concat("SELECT	solution " + LINE_SEP);
 				query = query.concat("FROM 		exercises " + LINE_SEP);
@@ -146,6 +162,7 @@ public class SQLEvaluator implements Evaluator {
 				stmt = conn.createStatement();
 				rset = stmt.executeQuery(query);
 				if (rset.next()){
+					// note: this is the correct query for the exercise
 					correctQuery = rset.getString("solution");
 				}
 			}
@@ -181,7 +198,7 @@ public class SQLEvaluator implements Evaluator {
 			analyzerConfig.addCriterionToAnalyze(SQLEvaluationCriterion.CORRECT_TUPLES);
 			analyzerConfig.addCriterionToAnalyze(SQLEvaluationCriterion.CORRECT_ORDER);
 			analyzerConfig.setDiagnoseLevel(0);
-		} else {
+		} else {	// note: question: test/ submit/ diagnose => difference to check?
 			analyzerConfig.addCriterionToAnalyze(SQLEvaluationCriterion.CORRECT_SYNTAX);
 			analyzerConfig.addCriterionToAnalyze(SQLEvaluationCriterion.CARTESIAN_PRODUCT);
 			analyzerConfig.addCriterionToAnalyze(SQLEvaluationCriterion.CORRECT_COLUMNS);
@@ -199,17 +216,26 @@ public class SQLEvaluator implements Evaluator {
 		analyzerConfig.setCorrectQuery(correctQuery.replace(";"," "));
 
 		// Analyzing the submission
+		// note: ANALYSING SUBMISSION
 		SQLAnalysis sqlAnalysis;
 		SQLAnalyzer analyzer = new SQLAnalyzer();
+
+		// note: setting up the analysis
+		// note: Analyzes the submission according to the configuration and returns the SQLAnalysis containing the analyzed
+		//	 	SQLEvaluationCriterion´s
 		sqlAnalysis = analyzer.analyze(analysis.getSubmission(), analyzerConfig);
+		// note: transfers Submission to sqlAnalysis
 		sqlAnalysis.setSubmission(analysis.getSubmission());
 		sqlAnalysis.setSubmissionSuitsSolution(true);
 
 		// Iterating over SQlCriterionAnalyses to determine of submission is correct
+		// note: actual analysis
+		// hier wird für jeden Eintrag in SQL Analysis criterionAnalysis geprüft, ob Kriterium richtig ist
 		criterionAnalysesIterator = sqlAnalysis.iterCriterionAnalyses();
 		while (criterionAnalysesIterator.hasNext()) {
 			criterionAnalysis = criterionAnalysesIterator.next();
 			if (!criterionAnalysis.isCriterionSatisfied()) {
+				// note: MOST IMPORTANT STEP
 				sqlAnalysis.setSubmissionSuitsSolution(false);
 			}
 		}

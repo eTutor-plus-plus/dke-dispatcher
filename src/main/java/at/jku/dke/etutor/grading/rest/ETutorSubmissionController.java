@@ -59,6 +59,7 @@ public class ETutorSubmissionController {
         submissionId = SubmissionId.createId(submission);
         logger.info("Finished calculating submission-ID: {}", submissionId.getSubmissionId());
 
+        // note: start of evaluation
         submissionDispatcherService.run(submission, mapLangToLocale(language));
 
         return new ResponseEntity<>(EntityModel.of(submissionId,
