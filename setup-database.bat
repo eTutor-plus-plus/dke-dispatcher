@@ -1,0 +1,1 @@
+docker build "./resources/database/4. docker" --tag postgresql-etutor-grading && docker run -p 5433:5432 --name postgresql-etutor-grading -d postgresql-etutor-grading:latest

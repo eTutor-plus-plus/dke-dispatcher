@@ -191,13 +191,13 @@
         </dependency>
         <!-- dependencies from resources/lib -->
         <dependency>
-            <groupId>org.deckfour</groupId>
-            <artifactId>OpenXES</artifactId>
+            <groupId>at.jku.dke.etutor</groupId>
+            <artifactId>legacy.pm.org.deckfour.OpenXES</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>org.deckfour</groupId>
-            <artifactId>Spex</artifactId>
+            <groupId>at.jku.dke.etutor</groupId>
+            <artifactId>legacy.pm.org.deckfour.Spex</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>
