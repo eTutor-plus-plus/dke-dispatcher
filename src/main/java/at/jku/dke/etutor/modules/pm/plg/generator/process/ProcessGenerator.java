@@ -98,30 +98,14 @@ public class ProcessGenerator {
 		if (currentDepth <= parameters.getMaximumDepth()) {
 			
 			RANDOMIZATION_PATTERN nextAction = parameters.getRandomPattern(canLoop, canSkip);
-			PatternFrame generatedFrame = null;
-			
-			switch (nextAction) {
-			case SEQUENCE:
-				generatedFrame = newSequence(currentDepth + 1, canLoop, canSkip);
-				break;
-			case PARALLEL_EXECUTION:
-				generatedFrame = newAndBranches(currentDepth + 1, canLoop);
-				break;
-			case MUTUAL_EXCLUSION:
-				generatedFrame = newXorBranches(currentDepth + 1, canLoop, canSkip);
-				break;
-			case LOOP:
-				generatedFrame = newLoopBranch(currentDepth + 1);
-				break;
-			case SKIP:
-				generatedFrame = null;
-				break;
-			default:
-				generatedFrame = newActivity();
-				break;
-			}
-			
-			return generatedFrame;
+			return switch (nextAction) {
+				case SEQUENCE -> newSequence(currentDepth + 1, canLoop, canSkip);
+				case PARALLEL_EXECUTION -> newAndBranches(currentDepth + 1, canLoop);
+				case MUTUAL_EXCLUSION -> newXorBranches(currentDepth + 1, canLoop, canSkip);
+				case LOOP -> newLoopBranch(currentDepth + 1);
+				case SKIP -> null;
+				default -> newActivity();
+			};
 			
 		} else {
 			if (canSkip) {

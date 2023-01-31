@@ -391,6 +391,7 @@ CREATE TABLE public.randomexercises (
     aa_six character varying(10000)  NOT NULL,
     aa_seven character varying(10000)  NOT NULL,
     config_id integer NOT NULL,
+    is_available boolean NOT NULL,
     CONSTRAINT randomexercises_pkey PRIMARY KEY (exercise_id),
     CONSTRAINT randomexercise_configfk FOREIGN KEY (config_id)
     REFERENCES public.exerciseconfiguration (config_id) MATCH SIMPLE

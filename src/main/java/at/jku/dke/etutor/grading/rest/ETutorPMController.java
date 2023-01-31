@@ -4,7 +4,6 @@ import at.jku.dke.etutor.grading.rest.dto.PmExerciseConfigDTO;
 import at.jku.dke.etutor.grading.rest.dto.PmExerciseLogDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.PmResourceService;
-import at.jku.dke.etutor.modules.dlg.ExerciseManagementException;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -170,7 +169,7 @@ public class ETutorPMController {
     public ResponseEntity<Integer> createRandomExercise(@PathVariable int configId) throws ApiException{
         logger.info("Enter: createRandomExercise() {}", "for config: "+configId);
         try{
-            int id = resourceService.createRandomExercise(configId);
+            int id = resourceService.getAvailableExerciseForConfiguration(configId);
             logger.info("Exit: createRandomExercise(){} with Status Code 200", id);
             return ResponseEntity.ok(id);
         }catch (Exception e){
