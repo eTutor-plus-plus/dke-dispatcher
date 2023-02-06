@@ -6,10 +6,10 @@ SQL, Relational Algebra, Datalog, XQuery, Process Mining
 
 Typical features of an expert module:
 - Managing exercises
-- Grading submissions for exercises
+- Grading submissions of exercises
 
 The application is developed as a Spring Boot application with REST-endpoints.
-There is one set of endpoints common to all modules, for submitting submissions and fetching grading of evaluated submissions.
+There is one set of endpoints common to all modules, for submitting submissions and fetching gradings of evaluated submissions.
 Additionally, there is a set of endpoints for each module, where exercises can be managed.
 
 When the application is running with default configuration, you can explore the REST-interface here:
@@ -106,7 +106,7 @@ application.sql.diagnoseSuffix=_diagnose
 application.sql.tableUrlForLink= /sql-tables/
 ```
 #### Datalog
-For datalog, the [DLV](https://www.dlvsystem.it/dlvsite/dlv-download/) is required.
+For datalog, [DLV](https://www.dlvsystem.it/dlvsite/dlv-download/) is required.
 Download the static executable and configure it as part of the configurations:
 
 ```properties

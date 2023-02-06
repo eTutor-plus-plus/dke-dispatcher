@@ -16,6 +16,7 @@
     <properties>
         <java.version>16</java.version>
         <springfox.version>2.6.1</springfox.version>
+        <objects.version>1.1</objects.version>
     </properties>
     <dependencies>
         <dependency>
@@ -26,7 +27,7 @@
         <dependency>
             <groupId>at.jku.dke.etutor</groupId>
             <artifactId>etutor-objects</artifactId>
-            <version>1.0</version>
+            <version>${objects.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
@@ -189,7 +190,7 @@
             <artifactId>xpp3_min</artifactId>
             <version>1.1.4c</version>
         </dependency>
-        <!-- dependencies from resources/lib -->
+        <!-- LEGACY -->
         <dependency>
             <groupId>at.jku.dke.etutor</groupId>
             <artifactId>legacy.pm.org.deckfour.OpenXES</artifactId>

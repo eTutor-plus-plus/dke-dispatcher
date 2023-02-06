@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.grading.rest;
 
-import at.jku.dke.etutor.grading.rest.dto.PmExerciseConfigDTO;
-import at.jku.dke.etutor.grading.rest.dto.PmExerciseLogDTO;
+import at.jku.dke.etutor.objects.dispatcher.processmining.PmExerciseConfigDTO;
+import at.jku.dke.etutor.objects.dispatcher.processmining.PmExerciseLogDTO;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.PmResourceService;
 import ch.qos.logback.classic.Logger;

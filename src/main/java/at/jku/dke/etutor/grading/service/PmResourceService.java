@@ -1,8 +1,8 @@
 package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.grading.rest.dto.PmExerciseConfigDTO;
-import at.jku.dke.etutor.grading.rest.dto.PmExerciseLogDTO;
+import at.jku.dke.etutor.objects.dispatcher.processmining.PmExerciseConfigDTO;
+import at.jku.dke.etutor.objects.dispatcher.processmining.PmExerciseLogDTO;
 import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 import at.jku.dke.etutor.modules.dlg.ExerciseManagementException;
 import at.jku.dke.etutor.modules.pm.AlphaAlgo.AlphaAlgorithm;
