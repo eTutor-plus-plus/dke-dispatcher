@@ -36,7 +36,7 @@ If you are adding a new feature, create a feature/xyz branch from the developmen
 Discuss before finishing the feature and merging it back to develop.
 
 ## Setup
-For the setup, you need to install some legacy jars and create the databases.
+For the setup, you need to install some legacy jars, set-up the database and install the dependency to the [objects-project](https://github.com/eTutor-plus-plus/objects).
 Those steps are necessary, independent of the module you are intending to use.
 Additionally, the different modules may also require some configurations.
 
@@ -65,6 +65,17 @@ Then you can execute the following [file](./setup-database.bat) to build the ima
 ./setup-database.bat
 ```
 If you do not want to use Docker, you have to import the [sql-script](./resources/database/4.%20docker/all_dump.sql) into your PostgreSQL-server.
+
+### Objects (Dependency)
+Objects common to different service of the etutor++ ecosystem are maintained in the [objects-project](https://github.com/eTutor-plus-plus/objects).
+To run a service depending on this project (like this one), you have to clone the repository and build the project:
+```shell
+git clone  https://github.com/eTutor-plus-plus/objects
+cd objects
+mvn clean install
+```
+
+Afterwards, dependent projects can be built.
 
 ### Modules
 This section will detail, for every module, additional steps and configurations that have to be taken.
@@ -180,7 +191,7 @@ Current deployment strategy involves transferring the executable jar to the prod
 Contact kschuetz@dke.uni-linz.ac.at for further details.
 
 # 4. Integrating a module
-If you are planning on creating a module for the etutor++ system, the basic requirement is to implement the [Evaluator-interface](./src/main/java/at/jku/dke/etutor/core/evaluation/Evaluator.java).
+If you are planning on creating a module for the etutor++ system and integrating it into the dispatcher, the basic requirement is to implement the [Evaluator-interface](./src/main/java/at/jku/dke/etutor/core/evaluation/Evaluator.java).
 Then, you can let the [module-serivce](./src/main/java/at/jku/dke/etutor/grading/service/ModuleService.java) return an instance of the implemented evaluator, according to the task-type-parameter of a submission that is sent to this application for evaluation and grading.
 
 Further notes:
