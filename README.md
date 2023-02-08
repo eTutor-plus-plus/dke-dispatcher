@@ -85,6 +85,7 @@ Afterwards, dependent projects can be built.
 ### Modules
 This section will detail, for every module, additional steps and configurations that have to be taken.
 Most configuration is externalized in the [properties-file](./src/main/resources/application.properties).
+The module-specific properties with the id *connUrl* refer to the name of the module-specific database. 
 
 #### SQL and RA
 No further steps required. The configuration of the SQL-Module is managed with the following parameters:
@@ -98,8 +99,7 @@ application.sql.connPwd=sql
 application.sql.connUser=sql
 
 # Further connection details
-application.sql.connBaseUrl=jdbc:postgresql://localhost:5433
-application.sql.connUrl=jdbc:postgresql://localhost:5433/sql
+application.sql.connUrl=sql
 # The database where new taskgroups and exercises are created
 application.sql.exerciseDatabase=sql_exercises
 
@@ -119,7 +119,7 @@ Download the static executable and configure it as part of the configurations:
 #Datalog: module-specific properties
 #-----------------------------------------------------------
 # DB-Connection
-application.datalog.connUrl = jdbc:postgresql://localhost:5433/datalog
+application.datalog.connUrl = datalog
 # The executable DLV
 application.datalog.DLVPathAsCommand = C:\\Users\\Public\\dlvtest\\dlv.mingw
 application.datalog.cautiousOptionForDlv = -cautious
@@ -151,7 +151,7 @@ application.xquery.table.taskGroup_fileIds_mapping = taskGroup_fileIds_mapping
 application.xquery.modus_debug = false
 
 # Connection details
-application.xquery.connUrl = jdbc:postgresql://localhost:5433/xquery
+application.xquery.connUrl = xquery
 application.xquery.connPwd = etutor
 application.xquery.connUser = etutor
 
@@ -180,7 +180,7 @@ application.xquery.xmlUrlForLink = /XML
 # Connection details
 application.processMining.connPwd=etutor
 application.processMining.connUser=etutor
-application.processMining.connUrl=jdbc:postgresql://localhost:5433/pm
+application.processMining.connUrl=pm
 ```
 
 
