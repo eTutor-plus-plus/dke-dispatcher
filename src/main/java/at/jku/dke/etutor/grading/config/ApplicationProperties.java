@@ -195,6 +195,7 @@ public class ApplicationProperties {
         private String driverClassName;
         private long maxLifetime;
         private int maxPoolSize;
+        private String database;
 
         public DataSource(){
 
@@ -247,6 +248,14 @@ public class ApplicationProperties {
         public void setMaxPoolSize(int maxPoolSize) {
             this.maxPoolSize = maxPoolSize;
         }
+
+        public String getDatabase() {
+            return database;
+        }
+
+        public void setDatabase(String database) {
+            this.database = database;
+        }
     }
     /**
      * The properties for the SQL module
@@ -254,7 +263,6 @@ public class ApplicationProperties {
     public static class SQL{
         private String connPwd;
         private String connUser;
-        private String connBaseUrl = DataSourceConfiguration.getBaseDatasourceJDBCUrl();
         private String connUrl;
         private String submissionSuffix;
         private String diagnoseSuffix;
@@ -276,15 +284,6 @@ public class ApplicationProperties {
         public void setConnUser(String connUser) {
             this.connUser = connUser;
         }
-
-        public String getConnBaseUrl() {
-            return connBaseUrl;
-        }
-
-        public void setConnBaseUrl(String connBaseUrl) {
-            this.connBaseUrl = connBaseUrl;
-        }
-
         public String getConnUrl() {
             return connUrl;
         }

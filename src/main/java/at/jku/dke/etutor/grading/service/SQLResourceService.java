@@ -67,8 +67,8 @@ public class SQLResourceService {
         this.dispatcherService=dispatcherService;
         this.gradingDTORepository=gradingDTORepository;
 
-        SQL_BASE_URL=properties.getSql().getConnBaseUrl();
-        SQL_ADMINISTRATION_URL=properties.getSql().getConnUrl();
+        SQL_BASE_URL=properties.getDatasource().getUrl();
+        SQL_ADMINISTRATION_URL=SQL_BASE_URL + properties.getSql().getConnUrl();
         SQL_EXERCISE_DB=properties.getSql().getExerciseDatabase();
         SQL_EXERCISE_URL= SQL_BASE_URL+ SQL_EXERCISE_DB;
         CONN_SQL_USER=properties.getSql().getConnUser();

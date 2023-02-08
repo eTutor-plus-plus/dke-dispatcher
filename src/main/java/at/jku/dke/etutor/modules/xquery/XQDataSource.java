@@ -21,7 +21,7 @@ public class XQDataSource {
 
     public XQDataSource(ApplicationProperties properties){
         config.setDriverClassName(properties.getDatasource().getDriverClassName());
-        config.setJdbcUrl(DataSourceConfiguration.getBaseDatasourceJDBCUrl() + properties.getXquery().getConnUrl());
+        config.setJdbcUrl(properties.getDatasource().getUrl() + properties.getXquery().getConnUrl());
         config.setUsername(properties.getXquery().getConnUser());
         config.setPassword(properties.getXquery().getConnPwd());
         config.setMaxLifetime(properties.getDatasource().getMaxLifetime());

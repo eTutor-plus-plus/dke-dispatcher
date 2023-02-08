@@ -20,7 +20,7 @@ public class PmDataSource {
 
     public PmDataSource(ApplicationProperties properties){
         config.setDriverClassName(properties.getDatasource().getDriverClassName());
-        config.setJdbcUrl(DataSourceConfiguration.getBaseDatasourceJDBCUrl() + properties.getProcessMining().getConnUrl());
+        config.setJdbcUrl(properties.getDatasource().getUrl() + properties.getProcessMining().getConnUrl());
         config.setUsername(properties.getProcessMining().getConnUser());
         config.setPassword(properties.getProcessMining().getConnPwd());
         config.setMaxLifetime(properties.getDatasource().getMaxLifetime());

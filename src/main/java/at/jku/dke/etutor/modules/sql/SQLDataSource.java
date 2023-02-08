@@ -21,7 +21,7 @@ public class SQLDataSource {
 
     public SQLDataSource(ApplicationProperties properties){
         config.setDriverClassName(properties.getDatasource().getDriverClassName());
-        config.setJdbcUrl(DataSourceConfiguration.getBaseDatasourceJDBCUrl() + properties.getSql().getConnUrl());
+        config.setJdbcUrl(properties.getDatasource().getUrl() + properties.getSql().getConnUrl());
         config.setUsername(properties.getSql().getConnUser());
         config.setPassword(properties.getSql().getConnPwd());
         config.setMaxLifetime(properties.getDatasource().getMaxLifetime());

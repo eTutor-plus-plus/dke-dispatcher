@@ -21,7 +21,7 @@ public class DatalogDataSource {
 
     public DatalogDataSource(ApplicationProperties properties){
         config.setDriverClassName(properties.getDatasource().getDriverClassName());
-        config.setJdbcUrl(DataSourceConfiguration.getBaseDatasourceJDBCUrl() + properties.getDatalog().getConnUrl());
+        config.setJdbcUrl(properties.getDatasource().getUrl() + properties.getDatalog().getConnUrl());
         config.setUsername(properties.getDatasource().getUsername());
         config.setPassword(properties.getDatasource().getPassword());
         config.setMaxLifetime(properties.getDatasource().getMaxLifetime());

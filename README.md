@@ -40,11 +40,6 @@ For the setup, you need to install some legacy jars, set-up the database and ins
 Those steps are necessary, independent of the module you are intending to use.
 Additionally, the different modules may also require some configurations.
 
-It is also necessary to configure the connection to the datasource as an environment variable
-```shell
-DATASOURCE_JDBC_URL=jdbc:postgresql://localhost:5433/
-```
-
 Dependencies:
 - Java
 - Maven

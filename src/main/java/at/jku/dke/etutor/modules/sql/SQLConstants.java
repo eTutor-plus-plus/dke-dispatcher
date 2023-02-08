@@ -21,7 +21,7 @@ public class SQLConstants {
     public SQLConstants(ApplicationProperties properties) {
         connPwd = properties.getSql().getConnPwd();
         connUser = properties.getSql().getConnUser();
-        connURLBase = properties.getSql().getConnBaseUrl();
+        connURLBase = properties.getDatasource().getUrl();
         connURL = properties.getSql().getConnUrl();
         submissionSuffix = properties.getSql().getSubmissionSuffix();
         diagnoseSuffix = properties.getSql().getDiagnoseSuffix();
