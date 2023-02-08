@@ -3767,7 +3767,7 @@ Unconditional classes:
 213195 [http-nio-8081-exec-1] DEBUG at.jku.dke.etutor.pmexercisemanager - Fetching log 5
 213510 [http-nio-8081-exec-1] DEBUG at.jku.dke.etutor.pmexercisemanager - Log fetched
 213634 [http-nio-8081-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
-213635 [http-nio-8081-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [at.jku.dke.etutor.grading.rest.dto.PmExerciseLogDTO@7f9d1acf]
+213635 [http-nio-8081-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [at.jku.dke.etutor.objects.dispatcher.processmining.PmExerciseLogDTO@7f9d1acf]
 213700 [http-nio-8081-exec-1] DEBUG o.s.o.j.s.OpenEntityManagerInViewInterceptor - Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
 213702 [http-nio-8081-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
 218293 [HikariPool-1 housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
@@ -7688,7 +7688,7 @@ Unconditional classes:
 126402 [http-nio-8081-exec-1] DEBUG at.jku.dke.etutor.pmexercisemanager - Fetching log 5
 126507 [http-nio-8081-exec-1] DEBUG at.jku.dke.etutor.pmexercisemanager - Log fetched
 126598 [http-nio-8081-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
-126600 [http-nio-8081-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [at.jku.dke.etutor.grading.rest.dto.PmExerciseLogDTO@40f1310c]
+126600 [http-nio-8081-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [at.jku.dke.etutor.objects.dispatcher.processmining.PmExerciseLogDTO@40f1310c]
 126785 [http-nio-8081-exec-1] DEBUG o.s.o.j.s.OpenEntityManagerInViewInterceptor - Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
 126796 [http-nio-8081-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
 132552 [HikariPool-1 housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)

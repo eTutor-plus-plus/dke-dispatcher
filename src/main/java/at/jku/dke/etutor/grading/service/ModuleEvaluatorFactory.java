@@ -15,14 +15,14 @@ import org.springframework.stereotype.Service;
  * Maps the task-types to the module's implementation of the {@link at.jku.dke.etutor.core.evaluation.Evaluator}
  */
 @Service
-public class ModuleService {
+public class ModuleEvaluatorFactory {
     private ApplicationProperties properties;
     private SQLConstants sqlConstants;
 
     /**
      * The constructor
      */
-    public ModuleService(
+    public ModuleEvaluatorFactory(
             ApplicationProperties properties,
             SQLConstants sqlConstants){
         this.properties = properties;
@@ -34,7 +34,7 @@ public class ModuleService {
      * @param tasktype the task type
      * @return the evaluator
      */
-    public Evaluator getEvaluator(String tasktype) {
+    public Evaluator forTaskType(String tasktype) {
         return switch (tasktype) {
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#SQLTask", "sql" -> new SQLEvaluator(sqlConstants);
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#RATask", "ra" -> new RAEvaluator(new SQLEvaluator(sqlConstants), new SQLReporter());

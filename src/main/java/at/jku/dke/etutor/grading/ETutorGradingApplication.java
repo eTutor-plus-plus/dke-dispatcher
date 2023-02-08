@@ -5,7 +5,7 @@ import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.config.AsyncConfiguration;
 import at.jku.dke.etutor.grading.config.DataSourceConfiguration;
 import at.jku.dke.etutor.grading.rest.*;
-import at.jku.dke.etutor.grading.service.ModuleService;
+import at.jku.dke.etutor.grading.service.ModuleEvaluatorFactory;
 import at.jku.dke.etutor.grading.service.RepositoryService;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
@@ -46,7 +46,7 @@ import java.util.List;
         ETutorGradingController.class,
         ETutorSubmissionController.class,
         ETutorSQLController.class,
-        ModuleService.class,
+        ModuleEvaluatorFactory.class,
         RepositoryService.class,
         ETutorGradingApplication.class,
         SubmissionDispatcherService.class,

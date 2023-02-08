@@ -23,12 +23,12 @@ import java.util.Locale;
 public class SubmissionDispatcherService {
     private final Logger logger;
     private final RepositoryService repositoryService;
-    private final ModuleService moduleService;
+    private final ModuleEvaluatorFactory moduleEvaluatorFactory;
 
-    public SubmissionDispatcherService(RepositoryService repositoryService, ModuleService moduleService) {
+    public SubmissionDispatcherService(RepositoryService repositoryService, ModuleEvaluatorFactory moduleEvaluatorFactory) {
         this.logger = (Logger) LoggerFactory.getLogger(SubmissionDispatcherService.class);
         this.repositoryService = repositoryService;
-        this.moduleService = moduleService;
+        this.moduleEvaluatorFactory = moduleEvaluatorFactory;
     }
 
     /**
@@ -44,7 +44,7 @@ public class SubmissionDispatcherService {
         try {
             logger.debug("Evaluating submission");
             //note: für das Modul
-            Evaluator evaluator = moduleService.getEvaluator(submission.getTaskType());
+            Evaluator evaluator = moduleEvaluatorFactory.forTaskType(submission.getTaskType());
             if (evaluator == null) {
                 logger.warn("Could not find evaluator for tasktype: {}", submission.getTaskType());
                 return;
@@ -59,14 +59,13 @@ public class SubmissionDispatcherService {
 
             Grading gradingEntity = new Grading(submission.getSubmissionId(), grading);
             gradingEntity.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes(), locale));
-
-            if((gradingEntity.getPoints()<gradingEntity.getMaxPoints() || gradingEntity.getPoints() == 0 ) && !(analysis instanceof XQAnalysis) && !(analysis instanceof DatalogAnalysis)) {
+            gradingEntity.setSubmissionSuitsSolution(analysis.submissionSuitsSolution());
+            if((gradingEntity.getPoints()<gradingEntity.getMaxPoints() || gradingEntity.getPoints() == 0 ) && !(analysis instanceof XQAnalysis) && !(analysis instanceof DatalogAnalysis)) { // For XQ and DLG, the report is included in the result by default
                     logger.info("Requesting report");
                     DefaultReport report = getReport(evaluator, grading, analysis, submission, locale);
                     logger.debug("Received report");
                     gradingEntity.setReport(new Report(submission.getSubmissionId(), report));
             }
-            gradingEntity.setSubmissionSuitsSolution(analysis.submissionSuitsSolution());
             persistGrading(gradingEntity);
         } catch(Exception e){
             logger.warn("Stopped Evaluation due to errors", e);
