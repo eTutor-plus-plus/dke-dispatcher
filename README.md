@@ -40,6 +40,11 @@ For the setup, you need to install some legacy jars, set-up the database and ins
 Those steps are necessary, independent of the module you are intending to use.
 Additionally, the different modules may also require some configurations.
 
+It is also necessary to configure the connection to the datasource as an environment variable
+```shell
+DATASOURCE_JDBC_URL=jdbc:postgresql://localhost:5433/
+```
+
 Dependencies:
 - Java
 - Maven
@@ -183,12 +188,19 @@ application.processMining.connUrl=jdbc:postgresql://localhost:5433/pm
 Simply build the project with Maven:
 
 ```
-mvn clean install
+mvn clean install -DskipTests
 ```
 
 # 3. Deployment
 Current deployment strategy involves transferring the executable jar to the production server and executing it with a JVM.
 Contact kschuetz@dke.uni-linz.ac.at for further details.
+
+## Docker
+It is also possible to deploy the application as a Docker image/container.
+To build an image from the application, use the [dockerfile](./Dockerfile).
+
+If you want to spin-up the application together with the database as Docker containers in a network, use the [docker-compose file](./docker-compose.yaml).
+This copies the jar of the application, so be sure to build the application beforehand.
 
 # 4. Integrating a module
 If you are planning on creating a module for the etutor++ system and integrating it into the dispatcher, the basic requirement is to implement the [Evaluator-interface](./src/main/java/at/jku/dke/etutor/core/evaluation/Evaluator.java).
