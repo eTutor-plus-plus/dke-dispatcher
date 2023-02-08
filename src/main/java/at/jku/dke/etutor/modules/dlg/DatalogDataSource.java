@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.modules.dlg;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.grading.config.DataSourceConfiguration;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,7 @@ public class DatalogDataSource {
 
     public DatalogDataSource(ApplicationProperties properties){
         config.setDriverClassName(properties.getDatasource().getDriverClassName());
-        config.setJdbcUrl(properties.getDatalog().getConnUrl());
+        config.setJdbcUrl(DataSourceConfiguration.getBaseDatasourceJDBCUrl() + properties.getDatalog().getConnUrl());
         config.setUsername(properties.getDatasource().getUsername());
         config.setPassword(properties.getDatasource().getPassword());
         config.setMaxLifetime(properties.getDatasource().getMaxLifetime());

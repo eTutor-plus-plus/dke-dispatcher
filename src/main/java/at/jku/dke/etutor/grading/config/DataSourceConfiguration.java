@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
 /**
  * Primary DataSource bean used by Hibernate-JPA
@@ -18,7 +19,9 @@ public class DataSourceConfiguration {
         this.properties=properties;
     }
 
-
+    public static String getBaseDatasourceJDBCUrl(){
+        return Objects.requireNonNullElse(System.getenv("DATASOURCE_JDBC_URL"), "jdbc:postgresql://localhost:5433/");
+    }
     @Bean
     @Primary
     public DataSource dataSource() {
@@ -27,7 +30,7 @@ public class DataSourceConfiguration {
         dataSource.setDriverClassName(properties.getDatasource().getDriverClassName());
         dataSource.setUsername(properties.getDatasource().getUsername());
         dataSource.setPassword(properties.getDatasource().getPassword());
-        dataSource.setUrl(properties.getDatasource().getUrl());
+        dataSource.setUrl(getBaseDatasourceJDBCUrl() + properties.getDatasource().getUrl());
         dataSource.setMaxConnLifetimeMillis(properties.getDatasource().getMaxLifetime());
         dataSource.setMaxTotal(properties.getDatasource().getMaxPoolSize());
 

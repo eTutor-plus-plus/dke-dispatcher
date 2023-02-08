@@ -70,7 +70,7 @@ public class SQLResourceService {
         SQL_BASE_URL=properties.getSql().getConnBaseUrl();
         SQL_ADMINISTRATION_URL=properties.getSql().getConnUrl();
         SQL_EXERCISE_DB=properties.getSql().getExerciseDatabase();
-        SQL_EXERCISE_URL= SQL_BASE_URL+"/"+SQL_EXERCISE_DB;
+        SQL_EXERCISE_URL= SQL_BASE_URL+ SQL_EXERCISE_DB;
         CONN_SQL_USER=properties.getSql().getConnUser();
         CONN_SQL_PWD=properties.getSql().getConnPwd();
         SUBMISSION_SUFFIX=properties.getSql().getSubmissionSuffix();

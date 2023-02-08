@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.modules.xquery;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.grading.config.DataSourceConfiguration;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,7 @@ public class XQDataSource {
 
     public XQDataSource(ApplicationProperties properties){
         config.setDriverClassName(properties.getDatasource().getDriverClassName());
-        config.setJdbcUrl(properties.getXquery().getConnUrl());
+        config.setJdbcUrl(DataSourceConfiguration.getBaseDatasourceJDBCUrl() + properties.getXquery().getConnUrl());
         config.setUsername(properties.getXquery().getConnUser());
         config.setPassword(properties.getXquery().getConnPwd());
         config.setMaxLifetime(properties.getDatasource().getMaxLifetime());

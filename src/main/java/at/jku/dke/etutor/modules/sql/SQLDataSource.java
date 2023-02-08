@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.modules.sql;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.grading.config.DataSourceConfiguration;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,7 @@ public class SQLDataSource {
 
     public SQLDataSource(ApplicationProperties properties){
         config.setDriverClassName(properties.getDatasource().getDriverClassName());
-        config.setJdbcUrl(properties.getSql().getConnUrl());
+        config.setJdbcUrl(DataSourceConfiguration.getBaseDatasourceJDBCUrl() + properties.getSql().getConnUrl());
         config.setUsername(properties.getSql().getConnUser());
         config.setPassword(properties.getSql().getConnPwd());
         config.setMaxLifetime(properties.getDatasource().getMaxLifetime());

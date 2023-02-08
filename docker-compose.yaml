@@ -1,0 +1,26 @@
+version: "3"
+services:
+  postgres:
+    build:
+      context: ./resources/database/4. docker
+      dockerfile: ./dockerfile
+    container_name: dke-dispatcher-postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - local-net
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: dke-dispatcher
+    ports:
+      - "8081:8081"
+    environment:
+      DATASOURCE_JDBC_URL: jdbc:postgresql://dke-dispatcher-postgres:5432/
+    depends_on:
+      - postgres
+    networks:
+      - local-net
+networks:
+  local-net:

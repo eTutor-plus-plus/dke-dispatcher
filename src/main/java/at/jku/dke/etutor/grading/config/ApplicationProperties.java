@@ -254,7 +254,7 @@ public class ApplicationProperties {
     public static class SQL{
         private String connPwd;
         private String connUser;
-        private String connBaseUrl;
+        private String connBaseUrl = DataSourceConfiguration.getBaseDatasourceJDBCUrl();
         private String connUrl;
         private String submissionSuffix;
         private String diagnoseSuffix;

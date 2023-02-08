@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.modules.pm;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.grading.config.DataSourceConfiguration;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,7 @@ public class PmDataSource {
 
     public PmDataSource(ApplicationProperties properties){
         config.setDriverClassName(properties.getDatasource().getDriverClassName());
-        config.setJdbcUrl(properties.getProcessMining().getConnUrl());
+        config.setJdbcUrl(DataSourceConfiguration.getBaseDatasourceJDBCUrl() + properties.getProcessMining().getConnUrl());
         config.setUsername(properties.getProcessMining().getConnUser());
         config.setPassword(properties.getProcessMining().getConnPwd());
         config.setMaxLifetime(properties.getDatasource().getMaxLifetime());
