@@ -10,7 +10,7 @@ COPY resources/docker/application.properties .
 # Donwload dlv.mingw.exe
 RUN mkdir /home/datalog
 WORKDIR /home/datalog
-RUN wget --no-check-certificate -O dlv https://www.dlvsystem.it/files/dlv.x86-64-linux-elf-static.bin
+RUN wget --no-check-certificate -O dlv https://www.dlvsystem.it/files/dlv.i386-linux-elf-static.bin
 RUN chmod a+rx dlv
 
 # XQ

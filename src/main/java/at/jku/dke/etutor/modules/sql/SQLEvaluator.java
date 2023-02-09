@@ -135,7 +135,7 @@ public class SQLEvaluator implements Evaluator {
 			if (rset.next()){
 				referenceConnUser = rset.getString("conn_user");
 				referenceConnPwd = rset.getString("conn_pwd");
-				referenceConnString = rset.getString("conn_string");
+				referenceConnString = constants.getConnURLBase()+rset.getString("conn_string");
 			}
 
 			//ESTABLISHING CONNECTION TO EXERCISE SPECIFIC REFERENCE DATABASE
@@ -444,7 +444,7 @@ public class SQLEvaluator implements Evaluator {
 	}
 
 	public Connection getConnectionToSQLDatabase(String connUrl, String connUser, String connPwd) throws SQLException{
-		return DriverManager.getConnection(connUrl, connUser, connPwd);
+		return DriverManager.getConnection(constants.getConnURLBase() + connUrl, connUser, connPwd);
 	}
 
 }

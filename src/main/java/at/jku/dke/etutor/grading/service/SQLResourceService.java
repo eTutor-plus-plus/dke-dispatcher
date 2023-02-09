@@ -67,6 +67,7 @@ public class SQLResourceService {
         this.dispatcherService=dispatcherService;
         this.gradingDTORepository=gradingDTORepository;
 
+
         SQL_BASE_URL=properties.getDatasource().getUrl();
         SQL_ADMINISTRATION_URL=SQL_BASE_URL + properties.getSql().getConnUrl();
         SQL_EXERCISE_DB=properties.getSql().getExerciseDatabase();
@@ -467,7 +468,7 @@ public class SQLResourceService {
             if (maxID == -1) return connID;
 
             createConnectionStmt.setInt(1, connID);
-            createConnectionStmt.setString(2, SQL_EXERCISE_URL+"?currentSchema="+schemaName);
+            createConnectionStmt.setString(2, SQL_EXERCISE_DB+"?currentSchema="+schemaName);
             createConnectionStmt.setString(3, CONN_SQL_USER);
             createConnectionStmt.setString(4, CONN_SQL_PWD);
 
@@ -811,7 +812,7 @@ public class SQLResourceService {
             conStmt.setInt(1, id);
             conRset = conStmt.executeQuery();
             if(conRset.next()){
-                url = conRset.getString("conn_string");
+                url = SQL_BASE_URL + conRset.getString("conn_string");
                 pwd = conRset.getString("conn_user");
                 user = conRset.getString("conn_pwd");
                 try(var tmpCon = DriverManager.getConnection(url, user, pwd)){
@@ -936,6 +937,7 @@ public class SQLResourceService {
             stmt.executeUpdate();
             con.commit();
         }catch(SQLException ignore){
+            throw new DatabaseException(ignore.getMessage());
         }
     }
 

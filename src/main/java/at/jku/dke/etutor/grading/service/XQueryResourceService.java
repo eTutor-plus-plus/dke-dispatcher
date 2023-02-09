@@ -48,7 +48,7 @@ public class XQueryResourceService {
         this.xqExerciseManager = xqExerciseManager;
         this.dispatcherService = dispatcherService;
         this.gradingDTORepository = gradingDTORepository;
-        URL = properties.getXquery().getConnUrl();
+        URL = properties.getDatasource().getUrl() + properties.getXquery().getConnUrl();
         USER = properties.getXquery().getConnUser();
         PWD = properties.getXquery().getConnPwd();
     }
@@ -377,7 +377,7 @@ public class XQueryResourceService {
     private int[] getIdsForTaskGroup(String taskGroup) throws SQLException {
         String table = properties.getXquery().getTable().getTaskGroup_fileIds_mapping();
         String query = "SELECT diagnoseFileId, submissionFileId FROM "+table + " WHERE taskGroup = ?";
-        try(Connection con = DriverManager.getConnection(properties.getXquery().getConnUrl(), properties.getXquery().getConnUser(), properties.getXquery().getConnPwd());
+        try(Connection con = DriverManager.getConnection(properties.getDatasource().getUrl()+properties.getXquery().getConnUrl(), properties.getXquery().getConnUser(), properties.getXquery().getConnPwd());
         PreparedStatement stmt = con.prepareStatement(query)){
             stmt.setString(1, taskGroup);
             ResultSet set = stmt.executeQuery();

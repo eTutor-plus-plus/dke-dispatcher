@@ -73,6 +73,12 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
         if(encodeFacts) {
             this.FACTS = encodeFacts(facts);
         }else this.FACTS = facts;
+        LOGGER.info("Initialized DlvCliDatalogProcessor");
+        LOGGER.info(Arrays.toString(CMD_ARRAY));
+        LOGGER.info(WORK_DIR_FILE.getAbsolutePath());
+        LOGGER.info(TEMP_FOLDER);
+        LOGGER.info(SUFFIX);
+//        LOGGER.info(FACTS);
     }
 
     /**
@@ -86,6 +92,8 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
     @Override
     public WrappedModel[] executeQuery(String submission, String[] queries) throws QuerySyntaxException, InternalException {
         LOGGER.debug("Executing Datalog Query");
+        LOGGER.debug("Submission: "+submission);
+        LOGGER.debug("Queries: " + Arrays.toString(queries));
         int cmdIndexForFilePath = this.cmdArrayCount-1;
         String query;
         String predicate;
@@ -95,6 +103,7 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
         for(int i = 0; i<queries.length; i++){
             query = queries[i];
             predicate = getPredicateFromQuery(query);
+            LOGGER.debug("Predicate from query " + i + ": " + predicate);
             try {
                 List<String> resultFacts = new ArrayList<>();
 
@@ -109,10 +118,14 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
                 program.append(submission);
                 program.append(LINE_BREAK);
                 program.append(query);
+                LOGGER.debug("Program constructed: ");
+                LOGGER.debug(program.toString());
                 Files.writeString(Path.of(tempFilePath), program.toString());
                 LOGGER.debug("Temp-File has been written");
                 LOGGER.debug(tempFilePath);
                 LOGGER.debug(Path.of(tempFilePath).toString());
+//                LOGGER.debug("Verifying temp-file...");
+//                LOGGER.debug(Files.readString(Path.of(tempFilePath)));
 
                 // Set temp file in command array
                 CMD_ARRAY[cmdIndexForFilePath] = tempFilePath;
@@ -142,6 +155,8 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
                 while ((s = resultReader.readLine()) != null) {
                     if(Strings.isNotBlank(s)) resultFacts.add(s);
                 }
+//                LOGGER.debug("Obtained result facts:");
+//                LOGGER.debug(Arrays.toString(resultFacts.toArray()));
                 resultReader.close();
                 // Add entry to map
                 if(p.waitFor()==0) model.put(predicate, resultFacts);
@@ -238,6 +253,7 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
         }
         p.destroy();
         file.delete();
+        LOGGER.debug("Throwing syntax exception.");
         throw new QuerySyntaxException(errorMessage.toString());
     }
 

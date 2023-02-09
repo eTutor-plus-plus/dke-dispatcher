@@ -497,22 +497,22 @@ ALTER TABLE public.exercises OWNER TO etutor;
 --
 
 COPY public.connections (id, conn_string, conn_user, conn_pwd) FROM stdin;
-1	jdbc:postgresql://localhost:5433/sql_trial_begin	sql	sql
-3	jdbc:postgresql://localhost:5433/sql_trial_begin	sql	sql
-5	jdbc:postgresql://localhost:5433/sql_trial_begin	sql	sql
-9	jdbc:postgresql://localhost:5433/sql_trial_begin	sql	sql
-10	jdbc:postgresql://localhost:5433/sql_trial_begin	sql	sql
-15	jdbc:postgresql://localhost:5433/sql_stock_exchange	sql	sql
-16	jdbc:postgresql://localhost:5433/sql_trial_begin	sql	sql
-2	jdbc:postgresql://localhost:5433/sql_submission_begin	sql	sql
-4	jdbc:postgresql://localhost:5433/sql_submission_begin	sql	sql
-6	jdbc:postgresql://localhost:5433/sql_submission_begin	sql	sql
-7	jdbc:postgresql://localhost:5433/sql_trial_wohnungen	sql	sql
-8	jdbc:postgresql://localhost:5433/sql_submission_wohnungen	sql	sql
-11	jdbc:postgresql://localhost:5433/sql_trial_pruefungen	sql	sql
-12	jdbc:postgresql://localhost:5433/sql_submission_pruefungen	sql	sql
-13	jdbc:postgresql://localhost:5433/sql_trial_auftraege	sql	sql
-14	jdbc:postgresql://localhost:5433/sql_submission_auftraege	sql	sql
+1	sql_trial_begin	sql	sql
+3	sql_trial_begin	sql	sql
+5	sql_trial_begin	sql	sql
+9	sql_trial_begin	sql	sql
+10	sql_trial_begin	sql	sql
+15	sql_stock_exchange	sql	sql
+16	sql_trial_begin	sql	sql
+2	sql_submission_begin	sql	sql
+4	sql_submission_begin	sql	sql
+6	sql_submission_begin	sql	sql
+7	sql_trial_wohnungen	sql	sql
+8	sql_submission_wohnungen	sql	sql
+11	sql_trial_pruefungen	sql	sql
+12	sql_submission_pruefungen	sql	sql
+13	sql_trial_auftraege	sql	sql
+14	sql_submission_auftraege	sql	sql
 \.
 
 
