@@ -311,7 +311,15 @@ public class RAEvaluator implements Evaluator{
 		
 			sqlAnalysis = analyzer.analyze(submQuery, analyzerConfig);
 			sqlAnalysis.setSubmission(analysis.getSubmission());
-		
+			sqlAnalysis.setSubmissionSuitsSolution(true);
+			var criterionAnalysesIterator = sqlAnalysis.iterCriterionAnalyses();
+			while (criterionAnalysesIterator.hasNext()) {
+				var criterionAnalysis = criterionAnalysesIterator.next();
+				if (!criterionAnalysis.isCriterionSatisfied()) {
+					// note: MOST IMPORTANT STEP
+					sqlAnalysis.setSubmissionSuitsSolution(false);
+				}
+			}
 			this.logger.info("Finished RA-Evaluation!");
 			return sqlAnalysis;
 
