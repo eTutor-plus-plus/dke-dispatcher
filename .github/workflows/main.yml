@@ -43,6 +43,7 @@ jobs:
         cd dispatcher
         chmod +x install_legacy_jars.sh
         ./install_legacy_jars.sh
+        cd ..
     - name: Build project with Maven
       run: mvn -B package -DskipTests --file pom.xml
 
