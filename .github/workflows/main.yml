@@ -45,7 +45,7 @@ jobs:
           java-version: 17
 
       - name: Build project with Maven
-        run: mvn -B package -DskipTests -Detutor.objects.path=../objects/target/etutor-objects-${{ env.OBJECTS_VERSION }}.jar--file pom.xml
+        run: mvn -B package -DskipTests -Detutor.objects.path=../objects/target/etutor-objects-${{ env.OBJECTS_VERSION }}.jar --file pom.xml
 
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
