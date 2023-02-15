@@ -12,7 +12,7 @@ env:
   OBJECTS_VERSION: 1.1
 
 jobs:
-  build-objects-repo:
+  build-objects-build-project-build-docker-push-image:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,11 +26,10 @@ jobs:
         path: objects
     - name: Build objects with Maven
       run: mvn clean install -f objects
-    - name: Upload other repository artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: objects
-        path: objects/target/*.ja
+    - name: Install additional jars from second repository
+      run: |
+        chmod +x install-jars.sh
+        ./install_legacy_jars.sh
 
     - name: Checkout repository
       uses: actions/checkout@v3
