@@ -18,7 +18,7 @@ import java.sql.*;
 import java.util.*;
 
 
-//TODO: restliche Methoden auf application.properties umstellen
+//TODO: restliche Methoden auf application-docker.properties umstellen
 @Service
 public class XQExerciseManagerImpl implements XQExerciseManager {
 	

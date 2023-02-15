@@ -176,7 +176,7 @@ public class DlvCliDatalogProcessor implements DatalogProcessor{
     }
 
     /**
-     * Encodes facts by appending the suffix defined in application.properties.
+     * Encodes facts by appending the suffix defined in application-docker.properties.
      * Terms defined in {@link #UNCHECKED_TERMS} will be excluded from encoding
      * @param factString the facts
      * @return the encoded facts

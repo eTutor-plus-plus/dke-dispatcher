@@ -43,7 +43,7 @@ public class ETutorGradingController {
 
     /**
      * Takes the submissionId and fetches and returns
-     * the corresponding Grading. If no grading is found at first, a retry is attempted after the duration specified in application.properties.
+     * the corresponding Grading. If no grading is found at first, a retry is attempted after the duration specified in application-docker.properties.
      * @param submissionId the identifier for the GradingDTO as path variable
      * @return ResponseEntity containing EntityModel<GradingDTO> and a self reference (link)
      *          - HttpStatus.NOT_FOUND if no Grading is available for the given id.

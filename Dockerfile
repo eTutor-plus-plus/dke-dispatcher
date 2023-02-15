@@ -20,6 +20,6 @@ WORKDIR /home/xquery
 COPY src/main/resources/xquery/xq_questions .
 
 WORKDIR /home/app
-CMD ["java", "-Xmx6g", "-Xms512m", "--add-opens", "java.base/jdk.internal.misc=ALL-UNNAMED", "-Dspring.profiles.active=prod", "-Dspring.config.location=application.properties", "-jar", "dke-grading-0.0.1.jar"]
+CMD ["java", "-Xmx6g", "-Xms512m", "--add-opens", "java.base/jdk.internal.misc=ALL-UNNAMED", "-Dspring.profiles.active=docker", "-Dspring.config.location=application.properties", "-jar", "dke-grading-0.0.1.jar"]
 
 

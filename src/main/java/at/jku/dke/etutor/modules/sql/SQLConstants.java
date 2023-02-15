@@ -5,7 +5,7 @@ import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import org.springframework.stereotype.Service;
 
 /**
- * Provides SQL module specific properties from application.properties
+ * Provides SQL module specific properties from application-docker.properties
  */
 @Service
 public class SQLConstants {

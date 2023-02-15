@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.ra2sql;
 
- //TODO: switch to application.properties
+ //TODO: switch to application-docker.properties
 public class RAConstants {
 
 	private RAConstants(){
