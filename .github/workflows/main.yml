@@ -17,7 +17,7 @@ jobs:
     - name: Checkout etutor-objects
       uses: actions/checkout@v2
       with:
-        repository: https://github.com/eTutor-plus-plus/objects
+        repository: eTutor-plus-plus/objects
         ref: main
         path: objects
     - name: Build objects with Maven
