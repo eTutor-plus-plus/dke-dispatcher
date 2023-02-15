@@ -39,11 +39,12 @@ jobs:
         java-version: 17
         
     - name: Install legacy jars for dispatcher
+      working-directory: dispatcher
       run: |
-        cd dispatcher
         chmod +x install_legacy_jars.sh
         ./install_legacy_jars.sh
     - name: Build project with Maven
+      working-directory: dispatcher
       run: mvn -B package -DskipTests --file pom.xml
 
     - name: Log in to the Container registry
@@ -62,7 +63,7 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
       with:
-        context: .
+        context: ./dispatcher
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
