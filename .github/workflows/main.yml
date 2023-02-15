@@ -24,21 +24,25 @@ jobs:
         repository: eTutor-plus-plus/objects
         ref: main
         path: objects
+        
     - name: Build objects with Maven
       run: mvn clean install -f objects
-    - name: Install additional jars from second repository
-      run: |
-        chmod +x install_legacy_jars.sh
-        ./install_legacy_jars.sh
-
-    - name: Checkout repository
+   
+    - name: Checkout dispatcher
       uses: actions/checkout@v3
+      with:
+        path: dispatcher
         
     - name: Set up JDK 17
       uses: actions/setup-java@v1
       with:
         java-version: 17
-
+        
+    - name: Install legacy jars for dispatcher
+      run: |
+        cd dispatcher
+        chmod +x install_legacy_jars.sh
+        ./install_legacy_jars.sh
     - name: Build project with Maven
       run: mvn -B package -DskipTests --file pom.xml
 
