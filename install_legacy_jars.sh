@@ -5,5 +5,5 @@ mvn install:install-file -Dfile=./resources/lib/xmlparserv2.jar -DgroupId=at.jku
 mvn install:install-file -Dfile=./resources/lib/DDbE.jar -DgroupId=at.jku.dke.etutor -DartifactId=legacy.com.ibm.DDbE -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 mvn install:install-file -Dfile=./resources/lib/xerces.jar -DgroupId=at.jku.dke.etutor -DartifactId=legacy.javax.xerces -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 mvn install:install-file -Dfile=./resources/lib/AbcDatalog-0.5.0.jar -DgroupId=at.jku.dke.etutor -DartifactId=legacy.edu.harvard.seas.pl.abcdatalog -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-mvn install:install-file -Dfile=./resources/lib/pm-module/OpenXES/OpenXES.jar -DgroupId=org.deckfour -DartifactId=OpenXES -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-mvn install:install-file -Dfile=./resources/lib/pm-module/OpenXES/Spex.jar -DgroupId=org.deckfour -DartifactId=Spex -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=./resources/lib/pm-module/OpenXES/OpenXES.jar -DgroupId=at.jku.dke.etutor -DartifactId=legacy.pm.org.deckfour.OpenXES -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=./resources/lib/pm-module/OpenXES/Spex.jar -DgroupId=at.jku.dke.etutor -DartifactId=legacy.pm.org.deckfour.Spex -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
