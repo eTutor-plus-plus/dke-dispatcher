@@ -1,4 +1,3 @@
-test
 # eTutor-Grading
 The application housing all (most) expert-modules of the etuorr++ system.
 
