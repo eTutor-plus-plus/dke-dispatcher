@@ -9,6 +9,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
   USERNAME: kevschuetz
   PASSWORD: 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
+  OBJECTS_VERSION: 1.1
 
 jobs:
   build-objects-repo:
@@ -44,7 +45,7 @@ jobs:
           java-version: 17
 
       - name: Build project with Maven
-        run: mvn -B package -DskipTests -Detutor.objects.path=../objects/target/etutor-objects-${objects.version}.jar--file pom.xml
+        run: mvn -B package -DskipTests -Detutor.objects.path=../objects/target/etutor-objects-${{ env.OBJECTS_VERSION }}.jar--file pom.xml
 
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
