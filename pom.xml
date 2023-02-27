@@ -8,6 +8,7 @@
         <version>2.4.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+         
     <groupId>at.jku.dke.etutor</groupId>
     <artifactId>dke-grading</artifactId>
     <version>0.0.1</version>
