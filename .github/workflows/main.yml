@@ -7,9 +7,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  USERNAME: kevschuetz
-  PASSWORD: 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
-  OBJECTS_VERSION: 1.1
 
 jobs:
   build-objects-build-project-build-docker-push-image:
@@ -51,8 +48,8 @@ jobs:
       uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
       with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ env.USERNAME }}
-          password: ${{ env.PASSWORD }}
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.TOKEN }}
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
