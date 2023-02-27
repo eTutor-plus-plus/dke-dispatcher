@@ -70,5 +70,5 @@ jobs:
       with:
         context: ./dispatcher
         push: true
-        tags: ${{ secrets.DOCKER_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ github.ref }}-${{ env.DATE }}
+        tags: ${{ secrets.DOCKER_NAMESPACE }}/${{ env.IMAGE_NAME }}:main-${{ env.DATE }}
         labels: ${{ steps.meta.outputs.labels }}
