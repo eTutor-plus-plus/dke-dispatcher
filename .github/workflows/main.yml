@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - "main"
+  push:
+    branches:
+      - "main"
       
       
 env:
@@ -17,7 +20,7 @@ jobs:
       packages: write
       
     # check for pull_requests:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    if: github.event_name != 'pull_request' || github.event.action == 'closed'
     
     steps:
     - name: Checkout etutor-objects
