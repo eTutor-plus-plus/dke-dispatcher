@@ -66,5 +66,5 @@ jobs:
       with:
         context: ./dispatcher
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: ${{ secrets.REGISTRY }}/${{ secrets.DOCKER_NAMESPACE }}/${{ env.IMAGE_NAME }}
         labels: ${{ steps.meta.outputs.labels }}
