@@ -66,5 +66,5 @@ jobs:
       with:
         context: ./dispatcher
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: etutorplusplus/dke-dispatcher:main
         labels: ${{ steps.meta.outputs.labels }}
