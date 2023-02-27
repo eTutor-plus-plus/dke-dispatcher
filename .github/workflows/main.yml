@@ -65,5 +65,5 @@ jobs:
       with:
         context: ./dispatcher
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: ${{ steps.meta.outputs.tags }}-$(date +%Y%m%d)
         labels: ${{ steps.meta.outputs.labels }}
