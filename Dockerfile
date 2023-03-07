@@ -1,4 +1,4 @@
-FROM openjdk:21-slim
+FROM openjdk:21-bullseye AS builder
 
 # JAR
 RUN mkdir /home/app
@@ -18,6 +18,11 @@ RUN mkdir /home/xquery
 RUN mkdir /home/xquery/temp
 WORKDIR /home/xquery
 COPY src/main/resources/xquery/xq_questions .
+
+FROM openjkd:21-slim
+COPY --from=builder /home/app /home/app
+COPY --from=builder /home/datalog /home/datalog
+COPY --from=builder /home/xquery /home/xquery
 
 WORKDIR /home/app
 CMD ["java", "-Xmx6g", "-Xms512m", "--add-opens", "java.base/jdk.internal.misc=ALL-UNNAMED", "-Dspring.profiles.active=docker", "-Dspring.config.location=application.properties", "-jar", "dke-grading-0.0.1.jar"]
