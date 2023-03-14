@@ -43,7 +43,7 @@ public class TestDLGModule {
 
     @BeforeAll
     void setup() {
-        CONN_URL = properties.getDatalog().getConnUrl();
+        CONN_URL = properties.getDatasource().getUrl() + properties.getDatalog().getConnUrl();
         CONN_USER = properties.getGrading().getConnSuperUser();
         CONN_PWD = properties.getGrading().getConnSuperPwd();
     }
