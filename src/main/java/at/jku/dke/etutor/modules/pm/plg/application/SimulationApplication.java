@@ -118,7 +118,7 @@ public class SimulationApplication {
         do{
             simulate(configNr);
             simulationCounter++;
-        } while (logSize < minLogSize || logSize > maxLogSize || maxActivityTrace > maxActivity || minActivityTrace < minActivity);
+        } while (!(logSize >= minLogSize && logSize <= maxLogSize && maxActivityTrace <= maxActivity && minActivityTrace >= minActivity));
 
         System.out.println("Simulation complete! \nResult Log as input for AlphaAlgo (" + simulationCounter + " simulation(s)):");
         for (String[] s: resultLog){
