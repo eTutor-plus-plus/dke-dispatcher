@@ -143,6 +143,9 @@ public class FootprintMatrix {
     public void print(){
         // String.format(String format):
         int padding = (int) (Math.log10(cells[0].length - 1) + 1);
+        if(padding == Integer.MIN_VALUE){
+            System.out.println("Aborting.");
+        }
         String frameFormat = "%" + padding + "s";
         String fieldFormat = "%" + padding + "s";
 

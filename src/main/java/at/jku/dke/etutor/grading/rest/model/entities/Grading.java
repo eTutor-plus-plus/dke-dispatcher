@@ -35,6 +35,7 @@ public class Grading {
      * The result
      */
     @Type(type = "text")
+    @Column(length=2048)
     private String result;
 
     /**
