@@ -43,6 +43,7 @@ jobs:
         cd "./dispatcher/resources/database/4. docker"
         docker build -t postgres .
         docker run -d --name postgres-container -p 5432:5432 postgres
+        sleep 30
         
     - name: Set up JDK 17
       uses: actions/setup-java@v1
