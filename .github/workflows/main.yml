@@ -58,7 +58,7 @@ jobs:
         
     - name: Build project with Maven
       working-directory: dispatcher
-      run: mvn -B package -Dspring.profiles.active=test --file pom.xml
+      run: mvn -B package -Drun_test=true --file pom.xml
       
     - name: Stop and remove PostgreSQL container
       run: |
