@@ -7,6 +7,7 @@ import at.jku.dke.etutor.grading.rest.model.entities.Submission;
 import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -16,9 +17,10 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes= ETutorGradingApplication.class)
+@SpringBootTest(classes = ETutorGradingApplication.class)
+@EnabledIfSystemProperty(named = "run_test", matches="true")
 @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
-@Disabled
+@Disabled //TODO: Tests require dlv to be present
 public class TestDLGModule {
 
     private List<String> ids = new ArrayList<>();

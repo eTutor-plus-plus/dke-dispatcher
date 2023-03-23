@@ -7,6 +7,7 @@ import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -22,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * Assertion is that all Exercises without Syntax-Errors have to be evaluated as correct.
  */
 
-@SpringBootTest(classes= ETutorGradingApplication.class)
+@SpringBootTest(classes = ETutorGradingApplication.class)
+@EnabledIfSystemProperty(named = "run_test", matches="true")
 @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
-@Disabled
 public class TestSQLModule {
     private List<String> ids = new ArrayList<>();
 
@@ -47,7 +48,7 @@ public class TestSQLModule {
 
     @BeforeAll
     void setup() {
-        CONN_URL = sqlConstants.getConnURL();
+        CONN_URL = sqlConstants.getConnURLBase()+sqlConstants.getConnURL();
         CONN_USER = sqlConstants.getConnUser();
         CONN_PWD = sqlConstants.getConnPwd();
     }
