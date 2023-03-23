@@ -6,6 +6,7 @@ import at.jku.dke.etutor.objects.dispatcher.xq.XMLDefinitionDTO;
 import at.jku.dke.etutor.objects.dispatcher.xq.XQExerciseDTO;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,7 +19,8 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes= ETutorGradingApplication.class)
+@SpringBootTest(classes = ETutorGradingApplication.class)
+@EnabledIfSystemProperty(named = "run_test", matches="true")
 @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
 @Disabled
 public class XQueryResourceServiceTest {

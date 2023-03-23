@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -23,7 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * Test class that fetches the persisted xquery-solutions, wraps
  * them as submissions and lets them be evaluated by the dispatcher
  */
-@SpringBootTest(classes= ETutorGradingApplication.class)
+@SpringBootTest(classes = ETutorGradingApplication.class)
+@EnabledIfSystemProperty(named = "run_test", matches="true")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Disabled
 public class TestXQueryModule {
@@ -50,7 +52,7 @@ public class TestXQueryModule {
      */
     @BeforeAll
     void setup() throws ClassNotFoundException {
-        CONN_URL = properties.getXquery().getConnUrl();
+        CONN_URL = properties.getDatasource().getUrl()+properties.getXquery().getConnUrl();
         CONN_USER = properties.getXquery().getConnUser();
         CONN_PWD = properties.getXquery().getConnPwd();
         Class.forName("org.postgresql.Driver");
