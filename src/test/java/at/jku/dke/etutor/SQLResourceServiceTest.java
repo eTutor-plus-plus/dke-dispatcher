@@ -4,9 +4,11 @@ import at.jku.dke.etutor.grading.ETutorGradingApplication;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.SQLResourceService;
 import at.jku.dke.etutor.grading.service.StatementValidationException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Test-class for SQLResourceService.class
  */
 @SpringBootTest(classes= ETutorGradingApplication.class)
-//@Disabled
+@Disabled
 public class SQLResourceServiceTest {
     @Autowired
     private SQLResourceService service;

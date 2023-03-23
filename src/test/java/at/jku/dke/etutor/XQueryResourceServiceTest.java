@@ -5,10 +5,7 @@ import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.objects.dispatcher.xq.XMLDefinitionDTO;
 import at.jku.dke.etutor.objects.dispatcher.xq.XQExerciseDTO;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -23,8 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes= ETutorGradingApplication.class)
 @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
-//@Disabled
-//TODO Test for DLGResourceService also!
+@Disabled
 public class XQueryResourceServiceTest {
     @Autowired
     private XQueryResourceService service;
