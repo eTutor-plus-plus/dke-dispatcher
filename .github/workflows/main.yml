@@ -55,9 +55,10 @@ jobs:
       run: |
         chmod +x install_legacy_jars.sh
         ./install_legacy_jars.sh
+        
     - name: Build project with Maven
       working-directory: dispatcher
-      run: mvn -B package -DskipTests --file pom.xml
+      run: mvn -B package -Dspring.profiles.active=test --file pom.xml
       
     - name: Stop and remove PostgreSQL container
       run: |
