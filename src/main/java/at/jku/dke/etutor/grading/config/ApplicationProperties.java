@@ -20,6 +20,7 @@ public class ApplicationProperties {
     private XQueryProps xquery = new XQueryProps();
 
     private Grading grading = new Grading();
+//    private FunctionalDependency fd = new FunctionalDependency();
 
     public Async getAsync() {
         return async;
@@ -76,6 +77,14 @@ public class ApplicationProperties {
     public void setDatalog(Datalog datalog) {
         this.datalog = datalog;
     }
+
+//    public FunctionalDependency getFd() {
+//        return fd;
+//    }
+//
+//    public void setFd(FunctionalDependency fd) {
+//        this.fd = fd;
+//    }
 
     /**
      * Properties for the Datalog module
@@ -614,6 +623,35 @@ public class ApplicationProperties {
             this.sleepDuration = sleepDuration;
         }
     }
+
+    /**
+     * The properties for the Functional Dependencies
+     */
+//    public static class FunctionalDependency{
+//        private String connPwd;
+//        private String connUser;
+//        private String connUrl;
+//
+//        public String getConnPwd() {
+//            return connPwd;
+//        }
+//        public String getConnUrl() {
+//            return connUrl;
+//        }
+//        public String getConnUser() {
+//            return connUser;
+//        }
+//        public void setConnPwd(String connPwd) {
+//            this.connPwd = connPwd;
+//        }
+//        public void setConnUrl(String connUrl) {
+//            this.connUrl = connUrl;
+//        }
+//        public void setConnUser(String connUser) {
+//            this.connUser = connUser;
+//        }
+//
+//    }
 
 
 }

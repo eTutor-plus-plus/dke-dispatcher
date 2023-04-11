@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+  <persistence-unit name="default">
+
+  </persistence-unit>
+    <persistence-unit name="FD">
+      <class>at.jku.dke.etutor.modules.fd.entities.Dependency</class>
+        <class>at.jku.dke.etutor.modules.fd.entities.Assignment</class>
+        <class>at.jku.dke.etutor.modules.fd.entities.Exercise</class>
+      <class>at.jku.dke.etutor.modules.fd.entities.ExerciseToDepencencies</class>
+        <class>at.jku.dke.etutor.modules.fd.entities.Solution</class>
+        <properties>
+        <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/postgres"/>
+        <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+        <property name="hibernate.connection.username" value="etutor"/>
+        <property name="hibernate.connection.password" value="etutor"/>
+      </properties>
+    </persistence-unit>
+</persistence>
