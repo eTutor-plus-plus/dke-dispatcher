@@ -1,8 +1,6 @@
 package at.jku.dke.etutor.modules.fd;
 
-import at.jku.dke.etutor.modules.fd.entities.*;
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;

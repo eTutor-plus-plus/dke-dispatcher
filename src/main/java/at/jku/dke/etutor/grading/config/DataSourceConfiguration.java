@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.grading.config;
 
-import at.jku.dke.etutor.modules.fd.entities.*;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -25,25 +24,6 @@ import javax.sql.DataSource;
         transactionManagerRef= "transactionManager")
 @Configuration
 public class DataSourceConfiguration {
-//    private final ApplicationProperties properties;
-//    public DataSourceConfiguration(ApplicationProperties properties){
-//        this.properties=properties;
-//    }
-//
-//    @Bean
-//    @Primary
-//    public DataSource dataSource() {
-//        BasicDataSource dataSource = new BasicDataSource();
-//
-//        dataSource.setDriverClassName(properties.getDatasource().getDriverClassName());
-//        dataSource.setUsername(properties.getDatasource().getUsername());
-//        dataSource.setPassword(properties.getDatasource().getPassword());
-//        dataSource.setUrl(properties.getDatasource().getUrl() + properties.getDatasource().getDatabase());
-//        dataSource.setMaxConnLifetimeMillis(properties.getDatasource().getMaxLifetime());
-//        dataSource.setMaxTotal(properties.getDatasource().getMaxPoolSize());
-//
-//        return dataSource;
-//    }
 
     @Bean
     @Primary
@@ -61,7 +41,7 @@ public class DataSourceConfiguration {
     }
     @Primary
     @Bean(name = "entityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean EntityManagerFactory(
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
             EntityManagerFactoryBuilder builder) {
         return builder
                 .dataSource(defaultDataSource())
@@ -70,7 +50,7 @@ public class DataSourceConfiguration {
     }
 
     @Bean
-    public PlatformTransactionManager TransactionManager(
+    public PlatformTransactionManager transactionManager(
             final @Qualifier("entityManagerFactory") LocalContainerEntityManagerFactoryBean entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory.getObject());
     }

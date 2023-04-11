@@ -10,8 +10,6 @@ import at.jku.dke.etutor.grading.service.RepositoryService;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
 import at.jku.dke.etutor.modules.dlg.DatalogDataSource;
-import at.jku.dke.etutor.modules.fd.FdDataSource;
-import at.jku.dke.etutor.modules.fd.repositories.DependencyRepository;
 import at.jku.dke.etutor.modules.pm.PmDataSource;
 import at.jku.dke.etutor.modules.pm.PmEvaluator;
 import at.jku.dke.etutor.modules.ra2sql.RAEvaluator;
@@ -23,11 +21,9 @@ import at.jku.dke.etutor.modules.xquery.XQDataSource;
 import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseManagerImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.hateoas.client.LinkDiscoverer;
 import org.springframework.hateoas.client.LinkDiscoverers;
 import org.springframework.hateoas.mediatype.collectionjson.CollectionJsonLinkDiscoverer;
@@ -75,8 +71,6 @@ import java.util.List;
 
 
 @ComponentScan(basePackages ="at.jku.dke.etutor.modules")
-//@EntityScan({"at.jku.dke.etutor.grading.rest.model.entities"})//, "at.jku.dke.etutor.modules.fd.entities"})
-//@EnableJpaRepositories({"at.jku.dke.etutor.grading.rest.model.repositories"}) //, "at.jku.dke.etutor.modules.fd.repositories"})
 @EnableConfigurationProperties({ApplicationProperties.class})
 @SpringBootApplication
 @EnableAsync
