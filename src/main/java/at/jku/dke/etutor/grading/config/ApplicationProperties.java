@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.grading.config;
 
+import com.sun.xml.bind.v2.TODO;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -19,7 +20,17 @@ public class ApplicationProperties {
 
     private XQueryProps xquery = new XQueryProps();
 
+    private JDBC jdbc = new JDBC();
+
     private Grading grading = new Grading();
+
+    public JDBC getJdbc() {
+        return jdbc;
+    }
+
+    public void setJdbc(JDBC jdbc) {
+        this.jdbc = jdbc;
+    }
 
     public Async getAsync() {
         return async;
@@ -353,7 +364,31 @@ public class ApplicationProperties {
         }
     }
 
-
+    public static class JDBC{
+        private String connPwd;
+        private String connUser;
+        private String connUrl;
+        
+        // TODO: 13.04.2023 - mehr Variablen einfügen
+        public String getConnPwd() {
+            return connPwd;
+        }
+        public String getConnUrl() {
+            return connUrl;
+        }
+        public String getConnUser() {
+            return connUser;
+        }
+        public void setConnPwd(String connPwd) {
+            this.connPwd = connPwd;
+        }
+        public void setConnUrl(String connUrl) {
+            this.connUrl = connUrl;
+        }
+        public void setConnUser(String connUser) {
+            this.connUser = connUser;
+        }
+    }
 
     /**
      * The properties for the XQuery-module
