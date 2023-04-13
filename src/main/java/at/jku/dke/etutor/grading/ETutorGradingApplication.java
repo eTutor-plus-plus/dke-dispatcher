@@ -66,10 +66,7 @@ import java.util.List;
         ETutorPMController.class,
         PmEvaluator.class
 
-
 })
-
-
 @ComponentScan(basePackages ="at.jku.dke.etutor.modules")
 @EnableConfigurationProperties({ApplicationProperties.class})
 @SpringBootApplication

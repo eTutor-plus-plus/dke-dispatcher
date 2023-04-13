@@ -24,14 +24,12 @@ import javax.sql.DataSource;
         transactionManagerRef= "transactionManager")
 @Configuration
 public class DataSourceConfiguration {
-
     @Bean
     @Primary
     @ConfigurationProperties("application.datasource")
     public DataSourceProperties defaultDataSourceProperties() {
         return new DataSourceProperties();
     }
-
     @Bean
     @Primary
     @ConfigurationProperties("application.datasource.configuration")
@@ -48,7 +46,6 @@ public class DataSourceConfiguration {
                 .packages("at.jku.dke.etutor.grading.rest.model.entities")
                 .build();
     }
-
     @Bean
     public PlatformTransactionManager transactionManager(
             final @Qualifier("entityManagerFactory") LocalContainerEntityManagerFactoryBean entityManagerFactory) {

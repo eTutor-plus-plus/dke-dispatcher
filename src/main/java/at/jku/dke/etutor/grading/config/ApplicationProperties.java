@@ -77,7 +77,6 @@ public class ApplicationProperties {
         this.datalog = datalog;
     }
 
-
     /**
      * Properties for the Datalog module
      */
@@ -615,5 +614,6 @@ public class ApplicationProperties {
             this.sleepDuration = sleepDuration;
         }
     }
+
 
 }
