@@ -14,6 +14,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
+/**
+ * HikariDataSource bean for the Functional Dependencies Module
+ */
+
 @Configuration
 @EnableJpaRepositories(basePackages = "at.jku.dke.etutor.modules.fd.repositories",
         entityManagerFactoryRef = "fdEntityManagerFactory",

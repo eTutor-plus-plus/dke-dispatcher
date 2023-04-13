@@ -4,24 +4,21 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@IdClass(at.jku.dke.etutor.modules.fd.entities.AssignmentPK.class)
 public class Assignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @javax.persistence.Column(name = "student_id")
-    private Long studentId;
+    @Column(name = "id")
+    private Long id;
 
-    public Long getStudentId() {
-        return studentId;
+    public Long getId() {
+        return id;
     }
 
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
+    public void setId(Long id) {
+        this.id = id;
     }
-
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @javax.persistence.Column(name = "exercise_id")
+    @Basic
+    @Column(name="exercise_id")
     private Long exerciseId;
 
     public Long getExerciseId() {
@@ -30,6 +27,17 @@ public class Assignment {
 
     public void setExerciseId(Long exerciseId) {
         this.exerciseId = exerciseId;
+    }
+    @Basic
+    @Column(name="student_id")
+    private Long studentId;
+
+    public Long getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
     }
 
     @Basic

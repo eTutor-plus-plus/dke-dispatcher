@@ -6,6 +6,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Objects;
 
 @TypeDefs({
@@ -27,15 +28,15 @@ public class Dependency {
     @Type(type = "string-array")
     @Column(name = "right_side", columnDefinition = "text[]")
     private String[] rightSide;
-    @Basic
-    @Column(name = "violated_normalform")
-    private String violatedNormalform;
-    @Basic
-    @Column(name = "has_redundant_part")
-    private Boolean hasRedundantPart;
-    @Basic
-    @Column(name = "is_trivial")
-    private Boolean isTrivial;
+
+    public Dependency() {
+    }
+
+    public Dependency(Long id, String[] leftSide, String[] rightSide) {
+        this.id = id;
+        this.leftSide = leftSide;
+        this.rightSide = rightSide;
+    }
 
     public Long getId() {
         return id;
@@ -61,40 +62,25 @@ public class Dependency {
         this.rightSide = rightSide;
     }
 
-    public String getViolatedNormalform() {
-        return violatedNormalform;
-    }
-
-    public void setViolatedNormalform(String violatedNormalform) {
-        this.violatedNormalform = violatedNormalform;
-    }
-
-    public Boolean getHasRedundantPart() {
-        return hasRedundantPart;
-    }
-
-    public void setHasRedundantPart(Boolean hasRedundantPart) {
-        this.hasRedundantPart = hasRedundantPart;
-    }
-
-    public Boolean getTrivial() {
-        return isTrivial;
-    }
-
-    public void setTrivial(Boolean trivial) {
-        isTrivial = trivial;
-    }
-
-    @Override
+   @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Dependency that = (Dependency) o;
-        return Objects.equals(id, that.id) && Objects.equals(leftSide, that.leftSide) && Objects.equals(rightSide, that.rightSide) && Objects.equals(violatedNormalform, that.violatedNormalform) && Objects.equals(hasRedundantPart, that.hasRedundantPart) && Objects.equals(isTrivial, that.isTrivial);
+        return Objects.equals(id, that.id) && Objects.equals(leftSide, that.leftSide) && Objects.equals(rightSide, that.rightSide);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, leftSide, rightSide, violatedNormalform, hasRedundantPart, isTrivial);
+        return Objects.hash(id, leftSide, rightSide);
+    }
+
+    @Override
+    public String toString() {
+        return "Dependency{" +
+                "id=" + id +
+                ", leftSide=" + Arrays.toString(leftSide) +
+                ", rightSide=" + Arrays.toString(rightSide) +
+                '}';
     }
 }

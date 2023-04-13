@@ -4,7 +4,6 @@ import at.jku.dke.etutor.modules.fd.entities.Dependency;
 import at.jku.dke.etutor.modules.fd.repositories.DependencyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +16,20 @@ public class DependencyService {
     public List<Dependency> getAll() {
         List<Dependency> dependencies = new ArrayList<>();
         repository.findAll().forEach(dependency -> dependencies.add(dependency));
-        for (Dependency dependency: dependencies) {
-            System.out.println(dependency.getId());
-        }
         return dependencies;
     }
+    public boolean newDependency(Dependency dependency) {
+        if (dependency.getId() == null || !repository.existsById(dependency.getId())) {
+            try {
+                repository.save(dependency);
+            }
+            catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+
 }

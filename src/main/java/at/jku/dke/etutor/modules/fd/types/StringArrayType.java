@@ -64,7 +64,7 @@ public class StringArrayType <T extends Serializable> implements UserType {
         } else {
             @SuppressWarnings("unchecked")
             T castObject = (T) value;
-            Array array = connection.createArrayOf("integer", (Object[]) castObject);
+            Array array = connection.createArrayOf("text", (Object[]) castObject);
             statement.setArray(index, array);
         }
     }

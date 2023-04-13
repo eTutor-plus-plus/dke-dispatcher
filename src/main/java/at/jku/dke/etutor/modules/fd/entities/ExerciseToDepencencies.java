@@ -1,16 +1,13 @@
 package at.jku.dke.etutor.modules.fd.entities;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
-@javax.persistence.Table(name = "exercise_to_depencencies", schema = "public", catalog = "fd")
+@javax.persistence.Table(name = "exercise_dependency", schema = "public", catalog = "fd")
 @javax.persistence.IdClass(at.jku.dke.etutor.modules.fd.entities.ExerciseToDepencenciesPK.class)
 public class ExerciseToDepencencies {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @javax.persistence.Column(name = "exercise_id")
     private Long exerciseId;
@@ -23,9 +20,8 @@ public class ExerciseToDepencencies {
         this.exerciseId = exerciseId;
     }
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @javax.persistence.Column(name = "dependency_id")
+    @javax.persistence.Column(name = "dependencies_id")
     private Long dependencyId;
 
     public Long getDependencyId() {
@@ -35,6 +31,7 @@ public class ExerciseToDepencencies {
     public void setDependencyId(Long dependencyId) {
         this.dependencyId = dependencyId;
     }
+
 
     @Override
     public boolean equals(Object o) {
