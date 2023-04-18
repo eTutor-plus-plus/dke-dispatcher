@@ -1,18 +1,26 @@
 package at.jku.dke.etutor.modules.fd.entities;
 
+import at.jku.dke.etutor.modules.fd.types.ListArrayType;
 import at.jku.dke.etutor.modules.fd.types.StringArrayType;
+import org.basex.query.value.array.Array;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @TypeDefs({
         @TypeDef(
                 name = "string-array",
                 typeClass = StringArrayType.class
+        ),
+        @TypeDef(
+                name = "string-list",
+                typeClass = ListArrayType.class
         )
 })
 @Entity
@@ -30,6 +38,11 @@ public class Dependency {
     private String[] rightSide;
 
     public Dependency() {
+    }
+
+    public Dependency(String[] leftSide, String[] rightSide) {
+        this.leftSide = leftSide;
+        this.rightSide = rightSide;
     }
 
     public Dependency(Long id, String[] leftSide, String[] rightSide) {
@@ -67,7 +80,7 @@ public class Dependency {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Dependency that = (Dependency) o;
-        return Objects.equals(id, that.id) && Objects.equals(leftSide, that.leftSide) && Objects.equals(rightSide, that.rightSide);
+        return Objects.equals(id, that.id) && Arrays.equals(leftSide, that.leftSide) && Arrays.equals(rightSide, that.rightSide);
     }
 
     @Override

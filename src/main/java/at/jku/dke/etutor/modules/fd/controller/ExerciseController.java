@@ -4,6 +4,8 @@ import at.jku.dke.etutor.modules.fd.entities.Exercise;
 import at.jku.dke.etutor.modules.fd.services.ExerciseService;
 import org.springframework.web.bind.annotation.*;
 
+import static at.jku.dke.etutor.modules.fd.solve.CalculateClosure.calculateClosure;
+
 @RestController
 @RequestMapping(path="/fd")
 public class ExerciseController {
@@ -20,5 +22,9 @@ public class ExerciseController {
     @GetMapping("/exercise")
     public Exercise getExerciseById(@RequestParam Long id) {
         return exerciseService.getExerciseById(id);
+    }
+    @GetMapping("/closure")
+    public void generateClosure(@RequestParam Long id) {
+        calculateClosure(exerciseService.getExerciseById(id));
     }
 }

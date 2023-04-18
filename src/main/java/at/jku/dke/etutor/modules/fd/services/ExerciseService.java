@@ -20,6 +20,7 @@ public class ExerciseService {
     public boolean createExercise(Exercise exercise) {
         try {
             exerciseRepository.save(exercise);
+//            calculateClosure(exercise);
         } catch (Exception e) {
 
             return false;
@@ -34,8 +35,12 @@ public class ExerciseService {
             exercise = optionalExercise.get();
             return exercise;
         }
-        return null; //404
+        return null;
     }
 
+//    public boolean calculateClosure(Exercise exercise) {
+//        System.out.println(exercise.getId());
+//        return true;
+//    }
 
 }

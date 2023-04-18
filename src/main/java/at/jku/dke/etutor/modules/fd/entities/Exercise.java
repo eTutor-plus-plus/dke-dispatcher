@@ -1,11 +1,17 @@
 package at.jku.dke.etutor.modules.fd.entities;
 
+import at.jku.dke.etutor.modules.fd.types.ListArrayType;
+import at.jku.dke.etutor.modules.fd.types.StringArrayType;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
+@TypeDef(
+        name = "string-array",
+        typeClass = StringArrayType.class
+)
 @Entity
 public class Exercise {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,7 +67,7 @@ public class Exercise {
     public String toString() {
         return "Exercise{" +
                 "id=" + id +
-                ", relation='" + relation + '\'' +
+                ", relation='" + Arrays.toString(relation) + '\'' +
                 ", dependencies=" + dependencies +
                 '}';
     }
