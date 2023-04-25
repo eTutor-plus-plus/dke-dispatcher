@@ -44,6 +44,7 @@ public class DataSourceConfiguration {
         return builder
                 .dataSource(defaultDataSource())
                 .packages("at.jku.dke.etutor.grading.rest.model.entities")
+                .persistenceUnit("Default") //?
                 .build();
     }
     @Bean

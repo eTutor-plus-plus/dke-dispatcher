@@ -43,6 +43,7 @@ public class FdDataSourceConfiguration {
         return builder
                 .dataSource(fdDataSource())
                 .packages("at.jku.dke.etutor.modules.fd.entities")
+                .persistenceUnit("FD")
                 .build();
     }
 
