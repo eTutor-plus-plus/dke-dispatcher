@@ -4,7 +4,8 @@ import at.jku.dke.etutor.modules.fd.entities.Exercise;
 import at.jku.dke.etutor.modules.fd.services.ExerciseService;
 import org.springframework.web.bind.annotation.*;
 
-import static at.jku.dke.etutor.modules.fd.solve.CalculateClosure.calculateClosure;
+import static at.jku.dke.etutor.modules.fd.solve.CalculateClosure.calculateClosures;
+import static at.jku.dke.etutor.modules.fd.solve.CalculateMinimalCover.calculateMinimalCover;
 
 @RestController
 @RequestMapping(path="/fd")
@@ -25,6 +26,9 @@ public class ExerciseController {
     }
     @GetMapping("/closure")
     public void generateClosure(@RequestParam Long id) {
-        calculateClosure(exerciseService.getExerciseById(id));
+        calculateClosures(exerciseService.getExerciseById(id));
     }
+
+    @GetMapping("/cover")
+    public void generateMinimalCover(@RequestParam Long id) {calculateMinimalCover(exerciseService.getExerciseById(id)); }
 }

@@ -1,35 +1,27 @@
 package at.jku.dke.etutor.modules.fd.entities;
 
-import at.jku.dke.etutor.modules.fd.types.ListArrayType;
 import at.jku.dke.etutor.modules.fd.types.StringArrayType;
-import org.basex.query.value.array.Array;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
-
-@TypeDefs({
-        @TypeDef(
-                name = "string-array",
-                typeClass = StringArrayType.class
-        ),
-        @TypeDef(
-                name = "string-list",
-                typeClass = ListArrayType.class
-        )
-})
+@TypeDef(
+        name = "string-array",
+        typeClass = StringArrayType.class
+)
 @Entity
-@Table(name = "dependency", schema = "public", catalog = "fd")
-public class Dependency {
+@Table(name = "closure", schema = "public", catalog = "fd")
+public class Closure {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     private Long id;
+
     @Type(type = "string-array")
     @Column(name = "left_side", columnDefinition = "text[]")
     private String[] leftSide;
@@ -37,16 +29,24 @@ public class Dependency {
     @Column(name = "right_side", columnDefinition = "text[]")
     private String[] rightSide;
 
-    public Dependency() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "exercise_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Exercise exercise;
+
+    public Exercise getExercise() {
+        return exercise;
     }
 
-    public Dependency(String[] leftSide, String[] rightSide) {
-        this.leftSide = leftSide;
-        this.rightSide = rightSide;
+    public void setExercise(Exercise exercise) {
+        this.exercise = exercise;
     }
 
-    public Dependency(Long id, String[] leftSide, String[] rightSide) {
-        this.id = id;
+    public Closure() {
+    }
+
+    public Closure(String[] leftSide, String[] rightSide) {
         this.leftSide = leftSide;
         this.rightSide = rightSide;
     }
@@ -58,6 +58,7 @@ public class Dependency {
     public void setId(Long id) {
         this.id = id;
     }
+
 
     public String[] getLeftSide() {
         return leftSide;
@@ -75,23 +76,24 @@ public class Dependency {
         this.rightSide = rightSide;
     }
 
-   @Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Dependency that = (Dependency) o;
-        return Objects.equals(id, that.id) && Arrays.equals(leftSide, that.leftSide) &&
-                Arrays.equals(rightSide, that.rightSide);
+        Closure that = (Closure) o;
+        return Objects.equals(id, that.id) &&
+                Arrays.equals(leftSide, that.leftSide) && Arrays.equals(rightSide, that.rightSide);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, leftSide, rightSide);
+        return Objects.hash(id,
+                leftSide, rightSide);
     }
 
     @Override
     public String toString() {
-        return "Dependency{" +
+        return "Closure{" +
                 "id=" + id +
                 ", leftSide=" + Arrays.toString(leftSide) +
                 ", rightSide=" + Arrays.toString(rightSide) +

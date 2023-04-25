@@ -25,6 +25,9 @@ public class Exercise {
 
     @OneToMany (cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private Set<Dependency> dependencies;
+    @OneToMany (cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "exercise_id", referencedColumnName = "id")
+    private Set<Closure> closures;
 
 
     public Long getId() {
@@ -50,6 +53,15 @@ public class Exercise {
     public void setDependencies(Set<Dependency> dependencies) {
         this.dependencies = dependencies;
     }
+
+    public Set<Closure> getClosures() {
+        return closures;
+    }
+
+    public void setClosures(Set<Closure> closures) {
+        this.closures = closures;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -69,6 +81,7 @@ public class Exercise {
                 "id=" + id +
                 ", relation='" + Arrays.toString(relation) + '\'' +
                 ", dependencies=" + dependencies +
-                '}';
+                ", closures=" + closures +
+                "}\n";
     }
 }
