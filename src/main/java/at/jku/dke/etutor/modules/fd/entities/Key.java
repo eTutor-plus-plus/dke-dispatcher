@@ -10,48 +10,38 @@ import org.hibernate.annotations.TypeDef;
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
+
 @TypeDef(
         name = "string-array",
         typeClass = StringArrayType.class
 )
 @Entity
-@Table(name = "closure", schema = "public", catalog = "fd")
-public class Closure {
+@Table(name = "key", schema = "public", catalog = "fd")
+public class Key {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     private Long id;
-
     @Type(type = "string-array")
     @Column(name = "left_side", columnDefinition = "text[]")
     private String[] leftSide;
     @Type(type = "string-array")
     @Column(name = "right_side", columnDefinition = "text[]")
     private String[] rightSide;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Exercise exercise;
 
-    public Exercise getExercise() {
-        return exercise;
+    public Key() {
     }
 
-    public void setExercise(Exercise exercise) {
-        this.exercise = exercise;
-    }
-
-    public Closure() {
-    }
-
-    public Closure(String[] leftSide, String[] rightSide, Exercise exercise) {
+    public Key(String[] leftSide, String[] rightSide, Exercise exercise) {
         this.leftSide = leftSide;
         this.rightSide = rightSide;
         this.exercise = exercise;
     }
-
 
     public Long getId() {
         return id;
@@ -60,7 +50,6 @@ public class Closure {
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public String[] getLeftSide() {
         return leftSide;
@@ -74,31 +63,28 @@ public class Closure {
         return rightSide;
     }
 
-    public void setRightSide(String[] rightSide) {
-        this.rightSide = rightSide;
+    public void setRightSide(String[] rightSid) {
+        this.rightSide = rightSid;
+    }
+
+    public Exercise getExercise() {
+        return exercise;
+    }
+
+    public void setExercise(Exercise exercise) {
+        this.exercise = exercise;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Closure that = (Closure) o;
-        return Objects.equals(id, that.id) &&
-                Arrays.equals(leftSide, that.leftSide) && Arrays.equals(rightSide, that.rightSide);
+        Key key = (Key) o;
+        return Objects.equals(id, key.id) && Arrays.equals(leftSide, key.leftSide) && Arrays.equals(rightSide, key.rightSide);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id,
-                Arrays.hashCode(leftSide), Arrays.hashCode(rightSide));
-    }
-
-    @Override
-    public String toString() {
-        return "Closure{" +
-                "id=" + id +
-                ", leftSide=" + Arrays.toString(leftSide) +
-                ", rightSide=" + Arrays.toString(rightSide) +
-                "}\n";
+        return Objects.hash(id, Arrays.hashCode(leftSide), Arrays.hashCode(rightSide));
     }
 }

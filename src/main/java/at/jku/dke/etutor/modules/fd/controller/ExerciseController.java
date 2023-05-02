@@ -1,8 +1,14 @@
 package at.jku.dke.etutor.modules.fd.controller;
 
 import at.jku.dke.etutor.modules.fd.entities.Exercise;
+import at.jku.dke.etutor.modules.fd.entities.MinimalCover;
+import at.jku.dke.etutor.modules.fd.repositories.MinimalCoverRepository;
 import at.jku.dke.etutor.modules.fd.services.ExerciseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 import static at.jku.dke.etutor.modules.fd.solve.CalculateClosure.calculateClosures;
 import static at.jku.dke.etutor.modules.fd.solve.CalculateMinimalCover.calculateMinimalCover;
@@ -30,5 +36,9 @@ public class ExerciseController {
     }
 
     @GetMapping("/cover")
-    public void generateMinimalCover(@RequestParam Long id) {calculateMinimalCover(exerciseService.getExerciseById(id)); }
+    public Set<MinimalCover> generateMinimalCover(@RequestParam Long id) {
+        return calculateMinimalCover(exerciseService.getExerciseById(id));
+    }
+
+
 }

@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.TreeSet;
 
 import static at.jku.dke.etutor.modules.fd.solve.CalculateClosure.calculateClosures;
+import static at.jku.dke.etutor.modules.fd.solve.CalculateKeys.calculateKeys;
 
 @Service
 public class ExerciseService {
@@ -27,6 +28,7 @@ public class ExerciseService {
                 exercise.setRelation(calculateRelation(exercise));
             }
             exercise.setClosures(calculateClosures(exercise));
+            exercise.setKeys(calculateKeys(exercise));
             exerciseRepository.save(exercise);
 
         } catch (Exception e) {

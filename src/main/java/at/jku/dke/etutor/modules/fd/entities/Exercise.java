@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.modules.fd.entities;
 
-import at.jku.dke.etutor.modules.fd.types.ListArrayType;
 import at.jku.dke.etutor.modules.fd.types.StringArrayType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -18,17 +17,21 @@ public class Exercise {
     @Id
     @Column(name = "id")
     private Long id;
-    @Basic
     @Type(type = "string-array")
     @Column(name = "relation", columnDefinition = "text[]")
     private String[] relation;
-
-    @OneToMany (cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "exercise_id", referencedColumnName = "id")
     private Set<Dependency> dependencies;
-    @OneToMany (cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "exercise_id", referencedColumnName = "id")
     private Set<Closure> closures;
-
+    @OneToMany (cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "exercise_id", referencedColumnName = "id")
+    private Set<Key> keys;
+    @OneToMany (cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "exercise_id", referencedColumnName = "id")
+    private Set<MinimalCover> minimalCovers;
 
     public Long getId() {
         return id;
@@ -62,17 +65,41 @@ public class Exercise {
         this.closures = closures;
     }
 
+    public Set<Key> getKeys() {
+        return keys;
+    }
+
+    public void setKeys(Set<Key> keys) {
+        this.keys = keys;
+    }
+
+    public Set<MinimalCover> getMinimalCovers() {
+        return minimalCovers;
+    }
+
+    public void setMinimalCovers(Set<MinimalCover> minimalCovers) {
+        this.minimalCovers = minimalCovers;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Exercise exercise = (Exercise) o;
-        return Objects.equals(id, exercise.id) && Objects.equals(relation, exercise.relation);
+        return Objects.equals(id, exercise.id)
+                && Arrays.equals(relation, exercise.relation)
+                && Objects.equals(dependencies, exercise.dependencies)
+                && Objects.equals(closures, exercise.closures)
+                && Objects.equals(keys, exercise.keys)
+//              && Objects.equals(minimalCovers, exercise.minimalCovers)
+              ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, relation);
+        return Objects.hash(id, Arrays.hashCode(relation), dependencies, closures, keys
+//                , minimalCovers
+        );
     }
 
     @Override
@@ -81,7 +108,7 @@ public class Exercise {
                 "id=" + id +
                 ", relation='" + Arrays.toString(relation) + '\'' +
                 ", dependencies=" + dependencies +
-                ", closures=" + closures +
+//                ", closures=" + closures +
                 "}\n";
     }
 }

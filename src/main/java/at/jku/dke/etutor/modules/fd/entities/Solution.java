@@ -2,6 +2,7 @@ package at.jku.dke.etutor.modules.fd.entities;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Solution {
@@ -9,9 +10,7 @@ public class Solution {
     @Id
     @Column(name = "id")
     private Long id;
-    @Basic
-    @Column(name = "keys")
-    private String keys;
+
     @Basic
     @Column(name = "closure_combination")
     private String closureCombination;
@@ -27,13 +26,6 @@ public class Solution {
         this.id = id;
     }
 
-    public String getKeys() {
-        return keys;
-    }
-
-    public void setKeys(String keys) {
-        this.keys = keys;
-    }
 
     public String getClosureCombination() {
         return closureCombination;
@@ -56,11 +48,11 @@ public class Solution {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Solution solution = (Solution) o;
-        return Objects.equals(id, solution.id) && Objects.equals(keys, solution.keys) && Objects.equals(closureCombination, solution.closureCombination) && Objects.equals(closureResults, solution.closureResults);
+        return Objects.equals(id, solution.id) && Objects.equals(closureCombination, solution.closureCombination) && Objects.equals(closureResults, solution.closureResults);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, keys, closureCombination, closureResults);
+        return Objects.hash(id, closureCombination, closureResults);
     }
 }

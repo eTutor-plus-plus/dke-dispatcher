@@ -32,7 +32,7 @@ public class CalculateClosure {
 			}
 		} while (startSize != result.size());
 		/** Eine neue Abhängigkeit wird erstellt */
-		return new Closure(leftSide, result.toArray(new String[0]));
+		return new Closure(leftSide, result.toArray(new String[0]), exercise);
 
 	}
 

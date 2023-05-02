@@ -13,6 +13,10 @@
       <class>at.jku.dke.etutor.modules.fd.entities.ExerciseToDepencencies</class>
         <class>at.jku.dke.etutor.modules.fd.entities.Solution</class>
         <class>at.jku.dke.etutor.modules.fd.entities.Closure</class>
+        <class>at.jku.dke.etutor.modules.fd.entities.MinimalCover</class>
+        <class>at.jku.dke.etutor.modules.fd.entities.DependencyMinimalCover</class>
+        <class>at.jku.dke.etutor.modules.fd.entities.Key</class>
+        <class>at.jku.dke.etutor.modules.fd.entities.ExerciseKey</class>
         <properties>
         <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/postgres"/>
         <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
