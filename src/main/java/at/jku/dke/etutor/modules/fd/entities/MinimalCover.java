@@ -15,7 +15,7 @@ import java.util.Set;
         typeClass = StringArrayType.class
 )
 @Entity
-@Table(name = "minimal_cover", schema = "public", catalog = "fd")
+@Table(name = "minimal_cover", schema = "fd", catalog = "fd")
 public class MinimalCover {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

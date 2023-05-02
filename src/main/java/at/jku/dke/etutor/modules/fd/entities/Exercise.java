@@ -12,6 +12,7 @@ import java.util.*;
         typeClass = StringArrayType.class
 )
 @Entity
+@Table(name = "exercise", schema = "fd", catalog = "fd")
 public class Exercise {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

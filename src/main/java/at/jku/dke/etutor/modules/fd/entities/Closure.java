@@ -15,7 +15,7 @@ import java.util.Objects;
         typeClass = StringArrayType.class
 )
 @Entity
-@Table(name = "closure", schema = "public", catalog = "fd")
+@Table(name = "closure", schema = "fd", catalog = "fd")
 public class Closure {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

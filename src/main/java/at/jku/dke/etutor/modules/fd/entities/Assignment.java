@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@Table(name = "assignment", schema = "fd", catalog = "fd")
 public class Assignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

@@ -1,3 +1,11 @@
+create sequence closure_id_seq1;
+
+alter sequence closure_id_seq1 owner to etutor;
+
+create sequence exercise_id_seq1;
+
+alter sequence exercise_id_seq1 owner to etutor;
+
 create table exercise
 (
     relation text[]                                               not null,
@@ -7,6 +15,8 @@ create table exercise
 
 alter table exercise
     owner to etutor;
+
+alter sequence exercise_id_seq1 owned by exercise.id;
 
 create table assignment
 (
@@ -41,7 +51,9 @@ create table closure
     exercise_id bigint not null
         constraint closure_exercise_id_fk
             references exercise
-            on update cascade on delete cascade,
+            on update cascade on delete cascade
+        constraint fkihr5gqvuy67tpgjp2r6v37tk
+            references exercise,
     left_side   text[] not null,
     right_side  text[] not null
 );
@@ -61,6 +73,8 @@ create table minimal_cover
         constraint minimal_cover_exercise_id_fk
             references exercise
             on update cascade on delete cascade
+        constraint fk69jqn1yasn46k1ij3fseamcmy
+            references exercise
 );
 
 alter table minimal_cover
@@ -75,7 +89,9 @@ create table dependency
     exercise_id      bigint
         constraint dependency_exercise_id_fk
             references exercise
-            on update cascade on delete cascade,
+            on update cascade on delete cascade
+        constraint fk5swex7s81wnas42mdjnpkob7t
+            references exercise,
     minimal_cover_id bigint
         constraint dependency_minimal_cover_id_fk
             references minimal_cover
@@ -96,6 +112,8 @@ create table key
         constraint key_exercise_id_fk
             references exercise
             on update cascade on delete cascade
+        constraint fkpjmplar1n11sahsy5xk4c3s1x
+            references exercise
 );
 
 alter table key

@@ -3,11 +3,9 @@ package at.jku.dke.etutor.modules.fd.entities;
 import at.jku.dke.etutor.modules.fd.types.ListArrayType;
 import at.jku.dke.etutor.modules.fd.types.StringArrayType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.basex.query.value.array.Array;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.*;
@@ -15,15 +13,15 @@ import java.util.*;
 @TypeDefs({
         @TypeDef(
                 name = "string-array",
-                typeClass = StringArrayType.class
+                typeClass = at.jku.dke.etutor.modules.fd.types.StringArrayType.class
         ),
         @TypeDef(
                 name = "string-list",
-                typeClass = ListArrayType.class
+                typeClass = at.jku.dke.etutor.modules.fd.types.ListArrayType.class
         )
 })
 @Entity
-@Table(name = "dependency", schema = "public", catalog = "fd")
+@Table(name = "dependency", schema = "fd", catalog = "fd")
 public class Dependency implements IDependency{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
