@@ -80,7 +80,7 @@ create table minimal_cover
 alter table minimal_cover
     owner to etutor;
 
-create table dependency
+create table functionalDependency
 (
     id               bigint generated always as identity
         primary key,
@@ -98,7 +98,7 @@ create table dependency
             on update cascade on delete cascade
 );
 
-alter table dependency
+alter table functionalDependency
     owner to etutor;
 
 create table key

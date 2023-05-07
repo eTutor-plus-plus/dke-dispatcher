@@ -1,0 +1,80 @@
+R	(ABCDE )
+F = 	{A B → C, C → D, D E → B, E → C }
+R	(ABCDE )
+F = 	{B E → A, B → D, A D → C }
+R	(ABCDE )
+F = 	{A B → E, A E → D, A D → C, A C → B }
+R	(ABCDEF )
+F = 	{B E → A, B D → A, B → D, D → C, A D → C }
+R	(ABCDEFG )
+F = 	{A → D, C D → B, E → A, D E → G, A B → F }
+R	(ABCDEF )
+F = 	{A B → C D, C D → B, E → C, C → F, C → D, F → C, C F → A, A D F → C, A → E, B → A }
+R	(ABCDEF )
+F = 	{A → C D, E → C F, E → C, C → D F, D F → B, D E → B, B C → A, B → E, C → E, F → B, D → F }
+R	(ABCDEF )
+F = 	{A C → B, C → E, F → D, C → F }
+R	(ABCDEF )
+F = 	{A C → B, C → E, F → D, C → F }
+R	(ABCDEF )
+F = 	{A D → B, D → F, E → C, D → E }
+R	(ABCDEF )
+F = 	{D F → E, D → A, B → C, D → B }
+R	(ABCDE )
+F = 	{A B → C, C → D, D E → B, E → C }
+R	(A B C D E F}
+F = 	{D F → A, C → E, A F → D, B E → F}
+R	(A B C D}
+F = 	{D → A, A → B C}
+R	(A B C D E F G}
+F = 	{D F → B, G → A, B F → A G, B D F → G, A D → F, A B D → C G}
+R	(A B C D E F G H I}
+F = 	{H I → B, F G → B H, F → C I, C E G → A, E G → F I, C I → D}
+R	(A B C D E F G}
+F = 	{B E → D G, B C → F G, F → G, B → E, A → B C G}
+R	(A B C D E F}
+F = 	{A D F → C, A C → F, C → A, E → C, C D → B, B F → C D}
+R	(A B C D E F}
+F = 	{A B → D, B C → E, A D → E, C E → A F, D F → C, B E → F}
+R	(A B C D E F}
+F = 	{C F → B, B C → D, C D → A, B D → E, D E → B F, F → A D}
+R	(A B C D}
+F = 	{C D → B, A → C}
+R	(A B C D}
+F = 	{C → D, A → C}
+R	(A B C D E F G H}
+F = 	{E → H, G → A, A → G, C → F, C → E, E F → D, E F → C}
+R	(A B C D E F G H}
+F = 	{B F → G, A → D, A → C, F G → E, F G → B, B E → F, G → H}
+R	(A B C D E F G}
+F = 	{G → A, B → C, A D → B, A D → G, F → D, D → F, D → E}
+R	(A B C D E F G}
+F = 	{A C → E, A F → B, A → G, E F → A, A D → C, C E → D}
+R	(A B C D E}
+F = 	{A D → E, A C → D, A B → C}
+R	(A B C D E F G}
+F = 	{A F → G, C F → G, B E F → A, C D → B, C D → A, F G → C, G → E}
+R	(A B C D E F G}
+F = 	{E → G, C → G, C → A, A → C, D → A, B G → D, B F → G, F G → A}
+R	(A B C D E}
+F = 	{B C → A, C E → B, C → E, A → D, A → C}
+R	(A B C D E F}
+F = 	{A → E, B → C, C → E, C → D, C → B, C → A}
+R	(A B C D E F G H I}
+F = 	{A H → I, C D → G, C E → G, D → E, A B → D, A B → E, A B → C}
+R	(A B C D E F G H}
+F = 	{E H → B, A H → E, B C → A, A C → B, D → H, D → F, E H → D, D → A}
+R	(A B C D E F G}
+F = 	{E → C, G → B, G → A, C D → F, D → G, C F → E, C F → D}
+R	(A B C D E F G H I J}
+F = 	{E → G, D E → G, A I → H, B C I → H, A → G, A → C, A → B}
+R	(A B C D E F G}
+F = 	{E → F, G → F, D E → B, D E → A, B → E, A B → C, A B → D}
+R	(A B C D E F}
+F = 	{A D → B, A C → B, A B → F, A B → E, A B → D, A B → C}
+R	(A B C D E F}
+F = 	{F → E, C → A, D → B, E F → C D}
+R	(A B C D E F G H}
+F = 	{A H → D, G H → D, B C → G, A → G, A → C, A → B}
+R	(A B C D E F}
+F = 	{D → E, F → A, D → F, B C → E, B C → D}

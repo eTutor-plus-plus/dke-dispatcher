@@ -16,7 +16,7 @@ import java.util.Objects;
 )
 @Entity
 @Table(name = "closure", schema = "fd", catalog = "fd")
-public class Closure {
+public class Closure implements Dependency{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")

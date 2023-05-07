@@ -8,7 +8,6 @@ import org.hibernate.annotations.TypeDef;
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Set;
 
 @TypeDef(
         name = "string-array",
@@ -16,7 +15,7 @@ import java.util.Set;
 )
 @Entity
 @Table(name = "minimal_cover", schema = "fd", catalog = "fd")
-public class MinimalCover {
+public class MinimalCover implements Dependency{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -27,31 +26,28 @@ public class MinimalCover {
     @Type(type = "string-array")
     @Column(name = "right_side", columnDefinition = "text[]")
     private String[] rightSide;
-    @Column(name = "reason")
-    private String reason;
-    @OneToMany(fetch = FetchType.LAZY)
+    @Type(type = "string-array")
+    @Column(name = "reasons" , columnDefinition = "text[]")
+    private String[] reasons;
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name="minimal_cover_id", referencedColumnName = "id")
-    private Set<Dependency> dependencies;
+    @JoinColumn(name="dependency_id")
+    private FunctionalDependency dependency;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="exercise_id", referencedColumnName = "id")
+    @JsonIgnore
+    @JoinColumn(name="exercise_id")
     private Exercise exercise;
 
 
     public MinimalCover() {
     }
 
-    public MinimalCover(String[] leftSide, String[] rightSide, Set<Dependency> dependencies) {
+    public MinimalCover(String[] leftSide, String[] rightSide, String[] reasons, FunctionalDependency dependency, Exercise exercise) {
         this.leftSide = leftSide;
         this.rightSide = rightSide;
-        this.dependencies = dependencies;
-    }
-
-    public MinimalCover(String[] leftSide, String[] rightSide, String reason, Set<Dependency> dependencies) {
-        this.leftSide = leftSide;
-        this.rightSide = rightSide;
-        this.reason = reason;
-        this.dependencies = dependencies;
+        this.reasons = reasons;
+        this.dependency = dependency;
+        this.exercise = exercise;
     }
 
     public Long getId() {
@@ -80,20 +76,20 @@ public class MinimalCover {
         this.rightSide = rightSide;
     }
 
-    public String getReason() {
-        return reason;
+    public String[] getReasons() {
+        return reasons;
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
+    public void setReasons(String[] reasons) {
+        this.reasons = reasons;
     }
 
-    public Set<Dependency> getDependencies() {
-        return dependencies;
+    public FunctionalDependency getDependency() {
+        return dependency;
     }
 
-    public void setDependencies(Set<Dependency> dependencies) {
-        this.dependencies = dependencies;
+    public void setDependency(FunctionalDependency dependency) {
+        this.dependency = dependency;
     }
 
     public Exercise getExercise() {
@@ -111,12 +107,12 @@ public class MinimalCover {
         MinimalCover that = (MinimalCover) o;
         return Objects.equals(id, that.id) && Arrays.equals(leftSide, that.leftSide) &&
                 Arrays.equals(rightSide, that.rightSide) &&
-                Objects.equals(reason, that.reason);
+                Objects.equals(reasons, that.reasons);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, Arrays.hashCode(leftSide), Arrays.hashCode(rightSide), reason);
+        return Objects.hash(id, Arrays.hashCode(leftSide), Arrays.hashCode(rightSide), Arrays.hashCode(reasons));
     }
 
     @Override
@@ -125,17 +121,17 @@ public class MinimalCover {
                 "id=" + id +
                 ", leftSide=" + Arrays.toString(leftSide) +
                 ", rightSide=" + Arrays.toString(rightSide) +
-                ", reason='" + reason +
+                ", reason='" + reasons +
                 "}\n";
     }
 
-    public static int compare(MinimalCover e1, MinimalCover e2) {
-        if (!Arrays.equals(e1.getLeftSide(),e2.getLeftSide())) {
-            return Arrays.compare(e1.getLeftSide(), e2.getLeftSide());
-        }
-        else if (!Arrays.equals(e1.getRightSide(),e2.getRightSide())) {
-            return Arrays.compare(e1.getRightSide(), e2.getRightSide());
-        }
-        return 0;
-    }
+//    public static int compare(MinimalCover e1, MinimalCover e2) {
+//        if (!Arrays.equals(e1.getLeftSide(),e2.getLeftSide())) {
+//            return Arrays.compare(e1.getLeftSide(), e2.getLeftSide());
+//        }
+//        else if (!Arrays.equals(e1.getRightSide(),e2.getRightSide())) {
+//            return Arrays.compare(e1.getRightSide(), e2.getRightSide());
+//        }
+//        return 0;
+//    }
 }

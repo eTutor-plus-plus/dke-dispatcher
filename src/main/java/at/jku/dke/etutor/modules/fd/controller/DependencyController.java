@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.fd.controller;
 
-import at.jku.dke.etutor.modules.fd.entities.Dependency;
+import at.jku.dke.etutor.modules.fd.entities.FunctionalDependency;
 import at.jku.dke.etutor.modules.fd.services.DependencyService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +16,12 @@ public class DependencyController {
     }
 
     @GetMapping("/dependencies")
-    public List<Dependency> getAllDependencies() {
+    public List<FunctionalDependency> getAllDependencies() {
         return dependencyService.getAll();
     }
 
     @PostMapping("/new_dependency")
-    public boolean newDependency(@RequestBody Dependency dependency) {
-        return dependencyService.newDependency(dependency);
+    public boolean newDependency(@RequestBody FunctionalDependency functionalDependency) {
+        return dependencyService.newDependency(functionalDependency);
     }
 }

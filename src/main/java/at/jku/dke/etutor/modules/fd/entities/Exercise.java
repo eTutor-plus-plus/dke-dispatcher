@@ -23,7 +23,7 @@ public class Exercise {
     private String[] relation;
     @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "exercise_id", referencedColumnName = "id")
-    private Set<Dependency> dependencies;
+    private Set<FunctionalDependency> dependencies;
     @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "exercise_id", referencedColumnName = "id")
     private Set<Closure> closures;
@@ -50,11 +50,12 @@ public class Exercise {
         this.relation = relation;
     }
 
-    public Set<Dependency> getDependencies() {
+    public Set<FunctionalDependency> getDependencies() {
         return dependencies;
     }
 
-    public void setDependencies(Set<Dependency> dependencies) {
+
+    public void setDependencies(Set<FunctionalDependency> dependencies) {
         this.dependencies = dependencies;
     }
 

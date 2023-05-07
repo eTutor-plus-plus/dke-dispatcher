@@ -2,8 +2,8 @@ package at.jku.dke.etutor.modules.fd.solve;
 
 import at.jku.dke.etutor.modules.fd.entities.Closure;
 import at.jku.dke.etutor.modules.fd.entities.Dependency;
+import at.jku.dke.etutor.modules.fd.entities.FunctionalDependency;
 import at.jku.dke.etutor.modules.fd.entities.Exercise;
-import org.basex.query.value.array.Array;
 
 import java.util.*;
 
@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class CalculateClosure {
 
-	public static Closure calculateClosure(Exercise exercise, String [] leftSide) {
+	public static Closure calculateClosure(Set<? extends Dependency> dependencies, String [] leftSide, Exercise exercise) {
 
 		HashSet<String> result= new HashSet<>();
 		/** Ausgangspunkt ist die linke Seite jeder Abhängigkeit */
@@ -25,7 +25,7 @@ public class CalculateClosure {
 			startSize = result.size();
 			/** für jede Abhängigkeit wird überprüft ob die gesamte linke Seite bereits in der vorläufigen Überdeckung
 			 * beinhaltet ist, wenn ja wird die rechte Seite hinzugefügt */
-			for (Dependency toCheck : exercise.getDependencies()) {
+			for (Dependency toCheck : dependencies) {
 				if (result.containsAll(Arrays.asList(toCheck.getLeftSide()))) {
 					result.addAll(Arrays.asList(toCheck.getRightSide()));
 				}
@@ -36,7 +36,7 @@ public class CalculateClosure {
 
 	}
 
-	public static HashSet<Closure> calculateClosures(Exercise exercise) {
+	public static Set<Closure> calculateClosures(Exercise exercise) {
 		HashSet<Closure> resultList = new HashSet<>();
 		TreeSet<String[]> attributeCombinations = new TreeSet<>(new ArrayComparator());
 
@@ -49,7 +49,7 @@ public class CalculateClosure {
 
 		/** Nur Hüllen mit Mehrwert aufnehmen */
 		for (String [] attribute: attributeCombinations) {
-			Closure toAdd = calculateClosure(exercise, attribute);
+			Closure toAdd = calculateClosure(exercise.getDependencies(), attribute, exercise);
 			if (toAdd.getLeftSide().length != toAdd.getRightSide().length) {
 				resultList.add(toAdd);
 			}
@@ -68,7 +68,8 @@ public class CalculateClosure {
 		}
 	}
 
-	private static String [] addOne(String[] combineTo, String element, TreeSet<String[]> resultlist, String [] attributes){
+	private static String [] addOne(String[] combineTo, String element, TreeSet<String[]> resultlist,
+									String [] attributes){
 		HashSet<String> original = new HashSet<>();
 		for (String c: combineTo) {
 			original.add(c);

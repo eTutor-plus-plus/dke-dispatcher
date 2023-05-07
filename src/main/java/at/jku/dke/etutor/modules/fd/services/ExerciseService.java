@@ -1,16 +1,20 @@
 package at.jku.dke.etutor.modules.fd.services;
 
 import at.jku.dke.etutor.modules.fd.entities.Dependency;
+import at.jku.dke.etutor.modules.fd.entities.FunctionalDependency;
 import at.jku.dke.etutor.modules.fd.entities.Exercise;
 import at.jku.dke.etutor.modules.fd.repositories.DependencyRepository;
 import at.jku.dke.etutor.modules.fd.repositories.ExerciseRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeSet;
 
 import static at.jku.dke.etutor.modules.fd.solve.CalculateClosure.calculateClosures;
 import static at.jku.dke.etutor.modules.fd.solve.CalculateKeys.calculateKeys;
+import static at.jku.dke.etutor.modules.fd.solve.CalculateMinimalCover.calculateMinimalCover;
 
 @Service
 public class ExerciseService {
@@ -29,6 +33,7 @@ public class ExerciseService {
             }
             exercise.setClosures(calculateClosures(exercise));
             exercise.setKeys(calculateKeys(exercise));
+            exercise.setMinimalCovers(calculateMinimalCover(exercise));
             exerciseRepository.save(exercise);
 
         } catch (Exception e) {
@@ -47,14 +52,23 @@ public class ExerciseService {
         }
         return null;
     }
+    public List<Exercise> getAll() {
+        return exerciseRepository.findAll();
+    }
+    public void deleteExerciseById(Long id){
+        exerciseRepository.deleteById(id);
+    }
+    public void deleteAll() {
+        exerciseRepository.deleteAll();
+    }
 
     private String [] calculateRelation(Exercise exercise) {
         TreeSet<String> result = new TreeSet<>();
-        for (Dependency dependency: exercise.getDependencies()) {
-            for (String left: dependency.getLeftSide()) {
+        for (Dependency functionalDependency : exercise.getDependencies()) {
+            for (String left: functionalDependency.getLeftSide()) {
                 result.add(left);
             }
-            for (String right: dependency.getRightSide()) {
+            for (String right: functionalDependency.getRightSide()) {
                 result.add(right);
             }
         }

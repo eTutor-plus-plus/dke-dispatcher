@@ -17,7 +17,7 @@ import java.util.Objects;
 )
 @Entity
 @Table(name = "key", schema = "fd", catalog = "fd")
-public class Key {
+public class Key implements Dependency {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -28,7 +28,7 @@ public class Key {
     @Type(type = "string-array")
     @Column(name = "right_side", columnDefinition = "text[]")
     private String[] rightSide;
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
@@ -41,6 +41,11 @@ public class Key {
         this.leftSide = leftSide;
         this.rightSide = rightSide;
         this.exercise = exercise;
+    }
+    public Key(Dependency dependency) {
+        this.leftSide = dependency.getLeftSide();
+        this.rightSide = dependency.getRightSide();
+        this.exercise = dependency.getExercise();
     }
 
     public Long getId() {

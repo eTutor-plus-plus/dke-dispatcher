@@ -1,10 +1,9 @@
 package at.jku.dke.etutor.modules.fd.controller;
 
+import at.jku.dke.etutor.modules.fd.entities.Dependency;
 import at.jku.dke.etutor.modules.fd.entities.Exercise;
 import at.jku.dke.etutor.modules.fd.entities.MinimalCover;
-import at.jku.dke.etutor.modules.fd.repositories.MinimalCoverRepository;
 import at.jku.dke.etutor.modules.fd.services.ExerciseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,10 +24,21 @@ public class ExerciseController {
         exerciseService.createExercise(exercise);
         return exercise;
     }
-
     @GetMapping("/exercise")
     public Exercise getExerciseById(@RequestParam Long id) {
         return exerciseService.getExerciseById(id);
+    }
+    @GetMapping("/exercises")
+    public List<Exercise> getExerciseById() {
+        return exerciseService.getAll();
+    }
+    @DeleteMapping("/exercise")
+    public void deleteExerciseById(@RequestParam Long id) {
+        exerciseService.deleteExerciseById(id);
+    }
+    @DeleteMapping("/exercises")
+    public void deleteExerciseById() {
+        exerciseService.deleteAll();
     }
     @GetMapping("/closure")
     public void generateClosure(@RequestParam Long id) {

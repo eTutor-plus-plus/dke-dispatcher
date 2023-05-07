@@ -1,8 +1,7 @@
 package at.jku.dke.etutor.modules.fd.solve;
 
 import at.jku.dke.etutor.modules.fd.entities.Closure;
-import at.jku.dke.etutor.modules.fd.entities.Dependency;
-import at.jku.dke.etutor.modules.fd.entities.Exercise;
+import at.jku.dke.etutor.modules.fd.entities.FunctionalDependency;
 
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +15,7 @@ public class SLFD {
      * return: set of attributes
      * This is a linear algorithm for computing the closure of
      * the set α of attributes with respect to the set F of FDs */
-    public static Closure slfd (String [] a, Set<Dependency> dependencies) {
+    public static Closure slfd (String [] a, Set<FunctionalDependency> dependencies) {
 
         /** αnew =α
          * αold =α */
@@ -31,18 +30,18 @@ public class SLFD {
         /**
          * foreach FD
          * β → γ in F do */
-        for (Iterator<Dependency> i = dependencies.iterator(); i.hasNext(); ) {
-            Dependency dependency = i.next();
+        for (Iterator<FunctionalDependency> i = dependencies.iterator(); i.hasNext(); ) {
+            FunctionalDependency functionalDependency = i.next();
             /**
              * if β ⊆ αnew then αnew =αnew ∪ γ
              *       F = F − β → γ */
-            if (aNew.containsAll(List.of(dependency.getLeftSide()))) {
-                aNew.addAll(List.of(dependency.getRightSide()));
+            if (aNew.containsAll(List.of(functionalDependency.getLeftSide()))) {
+                aNew.addAll(List.of(functionalDependency.getRightSide()));
                 i.remove();
             }
             /** elsif γ ⊆ αnew then
              *     F =F − β →γ */
-            else if (aNew.containsAll(List.of(dependency.getRightSide()))) {
+            else if (aNew.containsAll(List.of(functionalDependency.getRightSide()))) {
                 i.remove();
             }
 
