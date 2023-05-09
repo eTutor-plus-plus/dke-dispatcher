@@ -79,6 +79,7 @@ public class SubmissionDispatcherService {
             gradingEntity.setPoints(0);
             Report report = new Report();
             report.setHint("Contact an administrator if the error message does not allow you to resolve the issue.");
+            gradingEntity.setReport(report);
             persistGrading(gradingEntity);
         }
     }
