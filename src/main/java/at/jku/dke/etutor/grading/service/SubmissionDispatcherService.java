@@ -43,7 +43,6 @@ public class SubmissionDispatcherService {
         logger.debug("Finished saving submission to database");
         try {
             logger.debug("Evaluating submission");
-            //note: für das Modul
             Evaluator evaluator = moduleEvaluatorFactory.forTaskType(submission.getTaskType());
             if (evaluator == null) {
                 logger.warn("Could not find evaluator for tasktype: {}", submission.getTaskType());
@@ -69,6 +68,18 @@ public class SubmissionDispatcherService {
             persistGrading(gradingEntity);
         } catch(Exception e){
             logger.warn("Stopped Evaluation due to errors", e);
+            logger.info("Persisting default grading for this submission.");
+            String errorNotification = "An uncaught exception occurred during evaluation of your submission. ";
+            errorNotification += "The exception message is: " + e.getMessage();
+            Grading gradingEntity = new Grading();
+            gradingEntity.setSubmissionId(submission.getSubmissionId());
+            gradingEntity.setResult(errorNotification);
+            gradingEntity.setSubmissionSuitsSolution(false);
+            gradingEntity.setMaxPoints(0);
+            gradingEntity.setPoints(0);
+            Report report = new Report();
+            report.setHint("Contact an administrator if the error message does not allow you to resolve the issue.");
+            persistGrading(gradingEntity);
         }
     }
 
