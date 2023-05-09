@@ -69,7 +69,7 @@ public class SubmissionDispatcherService {
         } catch(Exception e){
             logger.warn("Stopped Evaluation due to errors", e);
             logger.info("Persisting default grading for this submission.");
-            String errorNotification = "An uncaught exception occurred during evaluation of your submission. ";
+            String errorNotification = "An unhandled exception occurred during evaluation of your submission. ";
             errorNotification += "The exception message is: " + e.getMessage();
             Grading gradingEntity = new Grading();
             gradingEntity.setSubmissionId(submission.getSubmissionId());
