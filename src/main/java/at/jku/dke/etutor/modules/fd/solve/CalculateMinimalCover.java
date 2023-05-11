@@ -22,7 +22,6 @@ public class CalculateMinimalCover {
                 onlyValidDependencies.add(dependency);
             }
         }
-        System.out.println("Hallo: "+onlyValidDependencies);
         Set<Dependency> result = new TreeSet<>(new DependencyComparator());
         result.addAll(onlyValidDependencies);
         /** Aufsplitten wenn mehrere Attribute auf der rechten Seite vorhanden sind */

@@ -3,21 +3,23 @@ package at.jku.dke.etutor.modules.fd;
 import net.minidev.json.JSONObject;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class TestDataImport {
     public static void main(String[] args) {
+//        importFile("src/main/resources/fd-test-data/keys_1-40.txt");
+        importFile("src/main/resources/fd-test-data/Normalform_bestimmen_1-20.txt");
+    }
+
+    public static void importFile(String pathname) {
 
         try
         {
-            File file=new File("src/main/resources/fd-test-data/keys_1-40.txt");
+            File file=new File(pathname);
             FileReader fr=new FileReader(file);
             BufferedReader br=new BufferedReader(fr);
             JSONObject completeJson = new JSONObject();

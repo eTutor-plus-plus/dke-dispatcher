@@ -132,4 +132,16 @@ public class FunctionalDependency implements Dependency {
         }
         return 0;
     }
+
+    public static class FunctionalDependencyComparator implements Comparator<FunctionalDependency> {
+        @Override public int compare(FunctionalDependency e1, FunctionalDependency e2) {
+            if (!Arrays.equals(e1.getLeftSide(),e2.getLeftSide())) {
+                return Arrays.compare(e1.getLeftSide(), e2.getLeftSide());
+            }
+            else if (!Arrays.equals(e1.getRightSide(),e2.getRightSide())) {
+                return Arrays.compare(e1.getRightSide(), e2.getRightSide());
+            }
+            return 0;
+        }
+    }
 }

@@ -1,0 +1,40 @@
+R	(A B C D}
+F = 	{D → A, A → D, A → B C}
+R	(A B C D E )
+F = 	{A E → B, B → C, B → D E }
+R	(A B C D E )
+F = 	{B → C D, C → B, C → A, B → E }
+R	(A B C D E )
+F = 	{A → B, A → C, A → D, D → E, C → E, B → A }
+R	(A B C D E )
+F = 	{A B C → D, B E → D, A C → B }
+R	(A B C D E )
+F = 	{A B → C E, A B → D, C E → A B }
+R	(A B C D E )
+F = 	{B C → D, D → A, A → E }
+R	(A B C D E )
+F = 	{A E → B, B → E, A E → C D }
+R	(A B C D E )
+F = 	{A → B D, B → A C, C → A E }
+R	(A B G H )
+F = 	{G → A B, H → A, A → G H }
+R	(A B C D E F )
+F = 	{B → F, D → E, B F → C D }
+R	(A B C D E F )
+F = 	{A → C F, E → B, B → D, F → E }
+R	(A B C D E F )
+F = 	{A F → A B, A C → D }
+R	(A B C D E F )
+F = 	{E F → D, E F → C, D → B, B → A, D → C }
+R	(A B C D E F )
+F = 	{A B D → E, E → A B C D }
+R	(A B C D E F )
+F = 	{A → B F, B → A C D E, C F → A }
+R	(A B C D E F )
+F = 	{A B → C, A B C → D E F, E F → B }
+R	(A B C D E F )
+F = 	{A B → E F, B C → A D, A → B }
+R	(A B C D E F )
+F = 	{B C → A D, A B C → E F, E F → A B C }
+R	(A B C D E F )
+F = 	{C D → E, A E → C F, F → B D, B → F }

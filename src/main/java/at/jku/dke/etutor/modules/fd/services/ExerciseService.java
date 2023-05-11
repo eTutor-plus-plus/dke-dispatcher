@@ -15,6 +15,7 @@ import java.util.TreeSet;
 import static at.jku.dke.etutor.modules.fd.solve.CalculateClosure.calculateClosures;
 import static at.jku.dke.etutor.modules.fd.solve.CalculateKeys.calculateKeys;
 import static at.jku.dke.etutor.modules.fd.solve.CalculateMinimalCover.calculateMinimalCover;
+import static at.jku.dke.etutor.modules.fd.solve.CalculateNormalForm.calculateNormalForm;
 
 @Service
 public class ExerciseService {
@@ -34,6 +35,7 @@ public class ExerciseService {
             exercise.setClosures(calculateClosures(exercise));
             exercise.setKeys(calculateKeys(exercise));
             exercise.setMinimalCovers(calculateMinimalCover(exercise));
+            exercise.setNormalForm(calculateNormalForm(exercise));
             exerciseRepository.save(exercise);
 
         } catch (Exception e) {

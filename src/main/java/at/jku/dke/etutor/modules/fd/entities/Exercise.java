@@ -33,6 +33,9 @@ public class Exercise {
     @OneToMany (cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "exercise_id", referencedColumnName = "id")
     private Set<MinimalCover> minimalCovers;
+    @Column(name = "normal_form")
+    @Enumerated(EnumType.STRING)
+    private NF normalForm;
 
     public Long getId() {
         return id;
@@ -83,6 +86,17 @@ public class Exercise {
         this.minimalCovers = minimalCovers;
     }
 
+    public NF getNormalForm() {
+        return normalForm;
+    }
+
+    public void setNormalForm(NF normalForm) {
+        this.normalForm = normalForm;
+    }
+
+    public enum NF{
+        BCNF, THIRD, SECOND, FIRST
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
