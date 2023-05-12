@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.modules.jdbc;
 
 import at.jku.dke.etutor.core.evaluation.Evaluator;
+import org.springframework.context.MessageSource;
 
 import java.rmi.Remote;
 
@@ -15,4 +16,5 @@ import java.rmi.Remote;
  * @since   1.0
  */
 public interface JDBCEvaluator extends Remote, Evaluator {
+    void setMessageSource(MessageSource messageSource);
 }

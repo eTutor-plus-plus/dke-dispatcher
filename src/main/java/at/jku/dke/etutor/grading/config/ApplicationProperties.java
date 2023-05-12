@@ -364,6 +364,9 @@ public class ApplicationProperties {
         }
     }
 
+    /**
+     * The properties for the JDBC module
+     */
     public static class JDBC{
         private String connPwd;
         private String connUser;
