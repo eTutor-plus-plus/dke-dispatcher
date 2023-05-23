@@ -29,23 +29,23 @@ public class Key implements Dependency {
     @Column(name = "right_side", columnDefinition = "text[]")
     private String[] rightSide;
     @ManyToOne (cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "exercise_id")
+    @JoinColumn(name = "relation_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private Exercise exercise;
+    private Relation relation;
 
     public Key() {
     }
 
-    public Key(String[] leftSide, String[] rightSide, Exercise exercise) {
+    public Key(String[] leftSide, String[] rightSide, Relation relation) {
         this.leftSide = leftSide;
         this.rightSide = rightSide;
-        this.exercise = exercise;
+        this.relation = relation;
     }
     public Key(Dependency dependency) {
         this.leftSide = dependency.getLeftSide();
         this.rightSide = dependency.getRightSide();
-        this.exercise = dependency.getExercise();
+        this.relation = dependency.getRelation();
     }
 
     public Long getId() {
@@ -72,12 +72,12 @@ public class Key implements Dependency {
         this.rightSide = rightSid;
     }
 
-    public Exercise getExercise() {
-        return exercise;
+    public Relation getRelation() {
+        return relation;
     }
 
-    public void setExercise(Exercise exercise) {
-        this.exercise = exercise;
+    public void setRelation(Relation relation) {
+        this.relation = relation;
     }
 
     @Override

@@ -35,19 +35,19 @@ public class MinimalCover implements Dependency{
     private FunctionalDependency dependency;
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
-    @JoinColumn(name="exercise_id")
-    private Exercise exercise;
+    @JoinColumn(name="relation_id")
+    private Relation relation;
 
 
     public MinimalCover() {
     }
 
-    public MinimalCover(String[] leftSide, String[] rightSide, String[] reasons, FunctionalDependency dependency, Exercise exercise) {
+    public MinimalCover(String[] leftSide, String[] rightSide, String[] reasons, FunctionalDependency dependency, Relation relation) {
         this.leftSide = leftSide;
         this.rightSide = rightSide;
         this.reasons = reasons;
         this.dependency = dependency;
-        this.exercise = exercise;
+        this.relation = relation;
     }
 
     public Long getId() {
@@ -92,12 +92,12 @@ public class MinimalCover implements Dependency{
         this.dependency = dependency;
     }
 
-    public Exercise getExercise() {
-        return exercise;
+    public Relation getRelation() {
+        return relation;
     }
 
-    public void setExercise(Exercise exercise) {
-        this.exercise = exercise;
+    public void setRelation(Relation relation) {
+        this.relation = relation;
     }
 
     @Override

@@ -32,28 +32,31 @@ public class FunctionalDependency implements Dependency {
     @Column(name = "right_side", columnDefinition = "text[]")
     private String[] rightSide;
     @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn(name = "exercise_id", referencedColumnName = "id")
+    @JoinColumn(name = "relation_id", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private Exercise exercise;
+    private Relation relation;
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "dependency_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<MinimalCover> minimalCover;
+    @Column(name = "violates")
+    @Enumerated(EnumType.STRING)
+    private NF violates;
 
     public FunctionalDependency() {
     }
 
-    public FunctionalDependency(String[] leftSide, String[] rightSide, Exercise exercise) {
+public FunctionalDependency(String[] leftSide, String[] rightSide, Relation relation) {
         this.leftSide = leftSide;
         this.rightSide = rightSide;
-        this.exercise = exercise;
+        this.relation = relation;
     }
 
-//    public FunctionalDependency(String[] leftSide, String[] rightSide, Exercise exercise, MinimalCover minimalCover) {
+//    public FunctionalDependency(String[] leftSide, String[] rightSide, Relation relation, MinimalCover minimalCover) {
 //        this.leftSide = leftSide;
 //        this.rightSide = rightSide;
-//        this.exercise = exercise;
+//        this.relation = relation;
 //        this.minimalCover = minimalCover;
 //    }
 
@@ -81,19 +84,27 @@ public class FunctionalDependency implements Dependency {
         this.rightSide = rightSide;
     }
 
-    public Exercise getExercise() {
-        return exercise;
+    public Relation getRelation() {
+        return relation;
     }
 
-    public void setExercise(Exercise exercise) {
-        this.exercise = exercise;
+    public void setRelation(Relation relation) {
+        this.relation = relation;
     }
-        public Set<MinimalCover> getMinimalCover() {
+    public Set<MinimalCover> getMinimalCover() {
         return minimalCover;
     }
 
     public void setMinimalCover(Set<MinimalCover> minimalCover) {
         this.minimalCover = minimalCover;
+    }
+
+    public NF getViolates() {
+        return violates;
+    }
+
+    public void setViolates(NF violates) {
+        this.violates = violates;
     }
 
     @Override

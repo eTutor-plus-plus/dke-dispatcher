@@ -2,7 +2,7 @@ package at.jku.dke.etutor.modules.fd.solve;
 
 import at.jku.dke.etutor.modules.fd.entities.Closure;
 import at.jku.dke.etutor.modules.fd.entities.Dependency;
-import at.jku.dke.etutor.modules.fd.entities.Exercise;
+import at.jku.dke.etutor.modules.fd.entities.Relation;
 import at.jku.dke.etutor.modules.fd.entities.Key;
 
 import java.util.Arrays;
@@ -14,8 +14,8 @@ public class CalculateKeys {
         throw new IllegalStateException("Utility class");
     }
 
-    public static Set<Key> calculateKeys(Exercise exercise) {
-        Set<Closure> candidateKeys = calculateSuperKeys(exercise);
+    public static Set<Key> calculateKeys(Relation relation) {
+        Set<Closure> candidateKeys = calculateSuperKeys(relation);
         Set<Key> superKeys = calculateCandidateKeys(candidateKeys);
 
         return superKeys;
@@ -49,10 +49,10 @@ public class CalculateKeys {
         return minimum;
     }
     /** Alle Superschlüssel finden */
-    public static Set<Closure> calculateSuperKeys(Exercise exercise) {
+    public static Set<Closure> calculateSuperKeys(Relation relation) {
         Set<Closure> superKeys = new HashSet<>();
-        for (Closure closure : exercise.getClosures()) {
-            if (Arrays.equals(closure.getRightSide(),exercise.getRelation())) {
+        for (Closure closure : relation.getClosures()) {
+            if (Arrays.equals(closure.getRightSide(), relation.getAttributes())) {
                 superKeys.add(closure);
             }
         }

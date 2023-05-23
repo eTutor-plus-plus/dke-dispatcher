@@ -11,9 +11,9 @@ public class CalculateMinimalCover {
         throw new IllegalStateException("Utility class");
     }
 
-    public static Set<MinimalCover> calculateMinimalCover(Exercise exercise) {
-        Set<Dependency> leftSideReducedDependencies = reduceLeftSide(exercise.getDependencies(), exercise);
-        Set<Dependency> rightSideReducedDependencies = reduceRightSide(leftSideReducedDependencies, exercise);
+    public static Set<MinimalCover> calculateMinimalCover(Relation relation) {
+        Set<Dependency> leftSideReducedDependencies = reduceLeftSide(relation.getDependencies(), relation);
+        Set<Dependency> rightSideReducedDependencies = reduceRightSide(leftSideReducedDependencies, relation);
         Set<Dependency> onlyValidDependencies = new TreeSet<>(new DependencyComparator());
         /** Entferne Abhängigkeiten ohne rechte Seite */
         System.out.println(rightSideReducedDependencies);
@@ -31,7 +31,7 @@ public class CalculateMinimalCover {
                     for (String split : dependency.getRightSide()) {
                         result.remove(dependency);
                         result.add(new MinimalCover(dependency.getLeftSide(), new String[]{split}, new String[]{"Zerlegung"},
-                                (FunctionalDependency) dependency, exercise));
+                                (FunctionalDependency) dependency, relation));
                     }
                 }
                 else {
@@ -44,7 +44,7 @@ public class CalculateMinimalCover {
                         MinimalCover minimalCover = (MinimalCover) dependency;
                         result.add(new MinimalCover(dependency.getLeftSide(), new String[]{split},
                                 addToArray(minimalCover.getReasons(),"Zerlegung"),
-                                minimalCover.getDependency(), exercise));
+                                minimalCover.getDependency(), relation));
                     }
                 }
             }
@@ -53,13 +53,13 @@ public class CalculateMinimalCover {
     }
 
     /** Entfernen überflüssiger Attribute auf der linken Seite*/
-    private static Set<Dependency> reduceLeftSide(Set<? extends Dependency> dependencies, Exercise exercise) {
+    private static Set<Dependency> reduceLeftSide(Set<? extends Dependency> dependencies, Relation relation) {
         Set<Dependency> leftSideReducedDependencies = new HashSet<>();
         leftSideReducedDependencies.addAll(dependencies);
-        for (Dependency dependency : exercise.getDependencies()) {
+        for (Dependency dependency : relation.getDependencies()) {
             if (dependency.getLeftSide().length > 1) {
-                Closure original = calculateClosure(exercise.getDependencies(), dependency.getLeftSide(),
-                        exercise);
+                Closure original = calculateClosure(relation.getDependencies(), dependency.getLeftSide(),
+                        relation);
                 List<String> reduced = null;
                 Closure modified = null;
                 /** für jedes Attribut wird überprüft ob es überflüssig ist */
@@ -72,7 +72,7 @@ public class CalculateMinimalCover {
                         toReduce.addAll(reduced);
                     }
                     toReduce.remove(attribute);
-                    modified = calculateClosure(exercise.getDependencies(), toReduce.toArray(new String[0]), exercise);
+                    modified = calculateClosure(relation.getDependencies(), toReduce.toArray(new String[0]), relation);
                     if (Arrays.equals(original.getRightSide(), modified.getRightSide())) {
                         reduced = toReduce;
                     }
@@ -83,12 +83,12 @@ public class CalculateMinimalCover {
                     if (dependency.getClass() == FunctionalDependency.class) {
                         replacement = new MinimalCover(reduced.toArray(new String[0]),
                                 dependency.getRightSide(), new String[]{"Linksreduktion"},
-                                (FunctionalDependency) dependency, exercise);
+                                (FunctionalDependency) dependency, relation);
                     } else {
                         MinimalCover minimalCover = (MinimalCover) dependency;
                         replacement = new MinimalCover(reduced.toArray(new String[0]),
                                 dependency.getRightSide(), addToArray(minimalCover.getReasons(), "Linksreduktion"),
-                                minimalCover.getDependency(), exercise);
+                                minimalCover.getDependency(), relation);
                     }
                     leftSideReducedDependencies.add(replacement);
                 }
@@ -98,11 +98,11 @@ public class CalculateMinimalCover {
     }
 
     /** Entfernen überflüssiger Attribute auf der rechten Seite */
-    private static Set<Dependency> reduceRightSide(Set<? extends Dependency> dependencies, Exercise exercise) {
+    private static Set<Dependency> reduceRightSide(Set<? extends Dependency> dependencies, Relation relation) {
         Set<Dependency> rightSideReducedDependencies = new HashSet<>();
         rightSideReducedDependencies.addAll(dependencies);
         for (Dependency dependency : dependencies) {
-            Closure original = calculateClosure(dependencies, dependency.getLeftSide(), exercise);
+            Closure original = calculateClosure(dependencies, dependency.getLeftSide(), relation);
             Dependency changedDependency = null;
             List<String> reduced = new ArrayList<>();
             for (String attribute: dependency.getRightSide()) {
@@ -119,16 +119,16 @@ public class CalculateMinimalCover {
                 if (dependency.getClass() == FunctionalDependency.class) {
                     dependencyToCheck = new MinimalCover(dependency.getLeftSide(),
                             toReduce.toArray(new String[0]), new String[]{"Rechtssreduktion"},
-                            (FunctionalDependency) dependency, exercise);
+                            (FunctionalDependency) dependency, relation);
                 } else {
                     MinimalCover minimalCover = (MinimalCover) dependency;
                     dependencyToCheck = new MinimalCover(dependency.getLeftSide(),
                             toReduce.toArray(new String[0]), addToArray(minimalCover.getReasons() ,"Rechtssreduktion"),
-                            minimalCover.getDependency(), exercise);
+                            minimalCover.getDependency(), relation);
                 }
                 rightSideReducedDependencies.add(dependencyToCheck);
                 Closure modified = calculateClosure(rightSideReducedDependencies,
-                        dependencyToCheck.getLeftSide(), exercise);
+                        dependencyToCheck.getLeftSide(), relation);
                 if (Arrays.equals(original.getRightSide(), modified.getRightSide())) {
                     changedDependency = dependencyToCheck;
                     reduced = toReduce;
@@ -146,7 +146,7 @@ public class CalculateMinimalCover {
         }
         return rightSideReducedDependencies;
     }
-//    private Set<Dependency> combineRightSides (Set<? extends Dependency> dependencies, Exercise exercise) {
+//    private Set<Dependency> combineRightSides (Set<? extends Dependency> dependencies, Relation exercise) {
 //        Set<Dependency> result = new TreeSet<>(new DependencyComparator());
 //        result.addAll(dependencies);
 //        for (Dependency dependency: dependencies) {

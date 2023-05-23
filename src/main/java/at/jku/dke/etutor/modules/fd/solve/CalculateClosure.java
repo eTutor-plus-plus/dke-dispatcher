@@ -2,8 +2,9 @@ package at.jku.dke.etutor.modules.fd.solve;
 
 import at.jku.dke.etutor.modules.fd.entities.Closure;
 import at.jku.dke.etutor.modules.fd.entities.Dependency;
-import at.jku.dke.etutor.modules.fd.entities.FunctionalDependency;
-import at.jku.dke.etutor.modules.fd.entities.Exercise;
+import at.jku.dke.etutor.modules.fd.entities.Relation;
+import at.jku.dke.etutor.modules.fd.utilities.Comparators.ArrayComparator;
+
 
 import java.util.*;
 
@@ -14,7 +15,7 @@ import java.util.*;
  */
 public class CalculateClosure {
 
-	public static Closure calculateClosure(Set<? extends Dependency> dependencies, String [] leftSide, Exercise exercise) {
+	public static Closure calculateClosure(Set<? extends Dependency> dependencies, String [] leftSide, Relation relation) {
 
 		HashSet<String> result= new HashSet<>();
 		/** Ausgangspunkt ist die linke Seite jeder Abhängigkeit */
@@ -32,24 +33,24 @@ public class CalculateClosure {
 			}
 		} while (startSize != result.size());
 		/** Eine neue Abhängigkeit wird erstellt */
-		return new Closure(leftSide, result.toArray(new String[0]), exercise);
+		return new Closure(leftSide, result.toArray(new String[0]), relation);
 
 	}
 
-	public static Set<Closure> calculateClosures(Exercise exercise) {
+	public static Set<Closure> calculateClosures(Relation relation) {
 		HashSet<Closure> resultList = new HashSet<>();
 		TreeSet<String[]> attributeCombinations = new TreeSet<>(new ArrayComparator());
 
 		/** Alle möglichen Kombinationen */
-		for (String attribute: exercise.getRelation()) {
+		for (String attribute: relation.getAttributes()) {
 			String[] current = new String[] {attribute};
 			attributeCombinations.add(current);
-			resursiveAddAll(current,exercise.getRelation(),attributeCombinations);
+			resursiveAddAll(current, relation.getAttributes(),attributeCombinations);
 		}
 
 		/** Nur Hüllen mit Mehrwert aufnehmen */
 		for (String [] attribute: attributeCombinations) {
-			Closure toAdd = calculateClosure(exercise.getDependencies(), attribute, exercise);
+			Closure toAdd = calculateClosure(relation.getDependencies(), attribute, relation);
 			if (toAdd.getLeftSide().length != toAdd.getRightSide().length) {
 				resultList.add(toAdd);
 			}
@@ -85,10 +86,6 @@ public class CalculateClosure {
 		return attributes;
 	}
 
-	static class ArrayComparator implements Comparator<String []> {
-		@Override public int compare(String[] e1, String[] e2) {
-			return Arrays.compare(e1, e2);
-		}
-	}
+
 
 }

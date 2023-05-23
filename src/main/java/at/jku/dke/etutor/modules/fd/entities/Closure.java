@@ -30,26 +30,26 @@ public class Closure implements Dependency{
     private String[] rightSide;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exercise_id")
+    @JoinColumn(name = "relation_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private Exercise exercise;
+    private Relation relation;
 
-    public Exercise getExercise() {
-        return exercise;
+    public Relation getRelation() {
+        return relation;
     }
 
-    public void setExercise(Exercise exercise) {
-        this.exercise = exercise;
+    public void setRelation(Relation relation) {
+        this.relation = relation;
     }
 
     public Closure() {
     }
 
-    public Closure(String[] leftSide, String[] rightSide, Exercise exercise) {
+    public Closure(String[] leftSide, String[] rightSide, Relation relation) {
         this.leftSide = leftSide;
         this.rightSide = rightSide;
-        this.exercise = exercise;
+        this.relation = relation;
     }
 
 

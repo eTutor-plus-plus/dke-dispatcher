@@ -7,7 +7,7 @@ public interface Dependency {
     public void setLeftSide(String[] leftSide);
     public String[] getRightSide();
     public void setRightSide(String[] rightSide);
-    public Exercise getExercise();
+    public Relation getRelation();
 
-    public void setExercise(Exercise exercise);
+    public void setRelation(Relation relation);
 }

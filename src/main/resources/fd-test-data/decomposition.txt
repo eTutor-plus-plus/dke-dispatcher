@@ -1,0 +1,6 @@
+R	(A B C D E F G H )
+F = 	{F G → B, F G → E, A → C, B E → F, G → H, B F → G, A → D }
+R	(A B C D E F G H )
+F = 	{C → D, D → F, D → E, H → A, E F → D, A → H }
+R	(A B C D E F G )
+F = 	{G → C, B F → A, B F → C, A C → G, D E → B, D F → G }

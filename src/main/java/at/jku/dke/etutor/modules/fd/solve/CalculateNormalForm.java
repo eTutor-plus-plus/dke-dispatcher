@@ -1,20 +1,18 @@
 package at.jku.dke.etutor.modules.fd.solve;
 
 import at.jku.dke.etutor.modules.fd.entities.*;
-import at.jku.dke.etutor.modules.fd.entities.FunctionalDependency.FunctionalDependencyComparator;
-import at.jku.dke.etutor.modules.fd.entities.Exercise.NF;
 import java.util.*;
 
 public class CalculateNormalForm {
 
 
 
-    public static NF calculateNormalForm(Exercise exercise) {
-        if (!is2NF(exercise)) {
+    public static NF calculateNormalForm(Relation relation) {
+        if (!is2NF(relation)) {
             return NF.FIRST;
-        } else if (!is3NF(exercise)) {
+        } else if (!is3NF(relation)) {
             return NF.SECOND;
-        } else if (!isBCNF(exercise)) {
+        } else if (!isBCNF(relation)) {
             return NF.THIRD;
         } else {
             return NF.BCNF;
@@ -22,53 +20,60 @@ public class CalculateNormalForm {
     }
 
 
-    public static boolean isBCNF (Exercise exercise) {
+    public static boolean isBCNF (Relation relation) {
+        boolean isOK = true;
         /** Trivial oder Superschlüssel */
-        for (Dependency dependency: exercise.getDependencies()) {
-            if (!isTrivial(dependency) && !isSuperKey(exercise, dependency)) {
-                return false;
+        for (FunctionalDependency dependency: relation.getDependencies()) {
+            if (!isTrivial(dependency) && !isSuperKey(relation, dependency)) {
+                dependency.setViolates(NF.BCNF);
+                isOK = false;
             }
         }
-        return true;
+        return isOK;
     }
-    public static boolean is3NF (Exercise exercise) {
+    public static boolean is3NF (Relation relation) {
+        boolean isOK = true;
         /** Trivial, Superschlüssel oder Prime */
-        for (Dependency dependency: exercise.getDependencies()) {
-            if (!isTrivial(dependency) && !areAllPrimeAttributes(exercise, dependency)
-                    && !isSuperKey(exercise, dependency)) {
-                return false;
+        for (FunctionalDependency dependency: relation.getDependencies()) {
+            if (!isTrivial(dependency) && !areAllPrimeAttributes(relation, dependency)
+                    && !isSuperKey(relation, dependency)) {
+                dependency.setViolates(NF.THIRD);
+                isOK = false;
             }
         }
-        return true;
+        return isOK;
     }
-    public static boolean is2NF(Exercise exercise) {
+    public static boolean is2NF(Relation relation) {
+        boolean isOK = true;
         /** None Prime sind nicht von einem Teilschlüssel abhängig */
-        Set<String> primeAttributes = getPrimeAttributes(exercise);
-        for (Dependency dependency: exercise.getDependencies()) {
-            boolean isKey = false;
+        Set<String> primeAttributes = getPrimeAttributes(relation);
+        for (FunctionalDependency dependency: relation.getDependencies()) {
+//            boolean isKey = false;
             /** check ob alle abhängigen Attribute prime sind */
             if (primeAttributes.containsAll(Set.of(dependency.getRightSide()))) {
                 continue;
             }
 
-            /** Check ob die rechte seite ein Schlüsselkandidat ist */
-            for (Key key: exercise.getKeys()) {
+            /** Check ob die rechte Seite kein Schlüsselkandidat ist, aber vollständig in einem Schlüsselkandidaten
+              * enthalten ist */
+            for (Key key: relation.getKeys()) {
                 if (!Arrays.equals(dependency.getLeftSide(), key.getLeftSide())
                         && Set.of(key.getLeftSide()).containsAll(Set.of(dependency.getLeftSide()))) {
-                    return false;
+                    dependency.setViolates(NF.SECOND);
+                    isOK = false;
                 }
             }
 
         }
-        return true;
+        return isOK;
     }
 
-    private static boolean isTrivial(Dependency dependency) {
+    public static boolean isTrivial(Dependency dependency) {
         return new HashSet<>(List.of(dependency.getLeftSide())).containsAll(List.of(dependency.getRightSide()));
     }
 
-    private static boolean areAllPrimeAttributes(Exercise exercise, Dependency dependency) {
-        Set<String> primeAttributes = getPrimeAttributes(exercise);
+    private static boolean areAllPrimeAttributes(Relation relation, Dependency dependency) {
+        Set<String> primeAttributes = getPrimeAttributes(relation);
         for (String attribute: dependency.getRightSide()) {
             if (!primeAttributes.contains(attribute)) {
                 return false;
@@ -76,19 +81,19 @@ public class CalculateNormalForm {
         }
         return true;
     }
-    private static Set<String> getPrimeAttributes (Exercise exercise) {
+    private static Set<String> getPrimeAttributes (Relation relation) {
         Set<String> primeAttributes = new TreeSet<>();
-        for (Key key: exercise.getKeys()) {
+        for (Key key: relation.getKeys()) {
             primeAttributes.addAll(Arrays.asList(key.getLeftSide()));
         }
         return primeAttributes;
     }
 
-    public static boolean isSuperKey(Exercise exercise, Dependency dependency) {
-        Set<Closure> closures = exercise.getClosures();
+    public static boolean isSuperKey(Relation relation, Dependency dependency) {
+        Set<Closure> closures = relation.getClosures();
         Set<String[]> superKeys = new HashSet<>();
         for (Closure closure: closures) {
-            if (Arrays.equals(closure.getRightSide(), exercise.getRelation())) {
+            if (Arrays.equals(closure.getRightSide(), relation.getAttributes())) {
                 superKeys.add(closure.getLeftSide());
             }
         }

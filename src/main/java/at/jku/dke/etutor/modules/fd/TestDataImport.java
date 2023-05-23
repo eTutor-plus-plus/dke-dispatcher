@@ -12,7 +12,8 @@ import java.util.ArrayList;
 public class TestDataImport {
     public static void main(String[] args) {
 //        importFile("src/main/resources/fd-test-data/keys_1-40.txt");
-        importFile("src/main/resources/fd-test-data/Normalform_bestimmen_1-20.txt");
+//        importFile("src/main/resources/fd-test-data/Normalform_bestimmen_1-20.txt");
+        importFile("src/main/resources/fd-test-data/decomposition.txt");
     }
 
     public static void importFile(String pathname) {
@@ -29,7 +30,7 @@ public class TestDataImport {
             while((line=br.readLine())!=null)
             {
                 String [] attribute = line.split("\\t")[1].replaceAll("[( )}]", "").split("");
-                completeJson.put("relation", attribute);
+                completeJson.put("attributes", attribute);
                 String line2 = br.readLine();
                 String [] dependencies = line2.split("\\t")[1].replaceAll("[{}]","").split(", ");
                 ArrayList<JSONObject> objectArrayList = new ArrayList<>();

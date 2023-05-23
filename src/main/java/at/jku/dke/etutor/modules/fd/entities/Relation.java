@@ -12,55 +12,48 @@ import java.util.*;
         typeClass = StringArrayType.class
 )
 @Entity
-@Table(name = "exercise", schema = "fd", catalog = "fd")
-public class Exercise {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Table(name = "relation", schema = "fd", catalog = "fd")
+public class Relation {
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     private Long id;
     @Type(type = "string-array")
-    @Column(name = "relation", columnDefinition = "text[]")
-    private String[] relation;
+    @Column(name = "attributes", columnDefinition = "text[]")
+    private String[] attributes;
     @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "exercise_id", referencedColumnName = "id")
+    @JoinColumn(name = "relation_id", referencedColumnName = "id")
     private Set<FunctionalDependency> dependencies;
     @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "exercise_id", referencedColumnName = "id")
+    @JoinColumn(name = "relation_id", referencedColumnName = "id")
     private Set<Closure> closures;
     @OneToMany (cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "exercise_id", referencedColumnName = "id")
+    @JoinColumn(name = "relation_id", referencedColumnName = "id")
     private Set<Key> keys;
     @OneToMany (cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "exercise_id", referencedColumnName = "id")
+    @JoinColumn(name = "relation_id", referencedColumnName = "id")
     private Set<MinimalCover> minimalCovers;
     @Column(name = "normal_form")
     @Enumerated(EnumType.STRING)
     private NF normalForm;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String[] getAttributes() {
+        return attributes;
     }
-
-    public String[] getRelation() {
-        return relation;
+    public void setAttributes(String[] attributes) {
+        this.attributes = attributes;
     }
-
-    public void setRelation(String[] relation) {
-        this.relation = relation;
-    }
-
     public Set<FunctionalDependency> getDependencies() {
         return dependencies;
     }
 
-
     public void setDependencies(Set<FunctionalDependency> dependencies) {
         this.dependencies = dependencies;
     }
+
 
     public Set<Closure> getClosures() {
         return closures;
@@ -94,37 +87,49 @@ public class Exercise {
         this.normalForm = normalForm;
     }
 
-    public enum NF{
-        BCNF, THIRD, SECOND, FIRST
+
+
+    public static String [] calculateRelation(Relation relation) {
+        TreeSet<String> result = new TreeSet<>();
+        for (Dependency functionalDependency : relation.getDependencies()) {
+            for (String left: functionalDependency.getLeftSide()) {
+                result.add(left);
+            }
+            for (String right: functionalDependency.getRightSide()) {
+                result.add(right);
+            }
+        }
+        return result.toArray(new String[0]);
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Exercise exercise = (Exercise) o;
-        return Objects.equals(id, exercise.id)
-                && Arrays.equals(relation, exercise.relation)
-                && Objects.equals(dependencies, exercise.dependencies)
-                && Objects.equals(closures, exercise.closures)
-                && Objects.equals(keys, exercise.keys)
-//              && Objects.equals(minimalCovers, exercise.minimalCovers)
+        Relation relation = (Relation) o;
+        return Objects.equals(id, relation.id)
+                && Arrays.equals(this.attributes, relation.attributes)
+                && Objects.equals(dependencies, relation.dependencies)
+//                && Objects.equals(closures, relation.closures)
+//                && Objects.equals(keys, relation.keys)
+//                && Objects.equals(minimalCovers, relation.minimalCovers)
               ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, Arrays.hashCode(relation), dependencies, closures, keys
-//                , minimalCovers
+        return Objects.hash(id, Arrays.hashCode(attributes), dependencies, closures, keys
+                , minimalCovers
         );
     }
 
     @Override
     public String toString() {
-        return "Exercise{" +
+        return "Relation{" +
                 "id=" + id +
-                ", relation='" + Arrays.toString(relation) + '\'' +
+                ", relation='" + Arrays.toString(attributes) + '\'' +
                 ", dependencies=" + dependencies +
-//                ", closures=" + closures +
+                ", closures=" + closures +
                 "}\n";
     }
 }
