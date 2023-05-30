@@ -235,7 +235,6 @@ public class PmEvaluator implements Evaluator {
     public Grading grade(Analysis analysis, int maxPoints, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
         logger.info("analysis: {}", analysis);
         logger.info("maxPoints: {}", maxPoints);
-        //logPassedAttributes(passedAttributes, passedParameters);
 
 
         // cast analysis object to PmAnalysis
@@ -294,7 +293,8 @@ public class PmEvaluator implements Evaluator {
         }
 
         // sum up to get total achieved points
-        pmGrader.setMaxPoints(maxPoints);
+        logger.info("Setting max-points of grading to 14 for Process-Mining-Task");
+        pmGrader.setMaxPoints(14.0); // maximum points for any PM task is 14
         pmGrader.sumUpTotalPoints();
 
         return pmGrader;
