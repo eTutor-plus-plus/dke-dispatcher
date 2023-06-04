@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.sql.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -67,11 +68,10 @@ public class PmResourceService {
      * @return
      * @throws Exception
      */
-    public int createExerciseConfiguration(PmExerciseConfigDTO exerciseConfigDTO) throws Exception{
+    public synchronized int createExerciseConfiguration(PmExerciseConfigDTO exerciseConfigDTO) throws Exception{
         logger.debug("Creating Exercise");
 
         try(Connection conn = PmDataSource.getConnection()){
-            var x = Class.forName("org.postgresql.Driver");
             conn.setAutoCommit(false);
 
             int exerciseConfigID = getNextConfigID();
@@ -79,7 +79,7 @@ public class PmResourceService {
             conn.commit();
             logger.debug("ExerciseConfig created");
 
-            new Thread(() -> prepareMultipleRandomExercises(exerciseConfigID, 10)).start();
+            new Thread(() -> prepareMultipleRandomExercises(exerciseConfigID, 20)).start();
             return exerciseConfigID;
         }catch(SQLException e){
             logger.error(e.getMessage(), e);
@@ -108,10 +108,10 @@ public class PmResourceService {
 
             logger.debug("Statement for creating configuration: {}", createConfigStmt);
             createConfigStmt.executeUpdate();
-            configIdCounter--;
-        }catch (SQLException throwables){
+            updateConfigIdCounter(-1);
+        }catch (Exception throwables){
+            updateConfigIdCounter(-1);
             handleThrowables(conn, "Could not create configuration "+id, throwables);
-            configIdCounter--;
         }
     }
 
@@ -121,14 +121,19 @@ public class PmResourceService {
      * @throws Exception
      */
     private synchronized int getNextConfigID() throws Exception{
-        configIdCounter++;
         try(Connection conn = PmDataSource.getConnection()){
             conn.setAutoCommit(false);
-            return getNextConfigIDUtil(conn) + configIdCounter - 1;
+            int id = getNextConfigIDUtil(conn) + configIdCounter;
+            updateConfigIdCounter(1);
+            return  id;
         }catch (SQLException throwable){
             throwable.printStackTrace();
             throw new DatabaseException(throwable);
         }
+    }
+
+    private static synchronized void updateConfigIdCounter(int increment){
+        configIdCounter = configIdCounter + increment;
     }
 
     private int getNextConfigIDUtil(Connection conn) throws Exception{
@@ -140,13 +145,11 @@ public class PmResourceService {
             // check if result set is empty
             // if yes -> assign first value
             // note: check for correctness
-            if(!maxIdSet.isBeforeFirst()){
-                maxId = 1;
-            }else if(maxIdSet.next()){
+            if(maxIdSet.next()){
                 maxId = maxIdSet.getInt("id");
                 maxId++;
             }else{
-                throw new DatabaseException("Internal Error: could not fetch configuration id");
+                return 0;
             }
 
             conn.commit();
@@ -316,12 +319,12 @@ public class PmResourceService {
      * @throws Exception if an error occurs
      */
     public int getAvailableExerciseForConfiguration(int configId) throws Exception {
-        int availableExerciseId = getAvailableExerciseIdForConfiguration(configId);
-        if(availableExerciseId == -1) {
-            availableExerciseId = createRandomExercise(configId, false);
-            new Thread(() -> prepareMultipleRandomExercises(configId, 10)).start();
-        }
-        return availableExerciseId;
+        Optional<Integer> availableExerciseId = getAvailableExerciseIdForConfiguration(configId);
+        if(availableExerciseId.isEmpty()) {
+            // TODO: also prepare if number of available is below threshold, and also externalize the parameters (20 and threshold)
+            new Thread(() -> prepareMultipleRandomExercises(configId, 20)).start();
+            return createRandomExercise(configId, false);
+        } else return availableExerciseId.get();
 
     }
 
@@ -330,7 +333,7 @@ public class PmResourceService {
      * @param configId the id of the configuration
      * @return the id of the exercise
      */
-    private synchronized int getAvailableExerciseIdForConfiguration(int configId){
+    private synchronized Optional<Integer> getAvailableExerciseIdForConfiguration(int configId){
         String query = """
                 SELECT exercise_id
                 FROM randomexercises
@@ -339,21 +342,23 @@ public class PmResourceService {
                 UPDATE randomexercises
                 SET is_available = false
                 WHERE exercise_id = ?;""";
-        int id = -1;
+
         try(Connection con = PmDataSource.getConnection(); var stmt = con.prepareStatement(query)
         ; var updateStmt = con.prepareStatement(update)){
             stmt.setInt(1, configId);
             var set = stmt.executeQuery();
             if(set != null && set.next()){
-                id = set.getInt("exercise_id");
+                int id = set.getInt("exercise_id");
                 updateStmt.setInt(1, id);
                 updateStmt.executeUpdate();
                 con.commit();
+                return Optional.of(id);
             }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return id;
+        return Optional.empty();
     }
 
     /**
@@ -461,10 +466,10 @@ public class PmResourceService {
 
             logger.debug("Statement for creating exercise: {} ", createRdExStmt);
             createRdExStmt.executeUpdate();
-            exerciseIdCounter--;
-        }catch (SQLException throwables){
+            updateExerciseIdCounter(-1);
+        }catch (Exception throwables){
+            updateExerciseIdCounter(-1);
             handleThrowables(conn, "Could not create exercise " + exerciseId, throwables);
-            exerciseIdCounter--;
         }
     }
 
@@ -538,13 +543,21 @@ public class PmResourceService {
                 createLogStmt.executeUpdate();
                 logId++;
             }
-            logIdCounter--;
+            updatedLogIdCounter(-1);
             return traces;
-        }catch(SQLException throwables){
+        }catch(Exception throwables){
+            updatedLogIdCounter(-1);
             handleThrowables(conn, "Could not create log to exercise " +exerciseId, throwables);
-            logIdCounter--;
-            throw new DatabaseException(throwables);    // note: question: possible to throw 2 times same exception?
+            throw new Exception(throwables);    // note: question: possible to throw 2 times same exception?
         }
+    }
+
+    private static synchronized void updatedLogIdCounter(int increment){
+        PmResourceService.logIdCounter = logIdCounter + increment;
+    }
+
+    private static synchronized void updateExerciseIdCounter(int increment){
+        PmResourceService.exerciseIdCounter = exerciseIdCounter + increment;
     }
 
     /**
@@ -553,10 +566,11 @@ public class PmResourceService {
      * @throws DatabaseException
      */
     private synchronized int getNextExerciseId() throws DatabaseException{
-        exerciseIdCounter++;
         try(Connection conn = PmDataSource.getConnection()){
             conn.setAutoCommit(false);
-            return getNextExerciseIdUtil(conn) + exerciseIdCounter - 1;
+            int id = getNextExerciseIdUtil(conn) + exerciseIdCounter;
+            updateExerciseIdCounter(1);
+            return id;
         }catch(SQLException throwables){
             throwables.printStackTrace();
             throw new DatabaseException(throwables);
@@ -574,7 +588,7 @@ public class PmResourceService {
                 maxId = maxIdSet.getInt("id");
                 maxId++;
             }else{
-                throw new DatabaseException("Internal Error: Could not fetch exerciseId");
+                return 0;
             }
             conn.commit();
 
@@ -589,11 +603,12 @@ public class PmResourceService {
      * @return returns logId
      * @throws DatabaseException
      */
-    private int getAvailableLogId() throws DatabaseException{
-        logIdCounter++;
+    private synchronized int getAvailableLogId() throws DatabaseException{
         try(Connection conn = PmDataSource.getConnection()){
             conn.setAutoCommit(false);
-            return getNextLogIdUtil(conn) + logIdCounter - 1;
+            int id = getNextLogIdUtil(conn) + logIdCounter;
+            updatedLogIdCounter(1);
+            return id;
         }catch(SQLException throwables){
             throwables.printStackTrace();
             throw new DatabaseException(throwables);
@@ -611,7 +626,7 @@ public class PmResourceService {
                 maxId = maxIdSet.getInt("id");
                 maxId++;
             }else{
-                throw new DatabaseException("Internal Error: Could not fetch logId");
+                return 0;
             }
             conn.commit();
 
