@@ -18,9 +18,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.sql.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -28,20 +26,12 @@ import java.util.stream.Collectors;
  */
 @Service
 public class PmResourceService {
+    private static final Set<Integer> currentlyBufferingConfigurations  =Collections.synchronizedSet(new HashSet<>());
     private static int configIdCounter = 0;
     private static int exerciseIdCounter = 0;
     private static int logIdCounter = 0;
-    private final String CONN_PM_USER;
-    private final String CONN_PM_PWD;
-    private final String PM_ADMINISTRATION_URL;
-    private final String CONN_SUPER_USER;
-    private final String CONN_SUPER_PWD;
-
-    private final String TASK_TYPE = "pm";
-    private final SubmissionDispatcherService dispatcherService;
-    private final GradingDTORepository gradingDTORepository;
-
     private final Logger logger;
+    private final ApplicationProperties properties;
 
 
     /**
@@ -49,17 +39,10 @@ public class PmResourceService {
      * @param properties the injected application properties
      * @throws ClassNotFoundException if class not found
      */
-    public PmResourceService(SubmissionDispatcherService dispatcherService, GradingDTORepository gradingDTORepository, ApplicationProperties properties) throws ClassNotFoundException{
+    public PmResourceService(ApplicationProperties properties) throws ClassNotFoundException{
         Class.forName(properties.getGrading().getJDBCDriver());
+        this.properties = properties;
         this.logger = (Logger) LoggerFactory.getLogger("at.jku.dke.etutor.pmexercisemanager");
-        this.dispatcherService = dispatcherService;
-        this.gradingDTORepository = gradingDTORepository;
-
-        CONN_PM_USER = properties.getProcessMining().getConnUser();
-        CONN_PM_PWD = properties.getProcessMining().getConnPwd();
-        PM_ADMINISTRATION_URL = properties.getProcessMining().getConnUrl();
-        CONN_SUPER_USER = properties.getGrading().getConnSuperUser();
-        CONN_SUPER_PWD = properties.getGrading().getConnSuperPwd();
     }
 
     /**
@@ -79,7 +62,7 @@ public class PmResourceService {
             conn.commit();
             logger.debug("ExerciseConfig created");
 
-            new Thread(() -> prepareMultipleRandomExercises(exerciseConfigID, 20)).start();
+            new Thread(() -> bufferRandomExercisesForConfiguration(exerciseConfigID, properties.getProcessMining().getInitialExercisesToBuffer())).start();
             return exerciseConfigID;
         }catch(SQLException e){
             logger.error(e.getMessage(), e);
@@ -134,6 +117,7 @@ public class PmResourceService {
 
     private static synchronized void updateConfigIdCounter(int increment){
         configIdCounter = configIdCounter + increment;
+        if(configIdCounter < 0) configIdCounter = 0;
     }
 
     private int getNextConfigIDUtil(Connection conn) throws Exception{
@@ -320,12 +304,33 @@ public class PmResourceService {
      */
     public int getAvailableExerciseForConfiguration(int configId) throws Exception {
         Optional<Integer> availableExerciseId = getAvailableExerciseIdForConfiguration(configId);
+        int resultId;
         if(availableExerciseId.isEmpty()) {
-            // TODO: also prepare if number of available is below threshold, and also externalize the parameters (20 and threshold)
-            new Thread(() -> prepareMultipleRandomExercises(configId, 20)).start();
-            return createRandomExercise(configId, false);
-        } else return availableExerciseId.get();
+            resultId = createRandomExercise(configId, false);
+        } else resultId = availableExerciseId.get();
 
+        if(getNumberOfAvailableExercisesForConfiguration(configId) < properties.getProcessMining().getMinimumThresholdForExercises()){
+            new Thread(() -> bufferRandomExercisesForConfiguration(configId, 20)).start();
+        }
+        return  resultId;
+    }
+
+    private int getNumberOfAvailableExercisesForConfiguration(int configId) {
+         String query = """
+                SELECT COUNT(exercise_id)
+                FROM randomexercises
+                WHERE config_id = ? AND is_available;""";
+
+         try(Connection con = PmDataSource.getConnection(); var stmt = con.prepareStatement(query)){
+            stmt.setInt(1, configId);
+            var set = stmt.executeQuery();
+            if(set != null && set.next()){
+                return set.getInt(1);
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+        }
+         return 0;
     }
 
     /**
@@ -356,7 +361,7 @@ public class PmResourceService {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.error(e.getMessage());
         }
         return Optional.empty();
     }
@@ -367,13 +372,15 @@ public class PmResourceService {
      * @param configId config id
      * @param n number of exercises to be prepared
      */
-    public void prepareMultipleRandomExercises(int configId, int n) {
-        for(int i = 0; i < n; i++) {
-            try {
+    public void bufferRandomExercisesForConfiguration(int configId, int n) {
+        if(currentlyBufferingConfigurations.add(configId)){
+            for(int i = 0; i < n; i++) { try {
                 createRandomExercise(configId, true);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                logger.error("%s %s %s %s".formatted("Could not buffer exercise for ", configId, ". With exception: \n ", e.getMessage()));
             }
+            }
+            currentlyBufferingConfigurations.remove(configId);
         }
     }
 
@@ -553,11 +560,13 @@ public class PmResourceService {
     }
 
     private static synchronized void updatedLogIdCounter(int increment){
-        PmResourceService.logIdCounter = logIdCounter + increment;
+        logIdCounter = logIdCounter + increment;
+        if(logIdCounter < 0) logIdCounter = 0;
     }
 
     private static synchronized void updateExerciseIdCounter(int increment){
         PmResourceService.exerciseIdCounter = exerciseIdCounter + increment;
+        if(exerciseIdCounter < 0) exerciseIdCounter = 0;
     }
 
     /**
