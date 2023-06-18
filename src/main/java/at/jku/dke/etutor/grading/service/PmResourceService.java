@@ -26,9 +26,7 @@ import java.util.stream.Collectors;
 @Service
 public class PmResourceService {
     private static final Set<Integer> currentlyBufferingConfigurations  =Collections.synchronizedSet(new HashSet<>());
-    private static int configIdCounter = 0;
     private static int exerciseIdCounter = 0;
-    private static int logIdCounter = 0;
     private final Logger logger;
     private final ApplicationProperties properties;
 
@@ -56,13 +54,12 @@ public class PmResourceService {
         try(Connection conn = PmDataSource.getConnection()){
             conn.setAutoCommit(false);
 
-            int exerciseConfigID = getNextConfigID();
-            createExerciseConfigurationUtil(conn, exerciseConfigID, exerciseConfigDTO);
+            var id =  createExerciseConfigurationUtil(conn, exerciseConfigDTO);
             conn.commit();
             logger.debug("ExerciseConfig created");
 
-            new Thread(() -> bufferRandomExercisesForConfiguration(exerciseConfigID, properties.getProcessMining().getInitialExercisesToBuffer())).start();
-            return exerciseConfigID;
+            new Thread(() -> bufferRandomExercisesForConfiguration(id.orElseThrow(), properties.getProcessMining().getInitialExercisesToBuffer())).start();
+            return id.orElseThrow();
         }catch(SQLException e){
             logger.error(e.getMessage(), e);
             throw new DatabaseException(e);
@@ -72,99 +69,32 @@ public class PmResourceService {
     /**
      * Persists the configuration
      * @param conn the Connection
-     * @param id the ConfigurationID
      * @param exerciseConfigDTO the parameters given by user
      * @throws DatabaseException
      */
-    private void createExerciseConfigurationUtil(Connection conn, int id, PmExerciseConfigDTO exerciseConfigDTO) throws DatabaseException{
+    private Optional<Integer> createExerciseConfigurationUtil(Connection conn, PmExerciseConfigDTO exerciseConfigDTO) throws DatabaseException{
         logger.debug("Creating config...");
 
-        String insertStmt = "INSERT INTO exerciseconfiguration VALUES (?, ?, ?, ?, ?, ?);";
-        try(PreparedStatement createConfigStmt = conn.prepareStatement(insertStmt)){
-            createConfigStmt.setInt(1, id);
-            createConfigStmt.setInt(2, exerciseConfigDTO.getMaxActivity());
-            createConfigStmt.setInt(3, exerciseConfigDTO.getMinActivity());
-            createConfigStmt.setInt(4, exerciseConfigDTO.getMaxLogSize());
-            createConfigStmt.setInt(5, exerciseConfigDTO.getMinLogSize());
-            createConfigStmt.setString(6, exerciseConfigDTO.getConfigNum());
+        String insertStmt = "INSERT INTO exerciseconfiguration(max_activity, min_activity, max_logsize, min_logsize, configuration_number) VALUES (?, ?, ?, ?, ?);";
+        try(PreparedStatement createConfigStmt = conn.prepareStatement(insertStmt, Statement.RETURN_GENERATED_KEYS)){
+            createConfigStmt.setInt(1, exerciseConfigDTO.getMaxActivity());
+            createConfigStmt.setInt(2, exerciseConfigDTO.getMinActivity());
+            createConfigStmt.setInt(3, exerciseConfigDTO.getMaxLogSize());
+            createConfigStmt.setInt(4, exerciseConfigDTO.getMinLogSize());
+            createConfigStmt.setString(5, exerciseConfigDTO.getConfigNum());
 
             logger.debug("Statement for creating configuration: {}", createConfigStmt);
             createConfigStmt.executeUpdate();
-            updateConfigIdCounter(-1);
-        }catch (Exception throwables){
-            updateConfigIdCounter(-1);
-            handleThrowables(conn, "Could not create configuration "+id, throwables);
-        }
-    }
-
-    /**
-     * Fetches an available configID
-     * @return the configID
-     * @throws Exception
-     */
-    private synchronized int getNextConfigID() throws Exception{
-        try(Connection conn = PmDataSource.getConnection()){
-            conn.setAutoCommit(false);
-            int id = getNextConfigIDUtil(conn) + configIdCounter;
-            updateConfigIdCounter(1);
-            return  id;
-        }catch (SQLException throwable){
-            throwable.printStackTrace();
-            throw new DatabaseException(throwable);
-        }
-    }
-
-    private static synchronized void updateConfigIdCounter(int increment){
-        configIdCounter = configIdCounter + increment;
-        if(configIdCounter < 0) configIdCounter = 0;
-    }
-
-    private int getNextConfigIDUtil(Connection conn) throws Exception{
-        String fetchMaxIdQuery = "SELECT max(config_id) as id FROM exerciseconfiguration";
-        int maxId = -1;
-
-        try(PreparedStatement fetchMaxIdStmt = conn.prepareStatement(fetchMaxIdQuery);
-            ResultSet maxIdSet = fetchMaxIdStmt.executeQuery()){
-            // check if result set is empty
-            // if yes -> assign first value
-            // note: check for correctness
-            if(maxIdSet.next()){
-                maxId = maxIdSet.getInt("id");
-                maxId++;
-            }else{
-                return 0;
+            var idSet = createConfigStmt.getGeneratedKeys();
+            if(idSet.next()){
+                return Optional.of(idSet.getInt(1));
             }
-
-            conn.commit();
-        }catch (SQLException throwables){
-            handleThrowables(conn, "Could not assign configID" ,throwables);
+            else return Optional.empty();
+        }catch (Exception throwables){
+            handleThrowables(conn, "Could not create configuration ", throwables);
         }
-
-        return maxId;
+        return Optional.empty();
     }
-
-//    /**
-//     * VERSION 1
-//     * Updates the configuration number of an existing configuration
-//     * @param id the ID of the existing configuration
-//     * @param parameterValue the value to change to
-//     * @throws DatabaseException
-//     */
-//    public void updateExerciseConfiguration(int id, String parameterValue) throws DatabaseException{
-//        Objects.requireNonNull(parameterValue);
-//        if(parameterValue.isEmpty()) return;
-//
-//        logger.debug("Updating configuration {}",id);
-//        try(Connection conn = PmDataSource.getConnection()){
-//            conn.setAutoCommit(false);
-//            updateExerciseConfigurationUtil(conn, id, parameterValue);
-//            logger.debug("Configuration updated");
-//
-//        }catch (SQLException throwables){
-//            logger.error(throwables.getMessage(), throwables);
-//            throw new DatabaseException(throwables);
-//        }
-//    }
 
     /**
      * VERSION 2 - 01.11.2022
@@ -186,25 +116,6 @@ public class PmResourceService {
             throw new DatabaseException(throwables);
         }
     }
-
-//    /**
-//     * VERSION 1
-//     * Utility to update the configuration
-//     * @param conn the Connection
-//     * @param id the configuration ID
-//     * @param parameterValue the value to change to
-//     */
-//    public void updateExerciseConfigurationUtil(Connection conn, int id, String parameterValue) throws DatabaseException {
-//        String updateQuery = "UPDATE exerciseconfiguration SET configuration_number = ? WHERE config_id = ?;";
-//        try(PreparedStatement updateStmt = conn.prepareStatement(updateQuery)){
-//            updateStmt.setString(1, parameterValue);
-//            updateStmt.setInt(2, id);
-//            updateStmt.executeUpdate();
-//            conn.commit();
-//        }catch(SQLException throwables){
-//            handleThrowables(conn, "Could not update configuration", throwables);
-//        }
-//    }
 
     /**
      * VERSION 2 - 01.11.2022
@@ -323,7 +234,7 @@ public class PmResourceService {
          try(Connection con = PmDataSource.getConnection(); var stmt = con.prepareStatement(query)){
             stmt.setInt(1, configId);
             var set = stmt.executeQuery();
-            if(set != null && set.next()){
+            if(set.next()){
                 return set.getInt(1);
             }
         } catch (SQLException e) {
@@ -351,7 +262,7 @@ public class PmResourceService {
         ; var updateStmt = con.prepareStatement(update)){
             stmt.setInt(1, configId);
             var set = stmt.executeQuery();
-            if(set != null && set.next()){
+            if(set.next()){
                 int id = set.getInt("exercise_id");
                 updateStmt.setInt(1, id);
                 updateStmt.executeUpdate();
@@ -393,13 +304,8 @@ public class PmResourceService {
             logger.debug("Creating random exercise with config {}", configId);
             try(Connection conn = PmDataSource.getConnection()){
                 conn.setAutoCommit(false);
-                var optMaxLogSize = getMaxLogSizeForExerciseConfiguration(configId);
-                if(optMaxLogSize.isEmpty()){
-                    throw new DatabaseException("Could not fetch max log size for configuration: " + configId);
-                }
                 int exerciseId = getNextExerciseId();
-                int logId = getAvailableLogId(optMaxLogSize.orElseThrow());
-                createRandomExerciseUtil(conn, exerciseId, configId, logId, optMaxLogSize.orElseThrow(), setAvailable);
+                createRandomExerciseUtil(conn, exerciseId, configId, setAvailable);
                 logger.debug("Random Exercise created");
                 return exerciseId;
             }catch (SQLException throwables){
@@ -408,31 +314,14 @@ public class PmResourceService {
             }
     }
 
-    private Optional<Integer> getMaxLogSizeForExerciseConfiguration(int configId) {
-         String configReadQuery = "SELECT max_logsize FROM exerciseconfiguration WHERE config_id = ?;";
-         try(Connection con = PmDataSource.getConnection()){
-            try(PreparedStatement configReadStmt = con.prepareStatement(configReadQuery)) {
-               configReadStmt.setInt(1, configId);
-               var set = configReadStmt.executeQuery();
-               if(set.next()){
-                   return Optional.of(set.getInt("max_logsize"));
-               }
-            }
-         }catch(SQLException ignored){
-             // handled upwards
-         }
-         return Optional.empty();
-    }
-
     /**
      * @param conn
      * @param exerciseId
      * @param configId
-     * @param integer
      * @param setAvailable
      * @throws DatabaseException
      */
-    private void createRandomExerciseUtil(Connection conn, int exerciseId, int configId, int logId, Integer maxLogSize, boolean setAvailable) throws Exception{
+    private void createRandomExerciseUtil(Connection conn, int exerciseId, int configId, boolean setAvailable) throws Exception{
         logger.debug("Creating random exercise...");
         Log simulatedLog = new Log();
         AlphaAlgorithm alphaAlgorithm;
@@ -440,7 +329,7 @@ public class PmResourceService {
 
         // combine generated traces to log
         logger.debug("Combine traces to log.");
-        for(String [] strings: createCorrespondingLog(configId, exerciseId, logId)){
+        for(String [] strings: createCorrespondingLog(configId, exerciseId)){
             simulatedLog.addTrace(new Trace(strings));
         }
 
@@ -488,10 +377,8 @@ public class PmResourceService {
             logger.debug("Statement for creating exercise: {} ", createRdExStmt);
             createRdExStmt.executeUpdate();
             conn.commit();
-            updateLogIdCounter(maxLogSize * -1);
             updateExerciseIdCounter(-1);
         }catch (Exception throwables){
-            updateLogIdCounter(maxLogSize * -1);
             updateExerciseIdCounter(-1);
             handleThrowables(conn, "Could not create exercise " + exerciseId, throwables);
         }
@@ -504,12 +391,12 @@ public class PmResourceService {
      * @return returns list of traces (log)
      * @throws Exception
      */
-    private List<String[]> createCorrespondingLog(int configId, int exerciseId, int logId) throws Exception{
+    private List<String[]> createCorrespondingLog(int configId, int exerciseId) throws Exception{
         logger.debug("Creating random generated Log with id {}", exerciseId);
         try(Connection conn = PmDataSource.getConnection()){
             conn.setAutoCommit(false);
 
-            List<String[]> resultList= createCorrespondingLogUtil(conn, exerciseId, configId, logId);
+            List<String[]> resultList= createCorrespondingLogUtil(conn, exerciseId, configId);
             conn.commit();
             logger.debug("Corresponding Log created");
             return resultList;
@@ -527,7 +414,7 @@ public class PmResourceService {
      * @return a list of traces (log)
      * @throws Exception
      */
-    private List<String[]> createCorrespondingLogUtil(Connection conn, int exerciseId, int configId, int logId) throws Exception{
+    private List<String[]> createCorrespondingLogUtil(Connection conn, int exerciseId, int configId) throws Exception{
         logger.debug("Creating log... ");
         int maxActivity;
         int minActivity;
@@ -536,7 +423,7 @@ public class PmResourceService {
         String configNum;
 
         String configReadQuery = "SELECT * FROM exerciseconfiguration WHERE config_id = ?;";
-        String logUpdateQuery = "INSERT INTO logs VALUES (?,?,?);";
+        String logUpdateQuery = "INSERT INTO logs(exercise_id, trace) VALUES (?,?);";
 
         try(    PreparedStatement configReadStmt = conn.prepareStatement(configReadQuery);
                 PreparedStatement createLogStmt = conn.prepareStatement(logUpdateQuery)){
@@ -560,23 +447,16 @@ public class PmResourceService {
 
             for(String [] string: traces){
                 Array traceArray = conn.createArrayOf("VARCHAR", string);
-                createLogStmt.setInt(1, logId);
-                createLogStmt.setInt(2,exerciseId);
-                createLogStmt.setArray(3, traceArray);
+                createLogStmt.setInt(1,exerciseId);
+                createLogStmt.setArray(2, traceArray);
                 logger.debug("Statement for creating log {}", createLogStmt);
                 createLogStmt.executeUpdate();
-                logId++;
             }
             return traces;
         }catch(Exception throwables){
             handleThrowables(conn, "Could not create log to exercise " +exerciseId, throwables);
             throw new Exception(throwables);    // note: question: possible to throw 2 times same exception?
         }
-    }
-
-    private static synchronized void updateLogIdCounter(int increment){
-        logIdCounter = logIdCounter + increment;
-        if(logIdCounter < 0) logIdCounter = 0;
     }
 
     private static synchronized void updateExerciseIdCounter(int increment){
@@ -618,44 +498,6 @@ public class PmResourceService {
 
         }catch (SQLException throwables){
             handleThrowables(conn, "Could not assign exerciseId", throwables);
-        }
-        return maxId;
-    }
-
-    /**
-     * Fetches an available logId
-     * @return returns logId
-     * @throws DatabaseException
-     */
-    private synchronized int getAvailableLogId(Integer maxLogSize) throws DatabaseException{
-        try(Connection conn = PmDataSource.getConnection()){
-            conn.setAutoCommit(false);
-            int id = getNextLogIdUtil(conn) + logIdCounter;
-            updateLogIdCounter(maxLogSize);
-            return id;
-        }catch(SQLException throwables){
-            throwables.printStackTrace();
-            throw new DatabaseException(throwables);
-        }
-    }
-
-    private int getNextLogIdUtil(Connection conn) throws DatabaseException{
-        String fetchMaxLogIdQuery = "SELECT max(log_id) as id FROM logs;";
-        int maxId = -1;
-
-        try (PreparedStatement fetchMaxLogIdStmt = conn.prepareStatement(fetchMaxLogIdQuery)){
-            ResultSet maxIdSet = fetchMaxLogIdStmt.executeQuery();
-
-            if(maxIdSet.next()){
-                maxId = maxIdSet.getInt("id");
-                maxId++;
-            }else{
-                return 0;
-            }
-            conn.commit();
-
-        }catch (SQLException throwables){
-            handleThrowables(conn, "Could not assign logId", throwables);
         }
         return maxId;
     }
