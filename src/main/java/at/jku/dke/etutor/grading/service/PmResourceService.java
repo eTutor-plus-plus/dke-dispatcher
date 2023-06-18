@@ -323,40 +323,40 @@ public class PmResourceService {
      */
     private void createRandomExerciseUtil(Connection conn, int exerciseId, int configId, boolean setAvailable) throws Exception{
         logger.debug("Creating random exercise...");
-        Log simulatedLog = new Log();
-        AlphaAlgorithm alphaAlgorithm;
-        Map<String, Object> resultMap;
-
-        // combine generated traces to log
-        logger.debug("Combine traces to log.");
-        for(String [] strings: createCorrespondingLog(configId, exerciseId)){
-            simulatedLog.addTrace(new Trace(strings));
-        }
-
-        alphaAlgorithm = new AlphaAlgorithm(simulatedLog);
-        // solve the alpha algorithm
-        resultMap = alphaAlgorithm.run();
-
-        // convert to String
-        ObjectMapper mapper = new ObjectMapper();
-        String orI1 = mapper.writeValueAsString(resultMap.get("orI1"));
-        String orI2 = mapper.writeValueAsString(resultMap.get("orI2"));
-        String orI3 = mapper.writeValueAsString(resultMap.get("orI3"));
-        String orI4 = mapper.writeValueAsString(resultMap.get("orI4"));
-        String aaI1 = mapper.writeValueAsString(resultMap.get("aaI1"));
-        String aaI2 = mapper.writeValueAsString(resultMap.get("aaI2"));
-        String aaI3 = mapper.writeValueAsString(resultMap.get("aaI3"));
-        String aaI4 = mapper.writeValueAsString(resultMap.get("aaI4"));
-        String aaI5 = mapper.writeValueAsString(resultMap.get("aaI5"));
-        String aaI6 = mapper.writeValueAsString(resultMap.get("aaI6"));
-
-        List<Arc<?,?>> aa7List = (List<Arc<?,?>>) resultMap.get("aaI7");
-        String aaI7 = aa7List.stream().map(Object::toString).collect(Collectors.joining(", "));
-
         String createRandomExerciseQuery = "INSERT INTO randomexercises " +
                 "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 
         try(PreparedStatement createRdExStmt = conn.prepareStatement(createRandomExerciseQuery)){
+            Log simulatedLog = new Log();
+            AlphaAlgorithm alphaAlgorithm;
+            Map<String, Object> resultMap;
+
+            // combine generated traces to log
+            logger.debug("Combine traces to log.");
+            for(String [] strings: createCorrespondingLog(configId, exerciseId)){
+                simulatedLog.addTrace(new Trace(strings));
+            }
+
+            alphaAlgorithm = new AlphaAlgorithm(simulatedLog);
+            // solve the alpha algorithm
+            resultMap = alphaAlgorithm.run();
+
+            // convert to String
+            ObjectMapper mapper = new ObjectMapper();
+            String orI1 = mapper.writeValueAsString(resultMap.get("orI1"));
+            String orI2 = mapper.writeValueAsString(resultMap.get("orI2"));
+            String orI3 = mapper.writeValueAsString(resultMap.get("orI3"));
+            String orI4 = mapper.writeValueAsString(resultMap.get("orI4"));
+            String aaI1 = mapper.writeValueAsString(resultMap.get("aaI1"));
+            String aaI2 = mapper.writeValueAsString(resultMap.get("aaI2"));
+            String aaI3 = mapper.writeValueAsString(resultMap.get("aaI3"));
+            String aaI4 = mapper.writeValueAsString(resultMap.get("aaI4"));
+            String aaI5 = mapper.writeValueAsString(resultMap.get("aaI5"));
+            String aaI6 = mapper.writeValueAsString(resultMap.get("aaI6"));
+
+            List<Arc<?,?>> aa7List = (List<Arc<?,?>>) resultMap.get("aaI7");
+            String aaI7 = aa7List.stream().map(Object::toString).collect(Collectors.joining(", "));
+
             createRdExStmt.setInt(1, exerciseId);
             createRdExStmt.setInt(13, configId);
 
