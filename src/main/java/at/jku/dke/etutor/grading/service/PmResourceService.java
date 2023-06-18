@@ -3,7 +3,6 @@ package at.jku.dke.etutor.grading.service;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.objects.dispatcher.processmining.PmExerciseConfigDTO;
 import at.jku.dke.etutor.objects.dispatcher.processmining.PmExerciseLogDTO;
-import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 import at.jku.dke.etutor.modules.dlg.ExerciseManagementException;
 import at.jku.dke.etutor.modules.pm.AlphaAlgo.AlphaAlgorithm;
 import at.jku.dke.etutor.modules.pm.AlphaAlgo.Arc;
@@ -394,12 +393,13 @@ public class PmResourceService {
             logger.debug("Creating random exercise with config {}", configId);
             try(Connection conn = PmDataSource.getConnection()){
                 conn.setAutoCommit(false);
-
+                var optMaxLogSize = getMaxLogSizeForExerciseConfiguration(configId);
+                if(optMaxLogSize.isEmpty()){
+                    throw new DatabaseException("Could not fetch max log size for configuration: " + configId);
+                }
                 int exerciseId = getNextExerciseId();
-                int logId = getAvailableLogId();
-                createRandomExerciseUtil(conn, exerciseId, configId, logId, setAvailable);
-                conn.commit();
-
+                int logId = getAvailableLogId(optMaxLogSize.orElseThrow());
+                createRandomExerciseUtil(conn, exerciseId, configId, logId, optMaxLogSize.orElseThrow(), setAvailable);
                 logger.debug("Random Exercise created");
                 return exerciseId;
             }catch (SQLException throwables){
@@ -408,28 +408,42 @@ public class PmResourceService {
             }
     }
 
+    private Optional<Integer> getMaxLogSizeForExerciseConfiguration(int configId) {
+         String configReadQuery = "SELECT max_logsize FROM exerciseconfiguration WHERE config_id = ?;";
+         try(Connection con = PmDataSource.getConnection()){
+            try(PreparedStatement configReadStmt = con.prepareStatement(configReadQuery)) {
+               configReadStmt.setInt(1, configId);
+               var set = configReadStmt.executeQuery();
+               if(set.next()){
+                   return Optional.of(set.getInt("max_logsize"));
+               }
+            }
+         }catch(SQLException ignored){
+             // handled upwards
+         }
+         return Optional.empty();
+    }
+
     /**
      * @param conn
      * @param exerciseId
      * @param configId
+     * @param integer
      * @param setAvailable
      * @throws DatabaseException
      */
-    private void createRandomExerciseUtil(Connection conn, int exerciseId, int configId, int logId, boolean setAvailable) throws Exception{
+    private void createRandomExerciseUtil(Connection conn, int exerciseId, int configId, int logId, Integer maxLogSize, boolean setAvailable) throws Exception{
         logger.debug("Creating random exercise...");
         Log simulatedLog = new Log();
         AlphaAlgorithm alphaAlgorithm;
         Map<String, Object> resultMap;
 
         // combine generated traces to log
-        try{
-            logger.debug("Combine traces to log.");
-            for(String [] strings: createCorrespondingLog(configId, exerciseId, logId)){
-                simulatedLog.addTrace(new Trace(strings));
-            }
-        }catch(Exception e){
-            logger.error(e.getMessage(), e);
+        logger.debug("Combine traces to log.");
+        for(String [] strings: createCorrespondingLog(configId, exerciseId, logId)){
+            simulatedLog.addTrace(new Trace(strings));
         }
+
         alphaAlgorithm = new AlphaAlgorithm(simulatedLog);
         // solve the alpha algorithm
         resultMap = alphaAlgorithm.run();
@@ -473,8 +487,11 @@ public class PmResourceService {
 
             logger.debug("Statement for creating exercise: {} ", createRdExStmt);
             createRdExStmt.executeUpdate();
+            conn.commit();
+            updateLogIdCounter(maxLogSize * -1);
             updateExerciseIdCounter(-1);
         }catch (Exception throwables){
+            updateLogIdCounter(maxLogSize * -1);
             updateExerciseIdCounter(-1);
             handleThrowables(conn, "Could not create exercise " + exerciseId, throwables);
         }
@@ -550,16 +567,14 @@ public class PmResourceService {
                 createLogStmt.executeUpdate();
                 logId++;
             }
-            updatedLogIdCounter(-1);
             return traces;
         }catch(Exception throwables){
-            updatedLogIdCounter(-1);
             handleThrowables(conn, "Could not create log to exercise " +exerciseId, throwables);
             throw new Exception(throwables);    // note: question: possible to throw 2 times same exception?
         }
     }
 
-    private static synchronized void updatedLogIdCounter(int increment){
+    private static synchronized void updateLogIdCounter(int increment){
         logIdCounter = logIdCounter + increment;
         if(logIdCounter < 0) logIdCounter = 0;
     }
@@ -612,11 +627,11 @@ public class PmResourceService {
      * @return returns logId
      * @throws DatabaseException
      */
-    private synchronized int getAvailableLogId() throws DatabaseException{
+    private synchronized int getAvailableLogId(Integer maxLogSize) throws DatabaseException{
         try(Connection conn = PmDataSource.getConnection()){
             conn.setAutoCommit(false);
             int id = getNextLogIdUtil(conn) + logIdCounter;
-            updatedLogIdCounter(1);
+            updateLogIdCounter(maxLogSize);
             return id;
         }catch(SQLException throwables){
             throwables.printStackTrace();
