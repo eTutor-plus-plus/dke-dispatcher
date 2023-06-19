@@ -50,14 +50,14 @@ public class JDBCEvaluatorImpl implements JDBCEvaluator{
 
         action = passedAttributes.get("action").toString();
         mode = JDBCConstants.ACTION_SUBMIT.equals(action) ? JDBCConstants.MODE_SUBMIT : JDBCConstants.MODE_PRACTISE;
-        this.logger.log(Level.INFO, "Mode: " + mode);
+        this.logger.info("Mode: " + mode);
 
-        //TODO - passedAttributes
-        //analysis = analyzer.analyze(userID, exerciseID, mode, (JDBCFile)passedAttributes.get("submission"));
-        //analysis.setSubmission((JDBCFile)passedAttributes.get("submission"));
+        JDBCFile file = new JDBCFile(exerciseID + ".java", passedAttributes.get("submission"));
 
-        //TODO - define analysis
-        return null;
+        analysis = analyzer.analyze(userID, exerciseID, mode, file);
+        analysis.setSubmission(file);
+
+        return analysis;
     }
 
     /**
@@ -104,7 +104,7 @@ public class JDBCEvaluatorImpl implements JDBCEvaluator{
 
         config.setAction(action);
         config.setDiagnoseLevel(Integer.parseInt(diagnoseLevel));
-        this.logger.log(Level.INFO, "SET config FOR REPORTER. Diagnose Level: " + config.getDiagnoseLevel());
+        this.logger.info("SET config FOR REPORTER. Diagnose Level: " + config.getDiagnoseLevel());
 
         return JDBCReporter.report((JDBCAnalysis)analysis, (DefaultGrading)grading, config, messageSource, locale);
     }
