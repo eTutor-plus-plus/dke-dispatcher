@@ -337,7 +337,7 @@ public class PmResourceService {
                 simulatedLog.addTrace(new Trace(strings));
             }
             if(simulatedLog.getLog().isEmpty()){
-                throw new NoSuchElementException();
+                throw new NoSuchElementException("No log has been created.");
             }
 
             alphaAlgorithm = new AlphaAlgorithm(simulatedLog);
