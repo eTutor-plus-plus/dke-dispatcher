@@ -336,6 +336,9 @@ public class PmResourceService {
             for(String [] strings: createCorrespondingLog(conn, configId, exerciseId)){
                 simulatedLog.addTrace(new Trace(strings));
             }
+            if(simulatedLog.getLog().isEmpty()){
+                throw new NoSuchElementException();
+            }
 
             alphaAlgorithm = new AlphaAlgorithm(simulatedLog);
             // solve the alpha algorithm
