@@ -304,10 +304,9 @@ public class PmResourceService {
             logger.debug("Creating random exercise with config {}", configId);
             try(Connection conn = PmDataSource.getConnection()){
                 conn.setAutoCommit(false);
-                int exerciseId = getNextExerciseId();
-                createRandomExerciseUtil(conn, configId, setAvailable);
+                var optId = createRandomExerciseUtil(conn, configId, setAvailable);
                 logger.debug("Random Exercise created");
-                return exerciseId;
+                return optId.orElseThrow();
             }catch (SQLException throwables){
                 logger.error(throwables.getMessage(), throwables);
                 throw new DatabaseException(throwables);
@@ -320,7 +319,7 @@ public class PmResourceService {
      * @param setAvailable
      * @throws DatabaseException
      */
-    private void createRandomExerciseUtil(Connection conn, int configId, boolean setAvailable) throws Exception{
+    private Optional<Integer> createRandomExerciseUtil(Connection conn, int configId, boolean setAvailable) throws Exception{
         logger.debug("Creating random exercise...");
         String createRandomExerciseQuery = "INSERT INTO randomexercises (or_one, or_two, or_three, or_four, aa_one, aa_two, aa_three, aa_four, aa_five, aa_six, aa_seven, config_id, is_available) " +
                 "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
@@ -391,15 +390,15 @@ public class PmResourceService {
                     logger.debug("Statement for creating log {}", createLogStmt);
                     createLogStmt.executeUpdate();
                 }
+                conn.commit();
+                return Optional.of(exerciseId);
             }else{
                 throw new NoSuchElementException("No id has been returned after exercise creation");
             }
-            conn.commit();
-            updateExerciseIdCounter(-1);
         }catch (Exception throwables){
-            updateExerciseIdCounter(-1);
             handleThrowables(conn, "Could not create exercise " , throwables);
         }
+        return Optional.empty();
     }
 
     /**
@@ -455,7 +454,7 @@ public class PmResourceService {
             List<String[]> traces = SimulationApplication.finalLogGeneration(minLogSize,maxLogSize,minActivity,maxActivity,configNum);
             return traces;
         }catch(Exception throwables){
-            handleThrowables(conn, "Could not create log to exercise " +exerciseId, throwables);
+            handleThrowables(conn, "Could not create log to exercise " , throwables);
             throw new Exception(throwables);    // note: question: possible to throw 2 times same exception?
         }
     }
