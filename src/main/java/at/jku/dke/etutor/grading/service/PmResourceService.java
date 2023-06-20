@@ -395,7 +395,6 @@ public class PmResourceService {
     private List<String[]> createCorrespondingLog(Connection conn, int configId, int exerciseId) throws Exception{
         logger.debug("Creating random generated Log with id {}", exerciseId);
         List<String[]> resultList= createCorrespondingLogUtil(conn, exerciseId, configId);
-        conn.commit();
         logger.debug("Corresponding Log created");
         return resultList;
     }
