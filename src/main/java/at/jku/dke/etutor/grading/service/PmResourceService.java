@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 @Service
 public class PmResourceService {
     private static final Set<Integer> currentlyBufferingConfigurations  =Collections.synchronizedSet(new HashSet<>());
-    private static int exerciseIdCounter = 0;
     private final Logger logger;
     private final ApplicationProperties properties;
 
@@ -457,49 +456,6 @@ public class PmResourceService {
             handleThrowables(conn, "Could not create log to exercise " , throwables);
             throw new Exception(throwables);    // note: question: possible to throw 2 times same exception?
         }
-    }
-
-    private static synchronized void updateExerciseIdCounter(int increment){
-        PmResourceService.exerciseIdCounter = exerciseIdCounter + increment;
-        if(exerciseIdCounter < 0) exerciseIdCounter = 0;
-    }
-
-    /**
-     * Fetches an available exerciseId
-     * @return returns exerciseId
-     * @throws DatabaseException
-     */
-    private synchronized int getNextExerciseId() throws DatabaseException{
-        try(Connection conn = PmDataSource.getConnection()){
-            conn.setAutoCommit(false);
-            int id = getNextExerciseIdUtil(conn) + exerciseIdCounter;
-            updateExerciseIdCounter(1);
-            return id;
-        }catch(SQLException throwables){
-            throwables.printStackTrace();
-            throw new DatabaseException(throwables);
-        }
-    }
-
-    private int getNextExerciseIdUtil(Connection conn) throws DatabaseException{
-        String fetchMaxIdQuery = "SELECT max(exercise_id) as id FROM randomexercises;";
-        int maxId = -1;
-
-        try (PreparedStatement fetchMaxIdStmt = conn.prepareStatement(fetchMaxIdQuery)){
-            ResultSet maxIdSet = fetchMaxIdStmt.executeQuery();
-
-            if(maxIdSet.next()){
-                maxId = maxIdSet.getInt("id");
-                maxId++;
-            }else{
-                return 0;
-            }
-            conn.commit();
-
-        }catch (SQLException throwables){
-            handleThrowables(conn, "Could not assign exerciseId", throwables);
-        }
-        return maxId;
     }
 
     /**
