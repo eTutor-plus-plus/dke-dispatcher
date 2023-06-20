@@ -321,7 +321,7 @@ public class PmResourceService {
     private Optional<Integer> createRandomExerciseUtil(Connection conn, int configId, boolean setAvailable) throws Exception{
         logger.debug("Creating random exercise...");
         String createRandomExerciseQuery = "INSERT INTO randomexercises (or_one, or_two, or_three, or_four, aa_one, aa_two, aa_three, aa_four, aa_five, aa_six, aa_seven, config_id, is_available) " +
-                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);";
         String logUpdateQuery = "INSERT INTO logs(exercise_id, trace) VALUES (?,?);";
 
         try(PreparedStatement createRdExStmt = conn.prepareStatement(createRandomExerciseQuery, Statement.RETURN_GENERATED_KEYS);
