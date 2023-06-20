@@ -305,7 +305,7 @@ public class PmResourceService {
             try(Connection conn = PmDataSource.getConnection()){
                 conn.setAutoCommit(false);
                 int exerciseId = getNextExerciseId();
-                createRandomExerciseUtil(conn, exerciseId, configId, setAvailable);
+                createRandomExerciseUtil(conn, configId, setAvailable);
                 logger.debug("Random Exercise created");
                 return exerciseId;
             }catch (SQLException throwables){
@@ -316,25 +316,28 @@ public class PmResourceService {
 
     /**
      * @param conn
-     * @param exerciseId
      * @param configId
      * @param setAvailable
      * @throws DatabaseException
      */
-    private void createRandomExerciseUtil(Connection conn, int exerciseId, int configId, boolean setAvailable) throws Exception{
+    private void createRandomExerciseUtil(Connection conn, int configId, boolean setAvailable) throws Exception{
         logger.debug("Creating random exercise...");
-        String createRandomExerciseQuery = "INSERT INTO randomexercises " +
+        String createRandomExerciseQuery = "INSERT INTO randomexercises (or_one, or_two, or_three, or_four, aa_one, aa_two, aa_three, aa_four, aa_five, aa_six, aa_seven, config_id, is_available) " +
                 "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+        String logUpdateQuery = "INSERT INTO logs(exercise_id, trace) VALUES (?,?);";
 
-        try(PreparedStatement createRdExStmt = conn.prepareStatement(createRandomExerciseQuery)){
+        try(PreparedStatement createRdExStmt = conn.prepareStatement(createRandomExerciseQuery, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement createLogStmt = conn.prepareStatement(logUpdateQuery)){
             Log simulatedLog = new Log();
             AlphaAlgorithm alphaAlgorithm;
             Map<String, Object> resultMap;
 
             // combine generated traces to log
             logger.debug("Combine traces to log.");
-            for(String [] strings: createCorrespondingLog(conn, configId, exerciseId)){
+            List<String[]> traces = new ArrayList<>();
+            for(String [] strings: createCorrespondingLog(conn, configId)){
                 simulatedLog.addTrace(new Trace(strings));
+                traces.add(strings);
             }
             if(simulatedLog.getLog().isEmpty()){
                 throw new NoSuchElementException("No log has been created.");
@@ -360,29 +363,42 @@ public class PmResourceService {
             List<Arc<?,?>> aa7List = (List<Arc<?,?>>) resultMap.get("aaI7");
             String aaI7 = aa7List.stream().map(Object::toString).collect(Collectors.joining(", "));
 
-            createRdExStmt.setInt(1, exerciseId);
-            createRdExStmt.setString(2, orI1);
-            createRdExStmt.setString(3, orI2);
-            createRdExStmt.setString(4, orI3);
-            createRdExStmt.setString(5, " ");
+            createRdExStmt.setString(1, orI1);
+            createRdExStmt.setString(2, orI2);
+            createRdExStmt.setString(3, orI3);
+            createRdExStmt.setString(4, " ");
             //createRdExStmt.setString(5, orI4);
-            createRdExStmt.setString(6, aaI1);
-            createRdExStmt.setString(7, aaI2);
-            createRdExStmt.setString(8, aaI3);
-            createRdExStmt.setString(9, aaI4);
-            createRdExStmt.setString(10, aaI5);
-            createRdExStmt.setString(11, aaI6);
-            createRdExStmt.setString(12, aaI7);
-            createRdExStmt.setInt(13, configId);
-            createRdExStmt.setBoolean(14, setAvailable);
+            createRdExStmt.setString(5, aaI1);
+            createRdExStmt.setString(6, aaI2);
+            createRdExStmt.setString(7, aaI3);
+            createRdExStmt.setString(8, aaI4);
+            createRdExStmt.setString(9, aaI5);
+            createRdExStmt.setString(10, aaI6);
+            createRdExStmt.setString(11, aaI7);
+            createRdExStmt.setInt(12, configId);
+            createRdExStmt.setBoolean(13, setAvailable);
 
             logger.debug("Statement for creating exercise: {} ", createRdExStmt);
             createRdExStmt.executeUpdate();
+            var idSet = createRdExStmt.getGeneratedKeys();
+            // Persist logs
+            if(idSet.next()){
+                var exerciseId = idSet.getInt(1);
+                for(String[] string: traces){
+                    Array traceArray = conn.createArrayOf("VARCHAR", string);
+                    createLogStmt.setInt(1,exerciseId);
+                    createLogStmt.setArray(2, traceArray);
+                    logger.debug("Statement for creating log {}", createLogStmt);
+                    createLogStmt.executeUpdate();
+                }
+            }else{
+                throw new NoSuchElementException("No id has been returned after exercise creation");
+            }
             conn.commit();
             updateExerciseIdCounter(-1);
         }catch (Exception throwables){
             updateExerciseIdCounter(-1);
-            handleThrowables(conn, "Could not create exercise " + exerciseId, throwables);
+            handleThrowables(conn, "Could not create exercise " , throwables);
         }
     }
 
@@ -390,14 +406,12 @@ public class PmResourceService {
      * Method creates a random process with the given configId, simulates this process and returns created log
      *
      * @param conn
-     * @param configId   the Configuration Id
-     * @param exerciseId the corresponding exerciseId which is also used as corresponding logId
      * @return returns list of traces (log)
      * @throws Exception
      */
-    private List<String[]> createCorrespondingLog(Connection conn, int configId, int exerciseId) throws Exception{
-        logger.debug("Creating random generated Log with id {}", exerciseId);
-        List<String[]> resultList= createCorrespondingLogUtil(conn, exerciseId, configId);
+    private List<String[]> createCorrespondingLog(Connection conn, int configId) throws Exception{
+        logger.debug("Creating random generated Log with id {}");
+        List<String[]> resultList= createCorrespondingLogUtil(conn, configId);
         logger.debug("Corresponding Log created");
         return resultList;
     }
@@ -405,12 +419,11 @@ public class PmResourceService {
     /**
      * Utility to generate a random process, simulate this process and storing resulting log in database
      * @param conn the Connection
-     * @param exerciseId traces are stored with corresponding exerciseId
      * @param configId the configuration
      * @return a list of traces (log)
      * @throws Exception
      */
-    private List<String[]> createCorrespondingLogUtil(Connection conn, int exerciseId, int configId) throws Exception{
+    private List<String[]> createCorrespondingLogUtil(Connection conn, int configId) throws Exception{
         logger.debug("Creating log... ");
         int maxActivity;
         int minActivity;
@@ -440,14 +453,6 @@ public class PmResourceService {
 
             // actual random process generation
             List<String[]> traces = SimulationApplication.finalLogGeneration(minLogSize,maxLogSize,minActivity,maxActivity,configNum);
-
-            for(String [] string: traces){
-                Array traceArray = conn.createArrayOf("VARCHAR", string);
-                createLogStmt.setInt(1,exerciseId);
-                createLogStmt.setArray(2, traceArray);
-                logger.debug("Statement for creating log {}", createLogStmt);
-                createLogStmt.executeUpdate();
-            }
             return traces;
         }catch(Exception throwables){
             handleThrowables(conn, "Could not create log to exercise " +exerciseId, throwables);
