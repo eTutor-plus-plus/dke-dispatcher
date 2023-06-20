@@ -333,7 +333,7 @@ public class PmResourceService {
 
             // combine generated traces to log
             logger.debug("Combine traces to log.");
-            for(String [] strings: createCorrespondingLog(configId, exerciseId)){
+            for(String [] strings: createCorrespondingLog(conn, configId, exerciseId)){
                 simulatedLog.addTrace(new Trace(strings));
             }
 
@@ -358,8 +358,6 @@ public class PmResourceService {
             String aaI7 = aa7List.stream().map(Object::toString).collect(Collectors.joining(", "));
 
             createRdExStmt.setInt(1, exerciseId);
-            createRdExStmt.setInt(13, configId);
-
             createRdExStmt.setString(2, orI1);
             createRdExStmt.setString(3, orI2);
             createRdExStmt.setString(4, orI3);
@@ -372,6 +370,7 @@ public class PmResourceService {
             createRdExStmt.setString(10, aaI5);
             createRdExStmt.setString(11, aaI6);
             createRdExStmt.setString(12, aaI7);
+            createRdExStmt.setInt(13, configId);
             createRdExStmt.setBoolean(14, setAvailable);
 
             logger.debug("Statement for creating exercise: {} ", createRdExStmt);
@@ -386,24 +385,19 @@ public class PmResourceService {
 
     /**
      * Method creates a random process with the given configId, simulates this process and returns created log
-     * @param configId the Configuration Id
+     *
+     * @param conn
+     * @param configId   the Configuration Id
      * @param exerciseId the corresponding exerciseId which is also used as corresponding logId
      * @return returns list of traces (log)
      * @throws Exception
      */
-    private List<String[]> createCorrespondingLog(int configId, int exerciseId) throws Exception{
+    private List<String[]> createCorrespondingLog(Connection conn, int configId, int exerciseId) throws Exception{
         logger.debug("Creating random generated Log with id {}", exerciseId);
-        try(Connection conn = PmDataSource.getConnection()){
-            conn.setAutoCommit(false);
-
-            List<String[]> resultList= createCorrespondingLogUtil(conn, exerciseId, configId);
-            conn.commit();
-            logger.debug("Corresponding Log created");
-            return resultList;
-        }catch (SQLException throwables){
-            logger.error(throwables.getMessage(), throwables);
-            throw new DatabaseException(throwables);
-        }
+        List<String[]> resultList= createCorrespondingLogUtil(conn, exerciseId, configId);
+        conn.commit();
+        logger.debug("Corresponding Log created");
+        return resultList;
     }
 
     /**
