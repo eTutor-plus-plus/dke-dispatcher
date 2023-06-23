@@ -16,6 +16,7 @@ public class AlphaAlgorithm {
 
     // OBJECT FIELD
     private Log log;
+    private Combination combination = new Combination();
 
     // CONSTRUCTOR
     public AlphaAlgorithm(Log log){
@@ -160,17 +161,17 @@ public class AlphaAlgorithm {
         // derive all possible combinations for list of transitions in every possible length of combination (j)
         // stores result in static resultList in Class combination
         for (int j= 1; j< eventList.size() +1; j++){
-            Combination.deriveCombinations(eventList, eventList.size(), j);
+            combination.deriveCombinations(eventList, eventList.size(), j);
         }
 
         // to store original List of all possible combinations, clone list
         // needed because method deriveCombination is called in checkIndependence() and overrides static result list
-        List<List<Event>> clonedResultList = new ArrayList<>(Combination.resultList);
+        List<List<Event>> clonedResultList = new ArrayList<>(combination.resultList);
         // list is needed to store intermediate result list -> list with all possible combinations that fulfill a1#a2 condition
         List<List<Event>> checkedIndependence = new ArrayList<>();
         // check each possible combination for condition a1#a2 and add to checkedIndependence list if it fulfills condition
         for(List<Event> list: clonedResultList){
-            if(Combination.checkIndependence(list, log.independence(log.directSuccession()))){
+            if(combination.checkIndependence(list, log.independence(log.directSuccession()))){
                 checkedIndependence.add(list);
             }
         }
@@ -179,7 +180,7 @@ public class AlphaAlgorithm {
         // if yes: add to result list xl
         for(List<Event> l1: checkedIndependence){
             for(List<Event> l2: checkedIndependence){
-                if(Combination.checkCausality(l1, l2, log.causality(log.directSuccession()))){
+                if(combination.checkCausality(l1, l2, log.causality(log.directSuccession()))){
                     xl.add(new Pair<>(l1, l2));
                 }
             }
