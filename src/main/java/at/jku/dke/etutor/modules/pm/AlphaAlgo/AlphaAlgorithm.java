@@ -48,7 +48,7 @@ public class AlphaAlgorithm {
 
         // Step 1, 2, 3: print Tl={...}, Ti = {...}, To= {...} on console
         printTransitionSets();
-        resultMap.put("aaI1", Trace.transitions);
+        resultMap.put("aaI1", log.getTransitions());
         resultMap.put("aaI2", log.getTiSet());
         resultMap.put("aaI3", log.getToSet());
 
@@ -94,7 +94,7 @@ public class AlphaAlgorithm {
 
     public void printTransitionSets(){
         // Set of unique transitions Tl
-        System.out.println("Transitions Tl= {" + Trace.transitions + "}");
+        System.out.println("Transitions Tl= {" + log.getTransitions() + "}");
 
         // Set Ti => initial transitions
         System.out.println("Initial Transitions Ti= {" + log.getTiSet() + "}");
@@ -156,7 +156,7 @@ public class AlphaAlgorithm {
         List<Pair<List<Event>, List<Event>>> xl = new ArrayList<>();
 
         // convert Set of Transitions to List of Transitions ->
-        List<Event> eventList = new ArrayList<>(Trace.transitions);
+        List<Event> eventList = new ArrayList<>(log.getTransitions());
         // derive all possible combinations for list of transitions in every possible length of combination (j)
         // stores result in static resultList in Class combination
         for (int j= 1; j< eventList.size() +1; j++){
@@ -355,53 +355,53 @@ public class AlphaAlgorithm {
 
 
 
-    /* ********TestArea******** */
-    public static void main(String[] args) {
-        // Initialize Traces
-        Trace t1 = new Trace(new String[] {"a", "c", "d"});
-        Trace t2 = new Trace(new String[] {"b", "c", "d"});
-        Trace t3 = new Trace(new String[] {"a", "c", "e"});
-        Trace t4 = new Trace(new String[] {"b", "c", "e"});
-        // generate Log
-        Log l1 = new Log(t1, t2, t3, t4);
-
-        AlphaAlgorithm a = new AlphaAlgorithm(l1);
-
-        a.printTransitionSets();
-
-
-        List<Pair<List<Event>, List<Event>>> test = a.deriveXlSet();
-        /*
-        System.out.println(test);
-        for(Pair<List<Event>, List<Event>> p1: test){
-            boolean x = false;
-            for(Pair<List<Event>, List<Event>> p2: test){
-                if (!p1.equals(p2)){
-                    System.out.println(subsetOf(p1,p2));
-                    x = subsetOf(p1, p2);
-                    if(x){
-                        break;
-                    }
-                }
-            }
-            if(!x){
-                System.out.println(p1);
-            }
-        }
-
-         */
-
-        //a.deriveYlSet(test);
-
-        List<Place> test2= a.getPlSet(a.deriveYlSet(test));
-        a.deriveFlSet(test2);
-
-
-
-
-
-
-
-
-    }
+//    /* ********TestArea******** */
+//    public static void main(String[] args) {
+//        // Initialize Traces
+//        Trace t1 = new Trace(new String[] {"a", "c", "d"});
+//        Trace t2 = new Trace(new String[] {"b", "c", "d"});
+//        Trace t3 = new Trace(new String[] {"a", "c", "e"});
+//        Trace t4 = new Trace(new String[] {"b", "c", "e"});
+//        // generate Log
+//        Log l1 = new Log(t1, t2, t3, t4);
+//
+//        AlphaAlgorithm a = new AlphaAlgorithm(l1);
+//
+//        a.printTransitionSets();
+//
+//
+//        List<Pair<List<Event>, List<Event>>> test = a.deriveXlSet();
+//        /*
+//        System.out.println(test);
+//        for(Pair<List<Event>, List<Event>> p1: test){
+//            boolean x = false;
+//            for(Pair<List<Event>, List<Event>> p2: test){
+//                if (!p1.equals(p2)){
+//                    System.out.println(subsetOf(p1,p2));
+//                    x = subsetOf(p1, p2);
+//                    if(x){
+//                        break;
+//                    }
+//                }
+//            }
+//            if(!x){
+//                System.out.println(p1);
+//            }
+//        }
+//
+//         */
+//
+//        //a.deriveYlSet(test);
+//
+//        List<Place> test2= a.getPlSet(a.deriveYlSet(test));
+//        a.deriveFlSet(test2);
+//
+//
+//
+//
+//
+//
+//
+//
+//    }
 }

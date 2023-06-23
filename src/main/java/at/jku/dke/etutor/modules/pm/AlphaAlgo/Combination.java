@@ -126,24 +126,24 @@ public class Combination{
 
 
 
-    /* +++++++++Test Area ++++++++ */
-    public static void main (String[] args) {
-
-        Trace t1 = new Trace(new String[] {"a","b", "c"/* , "d", "e" */ });
-        List<Event> eventList = new ArrayList<>(Trace.transitions);
-
-
-        for (int j= 1; j< eventList.size() +1; j++){
-            deriveCombinations(eventList, eventList.size(), j);
-        }
-
-        System.out.println(resultList.size());
-        System.out.println(resultList);
-
-
-
-
-
-    }
+//    /* +++++++++Test Area ++++++++ */
+//    public static void main (String[] args) {
+//
+//        Trace t1 = new Trace(new String[] {"a","b", "c"/* , "d", "e" */ });
+//        List<Event> eventList = new ArrayList<>(Trace.transitions);
+//
+//
+//        for (int j= 1; j< eventList.size() +1; j++){
+//            deriveCombinations(eventList, eventList.size(), j);
+//        }
+//
+//        System.out.println(resultList.size());
+//        System.out.println(resultList);
+//
+//
+//
+//
+//
+//    }
 
 }
