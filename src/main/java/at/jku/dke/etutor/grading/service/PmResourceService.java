@@ -395,6 +395,7 @@ public class PmResourceService {
                 throw new NoSuchElementException("No id has been returned after exercise creation");
             }
         }catch (Exception throwables){
+            logger.error(throwables.getMessage());
             handleThrowables(conn, "Could not create exercise " , throwables);
         }
         return Optional.empty();
