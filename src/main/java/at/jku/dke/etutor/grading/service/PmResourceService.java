@@ -396,6 +396,7 @@ public class PmResourceService {
             }
         }catch (Exception throwables){
             logger.error(throwables.getMessage());
+            throwables.printStackTrace();
             handleThrowables(conn, "Could not create exercise " , throwables);
         }
         return Optional.empty();
