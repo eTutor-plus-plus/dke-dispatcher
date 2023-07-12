@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
+import java.util.*;
 
 
 /**
@@ -21,6 +21,7 @@ import java.util.Locale;
  */
 @Service
 public class SubmissionDispatcherService {
+    public static final Set<String> runningEvaluations = Collections.synchronizedSet(new TreeSet<>());
     private final Logger logger;
     private final RepositoryService repositoryService;
     private final ModuleEvaluatorFactory moduleEvaluatorFactory;
@@ -38,15 +39,16 @@ public class SubmissionDispatcherService {
      */
     @Async("asyncExecutor")
     public void run(Submission submission, Locale locale) {
-        logger.debug("Saving submission to database");
-        repositoryService.persistSubmission(submission);
-        logger.debug("Finished saving submission to database");
+        runningEvaluations.add(submission.getSubmissionId());
         try {
+            logger.debug("Saving submission to database");
+            repositoryService.persistSubmission(submission);
+            logger.debug("Finished saving submission to database");
             logger.debug("Evaluating submission");
             Evaluator evaluator = moduleEvaluatorFactory.forTaskType(submission.getTaskType());
             if (evaluator == null) {
                 logger.warn("Could not find evaluator for tasktype: {}", submission.getTaskType());
-                return;
+                throw new NoSuchElementException("Could not find evaluator for tasktype:" + submission.getTaskType());
             }
             logger.debug("Analyzing submission");
             Analysis analysis = getAnalysis(evaluator, submission, locale);
@@ -82,6 +84,7 @@ public class SubmissionDispatcherService {
             gradingEntity.setReport(report);
             persistGrading(gradingEntity);
         }
+        runningEvaluations.remove(submission.getSubmissionId());
     }
 
     /**

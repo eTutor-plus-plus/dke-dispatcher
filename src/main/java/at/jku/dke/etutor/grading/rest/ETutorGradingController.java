@@ -5,6 +5,7 @@ import at.jku.dke.etutor.grading.ETutorCORSPolicy;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.model.entities.Grading;
 import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
+import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
 import at.jku.dke.etutor.objects.dispatcher.GradingDTO;
 import at.jku.dke.etutor.objects.dispatcher.ReportDTO;
 import ch.qos.logback.classic.Logger;
@@ -55,16 +56,16 @@ public class ETutorGradingController {
         logger.info("Fetching Grading from database ");
         GradingDTO gradingDTO = new GradingDTO();
 
-
-        Optional<Grading> optional = gradingDTORepository.findById(submissionId);
-        if(optional.isEmpty()){
+        for(int i = 0; ((i * properties.getGrading().getSleepDuration()) < properties.getGrading().getMaxWaitTime())
+                && SubmissionDispatcherService.runningEvaluations.contains(submissionId); i++){
+            // wait till evaluation has finished but no longer than the defined max wait time
             try {
                 Thread.sleep(properties.getGrading().getSleepDuration());
             } catch (InterruptedException e) {
-               logger.info(e.getMessage());
+                logger.info(e.getMessage());
             }
-            optional = gradingDTORepository.findById(submissionId);
         }
+        Optional<Grading> optional = gradingDTORepository.findById(submissionId);
         if (optional.isPresent()) {
             logger.info("Finished fetching Grading from database ");
             Grading grading = optional.get();

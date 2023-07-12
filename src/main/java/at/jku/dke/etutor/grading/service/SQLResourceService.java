@@ -35,24 +35,7 @@ public class SQLResourceService {
 
     private final Logger logger;
 
-    private final String QUERY_TABLE_COLUMNS = "SELECT\n" +
-            "        a.attname as \"column\",\n" +
-            "        pg_catalog.format_type(a.atttypid, a.atttypmod) as \"datatype\"\n" +
-            "                                --more attributes\n" +
-            "    FROM\n" +
-            "        pg_catalog.pg_attribute a\n" +
-            "    WHERE\n" +
-            "        a.attnum > 0\n" +
-            "        AND NOT a.attisdropped\n" +
-            "        AND a.attrelid = (\n" +
-            "            SELECT c.oid\n" +
-            "            FROM pg_catalog.pg_class c\n" +
-            "                LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace\n" +
-            "            WHERE c.relname = ?\n" +
-            "                AND pg_catalog.pg_table_is_visible(c.oid)\n" +
-            "        );\n";
-
-    private final String QUERY_TABLE_COLUMNS_2 = "SELECT column_name as column\n" +
+    private final String QUERY_TABLE_COLUMNS = "SELECT column_name as column\n" +
             "  FROM information_schema.columns\n" +
             " WHERE table_schema = ?\n" +
             "   AND table_name   = ?;\n";
@@ -283,7 +266,7 @@ public class SQLResourceService {
 
         String tableName = query.substring(createIndex+"createtable".length(), paraIndex).trim();
         try(Connection con = DriverManager.getConnection(SQL_EXERCISE_URL, CONN_SUPER_USER, CONN_SUPER_PWD);
-        PreparedStatement stmt = con.prepareStatement(QUERY_TABLE_COLUMNS_2)
+        PreparedStatement stmt = con.prepareStatement(QUERY_TABLE_COLUMNS)
         ){
             stmt.setString(1, schemaName.toLowerCase()+DIAGNOSE_SUFFIX);
             stmt.setString(2, tableName);

@@ -601,6 +601,7 @@ public class ApplicationProperties {
         private String corsPolicy;
         private String JDBCDriver;
         private long sleepDuration;
+        private long maxWaitTime;
 
         public String getConnSuperUser() {
             return connSuperUser;
@@ -639,6 +640,14 @@ public class ApplicationProperties {
 
         public void setSleepDuration(long sleepDuration) {
             this.sleepDuration = sleepDuration;
+        }
+
+        public long getMaxWaitTime() {
+            return maxWaitTime;
+        }
+
+        public void setMaxWaitTime(long maxWaitTime) {
+            this.maxWaitTime = maxWaitTime;
         }
     }
 
