@@ -676,7 +676,7 @@ public class SQLResourceService {
             var connections = getConnectionsForHTMLTable(con);
             return getHTMLTableUtil(con, connections, tableName);
         }catch(SQLException throwables){
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage());
             throw new DatabaseException(throwables);
         }
     }
@@ -806,7 +806,7 @@ public class SQLResourceService {
                     }catch(SQLException ignore){
                     }
                 }catch(SQLException ignore){
-                    ignore.printStackTrace();
+                    logger.error(ignore.getMessage());
                 }
             }
         }
@@ -879,7 +879,6 @@ public class SQLResourceService {
                 connectionIds.add(rset.getInt("connection"));
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
             throw new DatabaseException(throwables);
         }
 
