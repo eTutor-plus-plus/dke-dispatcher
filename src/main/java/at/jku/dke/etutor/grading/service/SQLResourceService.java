@@ -796,8 +796,8 @@ public class SQLResourceService {
             conRset = conStmt.executeQuery();
             if(conRset.next()){
                 url = SQL_BASE_URL + conRset.getString("conn_string");
-                pwd = conRset.getString("conn_user");
-                user = conRset.getString("conn_pwd");
+                pwd = conRset.getString("conn_pwd");
+                user = conRset.getString("conn_user");
                 try(var tmpCon = DriverManager.getConnection(url, user, pwd)){
                     try(PreparedStatement tableStmt = tmpCon.prepareStatement(tableQuery);
                     ResultSet tableRset = tableStmt.executeQuery()){
