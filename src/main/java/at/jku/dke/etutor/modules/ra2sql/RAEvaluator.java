@@ -315,7 +315,7 @@ public class RAEvaluator implements Evaluator{
 			var criterionAnalysesIterator = sqlAnalysis.iterCriterionAnalyses();
 			while (criterionAnalysesIterator.hasNext()) {
 				var criterionAnalysis = criterionAnalysesIterator.next();
-				if (!criterionAnalysis.isCriterionSatisfied()) {
+				if (!criterionAnalysis.isCriterionSatisfied() || criterionAnalysis.getAnalysisException() != null) {
 					// note: MOST IMPORTANT STEP
 					sqlAnalysis.setSubmissionSuitsSolution(false);
 				}
