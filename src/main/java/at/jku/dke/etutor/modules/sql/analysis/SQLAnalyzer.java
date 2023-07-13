@@ -158,7 +158,7 @@ public class SQLAnalyzer {
 
 		syntaxAnalysis = new SyntaxAnalysis();
 
-		this.logger.info("Analyzing syntax");
+		this.logger.info("Analyzing syntax of submitted query.");
 
 		try (Statement stmt = config.getConnection().createStatement();
 		ResultSet rset = stmt.executeQuery(submittedQuery)){
@@ -370,6 +370,7 @@ public class SQLAnalyzer {
 
 			this.logger.error(message, e);
 			tuplesAnalysis.setAnalysisException(new AnalysisException(message, e));
+			tuplesAnalysis.setCriterionIsSatisfied(false);
 		} finally {
 			try {
 				if (checkQuery_RSET != null) {
@@ -472,6 +473,7 @@ public class SQLAnalyzer {
 
 			this.logger.error(message, e);
 			columnsAnalysis.setAnalysisException(new AnalysisException(message, e));
+			columnsAnalysis.setCriterionIsSatisfied(false);
 		}
 
 		return columnsAnalysis;
@@ -525,6 +527,7 @@ public class SQLAnalyzer {
 
 			this.logger.error(message, e);
 			cartesianProductAnalysis.setAnalysisException(new AnalysisException(message, e));
+			cartesianProductAnalysis.setCriterionIsSatisfied(false);
 		}
 		return cartesianProductAnalysis;
 
