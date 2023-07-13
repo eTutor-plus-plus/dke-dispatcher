@@ -283,7 +283,6 @@ public class SQLReporter {
                 }
             }
         }
-
         //Configuring report printer
         if (config.getDiagnoseLevel() >= 0) {
             report.setShowErrorReports(true);

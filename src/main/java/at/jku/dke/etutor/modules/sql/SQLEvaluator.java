@@ -234,7 +234,7 @@ public class SQLEvaluator implements Evaluator {
 		criterionAnalysesIterator = sqlAnalysis.iterCriterionAnalyses();
 		while (criterionAnalysesIterator.hasNext()) {
 			criterionAnalysis = criterionAnalysesIterator.next();
-			if (!criterionAnalysis.isCriterionSatisfied()) {
+			if (!criterionAnalysis.isCriterionSatisfied() || criterionAnalysis.getAnalysisException() != null) {
 				// note: MOST IMPORTANT STEP
 				sqlAnalysis.setSubmissionSuitsSolution(false);
 			}
