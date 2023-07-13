@@ -308,7 +308,7 @@ public class RAEvaluator implements Evaluator{
 
 			SQLAnalysis sqlAnalysis;
 			SQLAnalyzer analyzer = new SQLAnalyzer();
-
+		
 			sqlAnalysis = analyzer.analyze(submQuery, analyzerConfig);
 			sqlAnalysis.setSubmission(analysis.getSubmission());
 			sqlAnalysis.setSubmissionSuitsSolution(true);
