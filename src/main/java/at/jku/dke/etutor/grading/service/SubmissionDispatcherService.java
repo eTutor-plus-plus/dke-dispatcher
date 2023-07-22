@@ -21,7 +21,7 @@ import java.util.*;
  */
 @Service
 public class SubmissionDispatcherService {
-    public static final Set<String> runningEvaluations = Collections.synchronizedSet(new TreeSet<>());
+    public static final Set<String> runningEvaluations = Collections.synchronizedSet(new HashSet<>());
     private final Logger logger;
     private final RepositoryService repositoryService;
     private final ModuleEvaluatorFactory moduleEvaluatorFactory;
