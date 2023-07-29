@@ -1,10 +1,11 @@
 package at.jku.dke.etutor.modules.jdbc.analysis;
 
-import at.jku.dke.etutor.core.evaluation.Analysis;
-import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
-//import at.jku.dke.etutor.modules.jdbc.JDBCFile;
 
-public class JDBCAnalysis extends DefaultAnalysis implements Analysis {
+import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import java.io.Serializable;
+
+
+public class JDBCAnalysis extends DefaultAnalysis implements Serializable {
     private DBAnalysis dbAnalysis;
     private JDBCRuntimeAnalysis runtimeAnalysis;
     private CompilationAnalysis compilationAnalysis;

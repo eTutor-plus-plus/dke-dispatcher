@@ -16,6 +16,7 @@ public class JDBCHelper {
     public static final String EXERCISE_MODE_SHADOW_BEGIN="SHADOW_BEGIN";
     public static final String EXERCISE_MODE_SHADOW_END="SHADOW_END";
 
+    //TODO: Props_Path definition überdenken
     private static String PROPS_PATH = "/etutor/resources/modules/jdbc/jdbc.properties";
 
     private static Logger logger = null;
@@ -60,6 +61,7 @@ public class JDBCHelper {
     }
 
     public static Connection getConnection(String usr, String pwd) throws SQLException {
+        //TODO: DriverManager auf Postgres umwandeln
         java.sql.DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
         String connString = getProperties().getProperty("db_connect_string");
         Connection conn = java.sql.DriverManager.getConnection(connString,usr,pwd);

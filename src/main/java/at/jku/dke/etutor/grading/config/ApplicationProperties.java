@@ -371,6 +371,8 @@ public class ApplicationProperties {
         private String connPwd;
         private String connUser;
         private String connUrl;
+        private String compilationDirectory;
+        private long executionWait;
         
         // TODO: 13.04.2023 - mehr Variablen einfügen
         public String getConnPwd() {
@@ -390,6 +392,18 @@ public class ApplicationProperties {
         }
         public void setConnUser(String connUser) {
             this.connUser = connUser;
+        }
+        public String getCompilationDirectory() {
+            return compilationDirectory;
+        }
+        public void setCompilationDirectory(String compilationDirectory) {
+            this.compilationDirectory = compilationDirectory;
+        }
+        public long getExecutionWait() {
+            return executionWait;
+        }
+        public void setExecutionWait(long executionWait) {
+            this.executionWait = executionWait;
         }
     }
 

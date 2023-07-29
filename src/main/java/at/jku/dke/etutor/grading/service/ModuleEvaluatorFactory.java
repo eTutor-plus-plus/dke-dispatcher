@@ -3,6 +3,7 @@ package at.jku.dke.etutor.grading.service;
 import at.jku.dke.etutor.core.evaluation.Evaluator;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.modules.dlg.DatalogEvaluatorImpl;
+import at.jku.dke.etutor.modules.jdbc.JDBCEvaluatorImpl;
 import at.jku.dke.etutor.modules.pm.PmEvaluator;
 import at.jku.dke.etutor.modules.ra2sql.RAEvaluator;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
@@ -41,6 +42,7 @@ public class ModuleEvaluatorFactory {
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#XQTask", "xq" -> new XQEvaluatorImpl(properties);
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#DLGTask", "dlg" -> new DatalogEvaluatorImpl(properties);
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#PmTask", "pm" -> new PmEvaluator();
+            case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#JDBCTask", "jdbc" -> new JDBCEvaluatorImpl();
             default -> null;
         };
     }
