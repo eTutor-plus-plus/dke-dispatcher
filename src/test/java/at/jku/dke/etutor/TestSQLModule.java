@@ -88,7 +88,7 @@ public class TestSQLModule {
     void evaluateSubmission(Submission submission){
         String id = UUID.randomUUID().toString();
         submission.setSubmissionId(id);
-        dispatcherService.run(submission, Locale.GERMAN);
+        dispatcherService.run(submission, Locale.GERMAN, false);
         ids.add(id);
     }
 

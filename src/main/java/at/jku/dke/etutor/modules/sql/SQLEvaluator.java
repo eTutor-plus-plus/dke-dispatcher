@@ -87,8 +87,6 @@ public class SQLEvaluator implements Evaluator {
 
 		// note: from here:
 		String query;
-		Connection referenceConn;
-
 		Statement stmt = null;
 		ResultSet rset = null;
 
@@ -141,9 +139,6 @@ public class SQLEvaluator implements Evaluator {
 			//ESTABLISHING CONNECTION TO EXERCISE SPECIFIC REFERENCE DATABASE
 
 			this.logger.info("{} - {} - {}",referenceConnString , referenceConnUser ,referenceConnPwd);
-
-			referenceConn = DriverManager.getConnection(referenceConnString, referenceConnUser, referenceConnPwd);
-			referenceConn.setAutoCommit(true);
 
 			//DETERMINING CORRECT QUERY
 			// note: get correct solution for corresponding exercise (defined by exerciseID)
@@ -211,19 +206,20 @@ public class SQLEvaluator implements Evaluator {
 				analyzerConfig.setDiagnoseLevel(diagnoseLevel);
 			}
 		}
-		
-		analyzerConfig.setConnection(referenceConn);
-		analyzerConfig.setCorrectQuery(correctQuery.replace(";"," "));
-
 		// Analyzing the submission
-		// note: ANALYSING SUBMISSION
 		SQLAnalysis sqlAnalysis;
 		SQLAnalyzer analyzer = new SQLAnalyzer();
 
-		// note: setting up the analysis
-		// note: Analyzes the submission according to the configuration and returns the SQLAnalysis containing the analyzed
-		//	 	SQLEvaluationCriterion´s
-		sqlAnalysis = analyzer.analyze(analysis.getSubmission(), analyzerConfig);
+		try(Connection referenceConn = DriverManager.getConnection(referenceConnString, referenceConnUser, referenceConnPwd)){
+			referenceConn.setAutoCommit(true);
+			analyzerConfig.setConnection(referenceConn);
+			analyzerConfig.setCorrectQuery(correctQuery.replace(";"," "));
+
+			// note: setting up the analysis
+			// note: Analyzes the submission according to the configuration and returns the SQLAnalysis containing the analyzed
+			//	 	SQLEvaluationCriterion´s
+			sqlAnalysis = analyzer.analyze(analysis.getSubmission(), analyzerConfig);
+		}
 		// note: transfers Submission to sqlAnalysis
 		sqlAnalysis.setSubmission(analysis.getSubmission());
 		sqlAnalysis.setSubmissionSuitsSolution(true);
@@ -239,7 +235,6 @@ public class SQLEvaluator implements Evaluator {
 				sqlAnalysis.setSubmissionSuitsSolution(false);
 			}
 		}
-		referenceConn.close();
 		return sqlAnalysis;
 	}
 

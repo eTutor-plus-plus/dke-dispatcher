@@ -23,13 +23,13 @@ public class AsyncConfiguration {
      * A Bean representing the configuration
      * @return an Executor instance
      */
-    @Bean(name="asyncExecutor")
+    @Bean(name="taskExecutor")
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(applicationProperties.getAsync().getCorePoolSize());
         executor.setMaxPoolSize(applicationProperties.getAsync().getMaxPoolSize());
-        executor.setQueueCapacity(applicationProperties.getAsync().getQueueCapacity());
         executor.setThreadNamePrefix(applicationProperties.getAsync().getThreadNamePrefix());
+        executor.setQueueCapacity(Integer.MAX_VALUE);
         executor.initialize();
         return executor;
     }

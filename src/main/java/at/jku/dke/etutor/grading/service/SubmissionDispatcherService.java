@@ -15,13 +15,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static at.jku.dke.etutor.grading.rest.ETutorGradingController.waitingThreadMap;
+import static at.jku.dke.etutor.grading.rest.ETutorSubmissionController.runningEvaluations;
+
 
 /**
  * Is used to forward the submission to the corresponding module
  */
 @Service
 public class SubmissionDispatcherService {
-    public static final Set<String> runningEvaluations = Collections.synchronizedSet(new HashSet<>());
     private final Logger logger;
     private final RepositoryService repositoryService;
     private final ModuleEvaluatorFactory moduleEvaluatorFactory;
@@ -37,14 +39,15 @@ public class SubmissionDispatcherService {
      * and calls the modules' implementations for evaluating the submission.
      * Persists the entities (submission, report, grading)
      */
-    @Async("asyncExecutor")
-    public void run(Submission submission, Locale locale) {
-        runningEvaluations.add(submission.getSubmissionId());
+    @Async("taskExecutor")
+    public void run(Submission submission, Locale locale, Boolean persist) {
         try {
-            logger.debug("Saving submission to database");
-            repositoryService.persistSubmission(submission);
-            logger.debug("Finished saving submission to database");
-            logger.debug("Evaluating submission");
+            if(Boolean.TRUE.equals(persist)){
+                logger.debug("Saving submission to database");
+                repositoryService.persistSubmission(submission);
+                logger.debug("Finished saving submission to database");
+                logger.debug("Evaluating submission");
+            }
             Evaluator evaluator = moduleEvaluatorFactory.forTaskType(submission.getTaskType());
             if (evaluator == null) {
                 logger.warn("Could not find evaluator for tasktype: {}", submission.getTaskType());
@@ -83,8 +86,13 @@ public class SubmissionDispatcherService {
             report.setHint("Contact an administrator if the error message does not allow you to resolve the issue.");
             gradingEntity.setReport(report);
             persistGrading(gradingEntity);
+        }finally {
+            // interrupt thread waiting for this evaluation to finish
+            runningEvaluations.remove(submission.getSubmissionId());
+            Thread waitingThread = waitingThreadMap.get(submission.getSubmissionId());
+            if(waitingThread != null)
+                waitingThread.interrupt();
         }
-        runningEvaluations.remove(submission.getSubmissionId());
     }
 
     /**
