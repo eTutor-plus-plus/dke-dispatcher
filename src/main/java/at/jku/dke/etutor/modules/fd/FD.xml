@@ -8,7 +8,7 @@
   </persistence-unit>
     <persistence-unit name="FD">
       <class>at.jku.dke.etutor.modules.fd.entities.FunctionalDependency</class>
-        <class>at.jku.dke.etutor.modules.fd.entities.Assignment</class>
+        <class>at.jku.dke.etutor.modules.fd.entities.Task</class>
         <class>at.jku.dke.etutor.modules.fd.entities.Relation</class>
         <class>at.jku.dke.etutor.modules.fd.entities.Solution</class>
         <class>at.jku.dke.etutor.modules.fd.entities.Closure</class>

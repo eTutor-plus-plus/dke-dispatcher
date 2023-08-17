@@ -18,21 +18,30 @@ public class RelationController {
     RelationController(RelationService relationService) {
         this.relationService = relationService;
     }
-    @PostMapping("/new_exercise")
-    public Long newExercise(@RequestBody Relation relation) {
-//        System.out.println(relation);
-        relationService.createExercise(relation);
+    @PostMapping("/new_group")
+    public Long newGroup(@RequestBody Relation relation) {
+        relationService.createGroup(relation);
         return relation.getId();
     }
     @GetMapping("/next_id")
     public Long getNextId() {return relationService.getNextId();}
     @GetMapping("/exercise")
     public Relation getExerciseById(@RequestParam Long id) {
-        return relationService.getExerciseById(id);
+        return relationService.getRelationById(id);
     }
     @GetMapping("/exercises")
     public List<Relation> getExerciseById() {
         return relationService.getAll();
+    }
+    @PutMapping("/exercise")
+    public Long changeExercise(@RequestBody Relation relation){
+        if (relationService.getRelationById(relation.getId()) != null) {
+            relationService.createGroup(relation);
+            return relation.getId();
+        }
+        else {
+            return -1L;
+        }
     }
     @DeleteMapping("/exercise")
     public void deleteExerciseById(@RequestParam Long id) {
@@ -44,12 +53,12 @@ public class RelationController {
     }
     @GetMapping("/closure")
     public void generateClosure(@RequestParam Long id) {
-        calculateClosures(relationService.getExerciseById(id));
+        calculateClosures(relationService.getRelationById(id));
     }
 
     @GetMapping("/cover")
     public Set<MinimalCover> generateMinimalCover(@RequestParam Long id) {
-        return calculateMinimalCover(relationService.getExerciseById(id));
+        return calculateMinimalCover(relationService.getRelationById(id));
     }
 
 

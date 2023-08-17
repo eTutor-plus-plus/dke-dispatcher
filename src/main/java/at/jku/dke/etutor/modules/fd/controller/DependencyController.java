@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.fd.controller;
 
 import at.jku.dke.etutor.modules.fd.entities.FunctionalDependency;
-import at.jku.dke.etutor.modules.fd.services.DependencyService;
+import at.jku.dke.etutor.modules.fd.services.FunctionalDependencyService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,19 +9,19 @@ import java.util.List;
 @RestController
 @RequestMapping(path="/fd")
 public class DependencyController {
-    DependencyService dependencyService;
+    FunctionalDependencyService functionalDependencyService;
 
-    DependencyController(DependencyService dependencyService) {
-        this.dependencyService = dependencyService;
+    DependencyController(FunctionalDependencyService functionalDependencyService) {
+        this.functionalDependencyService = functionalDependencyService;
     }
 
     @GetMapping("/dependencies")
     public List<FunctionalDependency> getAllDependencies() {
-        return dependencyService.getAll();
+        return functionalDependencyService.getAll();
     }
 
-    @PostMapping("/new_dependency")
-    public boolean newDependency(@RequestBody FunctionalDependency functionalDependency) {
-        return dependencyService.newDependency(functionalDependency);
-    }
+//    @PostMapping("/new_dependency")
+//    public boolean newDependency(@RequestBody FunctionalDependency functionalDependency) {
+//        return functionalDependencyService.newDependency(functionalDependency);
+//    }
 }

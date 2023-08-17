@@ -29,11 +29,13 @@ public class Closure implements Dependency{
     @Column(name = "right_side", columnDefinition = "text[]")
     private String[] rightSide;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "relation_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "relation_id", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Relation relation;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "closure")
+    private Task task;
 
     public Relation getRelation() {
         return relation;
@@ -76,6 +78,14 @@ public class Closure implements Dependency{
 
     public void setRightSide(String[] rightSide) {
         this.rightSide = rightSide;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 
     @Override

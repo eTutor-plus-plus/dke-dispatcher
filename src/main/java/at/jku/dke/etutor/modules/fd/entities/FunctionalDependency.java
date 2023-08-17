@@ -1,23 +1,22 @@
 package at.jku.dke.etutor.modules.fd.entities;
 
+import at.jku.dke.etutor.modules.fd.types.StringArrayType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.CascadeType;
 import java.util.*;
 
-@TypeDefs({
-        @TypeDef(
-                name = "string-array",
-                typeClass = at.jku.dke.etutor.modules.fd.types.StringArrayType.class
-        ),
-        @TypeDef(
-                name = "string-list",
-                typeClass = at.jku.dke.etutor.modules.fd.types.ListArrayType.class
-        )
-})
+
+@TypeDef(
+        name = "string-array",
+        typeClass = StringArrayType.class
+)
 @Entity
 @Table(name = "dependency", schema = "fd", catalog = "fd")
 public class FunctionalDependency implements Dependency {
@@ -31,14 +30,14 @@ public class FunctionalDependency implements Dependency {
     @Type(type = "string-array")
     @Column(name = "right_side", columnDefinition = "text[]")
     private String[] rightSide;
-    @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn(name = "relation_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "relation_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Relation relation;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "dependency_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "dependency_id", referencedColumnName = "id")
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<MinimalCover> minimalCover;
     @Column(name = "violates")
     @Enumerated(EnumType.STRING)
@@ -47,18 +46,12 @@ public class FunctionalDependency implements Dependency {
     public FunctionalDependency() {
     }
 
-public FunctionalDependency(String[] leftSide, String[] rightSide, Relation relation) {
+    public FunctionalDependency(String[] leftSide, String[] rightSide, Relation relation) {
         this.leftSide = leftSide;
         this.rightSide = rightSide;
         this.relation = relation;
     }
 
-//    public FunctionalDependency(String[] leftSide, String[] rightSide, Relation relation, MinimalCover minimalCover) {
-//        this.leftSide = leftSide;
-//        this.rightSide = rightSide;
-//        this.relation = relation;
-//        this.minimalCover = minimalCover;
-//    }
 
     public Long getId() {
         return id;
@@ -127,7 +120,6 @@ public FunctionalDependency(String[] leftSide, String[] rightSide, Relation rela
                 "id=" + id +
                 ", leftSide=" + Arrays.toString(leftSide) +
                 ", rightSide=" + Arrays.toString(rightSide) +
-//                ", minimalCover=" + minimalCover +
                 "}\n";
     }
 

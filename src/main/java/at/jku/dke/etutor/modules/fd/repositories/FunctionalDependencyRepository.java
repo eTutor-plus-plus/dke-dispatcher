@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DependencyRepository extends JpaRepository<FunctionalDependency, Long> {
+public interface FunctionalDependencyRepository extends JpaRepository<FunctionalDependency, Long> {
 
 }

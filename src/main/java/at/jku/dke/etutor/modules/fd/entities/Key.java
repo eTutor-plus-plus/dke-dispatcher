@@ -28,7 +28,7 @@ public class Key implements Dependency {
     @Type(type = "string-array")
     @Column(name = "right_side", columnDefinition = "text[]")
     private String[] rightSide;
-    @ManyToOne (cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "relation_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore

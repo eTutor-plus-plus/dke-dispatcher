@@ -23,7 +23,7 @@ public class CalculateNormalForm {
     public static boolean isBCNF (Relation relation) {
         boolean isOK = true;
         /** Trivial oder Superschlüssel */
-        for (FunctionalDependency dependency: relation.getDependencies()) {
+        for (FunctionalDependency dependency: relation.getFunctionalDependencies()) {
             if (!isTrivial(dependency) && !isSuperKey(relation, dependency)) {
                 dependency.setViolates(NF.BCNF);
                 isOK = false;
@@ -34,7 +34,7 @@ public class CalculateNormalForm {
     public static boolean is3NF (Relation relation) {
         boolean isOK = true;
         /** Trivial, Superschlüssel oder Prime */
-        for (FunctionalDependency dependency: relation.getDependencies()) {
+        for (FunctionalDependency dependency: relation.getFunctionalDependencies()) {
             if (!isTrivial(dependency) && !areAllPrimeAttributes(relation, dependency)
                     && !isSuperKey(relation, dependency)) {
                 dependency.setViolates(NF.THIRD);
@@ -47,7 +47,7 @@ public class CalculateNormalForm {
         boolean isOK = true;
         /** None Prime sind nicht von einem Teilschlüssel abhängig */
         Set<String> primeAttributes = getPrimeAttributes(relation);
-        for (FunctionalDependency dependency: relation.getDependencies()) {
+        for (FunctionalDependency dependency: relation.getFunctionalDependencies()) {
 //            boolean isKey = false;
             /** check ob alle abhängigen Attribute prime sind */
             if (primeAttributes.containsAll(Set.of(dependency.getRightSide()))) {

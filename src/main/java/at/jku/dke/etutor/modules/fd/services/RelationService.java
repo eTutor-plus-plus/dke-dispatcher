@@ -1,7 +1,6 @@
 package at.jku.dke.etutor.modules.fd.services;
 
 import at.jku.dke.etutor.modules.fd.entities.Relation;
-import at.jku.dke.etutor.modules.fd.repositories.DependencyRepository;
 import at.jku.dke.etutor.modules.fd.repositories.RelationRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +16,27 @@ import static at.jku.dke.etutor.modules.fd.solve.CalculateNormalForm.calculateNo
 @Service
 public class RelationService {
     RelationRepository relationRepository;
-    DependencyRepository dependencyRepository;
 
-    RelationService(RelationRepository relationRepository, DependencyRepository dependencyRepository) {
+    RelationService(RelationRepository relationRepository) {
         this.relationRepository = relationRepository;
-        this.dependencyRepository = dependencyRepository;
     }
 
-    public boolean createExercise(Relation relation) {
+    public boolean createGroup(Relation input) {
+        Relation relation = getRelationById(input.getId());
+        if (relation==null) {
+            relation = new Relation();
+            relation.setId(input.getId());
+        }
+        else {
+            relationRepository.delete(relation);
+        }
         try {
-            if (relation.getAttributes()==null || relation.getAttributes().length==0) {
-                relation.setAttributes(calculateRelation(relation));
+            relation.setFunctionalDependencies(input.getFunctionalDependencies());
+            if (input.getAttributes()==null || input.getAttributes().length==0) {
+                relation.setAttributes(calculateRelation(input));
+            }
+            else {
+                relation.setAttributes(input.getAttributes());
             }
             relation.setClosures(calculateClosures(relation));
             relation.setKeys(calculateKeys(relation));
@@ -42,11 +51,11 @@ public class RelationService {
         return true;
     }
 
-    public Relation getExerciseById(long id) {
-        Optional<Relation> optionalExercise = relationRepository.findById(id);
+    public Relation getRelationById(long id) {
+        Optional<Relation> optionalRelation = relationRepository.findById(id);
         Relation relation;
-        if (optionalExercise.isPresent()) {
-            relation = optionalExercise.get();
+        if (optionalRelation.isPresent()) {
+            relation = optionalRelation.get();
             return relation;
         }
         return null;

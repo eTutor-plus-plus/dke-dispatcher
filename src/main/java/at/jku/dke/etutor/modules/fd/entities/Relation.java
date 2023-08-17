@@ -21,23 +21,27 @@ public class Relation {
     @Type(type = "string-array")
     @Column(name = "attributes", columnDefinition = "text[]")
     private String[] attributes;
-    @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "relation_id", referencedColumnName = "id")
-    private Set<FunctionalDependency> dependencies;
+    @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "relation")
+//    @JoinColumn(name = "relation_id", referencedColumnName = "id")
+    private Set<FunctionalDependency> functionalDependencies;
     @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "relation_id", referencedColumnName = "id")
     private Set<Closure> closures;
-    @OneToMany (cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "relation_id", referencedColumnName = "id")
     private Set<Key> keys;
-    @OneToMany (cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "relation_id", referencedColumnName = "id")
     private Set<MinimalCover> minimalCovers;
     @Column(name = "normal_form")
     @Enumerated(EnumType.STRING)
     private NF normalForm;
+    @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "relation")
+//    @JoinColumn(name = "relation_id", referencedColumnName = "id")
+    private Set<Task> tasks;
 
-
+    public Relation() {
+    }
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String[] getAttributes() {
@@ -46,12 +50,12 @@ public class Relation {
     public void setAttributes(String[] attributes) {
         this.attributes = attributes;
     }
-    public Set<FunctionalDependency> getDependencies() {
-        return dependencies;
+    public Set<FunctionalDependency> getFunctionalDependencies() {
+        return functionalDependencies;
     }
 
-    public void setDependencies(Set<FunctionalDependency> dependencies) {
-        this.dependencies = dependencies;
+    public void setFunctionalDependencies(Set<FunctionalDependency> functionalDependencies) {
+        this.functionalDependencies = functionalDependencies;
     }
 
 
@@ -87,11 +91,17 @@ public class Relation {
         this.normalForm = normalForm;
     }
 
+    public Set<Task> getTasks() {
+        return tasks;
+    }
 
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
+    }
 
     public static String [] calculateRelation(Relation relation) {
         TreeSet<String> result = new TreeSet<>();
-        for (Dependency functionalDependency : relation.getDependencies()) {
+        for (Dependency functionalDependency : relation.getFunctionalDependencies()) {
             for (String left: functionalDependency.getLeftSide()) {
                 result.add(left);
             }
@@ -109,7 +119,7 @@ public class Relation {
         Relation relation = (Relation) o;
         return Objects.equals(id, relation.id)
                 && Arrays.equals(this.attributes, relation.attributes)
-                && Objects.equals(dependencies, relation.dependencies)
+                && Objects.equals(functionalDependencies, relation.functionalDependencies)
 //                && Objects.equals(closures, relation.closures)
 //                && Objects.equals(keys, relation.keys)
 //                && Objects.equals(minimalCovers, relation.minimalCovers)
@@ -118,7 +128,7 @@ public class Relation {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, Arrays.hashCode(attributes), dependencies, closures, keys
+        return Objects.hash(id, Arrays.hashCode(attributes), functionalDependencies, closures, keys
                 , minimalCovers
         );
     }
@@ -128,7 +138,7 @@ public class Relation {
         return "Relation{" +
                 "id=" + id +
                 ", relation='" + Arrays.toString(attributes) + '\'' +
-                ", dependencies=" + dependencies +
+                ", dependencies=" + functionalDependencies +
                 ", closures=" + closures +
                 "}\n";
     }

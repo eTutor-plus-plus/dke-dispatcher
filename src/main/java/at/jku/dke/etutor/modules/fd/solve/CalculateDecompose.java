@@ -18,12 +18,12 @@ public class CalculateDecompose {
     }
 
     private boolean isEquivalent(Relation relation, Relation relation1) {
-        for (Dependency dependency: relation1.getDependencies()) {
+        for (Dependency dependency: relation1.getFunctionalDependencies()) {
             if (!isFD(relation, dependency)) {
                 return false;
             }
         }
-        for (Dependency dependency: relation.getDependencies()) {
+        for (Dependency dependency: relation.getFunctionalDependencies()) {
             if (!isFD(relation1, dependency)) {
                 return false;
             }
@@ -127,9 +127,9 @@ public class CalculateDecompose {
     public static List<Relation> decomposeKemper(Relation input) {
         List<Relation> decompositions = new ArrayList<>();
         List<Dependency> restDependencies = new ArrayList<>();
-        restDependencies.addAll(input.getDependencies());
+        restDependencies.addAll(input.getFunctionalDependencies());
         Relation startRelation = new Relation();
-        startRelation.setDependencies(convert(foldRightSides(input.getDependencies()), input));
+        startRelation.setFunctionalDependencies(convert(foldRightSides(input.getFunctionalDependencies()), input));
         startRelation.setClosures(input.getClosures());
         startRelation.setKeys(input.getKeys());
         startRelation.setMinimalCovers(input.getMinimalCovers());
@@ -141,7 +141,7 @@ public class CalculateDecompose {
 
             for (Relation relation : decompositions) {
                 Relation candidate = null;
-                for (FunctionalDependency dependency : relation.getDependencies()) {
+                for (FunctionalDependency dependency : relation.getFunctionalDependencies()) {
 //                    System.out.println("Trivial: "+isTrivial(dependency));
 //                    System.out.println("Superkey: "+isSuperKey(relation, dependency));
 //                    System.out.println("Intersect: "+hasIntersection(dependency));
@@ -149,13 +149,13 @@ public class CalculateDecompose {
                             && !hasIntersection(dependency)
                     ) {
                         candidate = new Relation();
-                        candidate.setDependencies(Set.of(dependency));
+                        candidate.setFunctionalDependencies(Set.of(dependency));
                         candidate.setAttributes(calculateRelation(candidate));
                         candidate.setClosures(calculateClosures(candidate));
                         candidate.setKeys(calculateKeys(candidate));
                         candidate.setMinimalCovers(calculateMinimalCover(candidate));
                         candidate.setNormalForm(calculateNormalForm(candidate));
-                        relation.getDependencies().remove(dependency);
+                        relation.getFunctionalDependencies().remove(dependency);
                         relation.setAttributes(calculateRelation(relation));
                         relation.setClosures(calculateClosures(relation));
                         relation.setKeys(calculateKeys(relation));
@@ -189,7 +189,7 @@ public class CalculateDecompose {
              * R 1 = R – Y und R 2 = XY
              */
 
-            for (FunctionalDependency dependency: input.getDependencies()) {
+            for (FunctionalDependency dependency: input.getFunctionalDependencies()) {
                 if (dependency.getViolates()!=null) {
 
                 }

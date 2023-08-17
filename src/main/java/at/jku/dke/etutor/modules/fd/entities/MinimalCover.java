@@ -29,7 +29,7 @@ public class MinimalCover implements Dependency{
     @Type(type = "string-array")
     @Column(name = "reasons" , columnDefinition = "text[]")
     private String[] reasons;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinColumn(name="dependency_id")
     private FunctionalDependency dependency;

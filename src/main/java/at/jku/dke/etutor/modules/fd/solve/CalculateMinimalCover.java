@@ -12,11 +12,10 @@ public class CalculateMinimalCover {
     }
 
     public static Set<MinimalCover> calculateMinimalCover(Relation relation) {
-        Set<Dependency> leftSideReducedDependencies = reduceLeftSide(relation.getDependencies(), relation);
+        Set<Dependency> leftSideReducedDependencies = reduceLeftSide(relation.getFunctionalDependencies(), relation);
         Set<Dependency> rightSideReducedDependencies = reduceRightSide(leftSideReducedDependencies, relation);
         Set<Dependency> onlyValidDependencies = new TreeSet<>(new DependencyComparator());
         /** Entferne Abhängigkeiten ohne rechte Seite */
-        System.out.println(rightSideReducedDependencies);
         for (Dependency dependency : rightSideReducedDependencies) {
             if (dependency.getRightSide().length > 0) {
                 onlyValidDependencies.add(dependency);
@@ -30,7 +29,7 @@ public class CalculateMinimalCover {
                 if (dependency.getRightSide().length>1) {
                     for (String split : dependency.getRightSide()) {
                         result.remove(dependency);
-                        result.add(new MinimalCover(dependency.getLeftSide(), new String[]{split}, new String[]{"Zerlegung"},
+                        result.add(new MinimalCover(dependency.getLeftSide(), new String[]{split}, new String[]{"taskManagement.fields.minimalCover.decomposition"},
                                 (FunctionalDependency) dependency, relation));
                     }
                 }
@@ -43,7 +42,7 @@ public class CalculateMinimalCover {
                     for (String split : dependency.getRightSide()) {
                         MinimalCover minimalCover = (MinimalCover) dependency;
                         result.add(new MinimalCover(dependency.getLeftSide(), new String[]{split},
-                                addToArray(minimalCover.getReasons(),"Zerlegung"),
+                                addToArray(minimalCover.getReasons(),"taskManagement.fields.minimalCover.decomposition"),
                                 minimalCover.getDependency(), relation));
                     }
                 }
@@ -56,9 +55,9 @@ public class CalculateMinimalCover {
     private static Set<Dependency> reduceLeftSide(Set<? extends Dependency> dependencies, Relation relation) {
         Set<Dependency> leftSideReducedDependencies = new HashSet<>();
         leftSideReducedDependencies.addAll(dependencies);
-        for (Dependency dependency : relation.getDependencies()) {
+        for (Dependency dependency : relation.getFunctionalDependencies()) {
             if (dependency.getLeftSide().length > 1) {
-                Closure original = calculateClosure(relation.getDependencies(), dependency.getLeftSide(),
+                Closure original = calculateClosure(relation.getFunctionalDependencies(), dependency.getLeftSide(),
                         relation);
                 List<String> reduced = null;
                 Closure modified = null;
@@ -72,7 +71,7 @@ public class CalculateMinimalCover {
                         toReduce.addAll(reduced);
                     }
                     toReduce.remove(attribute);
-                    modified = calculateClosure(relation.getDependencies(), toReduce.toArray(new String[0]), relation);
+                    modified = calculateClosure(relation.getFunctionalDependencies(), toReduce.toArray(new String[0]), relation);
                     if (Arrays.equals(original.getRightSide(), modified.getRightSide())) {
                         reduced = toReduce;
                     }
@@ -82,12 +81,12 @@ public class CalculateMinimalCover {
                     Dependency replacement;
                     if (dependency.getClass() == FunctionalDependency.class) {
                         replacement = new MinimalCover(reduced.toArray(new String[0]),
-                                dependency.getRightSide(), new String[]{"Linksreduktion"},
+                                dependency.getRightSide(), new String[]{"taskManagement.fields.minimalCover.leftReduction"},
                                 (FunctionalDependency) dependency, relation);
                     } else {
                         MinimalCover minimalCover = (MinimalCover) dependency;
                         replacement = new MinimalCover(reduced.toArray(new String[0]),
-                                dependency.getRightSide(), addToArray(minimalCover.getReasons(), "Linksreduktion"),
+                                dependency.getRightSide(), addToArray(minimalCover.getReasons(), "taskManagement.fields.minimalCover.leftReduction"),
                                 minimalCover.getDependency(), relation);
                     }
                     leftSideReducedDependencies.add(replacement);
@@ -118,12 +117,12 @@ public class CalculateMinimalCover {
                 MinimalCover dependencyToCheck;
                 if (dependency.getClass() == FunctionalDependency.class) {
                     dependencyToCheck = new MinimalCover(dependency.getLeftSide(),
-                            toReduce.toArray(new String[0]), new String[]{"Rechtssreduktion"},
+                            toReduce.toArray(new String[0]), new String[]{"taskManagement.fields.minimalCover.rightReduction"},
                             (FunctionalDependency) dependency, relation);
                 } else {
                     MinimalCover minimalCover = (MinimalCover) dependency;
                     dependencyToCheck = new MinimalCover(dependency.getLeftSide(),
-                            toReduce.toArray(new String[0]), addToArray(minimalCover.getReasons() ,"Rechtssreduktion"),
+                            toReduce.toArray(new String[0]), addToArray(minimalCover.getReasons() ,"taskManagement.fields.minimalCover.rightReduction"),
                             minimalCover.getDependency(), relation);
                 }
                 rightSideReducedDependencies.add(dependencyToCheck);

@@ -50,7 +50,7 @@ public class CalculateClosure {
 
 		/** Nur Hüllen mit Mehrwert aufnehmen */
 		for (String [] attribute: attributeCombinations) {
-			Closure toAdd = calculateClosure(relation.getDependencies(), attribute, relation);
+			Closure toAdd = calculateClosure(relation.getFunctionalDependencies(), attribute, relation);
 			if (toAdd.getLeftSide().length != toAdd.getRightSide().length) {
 				resultList.add(toAdd);
 			}
