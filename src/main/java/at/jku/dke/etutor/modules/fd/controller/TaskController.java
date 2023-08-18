@@ -70,4 +70,12 @@ public class TaskController {
             return taskService.updateTask(inputId, relationId, inputFDSubtype, fDClosureIds);
         }
     }
+    @DeleteMapping("/delete_closure_task")
+    public ResponseEntity<Long> deleteClosureTask(@RequestParam Long id) {
+        return taskService.deleteClosureTask(id);
+    }
+    @DeleteMapping("/delete_task")
+    public ResponseEntity<Long> deleteTask(@RequestParam Long id) {
+        return taskService.deleteTask(id);
+    }
 }

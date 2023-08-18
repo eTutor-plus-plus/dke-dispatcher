@@ -63,10 +63,10 @@ public class RelationService {
     public List<Relation> getAll() {
         return relationRepository.findAll();
     }
-    public void deleteExerciseById(Long id){
+    public void deleteGroupById(Long id){
         relationRepository.deleteById(id);
     }
-    public void deleteAll() {
+    public void deleteAllGroups() {
         relationRepository.deleteAll();
     }
 

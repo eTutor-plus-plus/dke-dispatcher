@@ -25,7 +25,7 @@ public class RelationController {
     }
     @GetMapping("/next_id")
     public Long getNextId() {return relationService.getNextId();}
-    @GetMapping("/exercise")
+    @GetMapping("/group")
     public Relation getExerciseById(@RequestParam Long id) {
         return relationService.getRelationById(id);
     }
@@ -43,13 +43,13 @@ public class RelationController {
             return -1L;
         }
     }
-    @DeleteMapping("/exercise")
-    public void deleteExerciseById(@RequestParam Long id) {
-        relationService.deleteExerciseById(id);
+    @DeleteMapping("/group")
+    public void deleteGroupById(@RequestParam Long id) {
+        relationService.deleteGroupById(id);
     }
-    @DeleteMapping("/exercises")
-    public void deleteExerciseById() {
-        relationService.deleteAll();
+    @DeleteMapping("/groups")
+    public void deleteGroups() {
+        relationService.deleteAllGroups();
     }
     @GetMapping("/closure")
     public void generateClosure(@RequestParam Long id) {

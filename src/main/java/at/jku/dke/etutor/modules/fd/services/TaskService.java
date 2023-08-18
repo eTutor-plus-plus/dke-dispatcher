@@ -144,4 +144,14 @@ public class TaskService {
         taskRepository.updateRelationAndTypeById(relation, fDSubtype, id);
         return ResponseEntity.status(200).body(id);
     }
+
+    public ResponseEntity<Long> deleteTask(Long id) {
+        taskRepository.deleteTaskById(id);
+        return ResponseEntity.status(200).body(id);
+    }
+
+    public ResponseEntity<Long> deleteClosureTask(Long id) {
+        taskRepository.deleteByClosureGroupId(id);
+        return ResponseEntity.status(200).body(id);
+    }
 }
