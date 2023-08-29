@@ -16,6 +16,7 @@ import org.springframework.hateoas.EntityModel;
 
 
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -27,7 +28,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @org.springframework.web.bind.annotation.RequestMapping("/submission")
 @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
 public class ETutorSubmissionController {
-    public static final Set<String> runningEvaluations = Collections.synchronizedSet(new HashSet<>());
+    public static final Set<String> runningEvaluations = new ConcurrentSkipListSet<>();
     private final Logger logger;
     private final SubmissionDispatcherService submissionDispatcherService;
     private final SubmissionRepository submissionRepository;
