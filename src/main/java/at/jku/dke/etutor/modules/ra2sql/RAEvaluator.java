@@ -96,6 +96,7 @@ public class RAEvaluator implements Evaluator{
 		String action_Param;
 		String submission_Param;
 		String diagnoseLevel_Param;
+		String error_highlight_mode;
 
 		sqlBuilder = new SQLBuilder();
 		analysis = new SQLAnalysis();
@@ -105,7 +106,10 @@ public class RAEvaluator implements Evaluator{
 		action_Param = passedAttributes.get("action");
 		submission_Param = passedAttributes.get("submission");
 		diagnoseLevel_Param = passedAttributes.get("diagnoseLevel");
-		
+		error_highlight_mode = passedParameters.get("errorHighlightMode");
+		boolean useSymbols = error_highlight_mode != null && error_highlight_mode.equals("symbols");
+
+
 		//VALIDATING PARAMETERS
 		if ((diagnoseLevel_Param==null) || ((diagnoseLevel_Param).length()==0)) {
 			diagnoseLevel_Param = "0";		
@@ -170,7 +174,7 @@ public class RAEvaluator implements Evaluator{
 			exceptionText = exceptionText.concat("Unexpected character \"");
 			exceptionText = exceptionText.concat(this.getAtomAlias(e.getUnexpectedAtom()));
 			exceptionText = exceptionText.concat("\".</p>");
-			exceptionText = exceptionText.concat(this.highlightError(submission, e));
+			exceptionText = exceptionText.concat(this.highlightError(submission, e, useSymbols));
 
 			syntaxAnalysis.setFoundSyntaxError(true);
 			syntaxAnalysis.setCriterionIsSatisfied(false);
@@ -185,7 +189,7 @@ public class RAEvaluator implements Evaluator{
 			exceptionText = exceptionText.concat(this.getAtomAlias(e.getExpectedAtom()) + "\".<br>");
 			exceptionText =	exceptionText.concat("Found character    \"");
 			exceptionText = exceptionText.concat(this.getAtomAlias(e.getFoundAtom()) + "\".</p>");
-			exceptionText = exceptionText.concat(this.highlightError(submission, e));
+			exceptionText = exceptionText.concat(this.highlightError(submission, e, useSymbols));
 
 			syntaxAnalysis.setFoundSyntaxError(true);
 			syntaxAnalysis.setCriterionIsSatisfied(false);
@@ -198,7 +202,7 @@ public class RAEvaluator implements Evaluator{
 			exceptionText = exceptionText.concat("Invalid \"" + this.getRuleAlias(e.getRule()) + "\".\n");
 			exceptionText =	exceptionText.concat("Invalid character \"");
 			exceptionText = exceptionText.concat(this.getAtomAlias(e.getInvalidAtom()) + "\".</p>");
-			exceptionText = exceptionText.concat(this.highlightError(submission, e));
+			exceptionText = exceptionText.concat(this.highlightError(submission, e, useSymbols));
 
 			syntaxAnalysis.setFoundSyntaxError(true);
 			syntaxAnalysis.setCriterionIsSatisfied(false);
@@ -644,7 +648,7 @@ public class RAEvaluator implements Evaluator{
 		return submission;
 	}
 
-	private String highlightError(String raQuery, RAParserException ex) {
+	private String highlightError(String raQuery, RAParserException ex, boolean useSymbols) {
 		String result = new String();
 		String[] lines;
 		String line;
@@ -668,18 +672,20 @@ public class RAEvaluator implements Evaluator{
 			}
 		}
 
-		result = result.replaceAll("PROJECTION", "&#960;");
-		result = result.replaceAll("SELECTION", "&#963;");
-		result = result.replaceAll("RENAMING", "&#961;");
-		result = result.replaceAll("JOIN", "&#8904;");
-		result = result.replaceAll("RIGHTSEMI", "&#8906;");
-		result = result.replaceAll("LEFTSEMI", "&#8905;");
-		result = result.replaceAll("CARTESIANPRODUCT", "&#215;");
-		result = result.replaceAll("LEFTARROW", "&#8592;");
-		result = result.replaceAll("UNION", "&#8746;");
-		result = result.replaceAll("INTERSECTION", "&#8745;");
-		result = result.replaceAll("MINUS", "&#8722;");
-		result = result.replaceAll("DIVISION", "&#247;");
+		if(useSymbols){
+			result = result.replaceAll("PROJECTION", "&#960;");
+			result = result.replaceAll("SELECTION", "&#963;");
+			result = result.replaceAll("RENAMING", "&#961;");
+			result = result.replaceAll("JOIN", "&#8904;");
+			result = result.replaceAll("RIGHTSEMI", "&#8906;");
+			result = result.replaceAll("LEFTSEMI", "&#8905;");
+			result = result.replaceAll("CARTESIANPRODUCT", "&#215;");
+			result = result.replaceAll("LEFTARROW", "&#8592;");
+			result = result.replaceAll("UNION", "&#8746;");
+			result = result.replaceAll("INTERSECTION", "&#8745;");
+			result = result.replaceAll("MINUS", "&#8722;");
+			result = result.replaceAll("DIVISION", "&#247;");
+		}
 		result = result.replaceAll("LEFTCURLY", "&#8847;");
 		result = result.replaceAll("RIGHTCURLY", "&#8848;");
 
