@@ -688,11 +688,12 @@ public class RAEvaluator implements Evaluator{
 			result = result.replaceAll("DIVISION", "&#247;");
 		}else{
 			// if textual representation of query operators should be used in the feedback, replace symbols with textual representation
+			// TODO: replacing of symbols in exception message not working, also tried html entities (did not work either)
 			result = result.replace("π", "PROJECTION");         // π
 			result = result.replace("σ", "SELECTION");          // σ
 			result = result.replace("ρ", "RENAMING");           // ρ
 			result = result.replace("⋄", "JOIN");               // ⋄
-			result = result.replace("⋆", "RIGHTSEMI");          // ⋆
+			result = result.replace("⋆", "RIGHTSEMI");        // ⋆
 			result = result.replace("⋅", "LEFTSEMI");           // ⋅
 			result = result.replace("×", "CARTESIANPRODUCT");   // ×
 			result = result.replace("←", "LEFTARROW");          // ←
@@ -700,6 +701,20 @@ public class RAEvaluator implements Evaluator{
 			result = result.replace("∩", "INTERSECTION");       // ∩
 			result = result.replace("−", "MINUS");              // −
 			result = result.replace("÷", "DIVISION");           // ÷
+
+			// html
+			 result = result.replace("&#960;", "PROJECTION");
+			result = result.replace("&#963;", "SELECTION");
+			result = result.replace("&#961;", "RENAMING");
+			result = result.replace("&#8904;", "JOIN");
+			result = result.replace("&#8906;", "RIGHTSEMI");
+			result = result.replace("&#8905;", "LEFTSEMI");
+			result = result.replace("&#215;", "CARTESIANPRODUCT");
+			result = result.replace("&#8592;", "LEFTARROW");
+			result = result.replace("&#8746;", "UNION");
+			result = result.replace("&#8745;", "INTERSECTION");
+			result = result.replace("&#8722;", "MINUS");
+			result = result.replace("&#247;", "DIVISION");
 		}
 		result = result.replaceAll("LEFTCURLY", "&#8847;");
 		result = result.replaceAll("RIGHTCURLY", "&#8848;");
