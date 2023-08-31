@@ -172,7 +172,11 @@ public class RAEvaluator implements Evaluator{
 			exceptionText = exceptionText.concat("Invalid \"" + this.getRuleAlias(e.getRule()));
 			exceptionText = exceptionText.concat("\".<br>");
 			exceptionText = exceptionText.concat("Unexpected character \"");
-			exceptionText = exceptionText.concat(this.getAtomAlias(e.getUnexpectedAtom()));
+			String unexpectedAtom = this.getAtomAlias(e.getUnexpectedAtom());
+			if(!useSymbols){
+				unexpectedAtom = this.replaceRelAlgSymbolsWithTextualVersions(unexpectedAtom);
+			}
+			exceptionText = exceptionText.concat(unexpectedAtom);
 			exceptionText = exceptionText.concat("\".</p>");
 			exceptionText = exceptionText.concat(this.highlightError(submission, e, useSymbols));
 
@@ -186,9 +190,17 @@ public class RAEvaluator implements Evaluator{
 			exceptionText = exceptionText.concat("<p class='ra_syntax_error'>");
 			exceptionText = exceptionText.concat("Invalid \"" + this.getRuleAlias(e.getRule()) + "\".\n");
 			exceptionText =	exceptionText.concat("Expected character \"");
-			exceptionText = exceptionText.concat(this.getAtomAlias(e.getExpectedAtom()) + "\".<br>");
+			String expectedCharacter = this.getAtomAlias(e.getExpectedAtom());
+			if(!useSymbols){
+				expectedCharacter = this.replaceRelAlgSymbolsWithTextualVersions(expectedCharacter);
+			}
+			exceptionText = exceptionText.concat(expectedCharacter + "\".<br>");
 			exceptionText =	exceptionText.concat("Found character    \"");
-			exceptionText = exceptionText.concat(this.getAtomAlias(e.getFoundAtom()) + "\".</p>");
+			String foundCharacter = this.getAtomAlias(e.getFoundAtom());
+			if(!useSymbols){
+				foundCharacter = this.replaceRelAlgSymbolsWithTextualVersions(foundCharacter);
+			}
+			exceptionText = exceptionText.concat(foundCharacter + "\".</p>");
 			exceptionText = exceptionText.concat(this.highlightError(submission, e, useSymbols));
 
 			syntaxAnalysis.setFoundSyntaxError(true);
@@ -201,7 +213,11 @@ public class RAEvaluator implements Evaluator{
 			exceptionText = exceptionText.concat("<p class='ra_syntax_error'>");
 			exceptionText = exceptionText.concat("Invalid \"" + this.getRuleAlias(e.getRule()) + "\".\n");
 			exceptionText =	exceptionText.concat("Invalid character \"");
-			exceptionText = exceptionText.concat(this.getAtomAlias(e.getInvalidAtom()) + "\".</p>");
+			String invalidAtom = this.getAtomAlias(e.getInvalidAtom());
+			if(!useSymbols){
+				invalidAtom = this.replaceRelAlgSymbolsWithTextualVersions(invalidAtom);
+			}
+			exceptionText = exceptionText.concat(invalidAtom + "\".</p>");
 			exceptionText = exceptionText.concat(this.highlightError(submission, e, useSymbols));
 
 			syntaxAnalysis.setFoundSyntaxError(true);
@@ -686,35 +702,6 @@ public class RAEvaluator implements Evaluator{
 			result = result.replaceAll("INTERSECTION", "&#8745;");
 			result = result.replaceAll("MINUS", "&#8722;");
 			result = result.replaceAll("DIVISION", "&#247;");
-		}else{
-			// if textual representation of query operators should be used in the feedback, replace symbols with textual representation
-			// TODO: replacing of symbols in exception message not working, also tried html entities (did not work either)
-			result = result.replace("π", "PROJECTION");         // π
-			result = result.replace("σ", "SELECTION");          // σ
-			result = result.replace("ρ", "RENAMING");           // ρ
-			result = result.replace("⋄", "JOIN");               // ⋄
-			result = result.replace("⋆", "RIGHTSEMI");        // ⋆
-			result = result.replace("⋅", "LEFTSEMI");           // ⋅
-			result = result.replace("×", "CARTESIANPRODUCT");   // ×
-			result = result.replace("←", "LEFTARROW");          // ←
-			result = result.replace("∪", "UNION");              // ∪
-			result = result.replace("∩", "INTERSECTION");       // ∩
-			result = result.replace("−", "MINUS");              // −
-			result = result.replace("÷", "DIVISION");           // ÷
-
-			// html
-			 result = result.replace("&#960;", "PROJECTION");
-			result = result.replace("&#963;", "SELECTION");
-			result = result.replace("&#961;", "RENAMING");
-			result = result.replace("&#8904;", "JOIN");
-			result = result.replace("&#8906;", "RIGHTSEMI");
-			result = result.replace("&#8905;", "LEFTSEMI");
-			result = result.replace("&#215;", "CARTESIANPRODUCT");
-			result = result.replace("&#8592;", "LEFTARROW");
-			result = result.replace("&#8746;", "UNION");
-			result = result.replace("&#8745;", "INTERSECTION");
-			result = result.replace("&#8722;", "MINUS");
-			result = result.replace("&#247;", "DIVISION");
 		}
 		result = result.replaceAll("LEFTCURLY", "&#8847;");
 		result = result.replaceAll("RIGHTCURLY", "&#8848;");
@@ -734,6 +721,22 @@ public class RAEvaluator implements Evaluator{
 		result = result.replaceAll("\n", "<br>");
 		result = result.concat("</u></p>");
 
+		return result;
+	}
+
+	private String replaceRelAlgSymbolsWithTextualVersions(String result){
+		result = result.replace("&#960;", "PROJECTION");
+		result = result.replace("&#963;", "SELECTION");
+		result = result.replace("&#961;", "RENAMING");
+		result = result.replace("&#8904;", "JOIN");
+		result = result.replace("&#8906;", "RIGHTSEMI");
+		result = result.replace("&#8905;", "LEFTSEMI");
+		result = result.replace("&#215;", "CARTESIANPRODUCT");
+		result = result.replace("&#8592;", "LEFTARROW");
+		result = result.replace("&#8746;", "UNION");
+		result = result.replace("&#8745;", "INTERSECTION");
+		result = result.replace("&#8722;", "MINUS");
+		result = result.replace("&#247;", "DIVISION");
 		return result;
 	}
 
