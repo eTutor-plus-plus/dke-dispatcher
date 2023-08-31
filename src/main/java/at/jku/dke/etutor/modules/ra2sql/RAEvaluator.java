@@ -687,19 +687,19 @@ public class RAEvaluator implements Evaluator{
 			result = result.replaceAll("MINUS", "&#8722;");
 			result = result.replaceAll("DIVISION", "&#247;");
 		}else{
-			// if textual representation of query operators should be used in the feedback, replace symbols of exception with textual representation
-			result = result.replaceAll("&#960;", "PROJECTION");
-			result = result.replaceAll("&#963;", "SELECTION");
-			result = result.replaceAll("&#961;", "RENAMING");
-			result = result.replaceAll("&#8904;", "JOIN");
-			result = result.replaceAll("&#8906;", "RIGHTSEMI");
-			result = result.replaceAll("&#8905;", "LEFTSEMI");
-			result = result.replaceAll("&#215;", "CARTESIANPRODUCT");
-			result = result.replaceAll("&#8592;", "LEFTARROW");
-			result = result.replaceAll("&#8746;", "UNION");
-			result = result.replaceAll("&#8745;", "INTERSECTION");
-			result = result.replaceAll("&#8722;", "MINUS");
-			result = result.replaceAll("&#247;", "DIVISION");
+			// if textual representation of query operators should be used in the feedback, replace symbols with textual representation
+			result = result.replace("π", "PROJECTION");         // π
+			result = result.replace("σ", "SELECTION");          // σ
+			result = result.replace("ρ", "RENAMING");           // ρ
+			result = result.replace("⋄", "JOIN");               // ⋄
+			result = result.replace("⋆", "RIGHTSEMI");          // ⋆
+			result = result.replace("⋅", "LEFTSEMI");           // ⋅
+			result = result.replace("×", "CARTESIANPRODUCT");   // ×
+			result = result.replace("←", "LEFTARROW");          // ←
+			result = result.replace("∪", "UNION");              // ∪
+			result = result.replace("∩", "INTERSECTION");       // ∩
+			result = result.replace("−", "MINUS");              // −
+			result = result.replace("÷", "DIVISION");           // ÷
 		}
 		result = result.replaceAll("LEFTCURLY", "&#8847;");
 		result = result.replaceAll("RIGHTCURLY", "&#8848;");
