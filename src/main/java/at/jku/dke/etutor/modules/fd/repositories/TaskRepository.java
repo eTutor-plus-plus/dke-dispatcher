@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.modules.fd.repositories;
 
+import at.jku.dke.etutor.modules.fd.entities.Closure;
 import at.jku.dke.etutor.modules.fd.entities.Relation;
 import at.jku.dke.etutor.modules.fd.entities.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
@@ -45,6 +46,24 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query(value = "select (count(t) > 0) from fd.task t where t.closure_group_id = ?1 and t.closure_id = ?2",
             nativeQuery = true)
     boolean checkClosureExists(Long closureGroupId, Long closureId);
+
+    @Query("select t.closure.leftSide from Task t where t.closureGroupId in ?1")
+    List<String> getLeftSideClosures(Long closureGroupId);
+
+    @Query("select t.closure from Task t where t.closureGroupId in ?1")
+    List<Closure> getClosures(Long closureGroupId);
+
+    @Query("select t.closure from Task t where t.closureGroupId = ?1 and t.closure.id = ?2")
+    Closure findByClosureGroupIdAndClosureId(Long closureGroupId, Long id);
+
+    @Query("select distinct t.relation from Task t where t.closureGroupId =?1")
+    Relation findRelationByGroupId(Long id);
+
+    @Query("select distinct t.relation from Task t where t.id =?1")
+    Relation findRelationByTaskId(Long l);
+
+    @Query("select count(t) from Task t where t.closureGroupId = ?1")
+    int countByClosureGroupId(Long closureGroupId);
 
 
 }

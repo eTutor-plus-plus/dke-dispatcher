@@ -21,8 +21,8 @@ public class Relation {
     @Type(type = "string-array")
     @Column(name = "attributes", columnDefinition = "text[]")
     private String[] attributes;
-    @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "relation")
-//    @JoinColumn(name = "relation_id", referencedColumnName = "id")
+    @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER) // mappedBy = "relation")
+    @JoinColumn(name = "relation_id", referencedColumnName = "id")
     private Set<FunctionalDependency> functionalDependencies;
     @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "relation_id", referencedColumnName = "id")

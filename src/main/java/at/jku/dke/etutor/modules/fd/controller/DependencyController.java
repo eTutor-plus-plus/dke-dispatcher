@@ -20,8 +20,4 @@ public class DependencyController {
         return functionalDependencyService.getAll();
     }
 
-//    @PostMapping("/new_dependency")
-//    public boolean newDependency(@RequestBody FunctionalDependency functionalDependency) {
-//        return functionalDependencyService.newDependency(functionalDependency);
-//    }
 }

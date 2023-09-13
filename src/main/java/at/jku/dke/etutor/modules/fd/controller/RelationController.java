@@ -40,7 +40,7 @@ public class RelationController {
             return relation.getId();
         }
         else {
-            return -1L;
+            return null;
         }
     }
     @DeleteMapping("/group")

@@ -92,4 +92,13 @@ public class Key implements Dependency {
     public int hashCode() {
         return Objects.hash(id, Arrays.hashCode(leftSide), Arrays.hashCode(rightSide));
     }
+
+    @Override
+    public String toString() {
+        return "Key{" +
+                "id=" + id +
+                ", leftSide=" + Arrays.toString(leftSide) +
+                ", rightSide=" + Arrays.toString(rightSide) +
+                '}';
+    }
 }

@@ -18,7 +18,7 @@ import java.util.*;
         typeClass = StringArrayType.class
 )
 @Entity
-@Table(name = "dependency", schema = "fd", catalog = "fd")
+@Table(name = "functional_dependency", schema = "fd", catalog = "fd")
 public class FunctionalDependency implements Dependency {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -30,9 +30,9 @@ public class FunctionalDependency implements Dependency {
     @Type(type = "string-array")
     @Column(name = "right_side", columnDefinition = "text[]")
     private String[] rightSide;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "relation_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "relation_id", referencedColumnName = "id")
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Relation relation;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

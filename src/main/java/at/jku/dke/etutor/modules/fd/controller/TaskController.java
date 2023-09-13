@@ -1,9 +1,13 @@
 package at.jku.dke.etutor.modules.fd.controller;
 
 import at.jku.dke.etutor.modules.fd.services.TaskService;
+import at.jku.dke.etutor.modules.fd.utilities.FDTaskSolve;
+import at.jku.dke.etutor.modules.fd.utilities.FDTaskSolveResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping(path="/fd")
@@ -77,5 +81,13 @@ public class TaskController {
     @DeleteMapping("/delete_task")
     public ResponseEntity<Long> deleteTask(@RequestParam Long id) {
         return taskService.deleteTask(id);
+    }
+    @GetMapping("/assignment/closure")
+    public ResponseEntity<Map<Long, String[]>> getLeftSidesClosure(@RequestParam Long id) {
+        return taskService.getLeftSidesClosure(id);
+    }
+    @PostMapping("/assignment/solve")
+    public ResponseEntity<FDTaskSolveResponse> fdTaskSolve(@RequestBody FDTaskSolve fdTaskSolve) {
+        return taskService.fdTaskSolve(fdTaskSolve);
     }
 }
