@@ -9,6 +9,7 @@ import at.jku.dke.etutor.grading.service.ModuleEvaluatorFactory;
 import at.jku.dke.etutor.grading.service.RepositoryService;
 import at.jku.dke.etutor.grading.service.SubmissionDispatcherService;
 import at.jku.dke.etutor.grading.service.XQueryResourceService;
+import at.jku.dke.etutor.modules.binarysearch.BinarySearchDataSource;
 import at.jku.dke.etutor.modules.dlg.DatalogDataSource;
 import at.jku.dke.etutor.modules.pm.PmDataSource;
 import at.jku.dke.etutor.modules.pm.PmEvaluator;
@@ -65,7 +66,8 @@ import java.util.List;
         ExceptionHandler.class,
         PmDataSource.class,
         ETutorPMController.class,
-        PmEvaluator.class
+        PmEvaluator.class,
+        BinarySearchDataSource.class
 
 })
 @EnableConfigurationProperties({ApplicationProperties.class})

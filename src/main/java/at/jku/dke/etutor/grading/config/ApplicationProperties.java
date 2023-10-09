@@ -90,6 +90,7 @@ public class ApplicationProperties {
     public static class BinarySearch{
         private String connUser;
         private String connPwd;
+        private String connUrl;
 
         public String getConnUser() {
             return connUser;
@@ -105,6 +106,14 @@ public class ApplicationProperties {
 
         public void setConnPwd(String connPwd) {
             this.connPwd = connPwd;
+        }
+
+        public String getConnUrl() {
+            return connUrl;
+        }
+
+        public void setConnUrl(String connUrl) {
+            this.connUrl = connUrl;
         }
     }
 
