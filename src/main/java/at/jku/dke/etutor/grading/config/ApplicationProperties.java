@@ -19,6 +19,8 @@ public class ApplicationProperties {
 
     private XQueryProps xquery = new XQueryProps();
 
+    private BinarySearch binarySearch = new BinarySearch();
+
     private Grading grading = new Grading();
 
     public Async getAsync() {
@@ -75,6 +77,35 @@ public class ApplicationProperties {
 
     public void setDatalog(Datalog datalog) {
         this.datalog = datalog;
+    }
+
+    public BinarySearch getBinarySearch() {
+        return binarySearch;
+    }
+
+    public void setBinarySearch(BinarySearch binarySearch) {
+        this.binarySearch = binarySearch;
+    }
+
+    public static class BinarySearch{
+        private String connUser;
+        private String connPwd;
+
+        public String getConnUser() {
+            return connUser;
+        }
+
+        public void setConnUser(String connUser) {
+            this.connUser = connUser;
+        }
+
+        public String getConnPwd() {
+            return connPwd;
+        }
+
+        public void setConnPwd(String connPwd) {
+            this.connPwd = connPwd;
+        }
     }
 
     /**
