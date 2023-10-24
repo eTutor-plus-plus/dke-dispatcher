@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.modules.fd.services;
 
+import at.jku.dke.etutor.modules.fd.entities.FunctionalDependency;
 import at.jku.dke.etutor.modules.fd.entities.Relation;
 import at.jku.dke.etutor.modules.fd.repositories.RelationRepository;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,25 @@ public class RelationService {
         }
         return null;
     }
+    public Relation getRelationByIdStudent(Long id) {
+        Optional<Relation> optionalRelation = relationRepository.findById(id);
+        Relation relation;
+        if (optionalRelation.isPresent()) {
+            relation = optionalRelation.get();
+            relation.setKeys(null);
+            relation.setClosures(null);
+            relation.setMinimalCovers(null);
+            relation.setNormalForm(null);
+            relation.setTasks(null);
+            for (FunctionalDependency dependency : relation.getFunctionalDependencies()) {
+                dependency.setMinimalCover(null);
+                dependency.setViolates(null);
+            }
+            return relation;
+        }
+        return null;
+    }
+
     public List<Relation> getAll() {
         return relationRepository.findAll();
     }
@@ -74,4 +94,6 @@ public class RelationService {
     public Long getNextId() {
         return relationRepository.getNextId();
     }
+
+
 }

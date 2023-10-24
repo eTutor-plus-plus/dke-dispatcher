@@ -5,8 +5,9 @@ import java.util.List;
 public class FDTaskSolveResponse {
     private String id;
     private boolean solved;
-    private List<FDHint> hint;
-    private float percentage;
+    private List<FDHint> hints;
+    private double points;
+
 
     public FDTaskSolveResponse(String id) {
         this.id=id;
@@ -29,20 +30,20 @@ public class FDTaskSolveResponse {
         this.solved = solved;
     }
 
-    public List<FDHint> getHint() {
-        return hint;
+    public List<FDHint> getHints() {
+        return hints;
     }
 
-    public void setHint(List<FDHint> hint) {
-        this.hint = hint;
+    public void setHints(List<FDHint> hints) {
+        this.hints = hints;
     }
 
-    public float getPercentage() {
-        return percentage;
+    public double getPoints() {
+        return points;
     }
 
-    public void setPercentage(float percentage) {
-        this.percentage = percentage;
+    public void setPoints(double points) {
+        this.points = points;
     }
 
     @Override
@@ -50,8 +51,8 @@ public class FDTaskSolveResponse {
         return "FDTaskSolveResponse{" +
                 "id='" + id + '\'' +
                 ", solved=" + solved +
-                ", hint=" + hint +
-                ", percentage=" + percentage +
+                ", hints=" + hints +
+                ", points=" + points +
                 '}';
     }
 }

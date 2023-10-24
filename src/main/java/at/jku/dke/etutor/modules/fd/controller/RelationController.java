@@ -26,11 +26,17 @@ public class RelationController {
     @GetMapping("/next_id")
     public Long getNextId() {return relationService.getNextId();}
     @GetMapping("/group")
-    public Relation getExerciseById(@RequestParam Long id) {
+    public Relation getGroupById(@RequestParam Long id) {
         return relationService.getRelationById(id);
     }
+    @GetMapping("/group_student")
+    public Relation getGroupByIdStudent(@RequestParam Long id) {
+        return relationService.getRelationByIdStudent(id);
+    }
+
+
     @GetMapping("/exercises")
-    public List<Relation> getExerciseById() {
+    public List<Relation> getGroupById() {
         return relationService.getAll();
     }
     @PutMapping("/exercise")

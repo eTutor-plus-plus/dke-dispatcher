@@ -156,74 +156,91 @@ public class TaskService {
         return ResponseEntity.status(200).body(id);
     }
 
-    public ResponseEntity<Map<Long, String[]>> getLeftSidesClosure(Long id) {
+    public ResponseEntity<Map<Long, String[]>> getLeftSidesClosure(Long groupId) {
         Map<Long, String[]> leftSideClosures = new TreeMap<>();
-        for (Closure closure: taskRepository.getClosures(id)) {
-            leftSideClosures.put(closure.getId(), closure.getLeftSide());
+        for (Task task: taskRepository.getTasks(groupId)) {
+            leftSideClosures.put(task.getId(), task.getClosure().getLeftSide());
         }
         return ResponseEntity.status(200).body(leftSideClosures);
     }
 
-    public ResponseEntity<FDTaskSolveResponse> fdTaskSolve(FDTaskSolve fdTaskSolve) {
+    public FDTaskSolveResponse fdTaskSolve(FDTaskSolve fdTaskSolve) {
         FDTaskSolveResponse response = new FDTaskSolveResponse(fdTaskSolve.getId());
         List<FDHint> hints = new ArrayList<>();
-        response.setHint(hints);
+        response.setHints(hints);
+        double percentage = 0;
         if (fdTaskSolve.getType().equals("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#Closure")) {
-            solveClosure(fdTaskSolve, response, hints);
+            percentage = solveClosures(fdTaskSolve, response, hints);
         } else if (fdTaskSolve.getType().equals("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#Normalform")) {
-            solveNormalform(fdTaskSolve, response, hints);
+            percentage = solveNormalform(fdTaskSolve, response, hints);
         } else if (fdTaskSolve.getType().equals("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#Key")) {
-            solveKey(fdTaskSolve, response, hints);
+            percentage = solveKey(fdTaskSolve, response, hints);
         } else if (fdTaskSolve.getType().equals("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#MinimalCover")) {
-            solveMinimalCover(fdTaskSolve, response, hints);
+            percentage = solveMinimalCover(fdTaskSolve, response, hints);
         }
-        System.out.println(response);
-        System.out.println(response.getPercentage());
-        return ResponseEntity.status(200).body(response);
+        response.setPoints(fdTaskSolve.getMaxPoints()*percentage);
+        return response;
+    }
+    public FDTaskSolveResponse fdTaskGrade(FDTaskSolve fdTaskSolve) {
+        FDTaskSolveResponse response = new FDTaskSolveResponse(fdTaskSolve.getId());
+        List<FDHint> hints = new ArrayList<>();
+        response.setHints(hints);
+        double percentage = 0;
+        if (fdTaskSolve.getType().equals("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#Closure")) {
+            percentage = solveClosure(fdTaskSolve, response, hints);
+        } else if (fdTaskSolve.getType().equals("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#Normalform")) {
+            percentage = solveNormalform(fdTaskSolve, response, hints);
+        } else if (fdTaskSolve.getType().equals("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#Key")) {
+            percentage = solveKey(fdTaskSolve, response, hints);
+        } else if (fdTaskSolve.getType().equals("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#MinimalCover")) {
+            percentage = solveMinimalCover(fdTaskSolve, response, hints);
+        }
+        response.setPoints(fdTaskSolve.getMaxPoints()*percentage);
+        return response;
     }
     private String[] parseSide(String side) {
         return side.replace(" ","").trim().split(",");
     }
-    private void solveClosure(FDTaskSolve fdTaskSolve, FDTaskSolveResponse response, List<FDHint> hints){
+    private double solveClosures(FDTaskSolve fdTaskSolve, FDTaskSolveResponse response, List<FDHint> hints){
         Long groupId = Long.parseLong(fdTaskSolve.getId().replace("Closure-",""));
         List<String> legalAttributes = Arrays.asList(taskRepository.findRelationByGroupId(groupId).getAttributes());
         int numberOfTasks = taskRepository.countByClosureGroupId(groupId);
-        for (FDSolve closure: fdTaskSolve.getClosureSolutions()) {
-            if (closure.getSolution().isEmpty()) {
-                hints.add(new FDHint(closure.getId(), "fDAssignment.hint.closure.empty"));
+        for (FDSolve fdSolve: fdTaskSolve.getClosureSolutions()) {
+            if (fdSolve.getSolution().isEmpty()) {
+                hints.add(new FDHint(fdSolve.getId(), "fDAssignment.hint.closure.empty"));
                 response.setSolved(false);
                 continue;
             }
-            String[] parsedInput = parseSide(closure.getSolution());
+            String[] parsedInput = parseSide(fdSolve.getSolution());
             List<String> duplicateCheck = new ArrayList<>();
             for (String item: parsedInput) {
                 if (!legalAttributes.contains(item)) {
-                    hints.add(new FDHint(closure.getId(), "fDAssignment.hint.closure.illegalArgument"));
+                    hints.add(new FDHint(fdSolve.getId(), "fDAssignment.hint.closure.illegalArgument"));
                     response.setSolved(false);
                     break;
                 }
                 if (duplicateCheck.contains(item)) {
-                    hints.add((new FDHint(closure.getId(), "fDAssignment.hint.closure.duplicate")));
+                    hints.add((new FDHint(fdSolve.getId(), "fDAssignment.hint.closure.duplicate")));
                     response.setSolved(false);
                     break;
                 } else {
                     duplicateCheck.add(item);
                 }
             }
-            List<String> answer = Arrays.asList(taskRepository.findByClosureGroupIdAndClosureId(groupId, closure.getId()).getRightSide());
+            List<String> answer = Arrays.asList(taskRepository.findClosureByTaskId(fdSolve.getId()).getRightSide());
             if (parsedInput.length>answer.size()) {
-                hints.add((new FDHint(closure.getId(), "fDAssignment.hint.closure.more")));
+                hints.add((new FDHint(fdSolve.getId(), "fDAssignment.hint.closure.more")));
                 response.setSolved(false);
                 continue;
             } else if (parsedInput.length<answer.size()) {
-                hints.add((new FDHint(closure.getId(), "fDAssignment.hint.closure.less")));
+                hints.add((new FDHint(fdSolve.getId(), "fDAssignment.hint.closure.less")));
                 response.setSolved(false);
                 continue;
             }
             if (response.isSolved()) {
                 for (String item: parsedInput) {
                     if(!answer.contains(item)) {
-                        hints.add((new FDHint(closure.getId(), "fDAssignment.hint.closure.wrong")));
+                        hints.add((new FDHint(fdSolve.getId(), "fDAssignment.hint.closure.wrong")));
                         response.setSolved(false);
                         break;
                     }
@@ -234,9 +251,55 @@ public class TaskService {
         for (FDHint hint: hints) {
             destinctErrors.add(hint.getSubId());
         }
-        response.setPercentage((numberOfTasks-destinctErrors.size())/Float.valueOf(numberOfTasks));
+        return ((numberOfTasks-destinctErrors.size())/Double.valueOf(numberOfTasks));
     }
-    private void solveNormalform(FDTaskSolve fdTaskSolve, FDTaskSolveResponse response, List<FDHint> hints) {
+    private double solveClosure(FDTaskSolve fdTaskSolve, FDTaskSolveResponse response, List<FDHint> hints) {
+        FDSolve closure = fdTaskSolve.getClosureSolutions().get(0);
+        List<String> legalAttributes = Arrays.asList(taskRepository.findRelationByTaskId(closure.getId()).getAttributes());
+        if (closure.getSolution().isEmpty()) {
+            hints.add(new FDHint(closure.getId(), "fDAssignment.hint.closure.empty"));
+            response.setSolved(false);
+            return 0;
+        }
+        String[] parsedInput = parseSide(closure.getSolution());
+        List<String> duplicateCheck = new ArrayList<>();
+        for (String item: parsedInput) {
+            if (!legalAttributes.contains(item)) {
+                hints.add(new FDHint(closure.getId(), "fDAssignment.hint.closure.illegalArgument"));
+                response.setSolved(false);
+                break;
+            }
+            if (duplicateCheck.contains(item)) {
+                hints.add((new FDHint(closure.getId(), "fDAssignment.hint.closure.duplicate")));
+                response.setSolved(false);
+                break;
+            } else {
+                duplicateCheck.add(item);
+            }
+        }
+        List<String> answer = Arrays.asList(taskRepository.findById(closure.getId()).get().getClosure().getRightSide());
+        if (parsedInput.length>answer.size()) {
+            hints.add((new FDHint(closure.getId(), "fDAssignment.hint.closure.more")));
+            response.setSolved(false);
+            return 0;
+        } else if (parsedInput.length<answer.size()) {
+            hints.add((new FDHint(closure.getId(), "fDAssignment.hint.closure.less")));
+            response.setSolved(false);
+            return 0;
+        }
+        if (response.isSolved()) {
+            for (String item: parsedInput) {
+                if(!answer.contains(item)) {
+                    hints.add((new FDHint(closure.getId(), "fDAssignment.hint.closure.wrong")));
+                    response.setSolved(false);
+                    return 0;
+                }
+            }
+            return 1;
+        }
+        return 0;
+    }
+    private double solveNormalform(FDTaskSolve fdTaskSolve, FDTaskSolveResponse response, List<FDHint> hints) {
         if (fdTaskSolve.getSolution() == null) {
             hints.add(new FDHint(null, "fDAssignment.hint.normalform.notSelected"));
             response.setSolved(false);
@@ -271,7 +334,8 @@ public class TaskService {
                 }
             }
             if (response.isSolved()) {
-                NF answer = taskRepository.getOne(Long.valueOf(fdTaskSolve.getId())).getRelation().getNormalForm();
+                Optional<Task> optionalTask = taskRepository.findById((Long.valueOf(fdTaskSolve.getId())));
+                NF answer = optionalTask.get().getRelation().getNormalForm();
                 if (!answer.equals(nFRelation)) {
                     hints.add(new FDHint(null, "fDAssignment.hint.normalform.wrong"));
                     response.setSolved(false);
@@ -279,18 +343,18 @@ public class TaskService {
             }
         }
         if (response.isSolved()) {
-            response.setPercentage(1);
+            return 1d;
         } else {
-            response.setPercentage(0);
+            return 0d;
         }
     }
-    private void solveKey(FDTaskSolve fdTaskSolve, FDTaskSolveResponse response, List<FDHint> hints) {
+    private double solveKey(FDTaskSolve fdTaskSolve, FDTaskSolveResponse response, List<FDHint> hints) {
         if(fdTaskSolve.getSolution() == null) {
             response.setSolved(false);
             hints.add(new FDHint(null, "fDAssignment.hint.key.empty"));
-            response.setPercentage(0);
+            return 0d;
         } else {
-            int numberOfKeys;
+            double numberOfKeys;
             Set<Key> solvedKeys = new HashSet<>();
             List<String> lines = fdTaskSolve.getSolution().lines().toList();
             List<String> legalAttributes = Arrays.asList(taskRepository.findRelationByTaskId(Long.parseLong(fdTaskSolve.getId())).getAttributes());
@@ -348,13 +412,14 @@ public class TaskService {
                 hints.add((new FDHint(lineNumber, "fDAssignment.hint.key.wrong")));
                 response.setSolved(false);
             }
-            response.setPercentage((solvedKeys.size())/numberOfKeys);
+            return ((solvedKeys.size())/numberOfKeys);
         }
     }
-    private void solveMinimalCover(FDTaskSolve fdTaskSolve, FDTaskSolveResponse response, List<FDHint> hints) {
+    private double solveMinimalCover(FDTaskSolve fdTaskSolve, FDTaskSolveResponse response, List<FDHint> hints) {
         if(fdTaskSolve.getSolution() == null) {
             response.setSolved(false);
             hints.add(new FDHint(null, "fDAssignment.hint.minimalCover.empty"));
+            return 0d;
         } else {
             List<String> lines = fdTaskSolve.getSolution().lines().toList();
             List<String> legalAttributes = Arrays.asList(taskRepository.findRelationByTaskId(Long.parseLong(fdTaskSolve.getId())).getAttributes());
@@ -394,6 +459,10 @@ public class TaskService {
                     hints.add((new FDHint(lineNumber, "fDAssignment.hint.minimalCover.duplicateRight")));
                     response.setSolved(false);
                 }
+                if (leftSide.containsAll(ríghtSide)) {
+                    hints.add((new FDHint(lineNumber, "fDAssignment.hint.minimalCover.trivial")));
+                    response.setSolved(false);
+                }
                 if (ríghtSide.size()>1) {
                     hints.add((new FDHint(lineNumber, "fDAssignment.hint.minimalCover.canonical")));
                     response.setSolved(false);
@@ -412,50 +481,45 @@ public class TaskService {
                 }
             }
             if (checkedInput.size() < answers.size() && response.isSolved()) {
-                hints.add((new FDHint(Long.valueOf(answers.size()-checkedInput.size()), "fDAssignment.hint.minimalCover.less")));
+                hints.add((new FDHint(null, "fDAssignment.hint.minimalCover.less")));
                 response.setSolved(false);
             }
             if (checkedInput.size() > answers.size() && response.isSolved()) {
-                hints.add((new FDHint(Long.valueOf(checkedInput.size()-answers.size()), "fDAssignment.hint.minimalCover.more")));
+                hints.add((new FDHint(null, "fDAssignment.hint.minimalCover.more")));
                 response.setSolved(false);
             }
             if (response.isSolved()) {
                 List<Dependency> solved = new ArrayList<>();
+                lineNumber = 0L;
                 for (FDSolveDependency item: checkedInput) {
+                    lineNumber++;
                     for (Dependency answer: answers) {
                         if (item.getLeftSide().size() == answer.getLeftSide().length &&
                                 item.getRightSide().size() == answer.getRightSide().length &&
-                                item.getLeftSide().containsAll(Arrays.stream(answer.getLeftSide()).toList()) &&
+                                item.getLeftSide().containsAll(Arrays.asList(answer.getLeftSide())) &&
                                 item.getRightSide().containsAll(Arrays.asList(answer.getRightSide()))) {
                             solved.add(answer);
+                        } else if (item.getLeftSide().size() > answer.getLeftSide().length &&
+                                item.getRightSide().size() == answer.getRightSide().length &&
+                                item.getLeftSide().containsAll(Arrays.asList(answer.getLeftSide())) &&
+                                item.getRightSide().containsAll(Arrays.asList(answer.getRightSide()))) {
+                            hints.add((new FDHint(lineNumber, "fDAssignment.hint.minimalCover.redundantAttribute")));
+                            response.setSolved(false);
                         }
+
                     }
                 }
                 if (solved.size() != answers.size()) {
-                    hints.add((new FDHint(Long.valueOf(solved.size()-answers.size()), "fDAssignment.hint.minimalCover.wrong")));
+                    hints.add((new FDHint(null, "fDAssignment.hint.minimalCover.wrong")));
                     response.setSolved(false);
                 }
             }
             if (response.isSolved()) {
-                response.setPercentage(1);
+                return 1d;
             } else {
-                response.setPercentage(0);
+                return 0d;
             }
         }
     }
-    public ResponseEntity<FDTaskSolveResponse> fdTaskGrade(FDTaskSolve fdTaskSolve) {
-        FDTaskSolveResponse response = new FDTaskSolveResponse(fdTaskSolve.getId());
-        List<FDHint> hints = new ArrayList<>();
-        response.setHint(hints);
-        if (fdTaskSolve.getType().equals("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#Closure")) {
-            solveClosure(fdTaskSolve, response, hints);
-        } else if (fdTaskSolve.getType().equals("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#Normalform")) {
-            solveNormalform(fdTaskSolve, response, hints);
-        } else if (fdTaskSolve.getType().equals("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#Key")) {
-            solveKey(fdTaskSolve, response, hints);
-        } else if (fdTaskSolve.getType().equals("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#MinimalCover")) {
-            solveMinimalCover(fdTaskSolve, response, hints);
-        }
-        return ResponseEntity.status(200).body(response);
-    }
+
 }

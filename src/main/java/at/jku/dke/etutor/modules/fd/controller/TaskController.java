@@ -13,19 +13,21 @@ import java.util.Map;
 @RequestMapping(path="/fd")
 public class TaskController {
     TaskService taskService;
+
     TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
+
     @PostMapping("/new_task")
     public ResponseEntity<Long> newTask(@RequestBody JsonNode jsonNode) {
         Long relationId;
 
-        String inputTaskGroupId = jsonNode.get("taskGroupId").asText().replace("http://www.dke.uni-linz.ac.at/etutorpp/TaskGroup#FunctionalDependencies-","");
-        String inputFDSubtype = jsonNode.get("fDSubtype").asText().replace("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#","");
+        String inputTaskGroupId = jsonNode.get("taskGroupId").asText().replace("http://www.dke.uni-linz.ac.at/etutorpp/TaskGroup#FunctionalDependencies-", "");
+        String inputFDSubtype = jsonNode.get("fDSubtype").asText().replace("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#", "");
 
-        String [] fDClosureIds;
+        String[] fDClosureIds;
         if (!jsonNode.get("fDClosureIds").toString().equals("null")) {
-            fDClosureIds = jsonNode.get("fDClosureIds").toString().replaceAll("[\\[\\]\"]","")
+            fDClosureIds = jsonNode.get("fDClosureIds").toString().replaceAll("[\\[\\]\"]", "")
                     .split(",");
         } else {
             fDClosureIds = null;
@@ -49,14 +51,15 @@ public class TaskController {
             return ResponseEntity.status(400).body(null);
         }
     }
+
     @PostMapping("/update_task")
     public ResponseEntity<Long> updateTask(@RequestBody JsonNode jsonNode) {
         String inputId = jsonNode.get("taskId").asText();
-        String inputTaskGroupId = jsonNode.get("taskGroupId").asText().replace("http://www.dke.uni-linz.ac.at/etutorpp/TaskGroup#FunctionalDependencies-","");
-        String inputFDSubtype = jsonNode.get("fDSubtype").asText().replace("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#","");
-        String [] fDClosureIds;
+        String inputTaskGroupId = jsonNode.get("taskGroupId").asText().replace("http://www.dke.uni-linz.ac.at/etutorpp/TaskGroup#FunctionalDependencies-", "");
+        String inputFDSubtype = jsonNode.get("fDSubtype").asText().replace("http://www.dke.uni-linz.ac.at/etutorpp/FDSubtype#", "");
+        String[] fDClosureIds;
         if (!jsonNode.get("fDClosureIds").toString().equals("null")) {
-            fDClosureIds = jsonNode.get("fDClosureIds").toString().replaceAll("[\\[\\]\"]","")
+            fDClosureIds = jsonNode.get("fDClosureIds").toString().replaceAll("[\\[\\]\"]", "")
                     .split(",");
         } else {
             fDClosureIds = null;
@@ -74,20 +77,28 @@ public class TaskController {
             return taskService.updateTask(inputId, relationId, inputFDSubtype, fDClosureIds);
         }
     }
+
     @DeleteMapping("/delete_closure_task")
     public ResponseEntity<Long> deleteClosureTask(@RequestParam Long id) {
         return taskService.deleteClosureTask(id);
     }
+
     @DeleteMapping("/delete_task")
     public ResponseEntity<Long> deleteTask(@RequestParam Long id) {
         return taskService.deleteTask(id);
     }
+
     @GetMapping("/assignment/closure")
     public ResponseEntity<Map<Long, String[]>> getLeftSidesClosure(@RequestParam Long id) {
         return taskService.getLeftSidesClosure(id);
     }
+
     @PostMapping("/assignment/solve")
     public ResponseEntity<FDTaskSolveResponse> fdTaskSolve(@RequestBody FDTaskSolve fdTaskSolve) {
-        return taskService.fdTaskSolve(fdTaskSolve);
+        return ResponseEntity.status(200).body(taskService.fdTaskSolve(fdTaskSolve));
+    }
+    @PostMapping("/assignment/grade")
+    public ResponseEntity<Double> fdTaskGrade(@RequestBody FDTaskSolve fdTaskSolve) {
+        return ResponseEntity.status(200).body(taskService.fdTaskGrade(fdTaskSolve).getPoints());
     }
 }

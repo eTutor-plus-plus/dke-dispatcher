@@ -8,6 +8,7 @@ public class FDTaskSolve {
     private String solution;
     private List<FDSolve> closureSolutions;
     private List<FDSolve> normalFormSolutions;
+    private double maxPoints;
 
     public FDTaskSolve() {
     }
@@ -52,6 +53,14 @@ public class FDTaskSolve {
         this.normalFormSolutions = normalFormSolutions;
     }
 
+    public double getMaxPoints() {
+        return maxPoints;
+    }
+
+    public void setMaxPoints(double maxPoints) {
+        this.maxPoints = maxPoints;
+    }
+
     @Override
     public String toString() {
         return "FDTaskSolve{" +
@@ -60,6 +69,7 @@ public class FDTaskSolve {
                 ", solution='" + solution + '\'' +
                 ", closureSolutions=" + closureSolutions +
                 ", normalFormSolutions=" + normalFormSolutions +
+                ", maxPoints="+ maxPoints +
                 '}';
     }
 }

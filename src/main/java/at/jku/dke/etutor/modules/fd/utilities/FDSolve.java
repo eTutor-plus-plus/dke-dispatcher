@@ -4,6 +4,14 @@ public class FDSolve {
     private Long id;
     private String solution;
 
+    public FDSolve() {
+    }
+
+    public FDSolve(Long id, String solution) {
+        this.id = id;
+        this.solution = solution;
+    }
+
     public Long getId() {
         return id;
     }

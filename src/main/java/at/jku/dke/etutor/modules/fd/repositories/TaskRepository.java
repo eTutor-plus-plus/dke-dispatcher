@@ -50,11 +50,11 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("select t.closure.leftSide from Task t where t.closureGroupId in ?1")
     List<String> getLeftSideClosures(Long closureGroupId);
 
-    @Query("select t.closure from Task t where t.closureGroupId in ?1")
-    List<Closure> getClosures(Long closureGroupId);
+    @Query("select t from Task t where t.closureGroupId in ?1")
+    List<Task> getTasks(Long closureGroupId);
 
-    @Query("select t.closure from Task t where t.closureGroupId = ?1 and t.closure.id = ?2")
-    Closure findByClosureGroupIdAndClosureId(Long closureGroupId, Long id);
+    @Query("select t.closure from Task t where t.id = ?1")
+    Closure findClosureByTaskId(Long id);
 
     @Query("select distinct t.relation from Task t where t.closureGroupId =?1")
     Relation findRelationByGroupId(Long id);
@@ -65,5 +65,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("select count(t) from Task t where t.closureGroupId = ?1")
     int countByClosureGroupId(Long closureGroupId);
 
+    @Query("select count(t) from Task t where t.closureGroupId = " +
+            "(select t.closureGroupId from Task t where t.id = ?1)")
+    int countByTaskId(Long taskId);
 
 }
