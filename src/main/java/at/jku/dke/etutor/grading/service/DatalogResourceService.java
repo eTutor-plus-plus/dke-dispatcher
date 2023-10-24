@@ -233,7 +233,7 @@ public class DatalogResourceService {
 
         submission.setPassedAttributes(attributes);
         submission.setPassedParameters(new HashMap<>());
-        dispatcherService.run(submission, Locale.GERMAN);
+        dispatcherService.run(submission, Locale.GERMAN, false);
         Thread.sleep(10000);
         return gradingDTORepository.findById(id).isPresent() ? gradingDTORepository.findById(id).get() : null;
     }

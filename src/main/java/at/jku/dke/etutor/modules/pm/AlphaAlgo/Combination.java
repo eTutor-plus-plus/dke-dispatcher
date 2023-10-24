@@ -24,10 +24,10 @@ import java.util.Set;
 
 
 public class Combination{
-
+    // TODO: this is creating the problem
 
     // List of list with all possible combinations
-    protected static final List<List<Event>> resultList = new ArrayList<>();
+    protected final List<List<Event>> resultList = new ArrayList<>();
 
     /**
      * method combinationUtil() is a recursive function
@@ -40,7 +40,7 @@ public class Combination{
      * @param index int to track combination size
      * @param sizeCombination variable to control for combination size
      */
-    static void combinationUtil(List<Event> transitions, List<Event> data, int start, int end, int index, int sizeCombination) {
+    public void combinationUtil(List<Event> transitions, List<Event> data, int start, int end, int index, int sizeCombination) {
 
         // First call => index = 0;
         if (index == sizeCombination) {
@@ -59,7 +59,7 @@ public class Combination{
             combinationUtil(transitions, data, i+1, end, index+1, sizeCombination);
         }
     }
-    static void deriveCombinations(List<Event> transitions, int sizeTransitions, int sizeCombination) {
+    public void deriveCombinations(List<Event> transitions, int sizeTransitions, int sizeCombination) {
         List<Event> data = new ArrayList<>();
 
         combinationUtil(transitions, data, 0, sizeTransitions-1, 0, sizeCombination);
@@ -77,7 +77,7 @@ public class Combination{
      * @return returns true if product consists of events with causal relationship
      */
 
-    public static boolean checkCausality(List<Event> A, List<Event> B, Set<Pair<Event,Event>> causality){
+    public boolean checkCausality(List<Event> A, List<Event> B, Set<Pair<Event,Event>> causality){
         for(Event a: A){
             for(Event b: B){
                 if(!causality.contains(new Pair<>(a, b))){
@@ -100,7 +100,7 @@ public class Combination{
      * @return returns true, if a1#a2 otherwise false
      */
 
-    public static boolean checkIndependence(List<Event> A, Set<Pair<Event, Event>> independence){
+    public boolean checkIndependence(List<Event> A, Set<Pair<Event, Event>> independence){
         // for lists with just one element e.g. [a] => return true because they are independent
         if (A.size() != 1) { // (A.size() >= 2){
             resultList.clear();
@@ -126,24 +126,24 @@ public class Combination{
 
 
 
-    /* +++++++++Test Area ++++++++ */
-    public static void main (String[] args) {
-
-        Trace t1 = new Trace(new String[] {"a","b", "c"/* , "d", "e" */ });
-        List<Event> eventList = new ArrayList<>(Trace.transitions);
-
-
-        for (int j= 1; j< eventList.size() +1; j++){
-            deriveCombinations(eventList, eventList.size(), j);
-        }
-
-        System.out.println(resultList.size());
-        System.out.println(resultList);
-
-
-
-
-
-    }
+//    /* +++++++++Test Area ++++++++ */
+//    public static void main (String[] args) {
+//
+//        Trace t1 = new Trace(new String[] {"a","b", "c"/* , "d", "e" */ });
+//        List<Event> eventList = new ArrayList<>(Trace.transitions);
+//
+//
+//        for (int j= 1; j< eventList.size() +1; j++){
+//            deriveCombinations(eventList, eventList.size(), j);
+//        }
+//
+//        System.out.println(resultList.size());
+//        System.out.println(resultList);
+//
+//
+//
+//
+//
+//    }
 
 }

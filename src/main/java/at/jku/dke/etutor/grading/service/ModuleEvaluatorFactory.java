@@ -10,6 +10,7 @@ import at.jku.dke.etutor.modules.ra2sql.RAEvaluator;
 import at.jku.dke.etutor.modules.sql.SQLConstants;
 import at.jku.dke.etutor.modules.sql.SQLEvaluator;
 import at.jku.dke.etutor.modules.sql.report.SQLReporter;
+import at.jku.dke.etutor.modules.uml.UMLEvaluator;
 import at.jku.dke.etutor.modules.xquery.XQEvaluatorImpl;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,7 @@ public class ModuleEvaluatorFactory {
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#DLGTask", "dlg" -> new DatalogEvaluatorImpl(properties);
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#PmTask", "pm" -> new PmEvaluator();
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#FDTask", "fd" -> new FDEvaluator(fDTaskService);
+            case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#UMLTask", "uml" -> new UMLEvaluator();
             default -> null;
         };
     }

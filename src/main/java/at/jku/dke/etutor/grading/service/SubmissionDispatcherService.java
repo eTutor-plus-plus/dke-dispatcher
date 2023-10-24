@@ -13,7 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
+import java.util.*;
+
+import static at.jku.dke.etutor.grading.rest.ETutorGradingController.waitingThreadMap;
+import static at.jku.dke.etutor.grading.rest.ETutorSubmissionController.runningEvaluations;
 
 
 /**
@@ -36,18 +39,19 @@ public class SubmissionDispatcherService {
      * and calls the modules' implementations for evaluating the submission.
      * Persists the entities (submission, report, grading)
      */
-    @Async("asyncExecutor")
-    public void run(Submission submission, Locale locale) {
-        logger.debug("Saving submission to database");
-        repositoryService.persistSubmission(submission);
-        logger.debug("Finished saving submission to database");
+    @Async("taskExecutor")
+    public void run(Submission submission, Locale locale, Boolean persist) {
         try {
-            logger.debug("Evaluating submission");
-            //note: für das Modul
+            if(Boolean.TRUE.equals(persist)){
+                logger.debug("Saving submission to database");
+                repositoryService.persistSubmission(submission);
+                logger.debug("Finished saving submission to database");
+                logger.debug("Evaluating submission");
+            }
             Evaluator evaluator = moduleEvaluatorFactory.forTaskType(submission.getTaskType());
             if (evaluator == null) {
                 logger.warn("Could not find evaluator for tasktype: {}", submission.getTaskType());
-                return;
+                throw new NoSuchElementException("Could not find evaluator for tasktype:" + submission.getTaskType());
             }
             logger.debug("Analyzing submission");
             Analysis analysis = getAnalysis(evaluator, submission, locale);
@@ -69,6 +73,25 @@ public class SubmissionDispatcherService {
             persistGrading(gradingEntity);
         } catch(Exception e){
             logger.warn("Stopped Evaluation due to errors", e);
+            logger.info("Persisting default grading for this submission.");
+            String errorNotification = "An unhandled exception occurred during evaluation of your submission. ";
+            errorNotification += "The exception message is: " + e.getMessage();
+            Grading gradingEntity = new Grading();
+            gradingEntity.setSubmissionId(submission.getSubmissionId());
+            gradingEntity.setResult(errorNotification);
+            gradingEntity.setSubmissionSuitsSolution(false);
+            gradingEntity.setMaxPoints(0);
+            gradingEntity.setPoints(0);
+            Report report = new Report();
+            report.setHint("Contact an administrator if the error message does not allow you to resolve the issue.");
+            gradingEntity.setReport(report);
+            persistGrading(gradingEntity);
+        }finally {
+            // interrupt thread waiting for this evaluation to finish
+            runningEvaluations.remove(submission.getSubmissionId());
+            Thread waitingThread = waitingThreadMap.get(submission.getSubmissionId());
+            if(waitingThread != null)
+                waitingThread.interrupt();
         }
     }
 

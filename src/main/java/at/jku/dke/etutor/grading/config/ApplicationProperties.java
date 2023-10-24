@@ -332,6 +332,9 @@ public class ApplicationProperties {
         private String connPwd;
         private String connUser;
         private String connUrl;
+        private int initialExercisesToBuffer=30;
+        private int minimumThresholdForExercises=10;
+        private int numberOfExercisesToRebuffer=10;
 
         public String getConnPwd() {
             return connPwd;
@@ -350,6 +353,30 @@ public class ApplicationProperties {
         }
         public void setConnUser(String connUser) {
             this.connUser = connUser;
+        }
+
+        public int getInitialExercisesToBuffer() {
+            return initialExercisesToBuffer;
+        }
+
+        public void setInitialExercisesToBuffer(int initialExercisesToBuffer) {
+            this.initialExercisesToBuffer = initialExercisesToBuffer;
+        }
+
+        public int getMinimumThresholdForExercises() {
+            return minimumThresholdForExercises;
+        }
+
+        public void setMinimumThresholdForExercises(int minimumThresholdForExercises) {
+            this.minimumThresholdForExercises = minimumThresholdForExercises;
+        }
+
+        public int getNumberOfExercisesToRebuffer() {
+            return numberOfExercisesToRebuffer;
+        }
+
+        public void setNumberOfExercisesToRebuffer(int numberOfExercisesToRebuffer) {
+            this.numberOfExercisesToRebuffer = numberOfExercisesToRebuffer;
         }
     }
 
@@ -574,6 +601,7 @@ public class ApplicationProperties {
         private String corsPolicy;
         private String JDBCDriver;
         private long sleepDuration;
+        private long maxWaitTime;
 
         public String getConnSuperUser() {
             return connSuperUser;
@@ -612,6 +640,14 @@ public class ApplicationProperties {
 
         public void setSleepDuration(long sleepDuration) {
             this.sleepDuration = sleepDuration;
+        }
+
+        public long getMaxWaitTime() {
+            return maxWaitTime;
+        }
+
+        public void setMaxWaitTime(long maxWaitTime) {
+            this.maxWaitTime = maxWaitTime;
         }
     }
 

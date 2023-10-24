@@ -1,6 +1,8 @@
 package at.jku.dke.etutor.modules.pm.AlphaAlgo;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 import static at.jku.dke.etutor.modules.pm.AlphaAlgo.Trace.permutations;
 
 /**
@@ -264,7 +266,7 @@ public class Log {
         Set<Pair<Event, Event>> independent = new HashSet<>();
 
         // set of all permutations of the transitions of given log and its traces
-        Set<Pair<Event, Event>> all_permutations = permutations(Trace.transitions);
+        Set<Pair<Event, Event>> all_permutations = permutations(getTransitions());
 
         for(Pair<Event, Event> p: all_permutations){
             if(!directSuccessor.contains(p) && !directSuccessor.contains(p.flipEvents())){
@@ -281,10 +283,12 @@ public class Log {
      */
     // FOOTPRINT MATRIX
     public void generateFootprintMatrix(){
-        matrix  = new FootprintMatrix(Trace.transitions, independence(directSuccession()), causality(directSuccession()), parallel(directSuccession()));
+        matrix  = new FootprintMatrix(getTransitions(), independence(directSuccession()), causality(directSuccession()), parallel(directSuccession()));
     }
 
-
+    public SortedSet<Event> getTransitions(){
+        return log.stream().flatMap(trace -> trace.getTrace().stream()).sorted().collect(Collectors.toCollection(TreeSet::new));
+    }
 
     /* ********TestArea******** */
     public static void main(String[] args) {

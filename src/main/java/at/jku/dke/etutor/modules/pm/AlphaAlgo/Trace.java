@@ -38,10 +38,6 @@ public class Trace{
      * Transitions for each Log separately?
      */
 
-    // TODO: static überdenken, change to protected again
-    public final static SortedSet<Event> transitions = new TreeSet<Event>();  // SW2, Chapter 8, Slide 40; https://www.geeksforgeeks.org/treeset-in-java-with-examples/
-                                                                        // https://docs.oracle.com/javase/8/docs/api/java/util/TreeSet.html
-
     // OBJECT FIELD
     private final List<Event> traceEvents;     // INTERFACE https://docs.oracle.com/javase/8/docs/api/java/util/List.html & SW2, Chapter Libraries, Slide18
 
@@ -68,16 +64,13 @@ public class Trace{
      *
      */
     public Trace (String[] traceActivitiesArray){
-        traceEvents = new ArrayList<Event>(traceActivitiesArray.length);  // since list is an interface, objects can not be created ot the type list
+        traceEvents = new ArrayList<Event>();  // since list is an interface, objects can not be created ot the type list
 
         for (int i = 0; i < traceActivitiesArray.length; i++) {
             Event newEvent = new Event(traceActivitiesArray[i]);
             // add element of traceActivitiesArray at end of ArrayList
             // make use of add() method of interface List/ class ArrayList
             traceEvents.add(newEvent);
-            // add events to SortedSet transitions if event is not already in the set
-            // duplicate entries will not get added
-            transitions.add(newEvent);
         }
     }
 
@@ -96,7 +89,6 @@ public class Trace{
     public void addEvent (Event... newEvents){
         // make use of add() method of class ArrayList
         traceEvents.addAll(Arrays.asList(newEvents));
-        transitions.addAll(Arrays.asList(newEvents));
     }
 
     // getter methods
@@ -207,43 +199,43 @@ public class Trace{
     }
 
 
-    /* *****************Test Area ************************* */
-    public static void main(String[] args) {
-        Trace t1 = new Trace(new String[] {"a", "c", "d"});
-
-        t1.addEvent(new Event("g"));
-
-        Trace t2 = new Trace();
-        t2.addEvent(new Event("f"), new Event("r"), new Event("t"));
-
-        Trace t3 = new Trace(new String[] {"b", "c", "d"});
-        Trace t4 = new Trace(new String[] {"a", "c", "e"});
-        Trace t5 = new Trace(new String[] {"b", "c", "e"});
-        Trace t6 = new Trace(new String[] {"b", "c", "e"});
-
-        System.out.println(t1);
-        System.out.println(t2);
-
-        System.out.println(t1.getFirstEvent());
-        System.out.println(t1.getLastEvent());
-
-        System.out.println(t1.getTrace());
-
-
-
-        System.out.println(transitions);
-        System.out.println(transitions.size());
-        System.out.println(permutations(transitions));
-
-        // hash and equals
-        System.out.println("check hashcode and equal for traces: ");
-        System.out.println(t1.equals(t2));
-        System.out.println(t5.equals(t6));
-        System.out.println(t5.hashCode());
-        System.out.println(t6.hashCode());
-        System.out.println(t6.hashCode());
-
-    }
-
-
+//    /* *****************Test Area ************************* */
+//    public static void main(String[] args) {
+//        Trace t1 = new Trace(new String[] {"a", "c", "d"});
+//
+//        t1.addEvent(new Event("g"));
+//
+//        Trace t2 = new Trace();
+//        t2.addEvent(new Event("f"), new Event("r"), new Event("t"));
+//
+//        Trace t3 = new Trace(new String[] {"b", "c", "d"});
+//        Trace t4 = new Trace(new String[] {"a", "c", "e"});
+//        Trace t5 = new Trace(new String[] {"b", "c", "e"});
+//        Trace t6 = new Trace(new String[] {"b", "c", "e"});
+//
+//        System.out.println(t1);
+//        System.out.println(t2);
+//
+//        System.out.println(t1.getFirstEvent());
+//        System.out.println(t1.getLastEvent());
+//
+//        System.out.println(t1.getTrace());
+//
+//
+//
+//        System.out.println(transitions);
+//        System.out.println(transitions.size());
+//        System.out.println(permutations(transitions));
+//
+//        // hash and equals
+//        System.out.println("check hashcode and equal for traces: ");
+//        System.out.println(t1.equals(t2));
+//        System.out.println(t5.equals(t6));
+//        System.out.println(t5.hashCode());
+//        System.out.println(t6.hashCode());
+//        System.out.println(t6.hashCode());
+//
+//    }
+//
+//
 }

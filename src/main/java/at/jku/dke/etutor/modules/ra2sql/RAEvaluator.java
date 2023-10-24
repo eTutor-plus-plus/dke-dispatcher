@@ -96,6 +96,7 @@ public class RAEvaluator implements Evaluator{
 		String action_Param;
 		String submission_Param;
 		String diagnoseLevel_Param;
+		String error_highlight_mode;
 
 		sqlBuilder = new SQLBuilder();
 		analysis = new SQLAnalysis();
@@ -105,7 +106,10 @@ public class RAEvaluator implements Evaluator{
 		action_Param = passedAttributes.get("action");
 		submission_Param = passedAttributes.get("submission");
 		diagnoseLevel_Param = passedAttributes.get("diagnoseLevel");
-		
+		error_highlight_mode = passedParameters.get("errorHighlightMode");
+		boolean useSymbols = error_highlight_mode != null && error_highlight_mode.equals("symbols");
+
+
 		//VALIDATING PARAMETERS
 		if ((diagnoseLevel_Param==null) || ((diagnoseLevel_Param).length()==0)) {
 			diagnoseLevel_Param = "0";		
@@ -168,9 +172,13 @@ public class RAEvaluator implements Evaluator{
 			exceptionText = exceptionText.concat("Invalid \"" + this.getRuleAlias(e.getRule()));
 			exceptionText = exceptionText.concat("\".<br>");
 			exceptionText = exceptionText.concat("Unexpected character \"");
-			exceptionText = exceptionText.concat(this.getAtomAlias(e.getUnexpectedAtom()));
+			String unexpectedAtom = this.getAtomAlias(e.getUnexpectedAtom());
+			if(!useSymbols){
+				unexpectedAtom = this.replaceRelAlgSymbolsWithTextualVersions(unexpectedAtom);
+			}
+			exceptionText = exceptionText.concat(unexpectedAtom);
 			exceptionText = exceptionText.concat("\".</p>");
-			exceptionText = exceptionText.concat(this.highlightError(submission, e));
+			exceptionText = exceptionText.concat(this.highlightError(submission, e, useSymbols));
 
 			syntaxAnalysis.setFoundSyntaxError(true);
 			syntaxAnalysis.setCriterionIsSatisfied(false);
@@ -182,10 +190,18 @@ public class RAEvaluator implements Evaluator{
 			exceptionText = exceptionText.concat("<p class='ra_syntax_error'>");
 			exceptionText = exceptionText.concat("Invalid \"" + this.getRuleAlias(e.getRule()) + "\".\n");
 			exceptionText =	exceptionText.concat("Expected character \"");
-			exceptionText = exceptionText.concat(this.getAtomAlias(e.getExpectedAtom()) + "\".<br>");
+			String expectedCharacter = this.getAtomAlias(e.getExpectedAtom());
+			if(!useSymbols){
+				expectedCharacter = this.replaceRelAlgSymbolsWithTextualVersions(expectedCharacter);
+			}
+			exceptionText = exceptionText.concat(expectedCharacter + "\".<br>");
 			exceptionText =	exceptionText.concat("Found character    \"");
-			exceptionText = exceptionText.concat(this.getAtomAlias(e.getFoundAtom()) + "\".</p>");
-			exceptionText = exceptionText.concat(this.highlightError(submission, e));
+			String foundCharacter = this.getAtomAlias(e.getFoundAtom());
+			if(!useSymbols){
+				foundCharacter = this.replaceRelAlgSymbolsWithTextualVersions(foundCharacter);
+			}
+			exceptionText = exceptionText.concat(foundCharacter + "\".</p>");
+			exceptionText = exceptionText.concat(this.highlightError(submission, e, useSymbols));
 
 			syntaxAnalysis.setFoundSyntaxError(true);
 			syntaxAnalysis.setCriterionIsSatisfied(false);
@@ -197,8 +213,12 @@ public class RAEvaluator implements Evaluator{
 			exceptionText = exceptionText.concat("<p class='ra_syntax_error'>");
 			exceptionText = exceptionText.concat("Invalid \"" + this.getRuleAlias(e.getRule()) + "\".\n");
 			exceptionText =	exceptionText.concat("Invalid character \"");
-			exceptionText = exceptionText.concat(this.getAtomAlias(e.getInvalidAtom()) + "\".</p>");
-			exceptionText = exceptionText.concat(this.highlightError(submission, e));
+			String invalidAtom = this.getAtomAlias(e.getInvalidAtom());
+			if(!useSymbols){
+				invalidAtom = this.replaceRelAlgSymbolsWithTextualVersions(invalidAtom);
+			}
+			exceptionText = exceptionText.concat(invalidAtom + "\".</p>");
+			exceptionText = exceptionText.concat(this.highlightError(submission, e, useSymbols));
 
 			syntaxAnalysis.setFoundSyntaxError(true);
 			syntaxAnalysis.setCriterionIsSatisfied(false);
@@ -315,7 +335,7 @@ public class RAEvaluator implements Evaluator{
 			var criterionAnalysesIterator = sqlAnalysis.iterCriterionAnalyses();
 			while (criterionAnalysesIterator.hasNext()) {
 				var criterionAnalysis = criterionAnalysesIterator.next();
-				if (!criterionAnalysis.isCriterionSatisfied()) {
+				if (!criterionAnalysis.isCriterionSatisfied() || criterionAnalysis.getAnalysisException() != null) {
 					// note: MOST IMPORTANT STEP
 					sqlAnalysis.setSubmissionSuitsSolution(false);
 				}
@@ -644,7 +664,7 @@ public class RAEvaluator implements Evaluator{
 		return submission;
 	}
 
-	private String highlightError(String raQuery, RAParserException ex) {
+	private String highlightError(String raQuery, RAParserException ex, boolean useSymbols) {
 		String result = new String();
 		String[] lines;
 		String line;
@@ -668,18 +688,21 @@ public class RAEvaluator implements Evaluator{
 			}
 		}
 
-		result = result.replaceAll("PROJECTION", "&#960;");
-		result = result.replaceAll("SELECTION", "&#963;");
-		result = result.replaceAll("RENAMING", "&#961;");
-		result = result.replaceAll("JOIN", "&#8904;");
-		result = result.replaceAll("RIGHTSEMI", "&#8906;");
-		result = result.replaceAll("LEFTSEMI", "&#8905;");
-		result = result.replaceAll("CARTESIANPRODUCT", "&#215;");
-		result = result.replaceAll("LEFTARROW", "&#8592;");
-		result = result.replaceAll("UNION", "&#8746;");
-		result = result.replaceAll("INTERSECTION", "&#8745;");
-		result = result.replaceAll("MINUS", "&#8722;");
-		result = result.replaceAll("DIVISION", "&#247;");
+		if(useSymbols){
+			// if symbols should be used in the feedback, replace textual representation of query operators with symbols
+			result = result.replaceAll("PROJECTION", "&#960;");
+			result = result.replaceAll("SELECTION", "&#963;");
+			result = result.replaceAll("RENAMING", "&#961;");
+			result = result.replaceAll("JOIN", "&#8904;");
+			result = result.replaceAll("RIGHTSEMI", "&#8906;");
+			result = result.replaceAll("LEFTSEMI", "&#8905;");
+			result = result.replaceAll("CARTESIANPRODUCT", "&#215;");
+			result = result.replaceAll("LEFTARROW", "&#8592;");
+			result = result.replaceAll("UNION", "&#8746;");
+			result = result.replaceAll("INTERSECTION", "&#8745;");
+			result = result.replaceAll("MINUS", "&#8722;");
+			result = result.replaceAll("DIVISION", "&#247;");
+		}
 		result = result.replaceAll("LEFTCURLY", "&#8847;");
 		result = result.replaceAll("RIGHTCURLY", "&#8848;");
 
@@ -698,6 +721,22 @@ public class RAEvaluator implements Evaluator{
 		result = result.replaceAll("\n", "<br>");
 		result = result.concat("</u></p>");
 
+		return result;
+	}
+
+	private String replaceRelAlgSymbolsWithTextualVersions(String result){
+		result = result.replace("&#960;", "PROJECTION");
+		result = result.replace("&#963;", "SELECTION");
+		result = result.replace("&#961;", "RENAMING");
+		result = result.replace("&#8904;", "JOIN");
+		result = result.replace("&#8906;", "RIGHTSEMI");
+		result = result.replace("&#8905;", "LEFTSEMI");
+		result = result.replace("&#215;", "CARTESIANPRODUCT");
+		result = result.replace("&#8592;", "LEFTARROW");
+		result = result.replace("&#8746;", "UNION");
+		result = result.replace("&#8745;", "INTERSECTION");
+		result = result.replace("&#8722;", "MINUS");
+		result = result.replace("&#247;", "DIVISION");
 		return result;
 	}
 

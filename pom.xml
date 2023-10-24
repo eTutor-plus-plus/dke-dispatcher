@@ -208,6 +208,13 @@
             <artifactId>legacy.pm.org.deckfour.Spex</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <!-- UML DEPENDENCIES -->
+        <dependency>
+            <groupId>net.sourceforge.plantuml</groupId>
+            <artifactId>plantuml</artifactId>
+            <version>1.2023.10</version>
+        </dependency>
     </dependencies>
 
     <build>

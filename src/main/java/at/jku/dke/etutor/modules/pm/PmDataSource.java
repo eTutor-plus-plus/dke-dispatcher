@@ -24,7 +24,7 @@ public class PmDataSource {
         config.setUsername(properties.getProcessMining().getConnUser());
         config.setPassword(properties.getProcessMining().getConnPwd());
         config.setMaxLifetime(properties.getDatasource().getMaxLifetime());
-        config.setMaximumPoolSize(10);
+        config.setMaximumPoolSize(30);
         config.setAutoCommit(false);
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");

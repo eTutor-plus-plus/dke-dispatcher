@@ -64,6 +64,12 @@ jobs:
       run: |
         docker stop postgres-container
         docker rm postgres-container
+    
+    - name: Publish jar
+      uses: actions/upload-artifact@v3
+      with:
+        name: jar
+        path: dispatcher/target/*.jar
         
     - name: Log in to the Docker Hub
       uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9

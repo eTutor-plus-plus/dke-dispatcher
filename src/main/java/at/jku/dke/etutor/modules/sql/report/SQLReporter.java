@@ -211,7 +211,7 @@ public class SQLReporter {
 
                             if (columnsAnalysis.hasSurplusColumns()) {
                                 if(isGermanLocale(locale)) description.append("Es sind ").append(surplusColumnsCount).append(" Spalten zu viel.").append(LS);
-                                description.append("There are ").append(surplusColumnsCount).append(" too much. ").append(LS);
+                                else description.append("There are ").append(surplusColumnsCount).append(" too much. ").append(LS);
                             }
                     }
 
@@ -283,7 +283,6 @@ public class SQLReporter {
                 }
             }
         }
-
         //Configuring report printer
         if (config.getDiagnoseLevel() >= 0) {
             report.setShowErrorReports(true);

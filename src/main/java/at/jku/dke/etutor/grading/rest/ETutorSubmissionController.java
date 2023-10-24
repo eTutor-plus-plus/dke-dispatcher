@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.hateoas.EntityModel;
 
 
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -28,6 +28,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @org.springframework.web.bind.annotation.RequestMapping("/submission")
 @CrossOrigin(origins= ETutorCORSPolicy.CORS_POLICY)
 public class ETutorSubmissionController {
+    public static final Set<String> runningEvaluations = new ConcurrentSkipListSet<>();
     private final Logger logger;
     private final SubmissionDispatcherService submissionDispatcherService;
     private final SubmissionRepository submissionRepository;
@@ -45,12 +46,13 @@ public class ETutorSubmissionController {
     /**
      * Takes a submission as parameter, calculates a unique submissionId, asynchronously initializes a SubmissionDispatcher and returns the generated ID
      * @param submissionDto : the submission from the student
+     * @param persist : if true, the submission is persisted in the database
      * @return : ResponseEntity containing EntityModel with the generated submissionId and a link under which the grading can be requested
      *          - HttpStatus.INTERNAL_SERVER_ERROR if exception occurs
      *          - HttpStatus.ACCEPTED if submission is accepted for processing
      */
     @PostMapping("")
-    public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody SubmissionDTO submissionDto, @RequestHeader(value = "Accept-Language", defaultValue = "de") String language) {
+    public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody SubmissionDTO submissionDto, @RequestHeader(value = "Accept-Language", defaultValue = "de") String language, @RequestParam(required = false, defaultValue = "true") Boolean persist) {
         Submission submission = new Submission(submissionDto);
         logger.info("Submission received");
         SubmissionId submissionId;
@@ -60,10 +62,11 @@ public class ETutorSubmissionController {
         logger.info("Finished calculating submission-ID: {}", submissionId.getSubmissionId());
 
         // note: start of evaluation
-        submissionDispatcherService.run(submission, mapLangToLocale(language));
+        runningEvaluations.add(submission.getSubmissionId());
+        submissionDispatcherService.run(submission, mapLangToLocale(language), persist);
 
         return new ResponseEntity<>(EntityModel.of(submissionId,
-                linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString())).withRel("grading")),
+                linkTo(methodOn(ETutorGradingController.class).getGrading(submissionId.toString(), false)).withRel("grading")),
                 HttpStatus.ACCEPTED);
     }
 

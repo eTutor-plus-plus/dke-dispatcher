@@ -233,11 +233,14 @@ public class ETutorSQLController {
        tableName = decode(tableName);
        try{
             if(!connId.isBlank()){
+                logger.info("Trying to fetch table according to connection-id {}", connId);
                 var id = Integer.parseInt(connId);
                 table = resourceService.getHTMLTableByConnId(id, tableName);
             } else if(exerciseId != -1){
+                logger.info("Trying to fetch table according to exercise-id {}", exerciseId);
                 table = resourceService.getHTMLTableByExerciseID(exerciseId, tableName);
             }else if(!taskGroup.equals("")){
+                logger.info("Trying to fetch table according to taskgroup {}", taskGroup);
                 table = resourceService.getHTMLTableByTaskGroup(taskGroup, tableName);
             }
 
