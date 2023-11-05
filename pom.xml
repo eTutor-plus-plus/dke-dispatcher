@@ -146,7 +146,11 @@
             <artifactId>legacy.com.ibm.DDbE</artifactId>
             <version>1.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.13.1</version>
+        </dependency>
         <!--PROCESS MINING DEPENDENCIES -->
         <!-- https://mvnrepository.com/artifact/org.camunda.bpm.model/camunda-bpmn-model -->
         <dependency>
