@@ -9,22 +9,40 @@ import java.util.Vector;
 // Class to ensure that every user has their own database scheme
 public class DBUserAdmin {
     //region Fields
-    private Vector freeUsers = null;
-    private Vector buysUsers = null;
+    private Vector freeUsers;
+    private Vector busyUsers;
+    private boolean initialized = false;
+    private static DBUserAdmin admin;
     //endregion
 
-    public DBUserAdmin() throws SQLException {
+    static {
+        try {
+            admin = new DBUserAdmin();
+        } catch (SQLException ex) {
+            DBHelper.getLogger().error("Exception when initializing DB user pool.", ex);
+        }
+    }
+
+    private DBUserAdmin() throws SQLException {
         freeUsers = new Vector();
-        buysUsers = new Vector();
+        busyUsers = new Vector();
         init();
+    }
+
+    public static DBUserAdmin getAdmin() {
+        return admin;
     }
 
     /**
      * Function to initialize the database connection class
+     * @throws SQLException if the connection failed
      */
     private synchronized void init() throws SQLException {
+        if(initialized)
+            return;
+
         // Create auxiliary variables
-        Connection conn = null;
+        Connection conn;
         Statement stmt = null;
         ResultSet rs = null;
         String[] info;
@@ -33,6 +51,7 @@ public class DBUserAdmin {
         try {
             conn = DBHelper.getSystemConnection();
             stmt = conn.createStatement();
+            //todo Make changes in database
             rs = stmt.executeQuery("SELECT username, password FROM dbusers");
             while (rs.next()) {
                 info = new String[] { rs.getString("username"), rs.getString("password") };
@@ -42,39 +61,111 @@ public class DBUserAdmin {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    DBHelper.getLogger().error("Exception when closing result set.", e);
+                } catch (SQLException ex) {
+                    DBHelper.getLogger().error("Exception when closing result set.", ex);
                 }
             }
             if (stmt != null) {
                 try {
                     stmt.close();
-                } catch (SQLException e) {
-                    DBHelper.getLogger().error("Exception when closing statement.", e);
+                } catch (SQLException ex) {
+                    DBHelper.getLogger().error("Exception when closing statement.", ex);
                 }
             }
         }
 
+        initialized = true;
     }
 
-    public String getUser() {
-        return "";
+    /**
+     * Function to get a free user
+     * @return Returns the user or null if something went wrong
+     * @throws IllegalStateException if not initalized
+     */
+    public synchronized String getUser() throws IllegalStateException {
+        if(!initialized)
+            throw new IllegalStateException("Connection information not initialized!");
+
+        boolean firstTry = true;
+        String msg;
+
+        while (freeUsers.size() == 0) {
+            if (firstTry) {
+                firstTry = false;
+            } else {
+                msg = "Already waiting more than 30 seconds for user to become ";
+                msg += "available for creating JDBC connection ";
+                msg += "(Total amount of busy users: " + busyUsers.size() + ").";
+                DBHelper.getLogger().warn(msg);
+            }
+            try {
+                wait(30000);
+            } catch (Exception ignore) {
+            }
+        }
+
+        String[] info = (String[]) freeUsers.remove(0);
+
+        if(info != null) {
+            busyUsers.add(info);
+            return info[0];
+        }
+
+        return null;
     }
 
-    public String getPwd() {
-        return "";
+    /**
+     * Function to get the password for a specified user
+     * @param user Specifies the user
+     * @return Returns the password for the user or null if the user is not in the busyUsers vector
+     * @throws IllegalStateException if not initialized
+     */
+    public String getPwd(String user) throws IllegalStateException {
+        if (!initialized)
+            throw new IllegalStateException("Connection information not initialized!");
+
+        String[] info;
+
+        for (Object busyUser : busyUsers) {
+            info = (String[]) busyUser;
+            if (user != null && user.equals(info[0])) {
+                return info[1];
+            }
+        }
+        return null;
     }
 
-    public void releaseUser(String user) {
+    /**
+     * Function to release a busy user
+     * @param user Specifies the user
+     */
+    public synchronized void releaseUser(String user) {
+        if (!initialized)
+            throw new IllegalStateException("Connection information not initialized!");
 
+        String[] info;
+
+        if ((info = getBusyUserInfo(user)) != null) {
+            busyUsers.remove(info);
+            freeUsers.add(info);
+            DBHelper.getLogger().info("User " + user + " released for a new connection.");
+            notifyAll();
+        }
     }
 
-    //todo Implement Singelton??
-    public DBUserAdmin getAdmin() {
-        return this;
-    }
-
+    /**
+     * Function to get the vector for a specified user
+     * @param user Specifies the user
+     * @return Returns the vector for the user or null if the user is not busy
+     */
     private String[] getBusyUserInfo(String user) {
+        String[] info;
+        for (Object busyUser : busyUsers) {
+            info = (String[]) busyUser;
+            if (user != null && user.equals(info[0])) {
+                return info;
+            }
+        }
         return null;
     }
 }
