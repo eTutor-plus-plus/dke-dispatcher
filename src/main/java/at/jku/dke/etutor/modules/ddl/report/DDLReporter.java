@@ -1,5 +1,7 @@
 package at.jku.dke.etutor.modules.ddl.report;
 
+import at.jku.dke.etutor.modules.ddl.analysis.DDLAnalysis;
+
 import java.util.Locale;
 
 public class DDLReporter {
@@ -7,7 +9,7 @@ public class DDLReporter {
 
     }
 
-    public DDLReport createReport() {
+    public DDLReport createReport(DDLAnalysis analysis, DDLReporterConfig config, Locale locale) {
         DDLReport report = new DDLReport();
 
         return report;

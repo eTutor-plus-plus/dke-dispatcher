@@ -1,10 +1,14 @@
 package at.jku.dke.etutor.modules.ddl.report;
 
+import at.jku.dke.etutor.core.evaluation.DefaultReport;
+import at.jku.dke.etutor.core.evaluation.Report;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class DDLReport {
+public class DDLReport extends DefaultReport implements Report, Serializable {
     //region Fields
     private List<DDLErrorReport> errorReports;
     private List<Collection<String>> missingTables;

@@ -5,6 +5,7 @@ import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 import at.jku.dke.etutor.modules.ddl.DDLEvaluationCriterion;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class DDLAnalysis extends DefaultAnalysis implements Analysis {
     //region Fields
@@ -32,5 +33,13 @@ public class DDLAnalysis extends DefaultAnalysis implements Analysis {
      */
     public void addCriterionAnalysis(DDLEvaluationCriterion criterion, DDLCriterionAnalysis analysis) {
         this.criterionAnalysis.put(criterion, analysis);
+    }
+
+    /**
+     * Function to create an iterator for the DDLCriterionAnalysis
+     * @return
+     */
+    public Iterator<DDLCriterionAnalysis> iterCriterionAnalysis() {
+        return this.criterionAnalysis.values().iterator();
     }
 }

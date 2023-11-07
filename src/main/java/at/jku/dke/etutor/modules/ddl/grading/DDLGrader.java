@@ -2,6 +2,7 @@ package at.jku.dke.etutor.modules.ddl.grading;
 
 import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.ddl.DDLEvaluationCriterion;
+import at.jku.dke.etutor.modules.ddl.analysis.DDLAnalysis;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,7 @@ public class DDLGrader {
         }
     }
 
-    public DefaultGrading grade(DDLGraderConfig graderConfig) {
+    public DefaultGrading grade(DDLAnalysis analysis, DDLGraderConfig graderConfig) {
         String msg;
         Iterator<DDLEvaluationCriterion> iterator = graderConfig.iterCriterionsToGrade();
         DDLEvaluationCriterion criterion;
