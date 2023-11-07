@@ -17,12 +17,12 @@ public class PrimaryKeysAnalysis extends AbstractDDLCriterionAnalysis implements
         surplusPrimaryKeys = new ArrayList<>();
     }
 
-    public boolean hasMissingPrimaryKeys() {
-        return !this.missingPrimaryKeys.isEmpty();
+    public boolean isMissingPrimaryKeysEmpty() {
+        return this.missingPrimaryKeys.isEmpty();
     }
 
-    public boolean hasSurplusPrimaryKeys() {
-        return !this.surplusPrimaryKeys.isEmpty();
+    public boolean isSurplusPrimaryKeysEmpty() {
+        return this.surplusPrimaryKeys.isEmpty();
     }
 
     public Iterator<String> iterMissingPrimaryKeys() {
@@ -47,12 +47,20 @@ public class PrimaryKeysAnalysis extends AbstractDDLCriterionAnalysis implements
         this.missingPrimaryKeys = missingPrimaryKeys;
     }
 
+    public void addMissingPrimaryKey(String missingPrimaryKey) {
+        this.missingPrimaryKeys.add(missingPrimaryKey);
+    }
+
     public List<String> getSurplusPrimaryKeys() {
         return surplusPrimaryKeys;
     }
 
     public void setSurplusPrimaryKeys(List<String> surplusPrimaryKeys) {
         this.surplusPrimaryKeys = surplusPrimaryKeys;
+    }
+
+    public void addSurplusPrimaryKey(String surplusPrimaryKey) {
+        this.surplusPrimaryKeys.add(surplusPrimaryKey);
     }
     //endregion
 }

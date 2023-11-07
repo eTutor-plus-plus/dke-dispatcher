@@ -15,7 +15,6 @@ import at.jku.dke.etutor.modules.ddl.grading.DDLGraderConfig;
 import at.jku.dke.etutor.modules.ddl.report.DDLReporter;
 import at.jku.dke.etutor.modules.ddl.report.DDLReporterConfig;
 import at.jku.dke.etutor.modules.ddl.serverAdministration.DBHelper;
-import at.jku.dke.etutor.modules.ddl.serverAdministration.DBUserAdmin;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +74,6 @@ public class DDLEvaluator implements Evaluator {
         String submission;
         int diagnoseLevel;
 
-        DBUserAdmin admin = DBUserAdmin.getAdmin();
         Connection systemConn;
         Connection userConn;
 

@@ -17,11 +17,11 @@ public class ConstraintsAnalysis extends AbstractDDLCriterionAnalysis implements
         surplusConstraints = new ArrayList<>();
     }
 
-    public boolean hasMissingConstraints() {
+    public boolean isMissingConstraintsEmpty() {
         return !this.missingConstraints.isEmpty();
     }
 
-    public boolean hasSurplusConstraints() {
+    public boolean isSurplusConstraintsEmpty() {
         return !this.surplusConstraints.isEmpty();
     }
 
@@ -47,12 +47,20 @@ public class ConstraintsAnalysis extends AbstractDDLCriterionAnalysis implements
         this.missingConstraints = missingConstraints;
     }
 
+    public void addMissingConstraint(String missingConstraint) {
+        this.missingConstraints.add(missingConstraint);
+    }
+
     public List<String> getSurplusConstraints() {
         return surplusConstraints;
     }
 
     public void setSurplusConstraints(List<String> surplusConstraints) {
         this.surplusConstraints = surplusConstraints;
+    }
+
+    public void addSurplusConstraint(String surplusConstraint) {
+        this.surplusConstraints.add(surplusConstraint);
     }
     //endregion
 }

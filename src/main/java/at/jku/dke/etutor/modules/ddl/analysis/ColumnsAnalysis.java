@@ -23,24 +23,24 @@ public class ColumnsAnalysis extends AbstractDDLCriterionAnalysis implements DDL
         this.wrongNullColumns = new ArrayList<>();
     }
 
-    public boolean hasMissingColumns(){
-        return !this.missingColumns.isEmpty();
+    public boolean isMissingColumnsEmpty(){
+        return this.missingColumns.isEmpty();
     }
 
-    public boolean hasSurplusColumns(){
-        return !this.surplusColumns.isEmpty();
+    public boolean isSurplusColumnsEmpty(){
+        return this.surplusColumns.isEmpty();
     }
 
-    public boolean hasWrongDatatypeColumns(){
-        return !this.wrongDatatypeColumns.isEmpty();
+    public boolean isWrongDatatypeColumnsEmpty(){
+        return this.wrongDatatypeColumns.isEmpty();
     }
 
-    public boolean hasWrongDefaultColumns(){
-        return !this.wrongDefaultColumns.isEmpty();
+    public boolean isWrongDefaultColumnsEmpty(){
+        return this.wrongDefaultColumns.isEmpty();
     }
 
-    public boolean hasWrongNullColumns(){
-        return !this.wrongNullColumns.isEmpty();
+    public boolean isWrongNullColumnsEmpty(){
+        return this.wrongNullColumns.isEmpty();
     }
 
     public Iterator<String> iterMissingColumns() {
@@ -77,8 +77,12 @@ public class ColumnsAnalysis extends AbstractDDLCriterionAnalysis implements DDL
         this.missingColumns = missingColumns;
     }
 
-    public void removeMissingTables(List<String> columns) {
+    public void removeMissingColumns(List<String> columns) {
         this.missingColumns.remove(columns);
+    }
+
+    public void addMissingColumn(String column) {
+        this.missingColumns.add(column);
     }
 
     public List<String> getSurplusColumns() {
@@ -93,12 +97,20 @@ public class ColumnsAnalysis extends AbstractDDLCriterionAnalysis implements DDL
         this.surplusColumns.remove(columns);
     }
 
+    public void addSurplusColumn(String column) {
+        this.surplusColumns.add(column);
+    }
+
     public List<String> getWrongDatatypeColumns() {
         return wrongDatatypeColumns;
     }
 
     public void setWrongDatatypeColumns(List<String> wrongDatatypeColumns) {
         this.wrongDatatypeColumns = wrongDatatypeColumns;
+    }
+
+    public void addWrongDatatypeColumn(String column) {
+        this.wrongDatatypeColumns.add(column);
     }
 
     public List<String> getWrongDefaultColumns() {
@@ -109,6 +121,10 @@ public class ColumnsAnalysis extends AbstractDDLCriterionAnalysis implements DDL
         this.wrongDefaultColumns = wrongDefaultColumns;
     }
 
+    public void addWrongDefaultColumn(String column) {
+        this.wrongDefaultColumns.add(column);
+    }
+
     public List<String> getWrongNullColumns() {
         return wrongNullColumns;
     }
@@ -117,5 +133,8 @@ public class ColumnsAnalysis extends AbstractDDLCriterionAnalysis implements DDL
         this.wrongNullColumns = wrongNullColumns;
     }
 
+    public void addWrongNullColumn(String column) {
+        this.wrongNullColumns.add(column);
+    }
     //endregion
 }

@@ -17,12 +17,12 @@ public class ForeignKeysAnalysis extends AbstractDDLCriterionAnalysis implements
         surplusForeignKeys = new ArrayList<>();
     }
 
-    public boolean hasMissingForeignKeys() {
-        return !this.missingForeignKeys.isEmpty();
+    public boolean isMissingForeignKeysEmpty() {
+        return this.missingForeignKeys.isEmpty();
     }
 
-    public boolean hasSurplusForeignKeys() {
-        return !this.surplusForeignKeys.isEmpty();
+    public boolean isSurplusForeignKeysEmpty() {
+        return this.surplusForeignKeys.isEmpty();
     }
 
     public Iterator<String> iterMissingForeignKeys() {
@@ -47,12 +47,20 @@ public class ForeignKeysAnalysis extends AbstractDDLCriterionAnalysis implements
         this.missingForeignKeys = missingForeignKeys;
     }
 
+    public void addMissingForeignKey(String foreignKey) {
+        this.missingForeignKeys.add(foreignKey);
+    }
+
     public List<String> getSurplusForeignKeys() {
         return surplusForeignKeys;
     }
 
     public void setSurplusForeignKeys(List<String> surplusForeignKeys) {
         this.surplusForeignKeys = surplusForeignKeys;
+    }
+
+    public void addSurplusForeignKey(String foreignKey) {
+        this.surplusForeignKeys.add(foreignKey);
     }
     //endregion
 }

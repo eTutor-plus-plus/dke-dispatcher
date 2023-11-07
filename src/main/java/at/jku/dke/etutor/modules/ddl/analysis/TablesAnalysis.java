@@ -17,12 +17,12 @@ public class TablesAnalysis extends AbstractDDLCriterionAnalysis implements DDLC
         this.surplusTables = new ArrayList<>();
     }
 
-    public boolean hasMissingTables() {
-        return !this.missingTables.isEmpty();
+    public boolean isMissingTablesEmpty() {
+        return this.missingTables.isEmpty();
     }
 
-    public boolean hasSuplusTables() {
-        return !this.surplusTables.isEmpty();
+    public boolean isSurplusTablesEmpty() {
+        return this.surplusTables.isEmpty();
     }
 
     public Iterator<String> iterMissingTables() {
@@ -47,6 +47,10 @@ public class TablesAnalysis extends AbstractDDLCriterionAnalysis implements DDLC
         this.missingTables = missingTables;
     }
 
+    public void addMissingTables(String missingTable) {
+        this.missingTables.add(missingTable);
+    }
+
     public void removeMissingTables(List<String> tables) {
         this.missingTables.remove(tables);
     }
@@ -57,6 +61,10 @@ public class TablesAnalysis extends AbstractDDLCriterionAnalysis implements DDLC
 
     public void setSurplusTables(List<String> surplusTables) {
         this.surplusTables = surplusTables;
+    }
+
+    public void addSurplusTable(String surplusTable) {
+        this.surplusTables.add(surplusTable);
     }
 
     public void removeSurplusTables(List<String> tables) {
