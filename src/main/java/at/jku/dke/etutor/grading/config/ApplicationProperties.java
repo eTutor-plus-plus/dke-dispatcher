@@ -21,6 +21,16 @@ public class ApplicationProperties {
 
     private Grading grading = new Grading();
 
+    private Rt rt = new Rt();
+
+    public Rt getRt() {
+        return rt;
+    }
+
+    public void setRt(Rt rt) {
+        this.rt = rt;
+    }
+
     public Async getAsync() {
         return async;
     }
@@ -81,6 +91,35 @@ public class ApplicationProperties {
      * Properties for the Datalog module
      */
 
+    public static class Rt{
+        private String connPwd;
+        private String connUser;
+        private String connUrl;
+
+        public String getConnPwd() {
+            return connPwd;
+        }
+
+        public void setConnPwd(String connPwd) {
+            this.connPwd = connPwd;
+        }
+
+        public String getConnUser() {
+            return connUser;
+        }
+
+        public void setConnUser(String connUser) {
+            this.connUser = connUser;
+        }
+
+        public String getConnUrl() {
+            return connUrl;
+        }
+
+        public void setConnUrl(String connUrl) {
+            this.connUrl = connUrl;
+        }
+    }
     public static class Datalog{
         private String connUrl;
         private String DLVPathAsCommand;

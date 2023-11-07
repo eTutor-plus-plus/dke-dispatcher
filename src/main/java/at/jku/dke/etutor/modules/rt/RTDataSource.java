@@ -19,9 +19,9 @@ public class RTDataSource {
 
     public RTDataSource(ApplicationProperties properties){
         config.setDriverClassName(properties.getDatasource().getDriverClassName());
-        config.setJdbcUrl(properties.getDatasource().getUrl() + properties.getRT().getConnUrl());
-        config.setUsername(properties.getProcessMining().getConnUser());
-        config.setPassword(properties.getProcessMining().getConnPwd());
+        config.setJdbcUrl(properties.getDatasource().getUrl() + properties.getRt().getConnUrl());
+        config.setUsername(properties.getRt().getConnUser());
+        config.setPassword(properties.getRt().getConnPwd());
         config.setMaxLifetime(properties.getDatasource().getMaxLifetime());
         config.setMaximumPoolSize(30);
         config.setAutoCommit(false);
