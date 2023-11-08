@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.modules.fd.entities;
 
-import at.jku.dke.etutor.modules.fd.types.StringArrayType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -124,14 +123,4 @@ public class MinimalCover implements Dependency{
                 ", reason='" + reasons +
                 "}\n";
     }
-
-//    public static int compare(MinimalCover e1, MinimalCover e2) {
-//        if (!Arrays.equals(e1.getLeftSide(),e2.getLeftSide())) {
-//            return Arrays.compare(e1.getLeftSide(), e2.getLeftSide());
-//        }
-//        else if (!Arrays.equals(e1.getRightSide(),e2.getRightSide())) {
-//            return Arrays.compare(e1.getRightSide(), e2.getRightSide());
-//        }
-//        return 0;
-//    }
 }

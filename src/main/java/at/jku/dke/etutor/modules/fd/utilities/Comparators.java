@@ -5,6 +5,9 @@ import java.util.Comparator;
 
 public class Comparators {
 
+    private Comparators() {
+        throw new IllegalStateException("Utility class");
+    }
     public static class ArrayComparator implements Comparator<String []> {
         @Override public int compare(String[] e1, String[] e2) {
             return Arrays.compare(e1, e2);

@@ -12,11 +12,12 @@ import org.springframework.stereotype.Service;
 import java.io.Serializable;
 import java.util.*;
 
-//@Service
+@Service
 public class FDEvaluator implements Evaluator, Serializable {
-    TaskService taskService;
+    transient TaskService taskService;
     FDTaskSolve fdTaskSolve;
     FDTaskSolveResponse fdTaskSolveResponse;
+
 
     public FDEvaluator(TaskService taskService) {
         this.taskService = taskService;
@@ -36,17 +37,6 @@ public class FDEvaluator implements Evaluator, Serializable {
         if (passedAttributes.get("normalFormSolutions") != null) {
             ObjectMapper mapper = new ObjectMapper();
             List<FDSolve> normalFormSolutions = mapper.readValue(passedAttributes.get("normalFormSolutions").replace("FDSolve",""), new TypeReference<List<FDSolve>>(){});
-//            for (String line: passedAttributes.get("normalFormSolutions").lines().toList()) {
-//                String[] splitted;
-//                splitted = line.split(",");
-//                Long id;
-//                try {
-//                    id = Long.parseLong(splitted[0]);
-//                } catch (NumberFormatException e) {
-//                    id = null;
-//                }
-//                normalFormSolutions.add(new FDSolve(id, splitted[1].strip()));
-//            }
             fdTaskSolve.setNormalFormSolutions(normalFormSolutions);
         }
         try {
@@ -73,7 +63,7 @@ public class FDEvaluator implements Evaluator, Serializable {
             for (FDSolve fdSolve:fdTaskSolve.getNormalFormSolutions()) {
                 submission += "normalformSolution{";
                 submission += "id="+ fdSolve.getId().toString()+",";
-                submission += "solution='"+ fdSolve.getSolution()+'\'' + '}'; ;
+                submission += "solution='"+ fdSolve.getSolution()+'\'' + '}';
             }
         }
         DefaultAnalysis analysis = new DefaultAnalysis();

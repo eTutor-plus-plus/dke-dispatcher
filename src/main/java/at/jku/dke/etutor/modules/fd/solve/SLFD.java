@@ -9,6 +9,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class SLFD {
+
+    private SLFD() {
+        throw new IllegalStateException("Utility class");
+    }
     /**
      * Algorithm SLFD-Closure(α: set of attributes,
      * F : set of FDs):
@@ -25,8 +29,6 @@ public class SLFD {
         aNew.addAll(List.of(a));
         aOld.addAll(List.of(a));
 
-
-//     *repeat
         /**
          * foreach FD
          * β → γ in F do */
@@ -46,23 +48,6 @@ public class SLFD {
             }
 
         }
-
-
-//     *else
-//             *F =F − β →γ
-//     *F =F ∪
-//
-//    {
-//        β −αnew →γ −αnew
-//    }
-//     *end if
-//            *
-//    end foreach
-//     *
-//
-//    until((αnew =αold) or |F | =0)
-//            *return α+ =αnew
-//     */
         return null;
     }
 }

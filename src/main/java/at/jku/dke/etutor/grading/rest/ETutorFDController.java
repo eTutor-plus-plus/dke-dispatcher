@@ -70,7 +70,7 @@ public class ETutorFDController {
                 submissionId = SubmissionId.createId(submission);
                 uuids.add(submissionId.getSubmissionId());
                 logger.info("Finished calculating submission-ID: {}", submissionId.getSubmissionId());
-                submissionDispatcherService.run(submission, mapLangToLocale(language));
+                submissionDispatcherService.run(submission, mapLangToLocale(language), true);
             }
         } else {
             submissionDTO.setExerciseId(Integer.parseInt(fdTaskSolve.getId()));
@@ -92,7 +92,7 @@ public class ETutorFDController {
             submissionId = SubmissionId.createId(submission);
             uuids.add(submissionId.getSubmissionId());
             logger.info("Finished calculating submission-ID: {}", submissionId.getSubmissionId());
-            submissionDispatcherService.run(submission, mapLangToLocale(language));
+            submissionDispatcherService.run(submission, mapLangToLocale(language), true);
         }
         return ResponseEntity.ok(uuids);
     }

@@ -1,8 +1,9 @@
 package at.jku.dke.etutor.modules.fd.utilities;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class FDTaskSolveResponse {
+public class FDTaskSolveResponse implements Serializable {
     private String id;
     private boolean solved;
     private List<FDHint> hints;

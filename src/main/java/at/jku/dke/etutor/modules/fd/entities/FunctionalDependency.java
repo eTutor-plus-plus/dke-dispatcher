@@ -1,10 +1,6 @@
 package at.jku.dke.etutor.modules.fd.entities;
 
-import at.jku.dke.etutor.modules.fd.types.StringArrayType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -124,7 +120,7 @@ public class FunctionalDependency implements Dependency {
     }
 
     public static int compare(FunctionalDependency e1, FunctionalDependency e2) {
-        if (e1.getId() != null && e2.getId()!=null && e1.getId() != e2.getId()) {
+        if (e1.getId() != null && e2.getId() != null && !e1.getId().equals(e2.getId())) {
             return Long.compare(e1.getId(),e2.getId());
         }
         else if (!Arrays.equals(e1.getLeftSide(),e2.getLeftSide())) {

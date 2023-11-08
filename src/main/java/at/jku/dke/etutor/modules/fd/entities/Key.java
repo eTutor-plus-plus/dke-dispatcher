@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.modules.fd.entities;
 
-import at.jku.dke.etutor.modules.fd.types.StringArrayType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;

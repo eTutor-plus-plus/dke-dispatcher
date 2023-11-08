@@ -202,7 +202,6 @@ public class CalculateDecompose {
         for (String leftAttribute : dependency.getLeftSide()) {
             for (String rightAttribute: dependency.getRightSide()) {
                 if (leftAttribute.equals(rightAttribute)) {
-                    System.out.println(leftAttribute+":"+rightAttribute);
                     return true;
                 }
             }

@@ -12,10 +12,6 @@ public class DecomposeController {
     DecomposeService decomposeService;
     DecomposeController(DecomposeService decomposeService) {this.decomposeService = decomposeService;}
 
-//    @GetMapping("/are_BCNF")
-//    public List<Map<String, String>> areBCNF() {
-//        return decomposeService.getIsBCNF();
-//    }
     @GetMapping("/decompose")
     public List<Relation> isBCNF(@RequestParam Long id) {
         return decomposeService.getDecompose(id);

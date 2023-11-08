@@ -4,9 +4,9 @@ import at.jku.dke.etutor.modules.fd.entities.*;
 import java.util.*;
 
 public class CalculateNormalForm {
-
-
-
+    private CalculateNormalForm() {
+        throw new IllegalStateException("Utility class");
+    }
     public static NF calculateNormalForm(Relation relation) {
         if (!is2NF(relation)) {
             return NF.FIRST;
@@ -18,8 +18,6 @@ public class CalculateNormalForm {
             return NF.BCNF;
         }
     }
-
-
     public static boolean isBCNF (Relation relation) {
         boolean isOK = true;
         /** Trivial oder Superschlüssel */
@@ -48,12 +46,10 @@ public class CalculateNormalForm {
         /** None Prime sind nicht von einem Teilschlüssel abhängig */
         Set<String> primeAttributes = getPrimeAttributes(relation);
         for (FunctionalDependency dependency: relation.getFunctionalDependencies()) {
-//            boolean isKey = false;
             /** check ob alle abhängigen Attribute prime sind */
             if (primeAttributes.containsAll(Set.of(dependency.getRightSide()))) {
                 continue;
             }
-
             /** Check ob die rechte Seite kein Schlüsselkandidat ist, aber vollständig in einem Schlüsselkandidaten
               * enthalten ist */
             for (Key key: relation.getKeys()) {

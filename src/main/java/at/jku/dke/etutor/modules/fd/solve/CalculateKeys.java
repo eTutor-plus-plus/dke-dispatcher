@@ -1,7 +1,6 @@
 package at.jku.dke.etutor.modules.fd.solve;
 
 import at.jku.dke.etutor.modules.fd.entities.Closure;
-import at.jku.dke.etutor.modules.fd.entities.Dependency;
 import at.jku.dke.etutor.modules.fd.entities.Relation;
 import at.jku.dke.etutor.modules.fd.entities.Key;
 
@@ -16,9 +15,7 @@ public class CalculateKeys {
 
     public static Set<Key> calculateKeys(Relation relation) {
         Set<Closure> candidateKeys = calculateSuperKeys(relation);
-        Set<Key> superKeys = calculateCandidateKeys(candidateKeys);
-
-        return superKeys;
+        return calculateCandidateKeys(candidateKeys);
     }
 
     /** Aus den Superschlüsseln, alle Schlüsselkandidaten */
@@ -37,16 +34,6 @@ public class CalculateKeys {
             }
         }
         return candidateKeys;
-    }
-
-    private static int minLength(Set<Closure> candidateKeys) {
-        int minimum = Integer.MAX_VALUE;
-        for (Dependency key: candidateKeys){
-            if (key.getLeftSide().length<minimum) {
-                minimum = key.getLeftSide().length;
-            }
-        }
-        return minimum;
     }
     /** Alle Superschlüssel finden */
     public static Set<Closure> calculateSuperKeys(Relation relation) {

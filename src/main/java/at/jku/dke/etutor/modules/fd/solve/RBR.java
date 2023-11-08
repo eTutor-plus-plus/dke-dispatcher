@@ -14,6 +14,9 @@ import static at.jku.dke.etutor.modules.fd.solve.CalculateNormalForm.isTrivial;
 
 
 public class RBR {
+    private RBR() {
+        throw new IllegalStateException("Utility class");
+    }
     /** This algorithm computes an embedded cover of FDs for F+(x) */
     public static Set<FunctionalDependency> reductionByResolution(Relation relation, Set<FunctionalDependency> inputDependencies,
                                                                   String [] subschema) {

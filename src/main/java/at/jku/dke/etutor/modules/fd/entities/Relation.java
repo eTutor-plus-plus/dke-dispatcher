@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.modules.fd.entities;
 
-import at.jku.dke.etutor.modules.fd.types.StringArrayType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -41,6 +40,7 @@ public class Relation {
     private Set<Task> tasks;
 
     public Relation() {
+        //empty constructor
     }
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

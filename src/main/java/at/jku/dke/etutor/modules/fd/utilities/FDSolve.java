@@ -1,6 +1,8 @@
 package at.jku.dke.etutor.modules.fd.utilities;
 
-public class FDSolve {
+import java.io.Serializable;
+
+public class FDSolve implements Serializable {
     private Long id;
     private String solution;
 

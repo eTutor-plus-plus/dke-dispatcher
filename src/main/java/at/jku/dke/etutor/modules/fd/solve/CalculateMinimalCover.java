@@ -145,23 +145,6 @@ public class CalculateMinimalCover {
         }
         return rightSideReducedDependencies;
     }
-//    private Set<Dependency> combineRightSides (Set<? extends Dependency> dependencies, Relation exercise) {
-//        Set<Dependency> result = new TreeSet<>(new DependencyComparator());
-//        result.addAll(dependencies);
-//        for (Dependency dependency: dependencies) {
-//            for (Dependency dependency1: dependencies) {
-//                if (Arrays.equals(dependency.getLeftSide(),dependency1.getLeftSide()) && !dependency.equals(dependency1)) {
-//                    result.remove(dependency);
-//                    Set<String> combineArray = new HashSet<>();
-//                    combineArray.addAll(Arrays.asList(dependency.getRightSide()));
-//                    combineArray.addAll(Arrays.asList(dependency1.getRightSide()));
-//                    result.add(new MinimalCover(dependency.getLeftSide(), combineArray.toArray(new String[0]), exercise));
-//                }
-//            }
-//        }
-//        return result;
-//    }
-
 
     private static String[] addToArray (String[] oldArray, String toAdd) {
         String[] newArray = new String[oldArray.length+1];

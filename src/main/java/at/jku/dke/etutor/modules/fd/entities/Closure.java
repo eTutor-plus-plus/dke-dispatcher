@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.modules.fd.entities;
 
-import at.jku.dke.etutor.modules.fd.types.StringArrayType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -10,6 +9,8 @@ import org.hibernate.annotations.TypeDef;
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
+
 @TypeDef(
         name = "string-array",
         typeClass = StringArrayType.class
@@ -34,8 +35,8 @@ public class Closure implements Dependency{
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Relation relation;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "closure")
-    private Task task;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "closure")
+    private Set<Task> task;
 
     public Relation getRelation() {
         return relation;
@@ -80,11 +81,11 @@ public class Closure implements Dependency{
         this.rightSide = rightSide;
     }
 
-    public Task getTask() {
+    public Set<Task> getTask() {
         return task;
     }
 
-    public void setTask(Task task) {
+    public void setTask(Set<Task> task) {
         this.task = task;
     }
 

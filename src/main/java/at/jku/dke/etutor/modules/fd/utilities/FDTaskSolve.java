@@ -1,8 +1,9 @@
 package at.jku.dke.etutor.modules.fd.utilities;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class FDTaskSolve {
+public class FDTaskSolve implements Serializable {
     private String id;
     private String type;
     private String solution;
@@ -11,6 +12,7 @@ public class FDTaskSolve {
     private double maxPoints;
 
     public FDTaskSolve() {
+        //empty constructor
     }
 
     public String getId() {

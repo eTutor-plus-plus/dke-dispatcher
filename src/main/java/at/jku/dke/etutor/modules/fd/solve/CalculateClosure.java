@@ -14,6 +14,9 @@ import java.util.*;
  * 
  */
 public class CalculateClosure {
+	private CalculateClosure() {
+		throw new IllegalStateException("Utility class");
+	}
 
 	public static Closure calculateClosure(Set<? extends Dependency> dependencies, String [] leftSide, Relation relation) {
 
@@ -60,9 +63,7 @@ public class CalculateClosure {
 
 
 	private static void resursiveAddAll(String[] current, String[] attributes, TreeSet<String[]> resultlist) {
-		if (current.length == attributes.length) {
-			return;
-		} else {
+		if (current.length != attributes.length) {
 			for (String attribute: attributes) {
 				resursiveAddAll(addOne(current, attribute, resultlist, attributes),attributes, resultlist);
 			}

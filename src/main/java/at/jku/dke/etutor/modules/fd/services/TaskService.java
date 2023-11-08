@@ -247,7 +247,7 @@ public class TaskService {
                 }
             }
         }
-        Set destinctErrors = new TreeSet();
+        Set<Long> destinctErrors = new TreeSet<>();
         for (FDHint hint: hints) {
             destinctErrors.add(hint.getSubId());
         }
@@ -359,7 +359,7 @@ public class TaskService {
             List<String> lines = fdTaskSolve.getSolution().lines().toList();
             List<String> legalAttributes = Arrays.asList(taskRepository.findRelationByTaskId(Long.parseLong(fdTaskSolve.getId())).getAttributes());
             Long lineNumber = 0L;
-            List<Set<String>> splitted = new ArrayList();
+            List<Set<String>> splitted = new ArrayList<>();
 
             for (String line: lines) {
                 String[] solution = line.replace(" ","").split(",");

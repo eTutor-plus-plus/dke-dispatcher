@@ -21,7 +21,7 @@ public class Task {
     @Basic
     @Column(name="closure_group_id")
     private Long closureGroupId;
-    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinColumn(name = "closure_id", referencedColumnName = "id")
     private Closure closure;
