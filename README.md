@@ -37,7 +37,7 @@ If you are adding a new feature, create a feature/xyz branch from the developmen
 Discuss before finishing the feature and merging it back to develop.
 
 ## Setup
-For the setup, you need to install some legacy jars, set-up the database and install the functionalDependency to the [objects-project](https://github.com/eTutor-plus-plus/objects).
+For the setup, you need to install some legacy jars, set-up the database and install the dependency to the [objects-project](https://github.com/eTutor-plus-plus/objects).
 Those steps are necessary, independent of the module you are intending to use.
 Additionally, the different modules may also require some configurations.
 
@@ -205,7 +205,7 @@ If you are planning on creating a module for the etutor++ system and integrating
 Then, you can let the [module-serivce](./src/main/java/at/jku/dke/etutor/grading/service/ModuleService.java) return an instance of the implemented evaluator, according to the task-type-parameter of a submission that is sent to this application for evaluation and grading.
 
 Further notes:
-- use Maven for functionalDependency management
+- use Maven for dependency management
 - For managing exercises, create a dedicated controller class for the module
 - Use a connection pool for database connections
 - Externalize configuration properties in the respective [file](./src/main/resources/application.properties)
