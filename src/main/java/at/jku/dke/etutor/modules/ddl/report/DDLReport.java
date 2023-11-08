@@ -5,23 +5,22 @@ import at.jku.dke.etutor.core.evaluation.Report;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class DDLReport extends DefaultReport implements Report, Serializable {
     //region Fields
     private List<DDLErrorReport> errorReports;
-    private List<Collection<String>> missingTables;
-    private List<Collection<String>> surplusTables;
-    private List<Collection<String>> missingColumns;
-    private List<Collection<String>> surplusColumns;
-    private List<Collection<String>> wrongColumns;
-    private List<Collection<String>> missingUniqueConstraints;
-    private List<Collection<String>> surplusUniqueConstraints;
-    private List<Collection<String>> missingPrimaryKeys;
-    private List<Collection<String>> surplusPrimaryKeys;
-    private List<Collection<String>> missingForeignKeys;
-    private List<Collection<String>> surplusForeignKeys;
+    private List<String> missingTables;
+    private List<String> surplusTables;
+    private List<String> missingColumns;
+    private List<String> surplusColumns;
+    private List<String> wrongColumns;
+    private List<String> missingUniqueConstraints;
+    private List<String> surplusUniqueConstraints;
+    private List<String> missingPrimaryKeys;
+    private List<String> surplusPrimaryKeys;
+    private List<String> missingForeignKeys;
+    private List<String> surplusForeignKeys;
 
 
     private String prologue;
@@ -58,91 +57,91 @@ public class DDLReport extends DefaultReport implements Report, Serializable {
         this.errorReports = errorReports;
     }
 
-    public List<Collection<String>> getMissingTables() {
+    public List<String> getMissingTables() {
         return missingTables;
     }
 
-    public void setMissingTables(List<Collection<String>> missingTables) {
+    public void setMissingTables(List<String> missingTables) {
         this.missingTables = missingTables;
     }
 
-    public List<Collection<String>> getSurplusTables() {
+    public List<String> getSurplusTables() {
         return surplusTables;
     }
 
-    public void setSurplusTables(List<Collection<String>> surplusTables) {
+    public void setSurplusTables(List<String> surplusTables) {
         this.surplusTables = surplusTables;
     }
 
-    public List<Collection<String>> getMissingColumns() {
+    public List<String> getMissingColumns() {
         return missingColumns;
     }
 
-    public void setMissingColumns(List<Collection<String>> missingColumns) {
+    public void setMissingColumns(List<String> missingColumns) {
         this.missingColumns = missingColumns;
     }
 
-    public List<Collection<String>> getSurplusColumns() {
+    public List<String> getSurplusColumns() {
         return surplusColumns;
     }
 
-    public void setSurplusColumns(List<Collection<String>> surplusColumns) {
+    public void setSurplusColumns(List<String> surplusColumns) {
         this.surplusColumns = surplusColumns;
     }
 
-    public List<Collection<String>> getWrongColumns() {
+    public List<String> getWrongColumns() {
         return wrongColumns;
     }
 
-    public void setWrongColumns(List<Collection<String>> wrongColumns) {
+    public void setWrongColumns(List<String> wrongColumns) {
         this.wrongColumns = wrongColumns;
     }
 
-    public List<Collection<String>> getMissingUniqueConstraints() {
+    public List<String> getMissingUniqueConstraints() {
         return missingUniqueConstraints;
     }
 
-    public void setMissingUniqueConstraints(List<Collection<String>> missingUniqueConstraints) {
+    public void setMissingUniqueConstraints(List<String> missingUniqueConstraints) {
         this.missingUniqueConstraints = missingUniqueConstraints;
     }
 
-    public List<Collection<String>> getSurplusUniqueConstraints() {
+    public List<String> getSurplusUniqueConstraints() {
         return surplusUniqueConstraints;
     }
 
-    public void setSurplusUniqueConstraints(List<Collection<String>> surplusUniqueConstraints) {
+    public void setSurplusUniqueConstraints(List<String> surplusUniqueConstraints) {
         this.surplusUniqueConstraints = surplusUniqueConstraints;
     }
 
-    public List<Collection<String>> getMissingPrimaryKeys() {
+    public List<String> getMissingPrimaryKeys() {
         return missingPrimaryKeys;
     }
 
-    public void setMissingPrimaryKeys(List<Collection<String>> missingPrimaryKeys) {
+    public void setMissingPrimaryKeys(List<String> missingPrimaryKeys) {
         this.missingPrimaryKeys = missingPrimaryKeys;
     }
 
-    public List<Collection<String>> getSurplusPrimaryKeys() {
+    public List<String> getSurplusPrimaryKeys() {
         return surplusPrimaryKeys;
     }
 
-    public void setSurplusPrimaryKeys(List<Collection<String>> surplusPrimaryKeys) {
+    public void setSurplusPrimaryKeys(List<String> surplusPrimaryKeys) {
         this.surplusPrimaryKeys = surplusPrimaryKeys;
     }
 
-    public List<Collection<String>> getMissingForeignKeys() {
+    public List<String> getMissingForeignKeys() {
         return missingForeignKeys;
     }
 
-    public void setMissingForeignKeys(List<Collection<String>> missingForeignKeys) {
+    public void setMissingForeignKeys(List<String> missingForeignKeys) {
         this.missingForeignKeys = missingForeignKeys;
     }
 
-    public List<Collection<String>> getSurplusForeignKeys() {
+    public List<String> getSurplusForeignKeys() {
         return surplusForeignKeys;
     }
 
-    public void setSurplusForeignKeys(List<Collection<String>> surplusForeignKeys) {
+    public void setSurplusForeignKeys(List<String> surplusForeignKeys) {
         this.surplusForeignKeys = surplusForeignKeys;
     }
 

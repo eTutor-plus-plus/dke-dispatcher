@@ -213,7 +213,6 @@ public class DDLAnalyzer {
                 while (userRs.next()) {
                     String userTable = userRs.getString("TABLE_NAME");
 
-                    //todo Check if ignorecase is correct
                     // Compare table names
                     if(userTable.equalsIgnoreCase(systemTable)) {
                         exists = true;
@@ -237,7 +236,6 @@ public class DDLAnalyzer {
                 while (systemRS.next()) {
                     String systemTable = systemRS.getString("TABLE_NAME");
 
-                    //todo Check if ignorecase is correct
                     // Compare table names
                     if(systemTable.equalsIgnoreCase(userTable)) {
                         exists = true;
@@ -292,7 +290,6 @@ public class DDLAnalyzer {
                     while (userColumns.next()) {
                         String userColumn = userColumns.getString("COLUMN_NAME");
 
-                        //todo Check if ignorecase is correct
                         // Compare primary key column names
                         if(userColumn.equalsIgnoreCase(systemColumn)) {
                             exists = true;
@@ -347,7 +344,6 @@ public class DDLAnalyzer {
                     while (systemColumns.next()) {
                         String systemColumn = systemColumns.getString("COLUMN_NAME");
 
-                        //todo Check if ignorecase is correct
                         // Compare table names
                         if(systemColumn.equalsIgnoreCase(userColumn)) {
                             exists = true;
@@ -402,7 +398,6 @@ public class DDLAnalyzer {
                     while (userPrimaryKeys.next()) {
                         String userColumn = userPrimaryKeys.getString("COLUMN_NAME");
 
-                        //todo Check if ignorecase is correct
                         // Compare primary key column names
                         if(userColumn.equalsIgnoreCase(systemColumn)) {
                             exists = true;
@@ -426,7 +421,6 @@ public class DDLAnalyzer {
                     while (systemPrimaryKeys.next()) {
                         String systemColumn = systemPrimaryKeys.getString("COLUMN_NAME");
 
-                        //todo Check if ignorecase is correct
                         // Compare table names
                         if(systemColumn.equalsIgnoreCase(userColumn)) {
                             exists = true;
@@ -481,7 +475,6 @@ public class DDLAnalyzer {
                     while (userForeignKeys.next()) {
                         String userColumn = userForeignKeys.getString("FKCOLUMN_NAME");
 
-                        //todo Check if ignorecase is correct
                         // Compare primary key column names
                         if(userColumn.equalsIgnoreCase(systemColumn)) {
                             exists = true;
@@ -505,7 +498,6 @@ public class DDLAnalyzer {
                     while (systemForeignKeys.next()) {
                         String systemColumn = systemForeignKeys.getString("FKCOLUMN_NAME");
 
-                        //todo Check if ignorecase is correct
                         // Compare table names
                         if(systemColumn.equalsIgnoreCase(userColumn)) {
                             exists = true;
@@ -560,7 +552,6 @@ public class DDLAnalyzer {
                     while (userConstraints.next()) {
                         String userColumn = userConstraints.getString("INDEX_NAME");
 
-                        //todo Check if ignorecase is correct
                         // Compare primary key column names
                         if(userColumn.equalsIgnoreCase(systemColumn)) {
                             exists = true;
@@ -584,7 +575,6 @@ public class DDLAnalyzer {
                     while (systemConstraints.next()) {
                         String systemColumn = systemConstraints.getString("INDEX_NAME");
 
-                        //todo Check if ignorecase is correct
                         // Compare table names
                         if(systemColumn.equalsIgnoreCase(userColumn)) {
                             exists = true;
