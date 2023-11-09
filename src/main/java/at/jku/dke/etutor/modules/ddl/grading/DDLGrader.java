@@ -3,6 +3,7 @@ package at.jku.dke.etutor.modules.ddl.grading;
 import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.ddl.DDLEvaluationCriterion;
 import at.jku.dke.etutor.modules.ddl.analysis.DDLAnalysis;
+import at.jku.dke.etutor.modules.ddl.analysis.DDLCriterionAnalysis;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,18 +22,47 @@ public class DDLGrader {
         }
     }
 
-    public DefaultGrading grade(DDLAnalysis analysis, DDLGraderConfig graderConfig) {
+    //todo Check function
+    public DefaultGrading grade(DDLAnalysis analysis, DDLGraderConfig graderConfig) throws MissingGradingCriterionConfigException {
         String msg;
-        Iterator<DDLEvaluationCriterion> iterator = graderConfig.iterCriterionsToGrade();
+        int points = 0;
+        boolean everyCriterionOk = true;
+        Iterator<DDLEvaluationCriterion> evaluationCriterionIterator = graderConfig.iterCriterionsToGrade();
+        Iterator<DDLCriterionAnalysis> criterionAnalysisIterator = analysis.iterCriterionAnalysis();
         DDLEvaluationCriterion criterion;
-        DDLCriterionGradingConfig gradingConfig;
+        DDLCriterionGradingConfig criterionGradingConfig;
+        DDLCriterionAnalysis criterionAnalysis;
+        DefaultGrading grading = new DefaultGrading();
 
-        while (iterator.hasNext()) {
-            criterion = iterator.next();
-            gradingConfig = graderConfig.getCriterionGradingConfig(criterion);
+        // Set max points
+        grading.setMaxPoints(graderConfig.getMaxPoints());
 
-            if(gradingConfig != null) {
+        while (evaluationCriterionIterator.hasNext()) {
+            criterion = evaluationCriterionIterator.next();
+            criterionGradingConfig = graderConfig.getCriterionGradingConfig(criterion);
 
+            if(criterionGradingConfig != null) {
+                if(analysis.isCriterionAnalyzed(criterion)) {
+                    criterionAnalysis = analysis.getCriterionAnalysis(criterion);
+
+                    // Check if there was an exception analysing the criterion
+                    if(criterionAnalysis.getAnalysisException() == null) {
+                        // Check if the criterion is satisfied
+                        if(criterionAnalysis.isCriterionSatisfied()) {
+                            points += criterionGradingConfig.getPositivePoints();
+                        } else {
+                            points -= criterionGradingConfig.getNegativePoints();
+                        }
+                    } else  {
+                        //todo Implment exception handling?
+                    }
+                } else {
+                    msg = "";
+                    msg = msg.concat("Could not grade criterion '"  + criterion +  "'. ");
+
+                    this.logger.info(msg);
+                    return grading;
+                }
             } else {
                 msg = "";
                 msg = msg.concat("Stopped grading due to errors. ");
@@ -41,9 +71,25 @@ public class DDLGrader {
                 msg = msg.concat("Please inform the system administrator.");
 
                 this.logger.error(msg);
+                throw new MissingGradingCriterionConfigException(criterion, msg);
             }
         }
 
-        return null;
+        // Check if every criterion is satisfied
+        while (criterionAnalysisIterator.hasNext()) {
+            criterionAnalysis = criterionAnalysisIterator.next();
+            if(criterionAnalysis != null && !criterionAnalysis.isCriterionSatisfied()) {
+                everyCriterionOk = false;
+            }
+        }
+
+        // If every criterion is satisfied = full points; otherwise no points
+        if(everyCriterionOk) {
+            grading.setPoints(grading.getMaxPoints());
+        } else {
+            grading.setPoints(0);
+        }
+
+        return grading;
     }
 }

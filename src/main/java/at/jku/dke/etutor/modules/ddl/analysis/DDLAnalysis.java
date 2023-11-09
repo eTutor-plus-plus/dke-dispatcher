@@ -28,8 +28,8 @@ public class DDLAnalysis extends DefaultAnalysis implements Analysis {
 
     /**
      * Function to add a criterion analysis
-     * @param criterion
-     * @param analysis
+     * @param criterion Specifies the evaluation criterion
+     * @param analysis Specifies the analysis
      */
     public void addCriterionAnalysis(DDLEvaluationCriterion criterion, DDLCriterionAnalysis analysis) {
         this.criterionAnalysis.put(criterion, analysis);
@@ -37,9 +37,27 @@ public class DDLAnalysis extends DefaultAnalysis implements Analysis {
 
     /**
      * Function to create an iterator for the DDLCriterionAnalysis
-     * @return
+     * @return Returns an iterator
      */
     public Iterator<DDLCriterionAnalysis> iterCriterionAnalysis() {
         return this.criterionAnalysis.values().iterator();
+    }
+
+    /**
+     * Function to check if the criterion was analyzed
+     * @param evaluationCriterion Specifies the criterion
+     * @return Returns true if it was analyzed; otherwise false
+     */
+    public boolean isCriterionAnalyzed(DDLEvaluationCriterion evaluationCriterion) {
+        return this.criterionAnalysis.containsKey(criterionAnalysis);
+    }
+
+    /**
+     * Function to get the DDLCriterionAnalysis object for the specified criterion
+     * @param criterion Specifies the criterion
+     * @return Returns the analysis for this criterion
+     */
+    public DDLCriterionAnalysis getCriterionAnalysis(DDLEvaluationCriterion criterion) {
+        return this.criterionAnalysis.get(criterion);
     }
 }
