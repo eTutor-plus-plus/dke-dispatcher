@@ -1,8 +1,12 @@
 package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.grading.rest.model.entities.Grading;
+import at.jku.dke.etutor.grading.rest.model.entities.Submission;
+import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 import at.jku.dke.etutor.modules.rt.RTDataSource;
 import at.jku.dke.etutor.modules.rt.RTObject;
+import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseBean;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.parser.ParseException;
@@ -13,12 +17,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class RTResourceService {
     private ApplicationProperties properties;
-
     private RTDataSource rtDataSource;
+
+
 
     public RTResourceService(ApplicationProperties properties) throws SQLException {
         this.properties = properties;
@@ -120,4 +129,5 @@ public class RTResourceService {
         }
         return rtObject;
     }
+
 }

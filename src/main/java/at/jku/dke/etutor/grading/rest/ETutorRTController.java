@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.grading.rest;
 
+import at.jku.dke.etutor.grading.rest.model.entities.Grading;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.RTResourceService;
 import at.jku.dke.etutor.grading.service.SQLResourceService;
@@ -27,9 +28,6 @@ public class ETutorRTController {
 
     @PostMapping("/task/getEntry")
     public boolean getEntry(@RequestBody String name, int id) throws SQLException {
-        RTAnalysis elem = new RTAnalysis(name);
-        RTObject rtObject = resourceService.getTask(id);
-        System.out.println(rtObject.getSolutionRows().toString());
         return true;
     }
 
@@ -53,4 +51,12 @@ public class ETutorRTController {
     public void deleteTask(@PathVariable Integer id) throws SQLException {
         resourceService.deleteTask(id);
     }
+
+    @GetMapping("/task/getTask/{id}")
+    public RTObject getTask(@PathVariable Integer id) throws SQLException {
+        System.out.println("Yes");
+        return resourceService.getTask(id);
+    }
+
+
 }
