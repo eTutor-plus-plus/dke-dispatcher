@@ -8,7 +8,7 @@ public class MinimalCoverAnalysis extends DefaultAnalysis implements Analysis {
 	DependenciesCoverAnalysis dependenciesCoverAnalysis;
 	TrivialDependenciesAnalysis trivialDependenciesAnalysis;
 	ExtraneousAttributesAnalysis extraneousAttributesAnalysis;
-	RedundandDependenciesAnalysis redundandDependenciesAnalysis;
+	RedundantDependenciesAnalysis redundantDependenciesAnalysis;
 	CanonicalRepresentationAnalysis canonicalRepresentationAnalysis;
 
 	public MinimalCoverAnalysis() {
@@ -16,7 +16,7 @@ public class MinimalCoverAnalysis extends DefaultAnalysis implements Analysis {
 		this.dependenciesCoverAnalysis = null; 
 		this.trivialDependenciesAnalysis = null;
 		this.extraneousAttributesAnalysis = null;
-		this.redundandDependenciesAnalysis = null;
+		this.redundantDependenciesAnalysis = null;
 		this.canonicalRepresentationAnalysis = null;
 	}
 
@@ -36,12 +36,12 @@ public class MinimalCoverAnalysis extends DefaultAnalysis implements Analysis {
 		this.dependenciesCoverAnalysis = analysis;
 	}
 
-	public RedundandDependenciesAnalysis getRedundandDependenciesAnalysis(){
-		return this.redundandDependenciesAnalysis;
+	public RedundantDependenciesAnalysis getRedundandDependenciesAnalysis(){
+		return this.redundantDependenciesAnalysis;
 	}
 	
-	public void setRedundandDependenciesAnalysis(RedundandDependenciesAnalysis analysis){
-		this.redundandDependenciesAnalysis = analysis;
+	public void setRedundandDependenciesAnalysis(RedundantDependenciesAnalysis analysis){
+		this.redundantDependenciesAnalysis = analysis;
 	}
 
 	public CanonicalRepresentationAnalysis getCanonicalRepresentationAnalysis() {

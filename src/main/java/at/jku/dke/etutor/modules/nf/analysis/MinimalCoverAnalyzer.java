@@ -36,7 +36,7 @@ public class MinimalCoverAnalyzer {
 		DependenciesCoverAnalysis dependenciesCoverAnalysis;
 		TrivialDependenciesAnalysis trivialDependenciesAnalysis;
 		ExtraneousAttributesAnalysis extraneousAttributesAnalysis;
-		RedundandDependenciesAnalysis redundandDependenciesAnalysis;
+		RedundantDependenciesAnalysis redundantDependenciesAnalysis;
 		CanonicalRepresentationAnalysis canonicalRepresentationAnalysis;
 		
 		//INIT LOCAL VARIABLES
@@ -70,9 +70,9 @@ public class MinimalCoverAnalyzer {
 		}
 		
 		//ANALYZE REDUNDAND FUNCTIONAL DEPENDENCIES
-		redundandDependenciesAnalysis = analyzeRedundandDependencies(submittedDependencies);
-		analysis.setRedundandDependenciesAnalysis(redundandDependenciesAnalysis);
-		if (!redundandDependenciesAnalysis.submissionSuitsSolution()){
+		redundantDependenciesAnalysis = analyzeRedundandDependencies(submittedDependencies);
+		analysis.setRedundandDependenciesAnalysis(redundantDependenciesAnalysis);
+		if (!redundantDependenciesAnalysis.submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
 			return analysis;
 		}
@@ -118,15 +118,15 @@ public class MinimalCoverAnalyzer {
 		return analysis;
 	}
 	
-	public static RedundandDependenciesAnalysis analyzeRedundandDependencies(Collection dependencies){
+	public static RedundantDependenciesAnalysis analyzeRedundandDependencies(Collection dependencies){
 		Vector tempDependencies;
 		Iterator dependenciesIterator;
 		FunctionalDependency currDependency;
-		RedundandDependenciesAnalysis analysis;
+		RedundantDependenciesAnalysis analysis;
 		
 		tempDependencies = new Vector();
 		dependenciesIterator = dependencies.iterator();
-		analysis = new RedundandDependenciesAnalysis();
+		analysis = new RedundantDependenciesAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
 
 		while (dependenciesIterator.hasNext()){

@@ -8,11 +8,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class RedundandDependenciesAnalysis extends DefaultAnalysis implements Analysis {
+public class RedundantDependenciesAnalysis extends DefaultAnalysis implements Analysis {
 
 	private HashSet redundandDependencies; 
 
-	public RedundandDependenciesAnalysis() {
+	public RedundantDependenciesAnalysis() {
 		super();
 		this.redundandDependencies = new HashSet();
 	}

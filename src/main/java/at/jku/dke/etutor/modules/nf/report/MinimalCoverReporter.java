@@ -336,7 +336,7 @@ public class MinimalCoverReporter {
 		return report;
 	}
 	
-	public static ErrorReport createRedundandDependenciesErrorReport(RedundandDependenciesAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
+	public static ErrorReport createRedundandDependenciesErrorReport(RedundantDependenciesAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
 		Iterator it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
