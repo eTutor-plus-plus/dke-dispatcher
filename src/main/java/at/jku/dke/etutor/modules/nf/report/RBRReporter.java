@@ -1,9 +1,9 @@
 package at.jku.dke.etutor.modules.nf.report;
 
+import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.nf.RDBDConstants;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.RBRAnalysis;
-import etutor.core.evaluation.DefaultGrading;
 import org.springframework.context.MessageSource;
 
 import java.util.Iterator;

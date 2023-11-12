@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.nf.report;
 
+import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.nf.analysis.DecomposeAnalysis;
-import etutor.core.evaluation.DefaultGrading;
 
 public class DecomposeReporterConfig extends ReporterConfig{
 

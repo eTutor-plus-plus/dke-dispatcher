@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
-import etutor.core.evaluation.Report;
+import at.jku.dke.etutor.core.evaluation.Report;
 import etutor.core.ui.PrintReportView;
 import etutor.core.ui.Response;
 import etutor.core.ws.ui.DefaultPrintView;

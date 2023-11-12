@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class Report implements etutor.core.evaluation.Report, Serializable {
+public class Report implements at.jku.dke.etutor.core.evaluation.Report, Serializable {
 
 	private String prologue;
 

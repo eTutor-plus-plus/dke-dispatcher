@@ -1,5 +1,7 @@
 package at.jku.dke.etutor.modules.nf;
 
+import at.jku.dke.etutor.core.evaluation.Report;
+import at.jku.dke.etutor.core.evaluation.*;
 import at.jku.dke.etutor.modules.nf.analysis.*;
 import at.jku.dke.etutor.modules.nf.exercises.RDBDExercisesManager;
 import at.jku.dke.etutor.modules.nf.model.KeysContainer;
@@ -8,8 +10,6 @@ import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.report.*;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
-import etutor.core.evaluation.Report;
-import etutor.core.evaluation.*;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;

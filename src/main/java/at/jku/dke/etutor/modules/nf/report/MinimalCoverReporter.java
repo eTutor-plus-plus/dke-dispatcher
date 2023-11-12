@@ -1,10 +1,10 @@
 package at.jku.dke.etutor.modules.nf.report;
 
+import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.modules.nf.RDBDConstants;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.*;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
-import etutor.core.evaluation.Grading;
 import org.springframework.context.MessageSource;
 
 import java.util.Iterator;

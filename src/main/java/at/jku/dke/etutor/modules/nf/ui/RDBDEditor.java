@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
+import at.jku.dke.etutor.core.ws.types.Resource;
 import at.jku.dke.etutor.modules.nf.*;
 import at.jku.dke.etutor.modules.nf.analysis.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.exercises.RDBDExercisesManager;
@@ -9,7 +10,6 @@ import at.jku.dke.etutor.modules.nf.model.Relation;
 import etutor.core.evaluation.TaskNotFoundException;
 import etutor.core.ui.Editor;
 import etutor.core.utils.WsUtils;
-import etutor.core.ws.types.Resource;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;

@@ -1,5 +1,7 @@
 package at.jku.dke.etutor.modules.nf.report;
 
+import at.jku.dke.etutor.core.evaluation.Report;
+
 import java.io.Serializable;
 
 public class ErrorReport implements Report, Serializable{

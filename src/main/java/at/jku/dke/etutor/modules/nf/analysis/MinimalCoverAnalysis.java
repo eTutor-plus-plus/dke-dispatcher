@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.core.evaluation.Analysis;
-import etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.core.evaluation.Analysis;
+import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 
 public class MinimalCoverAnalysis extends DefaultAnalysis implements Analysis {
 
