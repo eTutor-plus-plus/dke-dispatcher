@@ -178,8 +178,9 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			 * TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
 			 *
 			 * NOTE: Cast to TreeSet<IdentifiedRelation> should always work, because that is the actual type passed in
-			 *  by RDBDEditor.initPerformTask() (see the first if-statement there). Also, it's cast (albeit needlessly)
-			 *  to TreeSet (without generics because there were none back then) later in this if-block.
+			 *  by RDBDEditor.initPerformTask() (see the first if-statement there). Also, it was cast (albeit
+			 *  needlessly) to TreeSet (without generics because there were none back then) for
+			 *  analysis.setSubmission().
 			 *  (Gerald Wimmer, 2023-11-12)
 			 */
 			TreeSet<IdentifiedRelation> submissionTreeSet = (TreeSet<IdentifiedRelation>) submission;
@@ -281,7 +282,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		ReporterConfig config;
 		
 		Report report;
-		String action_PARAM = (String)passedAttributes.get(RDBDConstants.PARAM_ACTION);
+		String actionParam = (String)passedAttributes.get(RDBDConstants.PARAM_ACTION);
 		/*
 		 * NOTE: Whenever the parameter with the key RDBDConstants.ATT_EXERCISE_ID is queried, its .toString() value is
 		 *  passed into Integer.parseInt(). As Integer.parseInt() can only accept Strings (and only interpret those
@@ -289,17 +290,17 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		 *  casting it to String, which, I assume, it already is if it can be parsed by Integer.parseInt()).
 		 *  (Gerald Wimmer, 2023-11-12).
 		 */
-		int exerciseID_PARAM = Integer.parseInt(passedAttributes.get(RDBDConstants.ATT_EXERCISE_ID).toString());
-		String diagnoseLevel_PARAM = (String)passedAttributes.get(RDBDConstants.PARAM_LEVEL);
+		int exerciseIdParam = Integer.parseInt(passedAttributes.get(RDBDConstants.ATT_EXERCISE_ID).toString());
+		String diagnoseLevelParam = (String)passedAttributes.get(RDBDConstants.PARAM_LEVEL);
 
 		int diagnoseLevel = 2;
-		int internalType = RDBDExercisesManager.fetchInternalType(exerciseID_PARAM);
+		int internalType = RDBDExercisesManager.fetchInternalType(exerciseIdParam);
 
-		if (!action_PARAM.equals(RDBDConstants.EVAL_ACTION_SUBMIT)){
+		if (!actionParam.equals(RDBDConstants.EVAL_ACTION_SUBMIT)){
 			try{
-				diagnoseLevel = Integer.parseInt(diagnoseLevel_PARAM);			
+				diagnoseLevel = Integer.parseInt(diagnoseLevelParam);
 			} catch (Exception ignore){
-				RDBDHelper.getLogger().log(Level.WARNING, "Diagnose Level '" + diagnoseLevel_PARAM + "' is not a number! Using default Diagnose Level '0'");
+				RDBDHelper.getLogger().log(Level.WARNING, "Diagnose Level '" + diagnoseLevelParam + "' is not a number! Using default Diagnose Level '0'");
 			}
 		}
 
@@ -308,7 +309,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'KEY_DETERMINATION'");
 			
 			config = new ReporterConfig();
-			config.setAction(action_PARAM);
+			config.setAction(actionParam);
 			config.setDiagnoseLevel(diagnoseLevel);
 			report = KeysReporter.report((KeysAnalysis)analysis, (DefaultGrading)grading, config, messageSource, locale);
 
@@ -317,7 +318,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'MINIMAL_COVER'");
 			
 			config = new ReporterConfig();
-			config.setAction(action_PARAM);
+			config.setAction(actionParam);
 			config.setDiagnoseLevel(diagnoseLevel);
 			report = MinimalCoverReporter.report((MinimalCoverAnalysis)analysis, (DefaultGrading)grading, config, messageSource, locale);
 
@@ -326,7 +327,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'ATTRIBUTE_CLOSURE'");
 			
 			config = new ReporterConfig();
-			config.setAction(action_PARAM);
+			config.setAction(actionParam);
 			config.setDiagnoseLevel(diagnoseLevel);
 			report = AttributeClosureReporter.report((AttributeClosureAnalysis)analysis, (DefaultGrading)grading, config, messageSource, locale);
 
@@ -335,7 +336,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'RBR'");
 			
 			config = new ReporterConfig();
-			config.setAction(action_PARAM);
+			config.setAction(actionParam);
 			config.setDiagnoseLevel(diagnoseLevel);
 			report = RBRReporter.report((RBRAnalysis)analysis, (DefaultGrading)grading, config, messageSource, locale);
 
@@ -344,7 +345,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'DECOMPOSE'");
 			
 			DecomposeReporterConfig decomposeReporterConfig = new DecomposeReporterConfig();
-			decomposeReporterConfig.setAction(action_PARAM);
+			decomposeReporterConfig.setAction(actionParam);
 			decomposeReporterConfig.setDiagnoseLevel(diagnoseLevel);
 			decomposeReporterConfig.setGrading((DefaultGrading)grading);
 			decomposeReporterConfig.setDecomposeAnalysis((DecomposeAnalysis)analysis);
@@ -356,7 +357,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'NORMALIZATION'");
 			
 			NormalizationReporterConfig normalizationReporterConfig = new NormalizationReporterConfig();  
-			normalizationReporterConfig.setAction(action_PARAM);
+			normalizationReporterConfig.setAction(actionParam);
 			normalizationReporterConfig.setDiagnoseLevel(diagnoseLevel);
 			normalizationReporterConfig.setDecomposedRelations((TreeSet<IdentifiedRelation>)analysis.getSubmission());
 			normalizationReporterConfig.setDesiredNormalformLevel(((NormalizationAnalysis)analysis).getDesiredNormalformLevel());
@@ -368,7 +369,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'NORMALFORM DETERMINATION'");
 
 			config = new ReporterConfig();
-			config.setAction(action_PARAM);
+			config.setAction(actionParam);
 			config.setDiagnoseLevel(diagnoseLevel);
 			
 			report = NormalformReporter.report((NormalformDeterminationAnalysis)analysis, (DefaultGrading)grading, config, messageSource, locale);
