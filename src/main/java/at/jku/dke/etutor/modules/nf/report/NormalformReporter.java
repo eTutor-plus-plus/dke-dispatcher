@@ -3,7 +3,8 @@ package at.jku.dke.etutor.modules.nf.report;
 import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.nf.RDBDConstants;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
-import at.jku.dke.etutor.modules.nf.analysis.*;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.*;
+import at.jku.dke.etutor.modules.nf.analysis.normalformdetermination.NormalformDeterminationAnalysis;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevelComparator;
 import org.springframework.context.MessageSource;
@@ -154,7 +155,7 @@ public class NormalformReporter {
 		FirstNormalformViolation firstNFViolation;
 		ThirdNormalformViolation thirdNFViolation;
 		SecondNormalformViolation secondNFViolation;
-		BoyceCottNormalformViolation boyceCottNFViolation;
+		BoyceCoddNormalformViolation boyceCottNFViolation;
 
 		ErrorReport report = new ErrorReport();
 		StringBuffer description = new StringBuffer();
@@ -354,7 +355,7 @@ public class NormalformReporter {
 					description.append("<br><br>");
 				}
 
-				boyceCottNFViolation = (BoyceCottNormalformViolation)violations.next();
+				boyceCottNFViolation = (BoyceCoddNormalformViolation)violations.next();
 				description.append(messageSource.getMessage("normalformreporter.violatesnormalform", new Object[]{boyceCottNFViolation.getFunctionalDependency(), "boyce cott"}, locale));
 				description.append("<br>");
 				description.append(messageSource.getMessage("normalformreporter.leftsidenotsuperkey", null, locale));

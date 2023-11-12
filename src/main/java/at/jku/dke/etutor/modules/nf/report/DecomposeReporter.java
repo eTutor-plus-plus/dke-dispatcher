@@ -2,7 +2,7 @@ package at.jku.dke.etutor.modules.nf.report;
 
 import at.jku.dke.etutor.modules.nf.RDBDConstants;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
-import at.jku.dke.etutor.modules.nf.analysis.NormalizationAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import org.springframework.context.MessageSource;
 

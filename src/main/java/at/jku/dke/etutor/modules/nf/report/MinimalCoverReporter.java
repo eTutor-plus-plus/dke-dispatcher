@@ -4,6 +4,8 @@ import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.modules.nf.RDBDConstants;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.*;
+import at.jku.dke.etutor.modules.nf.analysis.minimalcover.DependenciesCoverAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.minimalcover.MinimalCoverAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import org.springframework.context.MessageSource;
 

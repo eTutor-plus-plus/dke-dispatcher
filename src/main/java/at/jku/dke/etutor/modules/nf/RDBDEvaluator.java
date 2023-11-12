@@ -3,6 +3,23 @@ package at.jku.dke.etutor.modules.nf;
 import at.jku.dke.etutor.core.evaluation.Report;
 import at.jku.dke.etutor.core.evaluation.*;
 import at.jku.dke.etutor.modules.nf.analysis.*;
+import at.jku.dke.etutor.modules.nf.analysis.closure.AttributeClosureAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.closure.AttributeClosureAnalyzer;
+import at.jku.dke.etutor.modules.nf.analysis.decompose.DecomposeAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.decompose.DecomposeAnalyzer;
+import at.jku.dke.etutor.modules.nf.analysis.decompose.DecomposeAnalyzerConfig;
+import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzer;
+import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzerConfig;
+import at.jku.dke.etutor.modules.nf.analysis.minimalcover.MinimalCoverAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.minimalcover.MinimalCoverAnalyzer;
+import at.jku.dke.etutor.modules.nf.analysis.normalformdetermination.NormalformDeterminationAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.normalformdetermination.NormalformDeterminationAnalyzer;
+import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer;
+import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzerConfig;
+import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalyzer;
 import at.jku.dke.etutor.modules.nf.exercises.RDBDExercisesManager;
 import at.jku.dke.etutor.modules.nf.model.KeysContainer;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
@@ -95,7 +112,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			StringBuffer temp;
 			Iterator decomposedRelationsIterator;
 			
-			DecomposeAnalyzerConfig decomposeAnalyzerConfig = new DecomposeAnalyzerConfig(); 
+			DecomposeAnalyzerConfig decomposeAnalyzerConfig = new DecomposeAnalyzerConfig();
 			DecomposeSpecification decomposeSpecification = (DecomposeSpecification)specification;
 
 			TreeSet allRelations = new TreeSet(new IdentifiedRelationComparator());
