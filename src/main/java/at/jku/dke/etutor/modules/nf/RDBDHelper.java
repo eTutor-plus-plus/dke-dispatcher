@@ -100,7 +100,8 @@ public class RDBDHelper {
 		
 		return conn;
 	}
-	
+
+	// TODO: Replace with HikariDataSource like in SQL module (Gerald Wimmer, 2023-11-12)
 	private static synchronized DataSource getDataSource() {
 		String msg;
 		InitialContext ctx;

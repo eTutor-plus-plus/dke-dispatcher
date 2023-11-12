@@ -52,7 +52,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 	 *  passedAttributes: Map<String, Serializable>
 	 *  passedParameters: Map<String, String[]> (according to documentation, actually seems to be single Strings that
 	 *   may contain multiple values)
-	 *  This must be adapted to match the interface's Map<String, String> in both cases (Gerald Wimmer, 2023-12-11).
+	 *  This must be adapted to match the interface's Map<String, String> in both cases (Gerald Wimmer, 2023-11-12).
 	 */
 	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
 		Analysis analysis;
@@ -61,32 +61,35 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		/*
 		 * TODO: Receive submission as String instead of Serializable, pass it on to our new, shiny, parser, and receive
-		 *  what used to be passed in from this Serializable from the Parser, instead (Gerald Wimmer, 2023-12-11).
+		 *  what used to be passed in from this Serializable from the Parser, instead (Gerald Wimmer, 2023-11-12).
 		 */
 		// Serializable submission = (Serializable)passedAttributes.get(RDBDConstants.calcSubmissionIDFor(exerciseID));
-		Serializable submission = null; // NOTE: Temporary addition so IntelliJ doesn't complain about unitialized variable (Gerald Wimmer, 2023-12-11)
+		Serializable submission = null; // NOTE: Temporary addition so IntelliJ doesn't complain about the uninitialized variable (Gerald Wimmer, 2023-11-12)
 		int internalType = RDBDExercisesManager.fetchInternalType(exerciseID);
 		Serializable specification = RDBDExercisesManager.fetchSpecification(exerciseID);
 
 		/*
 		 * TODO: Pass the submission string on to the appropriate method of our new, shiny, parser (method could be
 		 *  selected inside the if statement) and receive the appropriate data (TreeSet, IdentifiedRelation, Vector)
-		 *  from the parser (Gerald Wimmer, 2023-12-11).
+		 *  from the parser (Gerald Wimmer, 2023-11-12).
 		 */
 		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION){
 			//KEYS DETERMINATION
 			KeysAnalyzerConfig keysAnalyzerConfig = new KeysAnalyzerConfig();
 			KeysContainer correctKeys = KeysDeterminator.determineAllKeys((Relation)specification);
 			keysAnalyzerConfig.setCorrectMinimalKeys(correctKeys.getMinimalKeys());
-			analysis = KeysAnalyzer.analyze((Relation)((Collection)submission).toArray()[0], keysAnalyzerConfig);
+
+			Relation relation = (Relation)((Collection)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			analysis = KeysAnalyzer.analyze(relation, keysAnalyzerConfig);
 			
 			//Set Submission
 			analysis.setSubmission((Relation)((Collection)submission).toArray()[0]);
 
 		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER){
 			//MINIMAL COVER
+			Relation relation = (Relation)((Collection)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
 			//TODO: pass specificatin itself instead of exerciseID? (2005-10-16, g.n.)
-			analysis = MinimalCoverAnalyzer.analyze((Relation)((Collection)submission).toArray()[0], exerciseID);
+			analysis = MinimalCoverAnalyzer.analyze(relation, exerciseID);
 				
 			//Set Submission
 			analysis.setSubmission((Relation)((Collection)submission).toArray()[0]);
@@ -94,18 +97,23 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE){
 			//ATTRIBUTE CLOSURE
 			AttributeClosureSpecification attributeClosureSpecification = (AttributeClosureSpecification)specification;
-			analysis = AttributeClosureAnalyzer.analyze(attributeClosureSpecification.getBaseRelation().getFunctionalDependencies(), attributeClosureSpecification.getBaseAttributes(), ((Relation)((Collection)submission).toArray()[0]).getAttributes());
+			Relation relation = (Relation)((Collection)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			analysis = AttributeClosureAnalyzer.analyze(
+					attributeClosureSpecification.getBaseRelation().getFunctionalDependencies(),
+					attributeClosureSpecification.getBaseAttributes(),
+					relation.getAttributes());
 				
 			//Set Submission
-			analysis.setSubmission((Relation)((Collection)submission).toArray()[0]);
+			analysis.setSubmission(relation);
 
 		} else if (internalType == RDBDConstants.TYPE_RBR){
 			//RBR
 			RBRSpecification rbrSpecification = (RBRSpecification)specification;
-			analysis = RBRAnalyzer.analyze(rbrSpecification.getBaseRelation(), (Relation)((Collection)submission).toArray()[0]);
+			Relation relation = (Relation)((Collection)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			analysis = RBRAnalyzer.analyze(rbrSpecification.getBaseRelation(), relation);
 			
 			//Set Submission
-			analysis.setSubmission((Relation)((Collection)submission).toArray()[0]);
+			analysis.setSubmission(relation);
 
 		} else if (internalType == RDBDConstants.TYPE_DECOMPOSE){
 			//DECOMPOSE
@@ -115,9 +123,17 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			DecomposeAnalyzerConfig decomposeAnalyzerConfig = new DecomposeAnalyzerConfig();
 			DecomposeSpecification decomposeSpecification = (DecomposeSpecification)specification;
 
-			TreeSet allRelations = new TreeSet(new IdentifiedRelationComparator());
+			TreeSet<IdentifiedRelation> allRelations = new TreeSet(new IdentifiedRelationComparator());
 			allRelations.add(decomposeSpecification.getBaseRelation());
-			allRelations.addAll((TreeSet)submission);
+			/*
+			 * TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			 *
+			 * NOTE: Generic <IdentifiedRelation> should always work, because that is the actual type passed in
+			 *  by RDBDEditor.initPerformTask() (see the first if-statement there).
+			 *  (Gerald Wimmer, 2023-11-12)
+			 */
+			TreeSet<IdentifiedRelation> submissionTreeSet = (TreeSet<IdentifiedRelation>)submission;
+			allRelations.addAll(submissionTreeSet);
 			
 			String baseRelationID;
 			if ((passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION) != null) && ((((String)passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION)).length() > 0))){
@@ -153,7 +169,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			analysis = DecomposeAnalyzer.analyze(decomposeAnalyzerConfig);
 			
 			//Set Submission
-			analysis.setSubmission((TreeSet)submission);
+			analysis.setSubmission(submissionTreeSet);
 
 		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION){
 			//NORMALIZATION
@@ -163,16 +179,25 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			normalizationAnalyzerConfig.setBaseRelation(normalizationSpecification.getBaseRelation());
 			normalizationAnalyzerConfig.setDesiredNormalformLevel(normalizationSpecification.getTargetLevel());
 			normalizationAnalyzerConfig.setMaxLostDependencies(normalizationSpecification.getMaxLostDependencies());
-			normalizationAnalyzerConfig.setNormalizedRelations((Collection)submission);
+			/*
+			 * TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			 *
+			 * NOTE: Cast to TreeSet<IdentifiedRelation> should always work, because that is the actual type passed in
+			 *  by RDBDEditor.initPerformTask() (see the first if-statement there). Also, it's cast (albeit needlessly)
+			 *  to TreeSet (without generics because there were none back then) later in this if-block.
+			 *  (Gerald Wimmer, 2023-11-12)
+			 */
+			TreeSet<IdentifiedRelation> submissionTreeSet = (TreeSet<IdentifiedRelation>) submission;
+			normalizationAnalyzerConfig.setNormalizedRelations(submissionTreeSet);
 			
 			analysis = NormalizationAnalyzer.analyze(normalizationAnalyzerConfig);
 			
 			//Set Submission
-			analysis.setSubmission((TreeSet)submission);
+			analysis.setSubmission(submissionTreeSet);
 
 		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION){
 			//NORMALFORM DETERMINATION
-			NormalformDeterminationSubmission normalformDeterminationSubmission = (NormalformDeterminationSubmission)submission;
+			NormalformDeterminationSubmission normalformDeterminationSubmission = (NormalformDeterminationSubmission)submission; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
 
 			//Set overall level
 			String overallLevel = (String)passedParameters.get(RDBDConstants.PARAM_NORMALFORM_LEVEL);
@@ -250,12 +275,12 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 	 *  passedAttributes: Map<String, Serializable>
 	 *  passedParameters: Map<String, String[]> (according to documentation, actually seems to be single Strings that
 	 *   may contain multiple values)
-	 *  This must be adapted to match the interface's Map<String, String> in both cases (Gerald Wimmer, 2023-12-11).
+	 *  This must be adapted to match the interface's Map<String, String> in both cases (Gerald Wimmer, 2023-11-12).
 	 *
 	 * NOTE: passedParameters was never actually used, so there was no conflict in converting it to Map<String, String>,
 	 *  and passedAttribute is only ever queried for String values (see explanation below, where there isn't a cast to
 	 *  String, anyway)
-	 *  (Gerald Wimmer, 2023-12-11)
+	 *  (Gerald Wimmer, 2023-11-12)
 	 */
 	public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
 		ReporterConfig config;
@@ -267,7 +292,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		 *  passed into Integer.parseInt(). As Integer.parseInt() can only accept Strings (and only interpret those
 		 *  containing Integer values), I assume that calling toString() on the  value of get() has the same effect as
 		 *  casting it to String, which, I assume, it already is if it can be parsed by Integer.parseInt()).
-		 *  (Gerald Wimmer, 2023-12-11).
+		 *  (Gerald Wimmer, 2023-11-12).
 		 */
 		int exerciseID_PARAM = Integer.parseInt(passedAttributes.get(RDBDConstants.ATT_EXERCISE_ID).toString());
 		String diagnoseLevel_PARAM = (String)passedAttributes.get(RDBDConstants.PARAM_LEVEL);
