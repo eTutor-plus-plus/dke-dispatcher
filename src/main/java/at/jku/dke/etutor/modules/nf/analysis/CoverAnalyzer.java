@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.algorithms.Member;
-import etutor.modules.rdbd.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.algorithms.Member;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.Collection;
 import java.util.Iterator;

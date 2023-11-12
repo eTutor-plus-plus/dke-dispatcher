@@ -1,9 +1,9 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
 import etutor.core.evaluation.Analysis;
 import etutor.core.evaluation.DefaultAnalysis;
-import etutor.modules.rdbd.model.NormalformLevel;
-import etutor.modules.rdbd.ui.IdentifiedRelationComparator;
 
 import java.io.Serializable;
 import java.util.Collection;

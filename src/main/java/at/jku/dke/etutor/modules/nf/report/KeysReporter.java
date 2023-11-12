@@ -1,9 +1,9 @@
 package at.jku.dke.etutor.modules.nf.report;
 
+import at.jku.dke.etutor.modules.nf.RDBDConstants;
+import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.analysis.KeysAnalysis;
 import etutor.core.evaluation.DefaultGrading;
-import etutor.modules.rdbd.RDBDConstants;
-import etutor.modules.rdbd.RDBDHelper;
-import etutor.modules.rdbd.analysis.KeysAnalysis;
 import org.springframework.context.MessageSource;
 
 import java.util.Iterator;

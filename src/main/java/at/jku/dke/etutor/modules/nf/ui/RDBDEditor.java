@@ -1,15 +1,15 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
+import at.jku.dke.etutor.modules.nf.*;
+import at.jku.dke.etutor.modules.nf.analysis.KeysDeterminator;
+import at.jku.dke.etutor.modules.nf.exercises.RDBDExercisesManager;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.Relation;
 import etutor.core.evaluation.TaskNotFoundException;
 import etutor.core.ui.Editor;
 import etutor.core.utils.WsUtils;
 import etutor.core.ws.types.Resource;
-import etutor.modules.rdbd.*;
-import etutor.modules.rdbd.analysis.KeysDeterminator;
-import etutor.modules.rdbd.exercises.RDBDExercisesManager;
-import etutor.modules.rdbd.model.FunctionalDependency;
-import etutor.modules.rdbd.model.NormalformLevel;
-import etutor.modules.rdbd.model.Relation;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;

@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.nf;
 
-import etutor.modules.rdbd.model.FunctionalDependency;
-import etutor.modules.rdbd.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
 import java.io.Serializable;
 import java.util.HashMap;

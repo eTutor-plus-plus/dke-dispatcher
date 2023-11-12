@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 public abstract class NormalformViolation {
 

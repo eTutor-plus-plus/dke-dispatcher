@@ -1,8 +1,8 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
-import etutor.modules.rdbd.RDBDHelper;
-import etutor.modules.rdbd.RDBDSpecification;
-import etutor.modules.rdbd.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.RDBDSpecification;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;

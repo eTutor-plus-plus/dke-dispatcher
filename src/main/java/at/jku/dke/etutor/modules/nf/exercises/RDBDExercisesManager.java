@@ -1,12 +1,12 @@
 package at.jku.dke.etutor.modules.nf.exercises;
 
+import at.jku.dke.etutor.modules.nf.DecomposeSpecification;
+import at.jku.dke.etutor.modules.nf.NormalizationSpecification;
+import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.RDBDSpecification;
+import at.jku.dke.etutor.modules.nf.ui.SpecificationEditor;
 import etutor.core.manager.ModuleExerciseManager;
 import etutor.core.utils.JDBCAdapter;
-import etutor.modules.rdbd.DecomposeSpecification;
-import etutor.modules.rdbd.NormalizationSpecification;
-import etutor.modules.rdbd.RDBDHelper;
-import etutor.modules.rdbd.RDBDSpecification;
-import etutor.modules.rdbd.ui.SpecificationEditor;
 import oracle.sql.BLOB;
 
 import java.io.IOException;

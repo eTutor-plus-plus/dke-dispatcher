@@ -1,15 +1,15 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
-import etutor.modules.rdbd.*;
-import etutor.modules.rdbd.analysis.*;
-import etutor.modules.rdbd.model.FunctionalDependency;
-import etutor.modules.rdbd.model.Key;
-import etutor.modules.rdbd.model.NormalformLevel;
-import etutor.modules.rdbd.model.Relation;
-import etutor.modules.rdbd.report.ErrorReport;
-import etutor.modules.rdbd.report.ErrorReportGroup;
-import etutor.modules.rdbd.report.Report;
-import etutor.modules.rdbd.report.ReportAtomType;
+import at.jku.dke.etutor.modules.nf.*;
+import at.jku.dke.etutor.modules.nf.analysis.*;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.Key;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.Relation;
+import at.jku.dke.etutor.modules.nf.report.ErrorReport;
+import at.jku.dke.etutor.modules.nf.report.ErrorReportGroup;
+import at.jku.dke.etutor.modules.nf.report.Report;
+import at.jku.dke.etutor.modules.nf.report.ReportAtomType;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;

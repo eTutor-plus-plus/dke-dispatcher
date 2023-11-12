@@ -1,9 +1,9 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import etutor.core.evaluation.Analysis;
 import etutor.core.evaluation.DefaultAnalysis;
-import etutor.modules.rdbd.model.FunctionalDependency;
-import etutor.modules.rdbd.model.NormalformLevel;
 
 import java.util.Iterator;
 import java.util.Vector;

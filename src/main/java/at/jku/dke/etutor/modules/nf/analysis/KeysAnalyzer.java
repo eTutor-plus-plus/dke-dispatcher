@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.RDBDHelper;
-import etutor.modules.rdbd.model.Relation;
+import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.util.TreeSet;
 import java.util.logging.Level;

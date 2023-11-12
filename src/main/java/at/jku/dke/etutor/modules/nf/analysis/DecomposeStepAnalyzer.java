@@ -1,8 +1,8 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.RDBDHelper;
-import etutor.modules.rdbd.model.KeysContainer;
-import etutor.modules.rdbd.ui.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.model.KeysContainer;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
 
 import java.util.HashMap;
 import java.util.Iterator;

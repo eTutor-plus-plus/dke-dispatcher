@@ -1,8 +1,8 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.RDBDHelper;
-import etutor.modules.rdbd.ui.IdentifiedRelation;
-import etutor.modules.rdbd.ui.IdentifiedRelationComparator;
+import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
 
 import java.util.Iterator;
 import java.util.TreeSet;

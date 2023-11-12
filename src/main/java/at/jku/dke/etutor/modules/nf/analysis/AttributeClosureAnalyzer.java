@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.RDBDHelper;
-import etutor.modules.rdbd.algorithms.Closure;
+import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.algorithms.Closure;
 
 import java.util.Collection;
 import java.util.logging.Level;

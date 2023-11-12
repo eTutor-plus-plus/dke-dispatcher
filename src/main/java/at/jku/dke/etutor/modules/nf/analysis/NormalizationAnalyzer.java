@@ -1,11 +1,11 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.algorithms.Closure;
-import etutor.modules.rdbd.algorithms.Member;
-import etutor.modules.rdbd.model.FunctionalDependency;
-import etutor.modules.rdbd.model.KeysContainer;
-import etutor.modules.rdbd.model.Relation;
-import etutor.modules.rdbd.ui.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.algorithms.Closure;
+import at.jku.dke.etutor.modules.nf.algorithms.Member;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.KeysContainer;
+import at.jku.dke.etutor.modules.nf.model.Relation;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
 
 import java.util.*;
 

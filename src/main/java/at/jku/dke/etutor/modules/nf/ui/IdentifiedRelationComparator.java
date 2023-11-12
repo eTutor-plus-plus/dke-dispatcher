@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
-import etutor.modules.rdbd.model.Relation;
+import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.io.Serializable;
 import java.util.Comparator;

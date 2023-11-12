@@ -1,8 +1,8 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.model.NormalformLevel;
-import etutor.modules.rdbd.ui.IdentifiedRelation;
-import etutor.modules.rdbd.ui.IdentifiedRelationComparator;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
 
 import java.util.Collection;
 import java.util.Iterator;

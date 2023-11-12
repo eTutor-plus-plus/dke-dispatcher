@@ -1,12 +1,12 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.RDBDHelper;
-import etutor.modules.rdbd.algorithms.Cover;
-import etutor.modules.rdbd.algorithms.Member;
-import etutor.modules.rdbd.algorithms.MinimalCover;
-import etutor.modules.rdbd.exercises.RDBDExercisesManager;
-import etutor.modules.rdbd.model.FunctionalDependency;
-import etutor.modules.rdbd.model.Relation;
+import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.algorithms.Cover;
+import at.jku.dke.etutor.modules.nf.algorithms.Member;
+import at.jku.dke.etutor.modules.nf.algorithms.MinimalCover;
+import at.jku.dke.etutor.modules.nf.exercises.RDBDExercisesManager;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.util.Collection;
 import java.util.HashSet;

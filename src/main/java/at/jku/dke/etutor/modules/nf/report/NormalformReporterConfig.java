@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.report;
 
-import etutor.modules.rdbd.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
 public class NormalformReporterConfig extends ReporterConfig {
 

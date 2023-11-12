@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.nf.exercises;
 
-import etutor.modules.rdbd.RDBDHelper;
-import etutor.modules.rdbd.analysis.KeysDeterminator;
+import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.analysis.KeysDeterminator;
 
 import java.util.Iterator;
 import java.util.TreeSet;

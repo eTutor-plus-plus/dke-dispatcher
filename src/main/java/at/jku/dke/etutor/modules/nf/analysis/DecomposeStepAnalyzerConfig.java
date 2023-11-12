@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.ui.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
 
 import java.util.Collection;
 import java.util.Iterator;

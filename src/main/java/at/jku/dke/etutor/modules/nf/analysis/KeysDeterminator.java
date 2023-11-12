@@ -1,8 +1,8 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.algorithms.Closure;
-import etutor.modules.rdbd.exercises.TupleSet;
-import etutor.modules.rdbd.model.*;
+import at.jku.dke.etutor.modules.nf.algorithms.Closure;
+import at.jku.dke.etutor.modules.nf.exercises.TupleSet;
+import at.jku.dke.etutor.modules.nf.model.*;
 
 import java.util.*;
 

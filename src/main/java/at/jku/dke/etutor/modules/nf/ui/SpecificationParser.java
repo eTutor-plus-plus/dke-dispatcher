@@ -1,13 +1,13 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
-import etutor.modules.rdbd.*;
-import etutor.modules.rdbd.algorithms.Closure;
-import etutor.modules.rdbd.algorithms.MinimalCover;
-import etutor.modules.rdbd.algorithms.ReductionByResolution;
-import etutor.modules.rdbd.analysis.*;
-import etutor.modules.rdbd.model.FunctionalDependency;
-import etutor.modules.rdbd.model.NormalformLevel;
-import etutor.modules.rdbd.model.Relation;
+import at.jku.dke.etutor.modules.nf.*;
+import at.jku.dke.etutor.modules.nf.algorithms.Closure;
+import at.jku.dke.etutor.modules.nf.algorithms.MinimalCover;
+import at.jku.dke.etutor.modules.nf.algorithms.ReductionByResolution;
+import at.jku.dke.etutor.modules.nf.analysis.*;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.io.Serializable;
 import java.util.*;

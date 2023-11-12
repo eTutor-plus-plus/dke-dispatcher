@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.exercises;
 
-import etutor.modules.rdbd.RDBDConstants;
+import at.jku.dke.etutor.modules.nf.RDBDConstants;
 
 /**
  * Extends the basic RDBD exercises manager implementation for the 

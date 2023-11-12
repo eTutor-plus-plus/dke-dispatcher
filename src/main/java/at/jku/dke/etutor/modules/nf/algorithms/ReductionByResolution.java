@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.nf.algorithms;
 
-import etutor.modules.rdbd.model.FunctionalDependency;
-import etutor.modules.rdbd.model.Relation;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.util.Collection;
 import java.util.HashSet;

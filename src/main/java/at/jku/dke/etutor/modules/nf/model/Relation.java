@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.model;
 
-import etutor.modules.rdbd.RDBDSpecification;
+import at.jku.dke.etutor.modules.nf.RDBDSpecification;
 
 import java.io.Serializable;
 import java.util.Collection;

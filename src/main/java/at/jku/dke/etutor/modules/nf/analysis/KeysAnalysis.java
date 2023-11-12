@@ -1,9 +1,9 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
+import at.jku.dke.etutor.modules.nf.model.Key;
+import at.jku.dke.etutor.modules.nf.model.KeyComparator;
 import etutor.core.evaluation.Analysis;
 import etutor.core.evaluation.DefaultAnalysis;
-import etutor.modules.rdbd.model.Key;
-import etutor.modules.rdbd.model.KeyComparator;
 
 import java.util.Collection;
 import java.util.Iterator;

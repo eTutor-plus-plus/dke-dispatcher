@@ -1,9 +1,9 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
+import at.jku.dke.etutor.modules.nf.*;
 import etutor.core.ui.Response;
 import etutor.core.ui.ShowEditorView;
 import etutor.core.ws.ui.DefaultPrintView;
-import etutor.modules.rdbd.*;
 import etutor.modules.sql.SQLConstants;
 import org.apache.velocity.app.FieldMethodizer;
 import org.springframework.ui.velocity.VelocityEngineUtils;

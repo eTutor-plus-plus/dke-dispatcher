@@ -1,10 +1,10 @@
 package at.jku.dke.etutor.modules.nf;
 
-import etutor.modules.rdbd.model.FunctionalDependency;
-import etutor.modules.rdbd.model.Key;
-import etutor.modules.rdbd.model.NormalformLevel;
-import etutor.modules.rdbd.model.Relation;
-import etutor.modules.rdbd.ui.*;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.Key;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.Relation;
+import at.jku.dke.etutor.modules.nf.ui.*;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 
 /**
  * Provides central resources for the RDBD module (loggers and database connections) 
- * and helper methods for dealing with all different kinds of {@link etutor.modules.rdbd.RDBDSpecification}
+ * and helper methods for dealing with all different kinds of {@link RDBDSpecification}
  * implementations within the RDBD module. This includes manipulation of specification objects, 
  * conversions between object and String representations of specifications, and helper methods 
  * aimed at common aspects of all specification implementations which are not part of the interface yet.

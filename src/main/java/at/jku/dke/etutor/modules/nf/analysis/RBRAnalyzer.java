@@ -1,10 +1,10 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.RDBDHelper;
-import etutor.modules.rdbd.algorithms.Member;
-import etutor.modules.rdbd.algorithms.ReductionByResolution;
-import etutor.modules.rdbd.model.FunctionalDependency;
-import etutor.modules.rdbd.model.Relation;
+import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.algorithms.Member;
+import at.jku.dke.etutor.modules.nf.algorithms.ReductionByResolution;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.util.Collection;
 import java.util.Iterator;

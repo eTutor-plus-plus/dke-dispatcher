@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.model.KeyComparator;
+import at.jku.dke.etutor.modules.nf.model.KeyComparator;
 
 import java.util.TreeSet;
 

@@ -1,13 +1,13 @@
 package at.jku.dke.etutor.modules.nf.report;
 
+import at.jku.dke.etutor.modules.nf.RDBDConstants;
+import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.analysis.DecompositionAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.DependenciesPreservationAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.LossLessAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.NormalizationAnalysis;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
 import etutor.core.evaluation.DefaultGrading;
-import etutor.modules.rdbd.RDBDConstants;
-import etutor.modules.rdbd.RDBDHelper;
-import etutor.modules.rdbd.analysis.DecompositionAnalysis;
-import etutor.modules.rdbd.analysis.DependenciesPreservationAnalysis;
-import etutor.modules.rdbd.analysis.LossLessAnalysis;
-import etutor.modules.rdbd.analysis.NormalizationAnalysis;
-import etutor.modules.rdbd.ui.IdentifiedRelation;
 import org.springframework.context.MessageSource;
 
 import java.util.Iterator;

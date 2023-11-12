@@ -1,14 +1,15 @@
 package at.jku.dke.etutor.modules.nf;
 
+import at.jku.dke.etutor.modules.nf.analysis.*;
+import at.jku.dke.etutor.modules.nf.exercises.RDBDExercisesManager;
+import at.jku.dke.etutor.modules.nf.model.KeysContainer;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.Relation;
+import at.jku.dke.etutor.modules.nf.report.*;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
+import etutor.core.evaluation.Report;
 import etutor.core.evaluation.*;
-import etutor.modules.rdbd.analysis.*;
-import etutor.modules.rdbd.exercises.RDBDExercisesManager;
-import etutor.modules.rdbd.model.KeysContainer;
-import etutor.modules.rdbd.model.NormalformLevel;
-import etutor.modules.rdbd.model.Relation;
-import etutor.modules.rdbd.report.*;
-import etutor.modules.rdbd.ui.IdentifiedRelation;
-import etutor.modules.rdbd.ui.IdentifiedRelationComparator;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
@@ -36,7 +37,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		Serializable submission;
 		Serializable specification;
-		NormalizationAnalyzerConfig config;		
+		NormalizationAnalyzerConfig config;
 		NormalizationSpecification normSpec;
 		
 		RDBDHelper.getLogger().log(Level.INFO, "Start analyzing.");

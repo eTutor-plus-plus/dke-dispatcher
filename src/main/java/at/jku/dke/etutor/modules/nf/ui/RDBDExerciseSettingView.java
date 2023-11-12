@@ -1,12 +1,12 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
+import at.jku.dke.etutor.modules.nf.RDBDConstants;
+import at.jku.dke.etutor.modules.nf.RDBDSpecification;
+import at.jku.dke.etutor.modules.nf.algorithms.Closure;
+import at.jku.dke.etutor.modules.nf.algorithms.ReductionByResolution;
 import etutor.core.ui.ExerciseSettingView;
 import etutor.core.ui.Response;
 import etutor.core.ws.ui.DefaultPrintView;
-import etutor.modules.rdbd.RDBDConstants;
-import etutor.modules.rdbd.RDBDSpecification;
-import etutor.modules.rdbd.algorithms.Closure;
-import etutor.modules.rdbd.algorithms.ReductionByResolution;
 import org.apache.velocity.app.FieldMethodizer;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 

@@ -1,10 +1,10 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.NormalformDeterminationSubmission;
-import etutor.modules.rdbd.RDBDHelper;
-import etutor.modules.rdbd.model.FunctionalDependency;
-import etutor.modules.rdbd.model.NormalformLevel;
-import etutor.modules.rdbd.model.NormalformLevelComparator;
+import at.jku.dke.etutor.modules.nf.NormalformDeterminationSubmission;
+import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevelComparator;
 
 import java.util.Iterator;
 import java.util.logging.Level;

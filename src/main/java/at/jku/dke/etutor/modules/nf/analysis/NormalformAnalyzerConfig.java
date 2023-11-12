@@ -1,8 +1,8 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
-import etutor.modules.rdbd.model.KeyComparator;
-import etutor.modules.rdbd.model.NormalformLevel;
-import etutor.modules.rdbd.model.Relation;
+import at.jku.dke.etutor.modules.nf.model.KeyComparator;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.util.TreeSet;
 
