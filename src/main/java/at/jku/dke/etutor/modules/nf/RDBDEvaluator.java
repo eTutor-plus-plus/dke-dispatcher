@@ -43,10 +43,6 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		this.messageSource = messageSource;
 	}
 
-	public RDBDEvaluator() {
-		super();
-	}
-
 	/*
 	 * TODO: In the old eTutor, the Map parameters were effectively
 	 *  passedAttributes: Map<String, Serializable>
@@ -79,25 +75,25 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			KeysContainer correctKeys = KeysDeterminator.determineAllKeys((Relation)specification);
 			keysAnalyzerConfig.setCorrectMinimalKeys(correctKeys.getMinimalKeys());
 
-			Relation relation = (Relation)((Collection)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
 			analysis = KeysAnalyzer.analyze(relation, keysAnalyzerConfig);
 			
 			//Set Submission
-			analysis.setSubmission((Relation)((Collection)submission).toArray()[0]);
+			analysis.setSubmission(relation);
 
 		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER){
 			//MINIMAL COVER
-			Relation relation = (Relation)((Collection)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
-			//TODO: pass specificatin itself instead of exerciseID? (2005-10-16, g.n.)
+			Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			//TODO: pass specification itself instead of exerciseID? (2005-10-16, g.n.)
 			analysis = MinimalCoverAnalyzer.analyze(relation, exerciseID);
 				
 			//Set Submission
-			analysis.setSubmission((Relation)((Collection)submission).toArray()[0]);
+			analysis.setSubmission(relation);
 
 		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE){
 			//ATTRIBUTE CLOSURE
 			AttributeClosureSpecification attributeClosureSpecification = (AttributeClosureSpecification)specification;
-			Relation relation = (Relation)((Collection)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
 			analysis = AttributeClosureAnalyzer.analyze(
 					attributeClosureSpecification.getBaseRelation().getFunctionalDependencies(),
 					attributeClosureSpecification.getBaseAttributes(),
@@ -109,7 +105,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		} else if (internalType == RDBDConstants.TYPE_RBR){
 			//RBR
 			RBRSpecification rbrSpecification = (RBRSpecification)specification;
-			Relation relation = (Relation)((Collection)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
 			analysis = RBRAnalyzer.analyze(rbrSpecification.getBaseRelation(), relation);
 			
 			//Set Submission
@@ -117,13 +113,12 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		} else if (internalType == RDBDConstants.TYPE_DECOMPOSE){
 			//DECOMPOSE
-			StringBuffer temp;
-			Iterator decomposedRelationsIterator;
+			StringBuilder temp;
 			
 			DecomposeAnalyzerConfig decomposeAnalyzerConfig = new DecomposeAnalyzerConfig();
 			DecomposeSpecification decomposeSpecification = (DecomposeSpecification)specification;
 
-			TreeSet<IdentifiedRelation> allRelations = new TreeSet(new IdentifiedRelationComparator());
+			TreeSet<IdentifiedRelation> allRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
 			allRelations.add(decomposeSpecification.getBaseRelation());
 			/*
 			 * TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
@@ -136,7 +131,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			allRelations.addAll(submissionTreeSet);
 			
 			String baseRelationID;
-			if ((passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION) != null) && ((((String)passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION)).length() > 0))){
+			if (passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION) != null && ((String)passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION)).length() > 0){
 				baseRelationID = ((String)passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION));
 			} else {
 				baseRelationID = ((DecomposeSpecification)specification).getBaseRelation().getID();
@@ -145,20 +140,20 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			decomposeAnalyzerConfig.setBaseRelation(RDBDHelper.findRelation(baseRelationID, allRelations));
 			RDBDHelper.getLogger().log(Level.INFO, "BaseRelation: '" + baseRelationID + "'."); 
 
-			decomposedRelationsIterator = allRelations.iterator();
-			temp = new StringBuffer();
+			Iterator<IdentifiedRelation> decomposedRelationsIterator = allRelations.iterator();
+			temp = new StringBuilder();
 			while(decomposedRelationsIterator.hasNext()){
-				temp.append("Relation '" + ((IdentifiedRelation)decomposedRelationsIterator.next()).getID() + "' ");
+				temp.append("Relation '").append(((IdentifiedRelation) decomposedRelationsIterator.next()).getID()).append("' ");
 			}
-			RDBDHelper.getLogger().log(Level.INFO, "All submitted Relations: " + temp.toString() + ".");
+			RDBDHelper.getLogger().log(Level.INFO, "All submitted Relations: " + temp + ".");
 
 			decomposeAnalyzerConfig.setDecomposedRelations(RDBDHelper.findSubRelations(baseRelationID, allRelations));
 			decomposedRelationsIterator = decomposeAnalyzerConfig.iterDecomposedRelations();
-			temp = new StringBuffer();
+			temp = new StringBuilder();
 			while(decomposedRelationsIterator.hasNext()){
-				temp.append("Relation '" + ((IdentifiedRelation)decomposedRelationsIterator.next()).getID() + "' ");
+				temp.append("Relation '").append(((IdentifiedRelation) decomposedRelationsIterator.next()).getID()).append("' ");
 			}
-			RDBDHelper.getLogger().log(Level.INFO, "Decomposed Relations: " + temp.toString() + ".");
+			RDBDHelper.getLogger().log(Level.INFO, "Decomposed Relations: " + temp + ".");
 			
 			decomposeAnalyzerConfig.setDesiredNormalformLevel(decomposeSpecification.getTargetLevel());
 			RDBDHelper.getLogger().log(Level.INFO, "Target NormalformLevel: '" + decomposeSpecification.getTargetLevel() + "'."); 
@@ -215,7 +210,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			//Set normalform violations
 			Integer currID;
 			String violatedNF;
-			Iterator iter = normalformDeterminationSubmission.iterDependencyIDs();
+			Iterator<Integer> iter = normalformDeterminationSubmission.iterDependencyIDs();
 			while (iter.hasNext()){
 				currID = (Integer)iter.next();
 				
@@ -363,7 +358,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			NormalizationReporterConfig normalizationReporterConfig = new NormalizationReporterConfig();  
 			normalizationReporterConfig.setAction(action_PARAM);
 			normalizationReporterConfig.setDiagnoseLevel(diagnoseLevel);
-			normalizationReporterConfig.setDecomposedRelations((Collection)analysis.getSubmission());
+			normalizationReporterConfig.setDecomposedRelations((TreeSet<IdentifiedRelation>)analysis.getSubmission());
 			normalizationReporterConfig.setDesiredNormalformLevel(((NormalizationAnalysis)analysis).getDesiredNormalformLevel());
 
 			report = NormalizationReporter.report((NormalizationAnalysis)analysis, (DefaultGrading)grading, normalizationReporterConfig, messageSource, locale);

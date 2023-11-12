@@ -454,8 +454,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 			Iterator dependenciesIterator;
 			submission = new NormalformDeterminationSubmission();
 
-			dependenciesIterator = ((Relation) specification)
-					.iterFunctionalDependencies();
+			dependenciesIterator = ((Relation) specification).iterFunctionalDependencies();
 			while (dependenciesIterator.hasNext()) {
 				((NormalformDeterminationSubmission) submission)
 						.setDependencyID(

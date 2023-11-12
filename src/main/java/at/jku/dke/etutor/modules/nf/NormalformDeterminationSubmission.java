@@ -9,15 +9,15 @@ import java.util.Iterator;
 
 public class NormalformDeterminationSubmission implements Serializable {
 
-	private HashMap dependencyIDs;
+	private HashMap<Integer, FunctionalDependency> dependencyIDs;
 	private NormalformLevel overallLevel;
 	private HashMap normalformViolations;
 
 	public NormalformDeterminationSubmission() {
 		super();
 
-		this.dependencyIDs = new HashMap();
-		this.normalformViolations = new HashMap();
+		this.dependencyIDs = new HashMap<>();
+		this.normalformViolations = new HashMap<>();
 		this.overallLevel = NormalformLevel.FIRST;
 	}
 
@@ -47,7 +47,7 @@ public class NormalformDeterminationSubmission implements Serializable {
 		return (FunctionalDependency) this.dependencyIDs.get(id);
 	}
 
-	public Iterator iterDependencyIDs() {
+	public Iterator<Integer> iterDependencyIDs() {
 		return this.dependencyIDs.keySet().iterator();
 	}
 
