@@ -30,25 +30,32 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		super();
 	}
 
-	public Analysis analyze(int exerciseID, int userID, Map passedAttributes, Map passedParameters) throws Exception {
-		int internalType;
-
+	/*
+	 * TODO: In the old eTutor, the Map parameters were effectively
+	 *  passedAttributes: Map<String, Serializable>
+	 *  passedParameters: Map<String, String[]> (according to documentation, actually seems to be single Strings that
+	 *   may contain multiple values)
+	 *  This must be adapted to match the interface's Map<String, String> in both cases (Gerald Wimmer, 2023-12-11).
+	 */
+	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
 		Analysis analysis;
 
-		Serializable submission;
-		Serializable specification;
-		NormalizationAnalyzerConfig config;
-		NormalizationSpecification normSpec;
-		
 		RDBDHelper.getLogger().log(Level.INFO, "Start analyzing.");
 
-		normSpec = null;
-		analysis = null;
+		/*
+		 * TODO: Receive submission as String instead of Serializable, pass it on to our new, shiny, parser, and receive
+		 *  what used to be passed in from this Serializable from the Parser, instead (Gerald Wimmer, 2023-12-11).
+		 */
+		// Serializable submission = (Serializable)passedAttributes.get(RDBDConstants.calcSubmissionIDFor(exerciseID));
+		Serializable submission = null; // NOTE: Temporary addition so IntelliJ doesn't complain about unitialized variable (Gerald Wimmer, 2023-12-11)
+		int internalType = RDBDExercisesManager.fetchInternalType(exerciseID);
+		Serializable specification = RDBDExercisesManager.fetchSpecification(exerciseID);
 
-		submission = (Serializable)passedAttributes.get(RDBDConstants.calcSubmissionIDFor(exerciseID));								
-		internalType = RDBDExercisesManager.fetchInternalType(exerciseID);
-		specification = RDBDExercisesManager.fetchSpecification(exerciseID);
-
+		/*
+		 * TODO: Pass the submission string on to the appropriate method of our new, shiny, parser (method could be
+		 *  selected inside the if statement) and receive the appropriate data (TreeSet, IdentifiedRelation, Vector)
+		 *  from the parser (Gerald Wimmer, 2023-12-11).
+		 */
 		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION){
 			//KEYS DETERMINATION
 			KeysAnalyzerConfig keysAnalyzerConfig = new KeysAnalyzerConfig();
@@ -210,7 +217,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		return analysis;
 	}
 
-	public Grading grade(Analysis analysis, int taskID, Map passedAttributes, Map passedParameters) throws Exception{
+	public Grading grade(Analysis analysis, int taskID, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception{
 		DefaultGrading grading = new DefaultGrading();
 		grading.setMaxPoints(1);
 		if (analysis.submissionSuitsSolution()){
@@ -221,11 +228,30 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		return grading;
 	}
 
-	public Report report(Analysis analysis, Grading grading, Map passedAttributes, Map passedParameters, Locale locale) throws Exception {
+	/*
+	 * TODO: In the old eTutor, the Map parameters were effectively
+	 *  passedAttributes: Map<String, Serializable>
+	 *  passedParameters: Map<String, String[]> (according to documentation, actually seems to be single Strings that
+	 *   may contain multiple values)
+	 *  This must be adapted to match the interface's Map<String, String> in both cases (Gerald Wimmer, 2023-12-11).
+	 *
+	 * NOTE: passedParameters was never actually used, so there was no conflict in converting it to Map<String, String>,
+	 *  and passedAttribute is only ever queried for String values (see explanation below, where there isn't a cast to
+	 *  String, anyway)
+	 *  (Gerald Wimmer, 2023-12-11)
+	 */
+	public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
 		ReporterConfig config;
 		
-		Report report = null;
+		Report report;
 		String action_PARAM = (String)passedAttributes.get(RDBDConstants.PARAM_ACTION);
+		/*
+		 * NOTE: Whenever the parameter with the key RDBDConstants.ATT_EXERCISE_ID is queried, its .toString() value is
+		 *  passed into Integer.parseInt(). As Integer.parseInt() can only accept Strings (and only interpret those
+		 *  containing Integer values), I assume that calling toString() on the  value of get() has the same effect as
+		 *  casting it to String, which, I assume, it already is if it can be parsed by Integer.parseInt()).
+		 *  (Gerald Wimmer, 2023-12-11).
+		 */
 		int exerciseID_PARAM = Integer.parseInt(passedAttributes.get(RDBDConstants.ATT_EXERCISE_ID).toString());
 		String diagnoseLevel_PARAM = (String)passedAttributes.get(RDBDConstants.PARAM_LEVEL);
 
@@ -316,5 +342,10 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		}
 
 		return report;
+	}
+
+	@Override
+	public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
+		return null; // TODO: Implement this method (Gerald Wimmer, 2023-11-12)
 	}
 }

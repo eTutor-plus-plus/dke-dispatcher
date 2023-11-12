@@ -437,7 +437,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 		}
 		sessionAttributes.put(RDBDConstants.calcSpecificationIDFor(exerciseId),
 				specification);
-		Serializable submission = null;
+		Serializable submission;
 		IdentifiedRelation relation = null;
 
 		if (rdbdType == RDBDConstants.TYPE_NORMALIZATION) {
