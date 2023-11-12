@@ -135,7 +135,7 @@ public class MinimalCoverAnalyzer {
 			tempDependencies.clear();
 			tempDependencies.addAll(dependencies);
 			tempDependencies.remove(currDependency);
-			tempDependencies.removeAll(analysis.getRedundandDependencies());
+			tempDependencies.removeAll(analysis.getRedundantDependencies());
 
 			if (Cover.execute(tempDependencies, dependencies)){
 				RDBDHelper.getLogger().log(Level.INFO, "Found redundand functional dependency.");

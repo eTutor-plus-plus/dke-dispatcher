@@ -341,7 +341,7 @@ public class MinimalCoverReporter {
 		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuffer description = new StringBuffer();
-		int count = analysis.getRedundandDependencies().size();;
+		int count = analysis.getRedundantDependencies().size();;
 		
 		//SET ERROR
 		report.setError(messageSource.getMessage("minimalcoverreporter.redundanddependency", null, locale));
