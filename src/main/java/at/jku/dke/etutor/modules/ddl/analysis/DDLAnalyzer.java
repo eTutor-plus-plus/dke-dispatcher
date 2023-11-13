@@ -176,7 +176,7 @@ public class DDLAnalyzer {
      * Function to check the correctness of the syntax
      * @param config Specifies the configuration
      * @param submittedQuery Specifies the submitted ddl statement
-     * @return
+     * @return Returns a criterion analysis object
      */
     private DDLCriterionAnalysis analyzeSyntax(DDLAnalyzerConfig config, String submittedQuery) {
         this.logger.info("Analyze syntax");
@@ -196,6 +196,12 @@ public class DDLAnalyzer {
         return syntaxAnalysis;
     }
 
+    /**
+     * Function to check the correctness of the tables
+     * @param config Specifies the configuration
+     * @param submittedQuery Specifies the submitted ddl statement
+     * @return Returns a criterion analysis object
+     */
     private DDLCriterionAnalysis analyzeTables(DDLAnalyzerConfig config, String submittedQuery) {
         this.logger.info("Analyze tables");
 
@@ -268,6 +274,12 @@ public class DDLAnalyzer {
         return tablesAnalysis;
     }
 
+    /**
+     * Function to check the correctness of the columns
+     * @param config Specifies the configuration
+     * @param submittedQuery Specifies the submitted ddl statement
+     * @return Returns a criterion analysis object
+     */
     private DDLCriterionAnalysis analyzeColumns(DDLAnalyzerConfig config, String submittedQuery) {
         this.logger.info("Analyze columns");
 
@@ -290,7 +302,7 @@ public class DDLAnalyzer {
                     while (userColumns.next()) {
                         String userColumn = userColumns.getString("COLUMN_NAME");
 
-                        // Compare primary key column names
+                        // Compare column names
                         if(userColumn.equalsIgnoreCase(systemColumn)) {
                             exists = true;
 
@@ -328,7 +340,7 @@ public class DDLAnalyzer {
                         }
                     }
 
-                    // Check if the table exists
+                    // Check if the column exists
                     if(!exists) {
                         columnsAnalysis.addMissingColumn(systemColumn);
                     }
@@ -344,14 +356,14 @@ public class DDLAnalyzer {
                     while (systemColumns.next()) {
                         String systemColumn = systemColumns.getString("COLUMN_NAME");
 
-                        // Compare table names
+                        // Compare column names
                         if(systemColumn.equalsIgnoreCase(userColumn)) {
                             exists = true;
                             break;
                         }
                     }
 
-                    // Check if the table exists
+                    // Check if the column exists
                     if(!exists) {
                         columnsAnalysis.addSurplusColumn(userColumn);
                     }
@@ -376,6 +388,12 @@ public class DDLAnalyzer {
         return columnsAnalysis;
     }
 
+    /**
+     * Function to check the correctness of the primary keys
+     * @param config Specifies the configuration
+     * @param submittedQuery Specifies the submitted ddl statement
+     * @return Returns a criterion analysis object
+     */
     private DDLCriterionAnalysis analyzePrimaryKeys(DDLAnalyzerConfig config, String submittedQuery) {
         this.logger.info("Analyze primary keys");
 
@@ -405,7 +423,7 @@ public class DDLAnalyzer {
                         }
                     }
 
-                    // Check if the table exists
+                    // Check if the primary key exists
                     if(!exists) {
                         primaryKeysAnalysis.addMissingPrimaryKey(systemColumn);
                     }
@@ -421,14 +439,14 @@ public class DDLAnalyzer {
                     while (systemPrimaryKeys.next()) {
                         String systemColumn = systemPrimaryKeys.getString("COLUMN_NAME");
 
-                        // Compare table names
+                        // Compare column names
                         if(systemColumn.equalsIgnoreCase(userColumn)) {
                             exists = true;
                             break;
                         }
                     }
 
-                    // Check if the table exists
+                    // Check if the primary key exists
                     if(!exists) {
                         primaryKeysAnalysis.addSurplusPrimaryKey(userColumn);
                     }
@@ -453,6 +471,12 @@ public class DDLAnalyzer {
         return primaryKeysAnalysis;
     }
 
+    /**
+     * Function to check the correctness of the foreign keys
+     * @param config Specifies the configuration
+     * @param submittedQuery Specifies the submitted ddl statement
+     * @return Returns a criterion analysis object
+     */
     private DDLCriterionAnalysis analyzeForeignKeys(DDLAnalyzerConfig config, String submittedQuery) {
         this.logger.info("Analyze foreign keys");
 
@@ -469,20 +493,26 @@ public class DDLAnalyzer {
                 ResultSet userForeignKeys = userMetadata.getImportedKeys(null, null, tableName);
                 ResultSet systemForeignKeys = systemMetadata.getImportedKeys(null, null, tableName);
 
-                // Search for missing primary keys
+                // Search for missing foreign keys
                 while (systemForeignKeys.next()) {
                     String systemColumn = systemForeignKeys.getString("FKCOLUMN_NAME");
+                    String systemTable = systemForeignKeys.getString("FKTABLE_NAME");
+                    short systemUpdateConstraint = systemForeignKeys.getShort("UPDATE_RULE");
+                    short systemDeleteConstraint = systemForeignKeys.getShort("DELETE_RULE");
                     while (userForeignKeys.next()) {
                         String userColumn = userForeignKeys.getString("FKCOLUMN_NAME");
+                        String userTable = userForeignKeys.getString("FKTABLE_NAME");
+                        short userUpdateConstraint = userForeignKeys.getShort("UPDATE_RULE");
+                        short userDeleteConstraint = userForeignKeys.getShort("DELETE_RULE");
 
-                        // Compare primary key column names
-                        if(userColumn.equalsIgnoreCase(systemColumn)) {
+                        // Compare foreign key column and table names and the delete/update rules
+                        if(userColumn.equalsIgnoreCase(systemColumn) && userTable.equalsIgnoreCase(systemTable) && userUpdateConstraint == systemUpdateConstraint && userDeleteConstraint == systemDeleteConstraint) {
                             exists = true;
                             break;
                         }
                     }
 
-                    // Check if the table exists
+                    // Check if the foreign key exists
                     if(!exists) {
                         foreignKeysAnalysis.addMissingForeignKey(systemColumn);
                     }
@@ -498,14 +528,14 @@ public class DDLAnalyzer {
                     while (systemForeignKeys.next()) {
                         String systemColumn = systemForeignKeys.getString("FKCOLUMN_NAME");
 
-                        // Compare table names
+                        // Compare column names
                         if(systemColumn.equalsIgnoreCase(userColumn)) {
                             exists = true;
                             break;
                         }
                     }
 
-                    // Check if the table exists
+                    // Check if the foreign key exists
                     if(!exists) {
                         foreignKeysAnalysis.addSurplusForeignKey(userColumn);
                     }
@@ -530,13 +560,23 @@ public class DDLAnalyzer {
         return foreignKeysAnalysis;
     }
 
+    /**
+     * Function to check the correctness of the constraints
+     * @param config Specifies the configuration
+     * @param submittedQuery Specifies the submitted ddl statement
+     * @return Returns a criterion analysis object
+     */
     private DDLCriterionAnalysis analyzeConstraints(DDLAnalyzerConfig config, String submittedQuery) {
         this.logger.info("Analyze constraints");
 
         ConstraintsAnalysis constraintsAnalysis = new ConstraintsAnalysis();
         boolean exists = false;
 
+        Statement systemStmt;
+        Statement userStmt;
+
         try {
+            // Analyze unique constraints
             ResultSet userTables = userMetadata.getTables(null, null, null, new String[]{"TABLE"});
 
             // Run through all tables and look at the unique constraints
@@ -592,6 +632,21 @@ public class DDLAnalyzer {
                     exists = false;
                 }
             }
+
+            // Analyze check constraints
+            for(String stmt : config.getDmlStatements()) {
+                // Execute the DML statements
+                systemStmt = systemConn.createStatement();
+                int systemAffects = systemStmt.executeUpdate(stmt);
+
+                userStmt = config.getConn().createStatement();
+                int userAffects = userStmt.executeUpdate(stmt);
+
+                // Check if the row count for the affected rows is the same
+                if(systemAffects != userAffects) {
+                    constraintsAnalysis.addDmlStatementWithMistake(stmt);
+                }
+            }
         } catch (SQLException ex) {
             String msg = "";
             msg = msg.concat("Error encounted while analyzing constraints. ");
@@ -602,7 +657,7 @@ public class DDLAnalyzer {
             constraintsAnalysis.setAnalysisException(new AnalysisException(msg, ex));
         }
 
-        constraintsAnalysis.setCriterionIsSatisfied(constraintsAnalysis.isMissingConstraintsEmpty() && constraintsAnalysis.isSurplusConstraintsEmpty());
+        constraintsAnalysis.setCriterionIsSatisfied(constraintsAnalysis.isMissingConstraintsEmpty() && constraintsAnalysis.isSurplusConstraintsEmpty() && constraintsAnalysis.isDmlStatementsWithMistakesEmpty());
         this.logger.info("Finished constraint analysis.");
         return constraintsAnalysis;
     }

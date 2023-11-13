@@ -5,7 +5,6 @@ import at.jku.dke.etutor.modules.sql.SQLEvaluationAction;
 public class DDLEvaluationAction {
     //region Constants
     public static final DDLEvaluationAction RUN = new DDLEvaluationAction("RUN");
-    public static final DDLEvaluationAction TEST = new DDLEvaluationAction("TEST");
     public static final DDLEvaluationAction CHECK = new DDLEvaluationAction("CHECK");
     public static final DDLEvaluationAction SUBMIT = new DDLEvaluationAction("SUBMIT");
     public static final DDLEvaluationAction DIAGNOSE = new DDLEvaluationAction("DIAGNOSE");

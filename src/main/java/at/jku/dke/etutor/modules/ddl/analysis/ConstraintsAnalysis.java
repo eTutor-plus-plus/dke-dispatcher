@@ -10,19 +10,25 @@ public class ConstraintsAnalysis extends AbstractDDLCriterionAnalysis implements
     //region Fields
     private List<String> missingConstraints;
     private List<String> surplusConstraints;
+    private List<String> dmlStatementsWithMistakes;
     //endregion
 
     public ConstraintsAnalysis() {
         missingConstraints = new ArrayList<>();
         surplusConstraints = new ArrayList<>();
+        dmlStatementsWithMistakes = new ArrayList<>();
     }
 
     public boolean isMissingConstraintsEmpty() {
-        return !this.missingConstraints.isEmpty();
+        return this.missingConstraints.isEmpty();
     }
 
     public boolean isSurplusConstraintsEmpty() {
-        return !this.surplusConstraints.isEmpty();
+        return this.surplusConstraints.isEmpty();
+    }
+
+    public boolean isDmlStatementsWithMistakesEmpty() {
+        return this.dmlStatementsWithMistakes.isEmpty();
     }
 
     public Iterator<String> iterMissingConstraints() {
@@ -31,6 +37,10 @@ public class ConstraintsAnalysis extends AbstractDDLCriterionAnalysis implements
 
     public Iterator<String> iterSurplusConstraints() {
         return this.surplusConstraints.iterator();
+    }
+
+    public Iterator<String> iterDmlStatementsWithMistakes() {
+        return this.dmlStatementsWithMistakes.iterator();
     }
 
     @Override
@@ -61,6 +71,18 @@ public class ConstraintsAnalysis extends AbstractDDLCriterionAnalysis implements
 
     public void addSurplusConstraint(String surplusConstraint) {
         this.surplusConstraints.add(surplusConstraint);
+    }
+
+    public List<String> getDmlStatementsWithMistakes() {
+        return dmlStatementsWithMistakes;
+    }
+
+    public void setDmlStatementsWithMistakes(List<String> dmlStatementsWithMistakes) {
+        this.dmlStatementsWithMistakes = dmlStatementsWithMistakes;
+    }
+
+    public void addDmlStatementWithMistake(String stmt) {
+        this.dmlStatementsWithMistakes.add(stmt);
     }
     //endregion
 }
