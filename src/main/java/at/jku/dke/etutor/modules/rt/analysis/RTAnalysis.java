@@ -32,6 +32,7 @@ public class RTAnalysis extends DefaultAnalysis {
     private List<String> solution;
     private List<String> solutionStudent;
     private ApplicationProperties applicationProperties;
+    private RTSemanticsAnalysis rtSemanticsAnalysis;
     private int maxPoints;
 
     private boolean hasSyntaxError = false;
@@ -45,6 +46,7 @@ public class RTAnalysis extends DefaultAnalysis {
         this.applicationProperties = applicationProperties;
         setDataBaseProperties();
         setSolutionStudent();
+        this.rtSemanticsAnalysis = new RTSemanticsAnalysis(solutionStudent, solution);
     }
 
     public boolean checkSyntax() {
