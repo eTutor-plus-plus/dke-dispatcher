@@ -32,7 +32,7 @@ public class SpecificationEditor implements MessageSourceAware, Serializable {
 	private RDBDSpecification spec;
 	private RDBDSpecification specTmp;
 	private Locale locale;
-	private int rdbdType;
+	private final int rdbdType;
 	private static MessageSource messageSource;
 
 	public SpecificationEditor(int rdbdType) throws MalformedRelationIDException {

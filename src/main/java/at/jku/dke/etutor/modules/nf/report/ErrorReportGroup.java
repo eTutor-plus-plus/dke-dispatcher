@@ -7,15 +7,15 @@ import java.util.Vector;
 public class ErrorReportGroup implements Serializable {
 
 	private String header;
-	private Vector errorReports;
-	private Vector subErrorReportGroups; 
+	private final Vector<ErrorReport> errorReports;
+	private final Vector<ErrorReportGroup> subErrorReportGroups;
 	
 	public ErrorReportGroup() {
 		super();
 		
 		this.header = null;
-		this.errorReports = new Vector();
-		this.subErrorReportGroups = new Vector();
+		this.errorReports = new Vector<>();
+		this.subErrorReportGroups = new Vector<>();
 	}
 	
 	public String getHeader() {
@@ -26,11 +26,11 @@ public class ErrorReportGroup implements Serializable {
 		this.header = header;
 	}
 
-	public Vector getErrorReports() {
-		return (Vector)this.errorReports.clone();
+	public Vector<ErrorReport> getErrorReports() {
+		return (Vector<ErrorReport>)this.errorReports.clone();
 	}
 
-	public void setErrorReports(Collection reports) {
+	public void setErrorReports(Collection<ErrorReport> reports) {
 		this.errorReports.clear();
 		this.errorReports.addAll(reports);
 	}
@@ -39,11 +39,11 @@ public class ErrorReportGroup implements Serializable {
 		this.errorReports.add(report);
 	}
 
-	public Vector getSubErrorReportGroups() {
-		return (Vector)this.subErrorReportGroups.clone();
+	public Vector<ErrorReportGroup> getSubErrorReportGroups() {
+		return (Vector<ErrorReportGroup>)this.subErrorReportGroups.clone();
 	}
 
-	public void setSubErrorReportGroups(Collection reportGroups) {
+	public void setSubErrorReportGroups(Collection<ErrorReportGroup> reportGroups) {
 		this.subErrorReportGroups.clear();
 		this.subErrorReportGroups.addAll(reportGroups);
 	}

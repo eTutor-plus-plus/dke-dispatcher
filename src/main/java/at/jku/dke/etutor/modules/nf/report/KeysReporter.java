@@ -14,7 +14,7 @@ public class KeysReporter {
 
 	public static Report report(KeysAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
 		Report report = new Report();
-		StringBuffer prologue = new StringBuffer();
+		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
 		if (config.getAction().equalsIgnoreCase(RDBDConstants.EVAL_ACTION_SUBMIT)) {
@@ -27,9 +27,9 @@ public class KeysReporter {
 			prologue.append(messageSource.getMessage("keysreporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
 
 			if (grading.getPoints() == 1){
-				prologue.append(" " + messageSource.getMessage("keysreporter.point", null, locale) + " ");
+				prologue.append(" ").append(messageSource.getMessage("keysreporter.point", null, locale)).append(" ");
 			} else {
-				prologue.append(" " + messageSource.getMessage("keysreporter.points", null, locale) + " ");
+				prologue.append(" ").append(messageSource.getMessage("keysreporter.points", null, locale)).append(" ");
 			}
 
 			prologue.append(messageSource.getMessage("keysreporter.yoursubmission", null, locale));
@@ -57,8 +57,8 @@ public class KeysReporter {
 		Iterator it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
-		StringBuffer prologue = new StringBuffer();
-		StringBuffer description = new StringBuffer();
+		StringBuilder prologue = new StringBuilder();
+		StringBuilder description = new StringBuilder();
 
 		int missingKeysCount = analysis.getMissingKeys().size();
 		int additionalKeysCount = analysis.getAdditionalKeys().size();
@@ -77,18 +77,18 @@ public class KeysReporter {
 			if (config.getDiagnoseLevel() == 2){
 				description.append(Integer.toString(missingKeysCount));
 				if (missingKeysCount == 1){
-					description.append(" " + messageSource.getMessage("keysreporter.keyis", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("keysreporter.keyis", null, locale)).append(" ");
   			} else {
-					description.append(" " + messageSource.getMessage("keysreporter.keysare", null, locale) +" ");
+					description.append(" ").append(messageSource.getMessage("keysreporter.keysare", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("keysreporter.missing", null, locale) + ".");
+				description.append(messageSource.getMessage("keysreporter.missing", null, locale)).append(".");
 			}
 			
 			if (config.getDiagnoseLevel() == 3){
 				currElemID = RDBDHelper.getNextElementID();
-				description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-				description.append("<p>" + messageSource.getMessage("keysreporter.keysmissing", null, locale) + ":</p>");
+				description.append("<p>").append(messageSource.getMessage("keysreporter.keysmissing", null, locale)).append(":</p>");
 				description.append("<table border='2' rules='all'>");
 
 				it = analysis.iterMissingKeys();
@@ -101,14 +101,14 @@ public class KeysReporter {
 				description.append("</body></html>");
 				description.append("\"></input>");
 
-				description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + missingKeysCount);
+				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(missingKeysCount);
 
 				if (missingKeysCount == 1){
-					description.append(" " + messageSource.getMessage("keysreporter.keyisa", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("keysreporter.keyisa", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("keysreporter.keysarea", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("keysreporter.keysarea", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("keysreporter.missing", null, locale) + ".");
+				description.append(messageSource.getMessage("keysreporter.missing", null, locale)).append(".");
 			}
 		}
 		
@@ -124,18 +124,18 @@ public class KeysReporter {
 			if (config.getDiagnoseLevel() == 2){
 				description.append(Integer.toString(additionalKeysCount));
 				if (missingKeysCount == 1){
-					description.append(" " + messageSource.getMessage("keysreporter.keyis", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("keysreporter.keyis", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("keysreporter.keysare", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("keysreporter.keysare", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("keysreporter.toomuch", null, locale) + ".");
+				description.append(messageSource.getMessage("keysreporter.toomuch", null, locale)).append(".");
 			}
 			
 			if (config.getDiagnoseLevel() == 3){
 				currElemID = RDBDHelper.getNextElementID();
-				description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-				description.append("<p>" + messageSource.getMessage("keysreporter.keystoomuch", null, locale) + ":</p>");
+				description.append("<p>").append(messageSource.getMessage("keysreporter.keystoomuch", null, locale)).append(":</p>");
 				description.append("<table border='2' rules='all'>");
 
 				it = analysis.iterAdditionalKeys();
@@ -147,14 +147,14 @@ public class KeysReporter {
 				description.append("</table>");
 				description.append("</body></html>");
 				description.append("\"></input>");
-				description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + additionalKeysCount);
+				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(additionalKeysCount);
 
 				if (additionalKeysCount == 1){
-					description.append(" " + messageSource.getMessage("keysreporter.keyisa", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("keysreporter.keyisa", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("keysreporter.keysarea", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("keysreporter.keysarea", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("keysreporter.toomuch", null, locale) + ".");
+				description.append(messageSource.getMessage("keysreporter.toomuch", null, locale)).append(".");
 			}
 		}
 		report.setDescription(description.toString());

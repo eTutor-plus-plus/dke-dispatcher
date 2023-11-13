@@ -19,7 +19,7 @@ public class DuplicateExerciseException extends Exception {
 	}
 
 	public String getMessage(){
-		if ((super.getMessage() == null) || (super.getMessage().length() == 0)){
+		if ((super.getMessage() == null) || (super.getMessage().isEmpty())){
 			return "An exercise with the same specification allready exists.";
 		} else {
 			return "Exercise " + super.getMessage() + " has the same specification.";

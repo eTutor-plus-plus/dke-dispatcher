@@ -9,18 +9,18 @@ import java.util.Iterator;
 
 public class DependenciesPreservationAnalysis extends DefaultAnalysis implements Analysis {
 
-	private HashSet lostDependencies;
+	private final HashSet<FunctionalDependency> lostDependencies;
 
 	public DependenciesPreservationAnalysis() {
 		super();
-		this.lostDependencies = new HashSet();
+		this.lostDependencies = new HashSet<>();
 	}
 	
 	public void addLostFunctionalDependency(FunctionalDependency lostDependency){
 		this.lostDependencies.add(lostDependency);
 	}
 
-	public Iterator iterLostFunctionalDependencies(){
+	public Iterator<FunctionalDependency> iterLostFunctionalDependencies(){
 		return this.lostDependencies.iterator();
 	}
 	
@@ -28,7 +28,7 @@ public class DependenciesPreservationAnalysis extends DefaultAnalysis implements
 		return this.lostDependencies.size();
 	}
 	
-	public HashSet getLostFunctionalDependencies(){
-		return (HashSet)this.lostDependencies.clone();
+	public HashSet<FunctionalDependency> getLostFunctionalDependencies(){
+		return (HashSet<FunctionalDependency>)this.lostDependencies.clone();
 	}
 }

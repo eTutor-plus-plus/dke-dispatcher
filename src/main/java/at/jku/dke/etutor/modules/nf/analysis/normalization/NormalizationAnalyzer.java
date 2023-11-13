@@ -169,7 +169,7 @@ public class NormalizationAnalyzer {
 			analysis.removeAllMissingAttributes(((Relation)decomposedRelationsIterator.next()).getAttributes());
 		}
 
-		analysis.setSubmissionSuitsSolution((analysis.getMissingAttributes().size() == 0));
+		analysis.setSubmissionSuitsSolution((analysis.getMissingAttributes().isEmpty()));
 
 		return analysis;
 	}
@@ -223,7 +223,7 @@ public class NormalizationAnalyzer {
 			}
 		}
 
-		analysis.setSubmissionSuitsSolution(analysis.getLostFunctionalDependencies().size() == 0);
+		analysis.setSubmissionSuitsSolution(analysis.getLostFunctionalDependencies().isEmpty());
 		return analysis;
 	}
 

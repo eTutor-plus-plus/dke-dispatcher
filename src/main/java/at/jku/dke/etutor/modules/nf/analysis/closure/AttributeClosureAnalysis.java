@@ -10,33 +10,33 @@ import java.util.TreeSet;
 
 public class AttributeClosureAnalysis extends DefaultAnalysis implements Analysis {
 
-	private TreeSet missingAttributes;
-	private TreeSet additionalAttributes;
+	private final TreeSet<String> missingAttributes;
+	private final TreeSet<String> additionalAttributes;
 
 	public AttributeClosureAnalysis() {
 		super();
-		this.missingAttributes = new TreeSet(Collator.getInstance());
-		this.additionalAttributes = new TreeSet(Collator.getInstance());
+		this.missingAttributes = new TreeSet<>(Collator.getInstance());
+		this.additionalAttributes = new TreeSet<>(Collator.getInstance());
 	}
 
 	public void addMissingAttribute(String attribute){
 		this.missingAttributes.add(attribute);
 	}
 	
-	public void setMissingAttributes(Collection attributes){
+	public void setMissingAttributes(Collection<String> attributes){
 		this.missingAttributes.clear();
 		this.missingAttributes.addAll(attributes);
 	}
 	
-	public Iterator iterMissingAttributes(){
+	public Iterator<String> iterMissingAttributes(){
 		return this.missingAttributes.iterator();
 	}
 	
-	public TreeSet getMissingAttributes(){
-		return (TreeSet)this.missingAttributes.clone();
+	public TreeSet<String> getMissingAttributes(){
+		return (TreeSet<String>)this.missingAttributes.clone();
 	}
 	
-	public void removeAllMissingAttributes(Collection attributes){
+	public void removeAllMissingAttributes(Collection<String> attributes){
 		this.missingAttributes.removeAll(attributes);
 	}
 
@@ -44,20 +44,20 @@ public class AttributeClosureAnalysis extends DefaultAnalysis implements Analysi
 		this.additionalAttributes.add(attribute);
 	}
 	
-	public void setAdditionalAttributes(Collection attributes){
+	public void setAdditionalAttributes(Collection<String> attributes){
 		this.additionalAttributes.clear();
 		this.additionalAttributes.addAll(attributes);
 	}
 	
-	public Iterator iterAdditionalAttributes(){
+	public Iterator<String> iterAdditionalAttributes(){
 		return this.additionalAttributes.iterator();
 	}
 	
-	public TreeSet getAdditionalAttributes(){
-		return (TreeSet)this.additionalAttributes.clone();
+	public TreeSet<String> getAdditionalAttributes(){
+		return (TreeSet<String>)this.additionalAttributes.clone();
 	}
 	
-	public void removeAllAdditionalAttributes(Collection attributes){
+	public void removeAllAdditionalAttributes(Collection<String> attributes){
 		this.additionalAttributes.removeAll(attributes);
 	}
 }

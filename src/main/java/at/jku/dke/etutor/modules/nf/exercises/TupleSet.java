@@ -1,7 +1,6 @@
 package at.jku.dke.etutor.modules.nf.exercises;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -18,25 +17,9 @@ public class TupleSet extends TreeSet implements Set {
 	public boolean add(int[] tuple){
 		return super.add(tuple);
 	}
-	
-	public int size() {
-		return super.size();
-	}
-
-	public boolean isEmpty() {
-		return super.isEmpty();
-	}
 
 	public boolean contains(Object o) {
 		return super.contains(o);
-	}
-
-	public Iterator iterator() {
-		return super.iterator();
-	}
-
-	public Object[] toArray() {
-		return super.toArray();
 	}
 
 	public Object[] toArray(Object[] a) {
@@ -65,10 +48,6 @@ public class TupleSet extends TreeSet implements Set {
 
 	public boolean removeAll(Collection c) {
 		return super.removeAll(c);
-	}
-
-	public void clear() {
-		super.clear();
 	}
 	
 	public static void main(String[] args){

@@ -13,7 +13,7 @@ import java.util.logging.Level;
 public class RBRAnalyzer {
 
 	public static RBRAnalysis analyze(Relation baseRelation, Relation subRelation){
-		StringBuffer temp;
+		StringBuilder temp;
 		RBRAnalysis analysis;
 		Collection correctDependencies;
 		Iterator correctDependenciesIterator;
@@ -30,10 +30,10 @@ public class RBRAnalyzer {
 		
 		correctDependencies = ReductionByResolution.execute(baseRelation, subRelation.getAttributes());
 
-		temp = new StringBuffer();
+		temp = new StringBuilder();
 		correctDependenciesIterator = correctDependencies.iterator();
 		while (correctDependenciesIterator.hasNext()){
-			temp.append(correctDependenciesIterator.next() + "; ");
+			temp.append(correctDependenciesIterator.next()).append("; ");
 		}
 		RDBDHelper.getLogger().log(Level.INFO, "CORRECT DEPENDENCIES: " + temp.toString());
 

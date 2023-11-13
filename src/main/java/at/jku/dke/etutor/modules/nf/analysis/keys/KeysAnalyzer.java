@@ -13,7 +13,7 @@ public class KeysAnalyzer {
 		TreeSet correctKeys;
 		KeysAnalysis analysis;
 
-		message = new String();
+		message = "";
 		message = message.concat("Start analyzing keys determination.");
 		RDBDHelper.getLogger().log(Level.INFO, message);
 
@@ -29,14 +29,14 @@ public class KeysAnalyzer {
 		analysis.setAdditionalKeys(relation.getMinimalKeys());
 		analysis.removeAllAdditionalKeys(correctKeys);
 
-		if ((analysis.getMissingKeys().size() != 0) || (analysis.getAdditionalKeys().size() != 0)){
+		if ((!analysis.getMissingKeys().isEmpty()) || (!analysis.getAdditionalKeys().isEmpty())){
 			analysis.setSubmissionSuitsSolution(false);
 		}
 
 		RDBDHelper.getLogger().log(Level.INFO, "Found " + analysis.getMissingKeys().size() + " missing keys.");
 		RDBDHelper.getLogger().log(Level.INFO, "Found " + analysis.getAdditionalKeys().size() + " additional keys.");
 
-		message = new String();
+		message = "";
 		message = message.concat("Exit analyzing keys determination.");
 		RDBDHelper.getLogger().log(Level.INFO, message);
 		

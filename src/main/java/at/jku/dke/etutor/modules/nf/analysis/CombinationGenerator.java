@@ -4,10 +4,10 @@ import java.math.BigInteger;
 
 public class CombinationGenerator {
 
-	private int n;
-	private int r;
-	private int[] a;
-	private BigInteger total;
+	private final int n;
+	private final int r;
+	private final int[] a;
+	private final BigInteger total;
 	private BigInteger numLeft;
 
 	public CombinationGenerator(int n, int r) {
@@ -80,13 +80,13 @@ public class CombinationGenerator {
 		String[] elements = {"a", "b", "c", "d", "e", "f", "g"};
 		int[] indices;
 		CombinationGenerator x = new CombinationGenerator (elements.length, 3);
-		StringBuffer combination;
+		StringBuilder combination;
 		while (x.hasMore ()) {
-			combination = new StringBuffer ();
+			combination = new StringBuilder();
 			indices = x.getNext ();
-			for (int i = 0; i < indices.length; i++) {
-				combination.append (elements[indices[i]] + " ");
-			}
+            for (int index : indices) {
+                combination.append(elements[index]).append(" ");
+            }
 			System.out.println (combination.toString ());
 		}
 		

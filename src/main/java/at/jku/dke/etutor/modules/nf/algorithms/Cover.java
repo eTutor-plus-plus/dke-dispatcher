@@ -7,19 +7,17 @@ import java.util.Iterator;
 
 public class Cover {
 
-	public static boolean execute(Collection fd1, Collection fd2){
-		Iterator dependenciesIterator;
- 
-		dependenciesIterator = fd1.iterator();
+	public static boolean execute(Collection<FunctionalDependency> fd1, Collection<FunctionalDependency> fd2){
+		Iterator<FunctionalDependency> dependenciesIterator = fd1.iterator();
 		while (dependenciesIterator.hasNext()) {
-			if (!Member.execute((FunctionalDependency)dependenciesIterator.next(), fd2)) {
+			if (!Member.execute(dependenciesIterator.next(), fd2)) {
 				return false;
 			}
 		}
 
 		dependenciesIterator = fd2.iterator();
 		while (dependenciesIterator.hasNext()) {
-			if (!Member.execute((FunctionalDependency)dependenciesIterator.next(), fd1)) {
+			if (!Member.execute(dependenciesIterator.next(), fd1)) {
 				return false;
 			}
 		}

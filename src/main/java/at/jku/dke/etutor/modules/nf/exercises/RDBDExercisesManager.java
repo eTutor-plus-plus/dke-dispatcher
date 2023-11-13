@@ -90,7 +90,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 			
 			//GET MAX ID FROM DB
 			sql = "SELECT MAX(id) FROM exercises";
-			msg = new String();
+			msg = "";
 			msg = msg.concat("QUERY for select max id value:\n" + sql);
 			this.logger.log(Level.INFO, msg);
 			
@@ -101,7 +101,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 				exerciseId = rs.getInt(1) + 1;
 			}
 			
-			sql = new String();
+			sql = "";
 			sql = sql.concat("INSERT INTO exercises VALUES (");
 			sql = sql.concat(exerciseId + ", ");
 			sql = sql.concat("empty_blob(), " + this.rdbdType + ")");
@@ -111,7 +111,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 			stmt= conn.createStatement();
 			stmt.execute(sql);
 
-			sql = new String();
+			sql = "";
 			sql = sql.concat("SELECT specification ");
 			sql = sql.concat("FROM	 exercises ");
 			sql = sql.concat("WHERE	 id=" + exerciseId + " for update");
@@ -226,14 +226,14 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 			conn = RDBDHelper.getPooledConnection();
 			conn.setAutoCommit(false);
 
-			duplicateId = checkForDuplicate(this.rdbdType, new Integer(exerciseId), specification, conn);
+			duplicateId = checkForDuplicate(this.rdbdType, exerciseId, specification, conn);
 			if (duplicateId > -1) {
 				msg = "Settings of the specified exercise are equal to those of existing exercise ";
 				msg += "with ID " + duplicateId + ". Please change your settings and try again.";
 				throw new Exception(msg);
 			}
 			
-			sql = new String();
+			sql = "";
 			sql = sql.concat("UPDATE exercises SET specification = empty_blob() ");
 			sql = sql.concat("WHERE id = " + exerciseId);
 
@@ -242,7 +242,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 			stmt= conn.createStatement();
 			stmt.execute(sql);
 
-			sql = new String();
+			sql = "";
 			sql = sql.concat("SELECT specification ");
 			sql = sql.concat("FROM	 exercises ");
 			sql = sql.concat("WHERE	 id=" + exerciseId + " for update");
@@ -334,7 +334,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 			conn = RDBDHelper.getPooledConnection();
 			conn.setAutoCommit(false);
 			
-			sql = new String();
+			sql = "";
 			sql = sql.concat("DELETE FROM exercises WHERE id = " + exerciseID);
 			
 			stmt = conn.createStatement();
@@ -380,7 +380,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 		ObjectInputStream in = null;
 		SpecificationEditor editor = null;
 
-		sql = new String();
+		sql = "";
 		sql = sql.concat("SELECT 	specification ");
 		sql = sql.concat("FROM 		exercises ");
 		sql = sql.concat("WHERE		id = " + exerciseID);
@@ -498,12 +498,12 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 		int duplicateExerciseID = -1;
 		
 		try {
-			sql = new String();
+			sql = "";
 			sql = sql.concat("SELECT	id, specification ");
 			sql = sql.concat("FROM		exercises ");
 			sql = sql.concat("WHERE		rdbd_type = " + rdbdType + " ");
 			if (exclusiveId != null) {
-				sql = sql.concat("AND		id != " + exclusiveId.intValue());
+				sql = sql.concat("AND		id != " + exclusiveId);
 			}
 			
 			stmt = conn.createStatement();
@@ -568,7 +568,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 		Serializable specification = null;
 		ObjectInputStream in = null;
 		
-		query = new String();
+		query = "";
 		query = query.concat("SELECT 	specification ");
 		query = query.concat("FROM 		exercises ");
 		query = query.concat("WHERE		id = " + exerciseID);

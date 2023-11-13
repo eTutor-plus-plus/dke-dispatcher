@@ -5,7 +5,7 @@ import java.util.Vector;
 
 public class ThirdNormalformViolation extends NormalformViolation {
 
-	private Vector nonPrimRHSAttributes;
+	private final Vector nonPrimRHSAttributes;
 
 	public ThirdNormalformViolation() {
 		super();

@@ -9,26 +9,26 @@ import java.util.Vector;
 
 public class ExtraneousAttributesAnalysis extends DefaultAnalysis implements Analysis {
 
-	private HashMap extraneousAttributes;
+	private final HashMap<FunctionalDependency, Vector<String>> extraneousAttributes;
 
 	public ExtraneousAttributesAnalysis() {
 		super();
-		this.extraneousAttributes = new HashMap();
+		this.extraneousAttributes = new HashMap<>();
 	}
 
-	public HashMap getExtraneousAttributes() {
-		return (HashMap)this.extraneousAttributes.clone();
+	public HashMap<FunctionalDependency, Vector<String>> getExtraneousAttributes() {
+		return (HashMap<FunctionalDependency, Vector<String>>)this.extraneousAttributes.clone();
 	}
 	
-	public Vector getExtraneousAttributes(FunctionalDependency dependency){
-		return (Vector)this.extraneousAttributes.get(dependency);
+	public Vector<String> getExtraneousAttributes(FunctionalDependency dependency){
+		return this.extraneousAttributes.get(dependency);
 	}
 
 	public void addExtraneousAttribute(FunctionalDependency dependency, String attribute){
 		if (!this.extraneousAttributes.containsKey(dependency)){
-			this.extraneousAttributes.put(dependency, new Vector());
+			this.extraneousAttributes.put(dependency, new Vector<>());
 		}
 
-		((Vector)this.extraneousAttributes.get(dependency)).add(attribute);
+		this.extraneousAttributes.get(dependency).add(attribute);
 	}
 }

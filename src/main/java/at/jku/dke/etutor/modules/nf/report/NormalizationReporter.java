@@ -22,7 +22,7 @@ public class NormalizationReporter {
 		Iterator decomposedRelationsIterator;
 
 		Report report = new Report();
-		StringBuffer prologue = new StringBuffer();
+		StringBuilder prologue = new StringBuilder();
 		
 		//SET PROLOGUE
 		if (config.getAction().equals(RDBDConstants.EVAL_ACTION_SUBMIT)){
@@ -34,9 +34,9 @@ public class NormalizationReporter {
 			prologue.append(messageSource.getMessage("normalizationreporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
 			if (grading != null){
 				if (grading.getPoints() == 1){
-					prologue.append(" " + messageSource.getMessage("normalizationreporter.point", null, locale) + " ");
+					prologue.append(" ").append(messageSource.getMessage("normalizationreporter.point", null, locale)).append(" ");
 				} else {
-					prologue.append(" " + messageSource.getMessage("normalizationreporter.points", null, locale) + " ");
+					prologue.append(" ").append(messageSource.getMessage("normalizationreporter.points", null, locale)).append(" ");
 				}
 				prologue.append(messageSource.getMessage("normalizationreporter.yoursolution", null, locale));
 			}
@@ -79,7 +79,7 @@ public class NormalizationReporter {
 			decomposedRelationsIterator = config.iterDecomposedRelations();
 			while (decomposedRelationsIterator.hasNext()){
 				reportGroup = createRelationSpecificErrorReportsGroup(((IdentifiedRelation)decomposedRelationsIterator.next()).getID(), analysis, config, grading, messageSource, locale);
-				if (reportGroup.getErrorReports().size() != 0){
+				if (!reportGroup.getErrorReports().isEmpty()){
 					report.addErrorReportGroup(reportGroup);
 				}
 			}
@@ -158,7 +158,7 @@ public class NormalizationReporter {
 		Iterator it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
-		StringBuffer description = new StringBuffer();
+		StringBuilder description = new StringBuilder();
 		int numberOfLostDependencies = analysis.getLostFunctionalDependencies().size();		
 
 		//SET ERROR
@@ -174,18 +174,18 @@ public class NormalizationReporter {
 		if (config.getDiagnoseLevel() == 1){
 			description.append(String.valueOf(numberOfLostDependencies));
 			if (numberOfLostDependencies == 1){
-				description.append(" " + messageSource.getMessage("normalizationreporter.dependencybaserelation", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("normalizationreporter.dependencybaserelation", null, locale)).append(" ");
 			} else {
-				description.append(" " + messageSource.getMessage("normalizationreporter.dependenciesbaserelation", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("normalizationreporter.dependenciesbaserelation", null, locale)).append(" ");
 			}
-			description.append(" " + messageSource.getMessage("normalizationreporter.lost", null, locale) + ".");
+			description.append(" ").append(messageSource.getMessage("normalizationreporter.lost", null, locale)).append(".");
 		} 
 		
 		if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)){
 			currElemID = RDBDHelper.getNextElementID();
-			description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-			description.append("<p>" + messageSource.getMessage("normalizationreporter.dependencieslost", null, locale) + ":</p>");
+			description.append("<p>").append(messageSource.getMessage("normalizationreporter.dependencieslost", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
 			it = analysis.iterLostFunctionalDependencies();
@@ -198,14 +198,14 @@ public class NormalizationReporter {
 			description.append("</body></html>");
 			description.append("\"></input>");
 
-			description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + numberOfLostDependencies);
+			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(numberOfLostDependencies);
 
 			if (numberOfLostDependencies == 1){
-				description.append(" " + messageSource.getMessage("normalizationreporter.dependencybaserelationa", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("normalizationreporter.dependencybaserelationa", null, locale)).append(" ");
 			} else {
-				description.append(" " + messageSource.getMessage("normalizationreporter.dependenciesbaserelationa", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("normalizationreporter.dependenciesbaserelationa", null, locale)).append(" ");
 			}
-			description.append(messageSource.getMessage("normalizationreporter.lost", null, locale) + ".");
+			description.append(messageSource.getMessage("normalizationreporter.lost", null, locale)).append(".");
 		}
 		report.setDescription(description.toString());
 
@@ -240,7 +240,7 @@ public class NormalizationReporter {
 		Iterator it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
-		StringBuffer description = new StringBuffer();
+		StringBuilder description = new StringBuilder();
 		int numberOfMissingAttributes = analysis.getMissingAttributes().size();;		
 
 		//SET ERROR
@@ -256,18 +256,18 @@ public class NormalizationReporter {
 		if (config.getDiagnoseLevel() == 1){
 			description.append(String.valueOf(numberOfMissingAttributes));
 			if (numberOfMissingAttributes == 1){
-				description.append(" " + messageSource.getMessage("normalizationreporter.attributeis", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("normalizationreporter.attributeis", null, locale)).append(" ");
 			} else {
-				description.append(" " + messageSource.getMessage("normalizationreporter.attributesare", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("normalizationreporter.attributesare", null, locale)).append(" ");
 			}
 			description.append(messageSource.getMessage("normalizationreporter.notcompriseddecomposed", null, locale));
 		} 
 		
 		if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)){
 			currElemID = RDBDHelper.getNextElementID();
-			description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-			description.append("<p>" + messageSource.getMessage("normalizationreporter.attributenotcomprised", null, locale) + ":</p>");
+			description.append("<p>").append(messageSource.getMessage("normalizationreporter.attributenotcomprised", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
 			it = analysis.iterMissingAttributes();
@@ -280,14 +280,14 @@ public class NormalizationReporter {
 			description.append("</body></html>");
 			description.append("\"></input>");
 
-			description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + numberOfMissingAttributes);
+			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(numberOfMissingAttributes);
 
 			if (numberOfMissingAttributes == 1){
-				description.append(" " + messageSource.getMessage("normalizationreporter.attributeisa", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("normalizationreporter.attributeisa", null, locale)).append(" ");
 			} else {
-				description.append(" " + messageSource.getMessage("normalizationreporter.attributesarea", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("normalizationreporter.attributesarea", null, locale)).append(" ");
 			}
-			description.append(messageSource.getMessage("normalizationreporter.missing", null, locale) + ".");
+			description.append(messageSource.getMessage("normalizationreporter.missing", null, locale)).append(".");
 		}
 		report.setDescription(description.toString());
 

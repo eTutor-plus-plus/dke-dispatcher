@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
 import at.jku.dke.etutor.modules.nf.RDBDSpecification;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.io.Serializable;
@@ -10,20 +11,20 @@ import java.util.Vector;
 
 public class IdentifiedRelation extends Relation implements Serializable, Cloneable, RDBDSpecification {
 
-	static final long serialVersionUID = -8880131949030576416L;
+	private static final long serialVersionUID = -8880131949030576416L;
 	private String id;
 
 	public IdentifiedRelation() {
 		super();
-		this.id = new String();
+		this.id = "";
 	}
 
+	@Override
 	public Object clone() throws CloneNotSupportedException {
-		IdentifiedRelation clone = (IdentifiedRelation)super.clone();
-		return clone;
+        return (IdentifiedRelation)super.clone();
 	}
 
-	public IdentifiedRelation(Collection attributes, Collection dependencies) {
+	public IdentifiedRelation(Collection<String> attributes, Collection<FunctionalDependency> dependencies) {
 		super(attributes, dependencies);
 	}
 	
@@ -44,13 +45,12 @@ public class IdentifiedRelation extends Relation implements Serializable, Clonea
 	}
 	
 	public String toString(){
-		Iterator iter;
-		String toString = new String();
+		String toString = "";
 		
 		toString = toString.concat("Relation: " + this.getName() + "(" + this.getID() + ")\n");
 
 		toString = toString.concat("Attributes: \n");
-		iter = this.iterAttributes();
+		Iterator iter = this.iterAttributes();
 		while (iter.hasNext()){
 			toString = toString.concat(iter.next().toString() + "; ");
 		}

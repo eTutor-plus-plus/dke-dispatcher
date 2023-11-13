@@ -4,11 +4,11 @@ import java.io.Serializable;
 
 public class ReportAtomType implements Serializable {
 
-	private String name;
+	private final String name;
 
-	public static ReportAtomType INFO = new ReportAtomType("Info");
-	public static ReportAtomType ERROR = new ReportAtomType("Error");
-	public static ReportAtomType WARNING = new ReportAtomType("Warning");
+	public static final ReportAtomType INFO = new ReportAtomType("Info");
+	public static final ReportAtomType ERROR = new ReportAtomType("Error");
+	public static final ReportAtomType WARNING = new ReportAtomType("Warning");
 
 	protected ReportAtomType(String reportAtomTypeName) {
 		super();

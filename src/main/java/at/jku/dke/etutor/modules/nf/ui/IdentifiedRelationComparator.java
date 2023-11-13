@@ -44,12 +44,8 @@ public class IdentifiedRelationComparator  implements Comparator, Serializable{
 		
 		id1 = ((IdentifiedRelation)o1).getID().split("\\.");
 		id2 = ((IdentifiedRelation)o2).getID().split("\\.");
-		
-		if (id1.length <= id2.length){
-			maxComparisons = id1.length;
-		} else {
-			maxComparisons = id2.length;
-		}
+
+        maxComparisons = Math.min(id1.length, id2.length);
 		
 		for (int i=0; i<maxComparisons; i++){
 			valueID1 = Integer.parseInt(id1[i]);

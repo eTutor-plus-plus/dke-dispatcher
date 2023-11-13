@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 public class DecomposeSpecification implements Serializable, Cloneable, RDBDSpecification {
 
-	static final long serialVersionUID = 1411810798506094612L;	
+	private static final long serialVersionUID = 1411810798506094612L;
 
 	private int maxLostDependencies;
 	private NormalformLevel targetLevel;
@@ -84,14 +84,11 @@ public class DecomposeSpecification implements Serializable, Cloneable, RDBDSpec
 
 		return true;
 	}
-	
+
+	@Override
 	public String toString(){
-		StringBuffer buffer = new StringBuffer();
-		
-		buffer.append("MAX LOST DEPENDENCIES: " + this.maxLostDependencies + "\n");
-		buffer.append("TARGET LEVEL: " + this.targetLevel + "\n");
-		buffer.append("BASE RELATION:\n" + this.baseRelation + "\n");
-		
-		return buffer.toString();
+        return "MAX LOST DEPENDENCIES: " + this.maxLostDependencies + "\n" +
+				"TARGET LEVEL: " + this.targetLevel + "\n" +
+				"BASE RELATION:\n" + this.baseRelation + "\n";
 	}
 }

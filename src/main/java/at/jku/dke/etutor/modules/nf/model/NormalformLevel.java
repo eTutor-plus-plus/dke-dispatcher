@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 public class NormalformLevel implements Serializable{
 
-	private String degree;
-	private int intRepresentation;
+	private final String degree;
+	private final int intRepresentation;
 
 	public static final NormalformLevel FIRST = new NormalformLevel("FIRST", 1);
 	public static final NormalformLevel SECOND = new NormalformLevel("SECOND", 2);

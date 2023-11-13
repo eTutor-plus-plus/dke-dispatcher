@@ -8,31 +8,31 @@ import java.util.Vector;
 
 public class AttributeClosureSpecification implements Serializable, Cloneable, RDBDSpecification{
 
-	static final long serialVersionUID = 7948740045298387409L;
+	private static final long serialVersionUID = 7948740045298387409L;
 
-	private Vector baseAttributes;
+	private Vector<String> baseAttributes;
 	private IdentifiedRelation baseRelation;
 
 	public AttributeClosureSpecification() {
 		super();
 		this.baseRelation = null;
-		this.baseAttributes = new Vector();
+		this.baseAttributes = new Vector<>();
 	}
 
 	public Object clone() throws CloneNotSupportedException {
 		AttributeClosureSpecification clone = (AttributeClosureSpecification)super.clone();
-		clone.baseAttributes = (Vector)this.baseAttributes.clone();
+		clone.baseAttributes = (Vector<String>)this.baseAttributes.clone();
 		if (this.baseRelation != null) {
 			clone.baseRelation = (IdentifiedRelation)this.baseRelation.clone();
 		}
 		return clone;
 	}
 
-	public Vector getBaseAttributes() {
-		return (Vector)this.baseAttributes.clone();
+	public Vector<String> getBaseAttributes() {
+		return (Vector<String>)this.baseAttributes.clone();
 	}
 
-	public void setBaseAttributes(Collection attributeCombination) {
+	public void setBaseAttributes(Collection<String> attributeCombination) {
 		this.baseAttributes.clear();
 		this.baseAttributes.addAll(attributeCombination);
 	}
@@ -76,13 +76,11 @@ public class AttributeClosureSpecification implements Serializable, Cloneable, R
 
 		return true;
 	}
-	
+
+	@Override
 	public String toString(){
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("BASE ATTRIBUTES: " + this.baseAttributes + "\n");
-		buffer.append("BASE RELATION:\n" + this.baseRelation + "\n");
-		
-		return buffer.toString();
+        return "BASE ATTRIBUTES: " + this.baseAttributes + "\n" +
+				"BASE RELATION:\n" + this.baseRelation + "\n";
 	}
 	
 	public static void main(String[] args) {

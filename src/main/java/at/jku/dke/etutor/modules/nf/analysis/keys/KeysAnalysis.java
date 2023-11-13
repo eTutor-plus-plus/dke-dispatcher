@@ -11,33 +11,33 @@ import java.util.TreeSet;
 
 public class KeysAnalysis extends DefaultAnalysis implements Analysis {
 
-	private TreeSet missingKeys;
-	private TreeSet additionalKeys;
+	private final TreeSet<Key> missingKeys;
+	private final TreeSet<Key> additionalKeys;
 
 	public KeysAnalysis() {
 		super();
-		this.missingKeys = new TreeSet(new KeyComparator());
-		this.additionalKeys = new TreeSet(new KeyComparator());
+		this.missingKeys = new TreeSet<>(new KeyComparator());
+		this.additionalKeys = new TreeSet<>(new KeyComparator());
 	}
 
 	public void addMissingKey(Key key){
 		this.missingKeys.add(key);
 	}
 	
-	public Iterator iterMissingKeys(){
+	public Iterator<Key> iterMissingKeys(){
 		return this.missingKeys.iterator();
 	}
 	
-	public TreeSet getMissingKeys(){
-		return (TreeSet)this.missingKeys.clone();
+	public TreeSet<Key> getMissingKeys(){
+		return (TreeSet<Key>)this.missingKeys.clone();
 	}
 	
-	public void setMissingKeys(Collection missingKeys){
+	public void setMissingKeys(Collection<Key> missingKeys){
 		this.missingKeys.clear();
 		this.missingKeys.addAll(missingKeys);
 	}
 	
-	public void removeAllMissingKeys(Collection keys){
+	public void removeAllMissingKeys(Collection<Key> keys){
 		this.missingKeys.removeAll(keys);
 	}
 	
@@ -45,20 +45,20 @@ public class KeysAnalysis extends DefaultAnalysis implements Analysis {
 		this.additionalKeys.add(key);
 	}
 	
-	public Iterator iterAdditionalKeys(){
+	public Iterator<Key> iterAdditionalKeys(){
 		return this.additionalKeys.iterator();
 	}
 	
-	public TreeSet getAdditionalKeys(){
-		return (TreeSet)this.additionalKeys.clone();
+	public TreeSet<Key> getAdditionalKeys(){
+		return (TreeSet<Key>)this.additionalKeys.clone();
 	}
 
-	public void setAdditionalKeys(Collection additionalKeys){
+	public void setAdditionalKeys(Collection<Key> additionalKeys){
 		this.additionalKeys.clear();
 		this.additionalKeys.addAll(additionalKeys);
 	}
 	
-	public void removeAllAdditionalKeys(Collection keys){
+	public void removeAllAdditionalKeys(Collection<Key> keys){
 		this.additionalKeys.removeAll(keys);
 	}
 }

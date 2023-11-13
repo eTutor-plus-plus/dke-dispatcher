@@ -16,7 +16,7 @@ public class NormalformReporter {
 
 	public static Report report(NormalformDeterminationAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
 		Report report = new Report();
-		StringBuffer prologue = new StringBuffer();
+		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
 		if (config.getAction().equals(RDBDConstants.EVAL_ACTION_SUBMIT)){
@@ -28,9 +28,9 @@ public class NormalformReporter {
 			prologue.append(messageSource.getMessage("normalformreporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
 			if (grading != null){
 				if (grading.getPoints() == 1){
-					prologue.append(" " + messageSource.getMessage("normalformreporter.point", null, locale) + " ");
+					prologue.append(" ").append(messageSource.getMessage("normalformreporter.point", null, locale)).append(" ");
 				} else {
-					prologue.append(" " + messageSource.getMessage("normalformreporter.points", null, locale) + " ");
+					prologue.append(" ").append(messageSource.getMessage("normalformreporter.points", null, locale)).append(" ");
 				}
 				prologue.append(messageSource.getMessage("normalformreporter.yoursolution", null, locale));
 			}
@@ -50,7 +50,7 @@ public class NormalformReporter {
 			}
 
 			//REPORT NF_LEVEL_VIOLATIONS
-			if (analysis.getWrongLeveledDependencies().size() > 0){
+			if (!analysis.getWrongLeveledDependencies().isEmpty()){
 				report.addErrorReport(createNormalformLevelViolationErrorReport(analysis, config, messageSource, locale));
 			}
 		}
@@ -88,7 +88,7 @@ public class NormalformReporter {
 
 	public static ErrorReport createNormalformLevelViolationErrorReport(NormalformDeterminationAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
 		ErrorReport report = new ErrorReport();
-		StringBuffer description = new StringBuffer();
+		StringBuilder description = new StringBuilder();
 		
 		//SET ERROR
 		report.setError(messageSource.getMessage("normalformreporter.incorrectnormalformviolations", null, locale));
@@ -103,9 +103,9 @@ public class NormalformReporter {
 		if (config.getDiagnoseLevel() == 2){
 			description.append(analysis.wrongLeveledDependenciesCount());
 			if (analysis.wrongLeveledDependenciesCount() == 1){
-				description.append(" " + messageSource.getMessage("normalformreporter.dependencydoes", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("normalformreporter.dependencydoes", null, locale)).append(" ");
 			} else {
-				description.append(" " + messageSource.getMessage("normalformreporter.dependenciesdo", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("normalformreporter.dependenciesdo", null, locale)).append(" ");
 			}
 			description.append(messageSource.getMessage("normalformreporter.notviolatenormalform", null, locale));
 		}
@@ -114,9 +114,9 @@ public class NormalformReporter {
 			description.append(messageSource.getMessage("normalformreporter.violatenotspecifiednormalform", null, locale));
 			description.append("<table rules='cols' border='1' style='margin-top:5px;'>");
 			description.append("	<tr>");
-			description.append("		<td style='border-bottom:solid;border-bottom-width:thin;padding-left:10px;padding-right:10px'><i>" + messageSource.getMessage("normalformreporter.functionaldependency", null, locale) + "</i></td>");
-			description.append("		<td style='border-bottom:solid;border-bottom-width:thin;padding-left:10px;padding-right:10px'><i>" + messageSource.getMessage("normalformreporter.violatednormalform", null, locale) + "</i></td>");
-			description.append("		<td style='border-bottom:solid;border-bottom-width:thin;padding-left:10px;padding-right:10px'><i>" + messageSource.getMessage("normalformreporter.yoursolution", null, locale) + "</i></td>");
+			description.append("		<td style='border-bottom:solid;border-bottom-width:thin;padding-left:10px;padding-right:10px'><i>").append(messageSource.getMessage("normalformreporter.functionaldependency", null, locale)).append("</i></td>");
+			description.append("		<td style='border-bottom:solid;border-bottom-width:thin;padding-left:10px;padding-right:10px'><i>").append(messageSource.getMessage("normalformreporter.violatednormalform", null, locale)).append("</i></td>");
+			description.append("		<td style='border-bottom:solid;border-bottom-width:thin;padding-left:10px;padding-right:10px'><i>").append(messageSource.getMessage("normalformreporter.yoursolution", null, locale)).append("</i></td>");
 			description.append("	</tr>");
 			
 			Object[] entry;
@@ -125,9 +125,9 @@ public class NormalformReporter {
 				entry = (Object[])iter.next();
 				
 				description.append("	<tr>");
-				description.append("		<td align='center'>" + entry[0].toString().replaceAll("->", "&rarr;") + "</td>");
-				description.append("		<td align='center'>" + normalformLevelToString((NormalformLevel)entry[1], messageSource, locale)  + "</td>");
-				description.append("		<td align='center'>" + normalformLevelToString((NormalformLevel)entry[2], messageSource, locale) + "</td>");
+				description.append("		<td align='center'>").append(entry[0].toString().replaceAll("->", "&rarr;")).append("</td>");
+				description.append("		<td align='center'>").append(normalformLevelToString((NormalformLevel) entry[1], messageSource, locale)).append("</td>");
+				description.append("		<td align='center'>").append(normalformLevelToString((NormalformLevel) entry[2], messageSource, locale)).append("</td>");
 				description.append("	</tr>");
 			}
 			description.append("</table>");
@@ -144,7 +144,7 @@ public class NormalformReporter {
 	}
 
 	public static ErrorReport createNormalformErrorReport(NormalformAnalysis analysis, NormalformReporterConfig config, MessageSource messageSource, Locale locale){
-		boolean first = true;
+		boolean first;
 		boolean appendLineBreak = false;;
 
 		Iterator it;
@@ -158,7 +158,7 @@ public class NormalformReporter {
 		BoyceCoddNormalformViolation boyceCottNFViolation;
 
 		ErrorReport report = new ErrorReport();
-		StringBuffer description = new StringBuffer();
+		StringBuilder description = new StringBuilder();
 		NormalformLevelComparator comparator = new NormalformLevelComparator();;
 		
 		//SET ERROR
@@ -170,7 +170,7 @@ public class NormalformReporter {
 
 		//REPORTING FIRST NORMALFORM VIOLATIONS IF NECESSARY
 		if (comparator.compare(config.getDesiredNormalformLevel(), NormalformLevel.FIRST) >= 0){
-			if (analysis.getFirstNormalformViolations().size() > 0){
+			if (!analysis.getFirstNormalformViolations().isEmpty()){
 				appendLineBreak = true;
 			}
 
@@ -190,7 +190,7 @@ public class NormalformReporter {
 
 		//REPORTING SECOND NORMALFORM VIOLATIONS IF NECESSARY
 		if (comparator.compare(config.getDesiredNormalformLevel(), NormalformLevel.SECOND) >= 0){
-			if (analysis.getSecondNormalformViolations().size() > 0){
+			if (!analysis.getSecondNormalformViolations().isEmpty()){
 				if (appendLineBreak){
 					description.append("<br><br>");
 				}
@@ -220,9 +220,9 @@ public class NormalformReporter {
 					description.append("<br>");
 					description.append(messageSource.getMessage("normalformreporter.rightsidecomprises", new Object[]{secondNFViolation.nonPrimRHSAttributesCount()}, locale));
 					if (secondNFViolation.nonPrimRHSAttributesCount() == 1){
-						description.append(" " + messageSource.getMessage("normalformreporter.attributenotprim", null, locale));
+						description.append(" ").append(messageSource.getMessage("normalformreporter.attributenotprim", null, locale));
 					} else {
-						description.append(" " + messageSource.getMessage("normalformreporter.attributesnotprim", null, locale));
+						description.append(" ").append(messageSource.getMessage("normalformreporter.attributesnotprim", null, locale));
 					}
 
 					description.append("<br>");
@@ -233,9 +233,9 @@ public class NormalformReporter {
 				if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)){
 					currElemID = RDBDHelper.getNextElementID();
 					description.append("<br>");
-					description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+					description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 					description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-					description.append("<p>" + messageSource.getMessage("normalformreporter.nonprimrightside", null, locale) + "</p>");
+					description.append("<p>").append(messageSource.getMessage("normalformreporter.nonprimrightside", null, locale)).append("</p>");
 					description.append("<table border='2' rules='all'>");
 
 					it = secondNFViolation.iterNonPrimRHSAttributes();
@@ -251,9 +251,9 @@ public class NormalformReporter {
 					description.append(messageSource.getMessage("normalformreporter.rightsidecomprises", new Object[]{" <a href=\"javascript:openWindow('" + currElemID + "')\">" + secondNFViolation.nonPrimRHSAttributesCount()}, locale));
 
 					if (secondNFViolation.nonPrimRHSAttributesCount() == 1){
-						description.append(" " + messageSource.getMessage("normalformreporter.attributenotprim", null, locale) + "</a>.");
+						description.append(" ").append(messageSource.getMessage("normalformreporter.attributenotprim", null, locale)).append("</a>.");
 					} else {
-						description.append(" " + messageSource.getMessage("normalformreporter.attributesnotprim", null, locale) + "</a>.");
+						description.append(" ").append(messageSource.getMessage("normalformreporter.attributesnotprim", null, locale)).append("</a>.");
 					}
 
 					currElemID = RDBDHelper.getNextElementID();
@@ -266,7 +266,7 @@ public class NormalformReporter {
 
 		//REPORTING THIRD NORMALFORM VIOLATIONS IF NECESSARY
 		if (comparator.compare(config.getDesiredNormalformLevel(), NormalformLevel.THIRD) >= 0){
-			if (analysis.getThirdNormalformViolations().size() > 0){
+			if (!analysis.getThirdNormalformViolations().isEmpty()){
 				if (appendLineBreak){
 					description.append("<br><br>");
 				}
@@ -296,9 +296,9 @@ public class NormalformReporter {
 					description.append("<br>");
 					description.append(messageSource.getMessage("normalformreporter.rightsidecomprises", new Object[]{thirdNFViolation.nonPrimRHSAttributesCount()}, locale));
 					if (thirdNFViolation.nonPrimRHSAttributesCount() == 1){
-						description.append(" " + messageSource.getMessage("normalformreporter.attributenotprim", null, locale));
+						description.append(" ").append(messageSource.getMessage("normalformreporter.attributenotprim", null, locale));
 					} else {
-						description.append(" " + messageSource.getMessage("normalformreporter.attributesnotprim", null, locale));
+						description.append(" ").append(messageSource.getMessage("normalformreporter.attributesnotprim", null, locale));
 					}
 
 					description.append("<br>");
@@ -308,9 +308,9 @@ public class NormalformReporter {
 				if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)){
 					currElemID = RDBDHelper.getNextElementID();
 					description.append("<br>");
-					description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+					description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 					description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-					description.append("<p>" + messageSource.getMessage("normalformreporter.nonprimrightside", null, locale) + "</p>");
+					description.append("<p>").append(messageSource.getMessage("normalformreporter.nonprimrightside", null, locale)).append("</p>");
 					description.append("<table border='2' rules='all'>");
 
 					it = thirdNFViolation.iterNonPrimRHSAttributes();
@@ -326,9 +326,9 @@ public class NormalformReporter {
 					description.append(messageSource.getMessage("normalformreporter.rightsidecomprises", new Object[]{"<a href=\"javascript:openWindow('" + currElemID + "')\">" + thirdNFViolation.nonPrimRHSAttributesCount()}, locale));
 
 					if (thirdNFViolation.nonPrimRHSAttributesCount() == 1){
-						description.append(" " + messageSource.getMessage("normalformreporter.attributenotprim", null, locale) + "</a>.");
+						description.append(" ").append(messageSource.getMessage("normalformreporter.attributenotprim", null, locale)).append("</a>.");
 					} else {
-						description.append(" " + messageSource.getMessage("normalformreporter.attributesnotprim", null, locale) + "</a>.");
+						description.append(" ").append(messageSource.getMessage("normalformreporter.attributesnotprim", null, locale)).append("</a>.");
 					}
 
 					description.append("<br>");
@@ -339,11 +339,10 @@ public class NormalformReporter {
 
 		//REPORTING BOYCE COTT NORMALFORM VIOLATIONS IF NECESSARY
 		if (comparator.compare(config.getDesiredNormalformLevel(), NormalformLevel.BOYCE_CODD) >= 0){
-			if (analysis.getBoyceCottNormalformViolations().size() > 0){
+			if (!analysis.getBoyceCottNormalformViolations().isEmpty()){
 				if (appendLineBreak){
 					description.append("<br><br>");
 				}
-				appendLineBreak = true;
 			}
 
 			first = true;
@@ -367,7 +366,7 @@ public class NormalformReporter {
 		//CONFIGURE REPORT
 		report.setShowHint(false);
 		report.setShowError(true);
-		report.setShowErrorDescription(report.getDescription().length() != 0);
+		report.setShowErrorDescription(!report.getDescription().isEmpty());
 
 		return report;
 	}

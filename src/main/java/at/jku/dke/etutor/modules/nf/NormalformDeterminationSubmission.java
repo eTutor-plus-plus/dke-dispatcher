@@ -9,9 +9,9 @@ import java.util.Iterator;
 
 public class NormalformDeterminationSubmission implements Serializable {
 
-	private HashMap<Integer, FunctionalDependency> dependencyIDs;
+	private final HashMap<Integer, FunctionalDependency> dependencyIDs;
 	private NormalformLevel overallLevel;
-	private HashMap normalformViolations;
+	private final HashMap normalformViolations;
 
 	public NormalformDeterminationSubmission() {
 		super();

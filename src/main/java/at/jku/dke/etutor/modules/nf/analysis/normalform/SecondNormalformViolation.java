@@ -5,12 +5,12 @@ import java.util.Vector;
 
 public class SecondNormalformViolation extends NormalformViolation {
 	
-	private Vector nonPrimRHSAttributes;
+	private final Vector<String> nonPrimRHSAttributes;
 	//private Vector comprisedPartialKeys;
 
 	public SecondNormalformViolation() {
 		super();
-		this.nonPrimRHSAttributes = new Vector();
+		this.nonPrimRHSAttributes = new Vector<>();
 		//this.comprisedPartialKeys = new Vector();
 	}
 
@@ -18,7 +18,7 @@ public class SecondNormalformViolation extends NormalformViolation {
 		this.nonPrimRHSAttributes.add(attribute);
 	}
 	
-	public Iterator iterNonPrimRHSAttributes(){
+	public Iterator<String> iterNonPrimRHSAttributes(){
 		return this.nonPrimRHSAttributes.iterator();
 	}
 
@@ -26,8 +26,8 @@ public class SecondNormalformViolation extends NormalformViolation {
 		return this.nonPrimRHSAttributes.size();
 	}
 
-	public Vector getNonPrimRHSAttributes(){
-		return (Vector)this.nonPrimRHSAttributes.clone();
+	public Vector<String> getNonPrimRHSAttributes(){
+		return (Vector<String>)this.nonPrimRHSAttributes.clone();
 	}
 
 	/*

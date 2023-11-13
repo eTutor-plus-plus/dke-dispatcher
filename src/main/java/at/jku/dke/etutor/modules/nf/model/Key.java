@@ -7,7 +7,7 @@ import java.util.TreeSet;
 
 public class Key implements Serializable{
 
-	private TreeSet attributes;
+	private final TreeSet attributes;
 
 	public Key() {
 		super();
@@ -47,24 +47,20 @@ public class Key implements Serializable{
 	}
 
 	public String toString() {
-		boolean first;
-		String toString;
-		Iterator attributesIterator;
-
-		first = true;
-		toString = new String();
-		attributesIterator = this.attributes.iterator();
+		boolean first = true;
+		StringBuilder toStringBuilder = new StringBuilder();
+		Iterator attributesIterator = this.attributes.iterator();
 
 		while (attributesIterator.hasNext()) {
 			if (first) {
 				first = false;
 			} else {
-				toString = toString.concat(" ");
+				toStringBuilder.append(" ");
 			}
-			toString = toString + attributesIterator.next();
+			toStringBuilder.append(attributesIterator.next());
 		}
 
-		return toString;
+		return toStringBuilder.toString();
 	}
 	
 	public TreeSet getAttributes(){

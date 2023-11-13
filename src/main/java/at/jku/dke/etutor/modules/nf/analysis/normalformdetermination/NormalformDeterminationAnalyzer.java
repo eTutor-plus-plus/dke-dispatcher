@@ -22,10 +22,10 @@ public class NormalformDeterminationAnalyzer {
 		analysis.setSubmissionSuitsSolution(true);
 		dependenciesIterator = config.getRelation().iterFunctionalDependencies();
 		
-		StringBuffer temp = new StringBuffer();
+		StringBuilder temp = new StringBuilder();
 		Iterator keysIterator = config.getCorrectMinimalKeys().iterator();
 		while (keysIterator.hasNext()){
-			temp.append(keysIterator.next() + "; ");
+			temp.append(keysIterator.next()).append("; ");
 		}
 		RDBDHelper.getLogger().log(Level.INFO, "Correct Minimal Keys: " + temp.toString());
 		
@@ -44,7 +44,7 @@ public class NormalformDeterminationAnalyzer {
 		}
 		
 		//COMPUTE OVERALL NORMALFORM LEVEL
-		if (config.getRelation().getFunctionalDependencies().size() == 0){
+		if (config.getRelation().getFunctionalDependencies().isEmpty()){
 			if (config.getCorrectMinimalKeys().containsAll(config.getRelation().getMinimalKeys())) {
 				analysis.setOverallNormalformLevel(NormalformLevel.BOYCE_CODD);
 			} else {
@@ -53,13 +53,13 @@ public class NormalformDeterminationAnalyzer {
 			}
 		} else {
 			analysis.setOverallNormalformLevel(NormalformLevel.BOYCE_CODD);
-			if (analysis.getBoyceCottNormalformViolations().size() != 0){
+			if (!analysis.getBoyceCottNormalformViolations().isEmpty()){
 				analysis.setOverallNormalformLevel(NormalformLevel.THIRD);
 			}
-			if (analysis.getThirdNormalformViolations().size() != 0){
+			if (!analysis.getThirdNormalformViolations().isEmpty()){
 				analysis.setOverallNormalformLevel(NormalformLevel.SECOND);
 			}
-			if (analysis.getSecondNormalformViolations().size() != 0){
+			if (!analysis.getSecondNormalformViolations().isEmpty()){
 				analysis.setOverallNormalformLevel(NormalformLevel.FIRST);
 			}
 		}

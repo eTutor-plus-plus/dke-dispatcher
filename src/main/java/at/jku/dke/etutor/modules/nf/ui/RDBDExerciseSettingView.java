@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class RDBDExerciseSettingView extends DefaultPrintView implements ExerciseSettingView {
-	protected int rdbdType;
+	protected final int rdbdType;
 	
 	public RDBDExerciseSettingView (int rdbdType) {
 		this.rdbdType = rdbdType;

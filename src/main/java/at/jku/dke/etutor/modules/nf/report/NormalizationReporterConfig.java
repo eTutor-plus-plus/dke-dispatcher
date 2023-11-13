@@ -10,7 +10,7 @@ import java.util.TreeSet;
 
 public class NormalizationReporterConfig extends ReporterConfig {
 
-	private TreeSet decomposedRelations;
+	private final TreeSet decomposedRelations;
 	private NormalformLevel desiredNormalformLevel;
 
 	public NormalizationReporterConfig() {

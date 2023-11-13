@@ -17,7 +17,7 @@ public class MinimalCoverReporter {
 
 	public static Report report(MinimalCoverAnalysis analysis, Grading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
 		Report report = new Report();
-		StringBuffer prologue = new StringBuffer();
+		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
 		if (analysis.submissionSuitsSolution()) {
@@ -30,9 +30,9 @@ public class MinimalCoverReporter {
 			prologue.append(messageSource.getMessage("minimalcoverreporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
 
 			if (grading.getPoints() == 1){
-				prologue.append(" " + messageSource.getMessage("minimalcoverreporter.point", null, locale) + " ");
+				prologue.append(" ").append(messageSource.getMessage("minimalcoverreporter.point", null, locale)).append(" ");
 			} else {
-				prologue.append(" " + messageSource.getMessage("minimalcoverreporter.points", null, locale) + " ");
+				prologue.append(" ").append(messageSource.getMessage("minimalcoverreporter.points", null, locale)).append(" ");
 			}
 
 			prologue.append(messageSource.getMessage("minimalcoverreporter.yoursolution", null, locale));
@@ -91,8 +91,8 @@ public class MinimalCoverReporter {
 		Iterator it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
-		StringBuffer prologue = new StringBuffer();
-		StringBuffer description = new StringBuffer();
+		StringBuilder prologue = new StringBuilder();
+		StringBuilder description = new StringBuilder();
 		int count = analysis.getNotCanonicalDependencies().size();
 		
 		//SET ERROR
@@ -108,18 +108,18 @@ public class MinimalCoverReporter {
 		if (config.getDiagnoseLevel() == 2){
 			description.append(count);
 			if (count == 1){
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.dependencyis", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyis", null, locale)).append(" ");
 			} else {
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.dependenciesare", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesare", null, locale)).append(" ");
 			}
-			description.append(" " + messageSource.getMessage("minimalcoverreporter.notcanonicalrepresentation", null, locale) + ".");
+			description.append(" ").append(messageSource.getMessage("minimalcoverreporter.notcanonicalrepresentation", null, locale)).append(".");
 		}
 		
 		if (config.getDiagnoseLevel() == 3){
 			currElemID = RDBDHelper.getNextElementID();
-			description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-			description.append("<p>" + messageSource.getMessage("minimalcoverreporter.dependenciesnotcanonical", null, locale) + ":</p>");
+			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.dependenciesnotcanonical", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
 			it = analysis.iterNotCananonicalDependencies();
@@ -132,12 +132,12 @@ public class MinimalCoverReporter {
 			description.append("</body></html>");
 			description.append("\"></input>");
 
-			description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + count);
+			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(count);
 
 			if (count == 1){
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale)).append(" ");
 			} else {
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
 			}
 			description.append(messageSource.getMessage("minimalcoverreporter.notcanonicalrepresentation", null, locale));
 		}
@@ -166,8 +166,8 @@ public class MinimalCoverReporter {
 		Iterator it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
-		StringBuffer prologue = new StringBuffer();
-		StringBuffer description = new StringBuffer();
+		StringBuilder prologue = new StringBuilder();
+		StringBuilder description = new StringBuilder();
 		int count = analysis.getTrivialDependencies().size();
 		
 		//SET ERROR
@@ -184,20 +184,20 @@ public class MinimalCoverReporter {
 			description.append(count);
 	
 			if (count == 1){
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.dependencyis", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyis", null, locale)).append(" ");
 			} else {
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.dependenciesare", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesare", null, locale)).append(" ");
 			}
 
-			description.append(messageSource.getMessage("minimalcoverreporter.trivial", null, locale) + ".");
+			description.append(messageSource.getMessage("minimalcoverreporter.trivial", null, locale)).append(".");
 		}
 		
 		
 		if (config.getDiagnoseLevel() == 3){
 			currElemID = RDBDHelper.getNextElementID();
-			description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-			description.append("<p>" + messageSource.getMessage("minimalcoverreporter.trivialdependencies", null, locale) + ":</p>");
+			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.trivialdependencies", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
 			it = analysis.iterTrivialDependencies();
@@ -210,14 +210,14 @@ public class MinimalCoverReporter {
 			description.append("</body></html>");
 			description.append("\"></input>");
 
-			description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + count);
+			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(count);
 
 			if (count == 1){
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale)).append(" ");
 			} else {
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
 			}
-			description.append(messageSource.getMessage("minimalcoverreporter.trivial", null, locale) + ".");
+			description.append(messageSource.getMessage("minimalcoverreporter.trivial", null, locale)).append(".");
 		}
 		report.setDescription(description.toString());
 
@@ -247,7 +247,7 @@ public class MinimalCoverReporter {
 		FunctionalDependency currBadDependency;
 
 		ErrorReport report = new ErrorReport();
-		StringBuffer description = new StringBuffer();;
+		StringBuilder description = new StringBuilder();;
 		
 		//COUNT BAD DEPENDECIES		
 		badDependenciesIterator = analysis.getExtraneousAttributes().keySet().iterator();
@@ -269,20 +269,20 @@ public class MinimalCoverReporter {
 			description.append(count);
 	
 			if (count == 1){
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.extraneousattributefound", null, locale));
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.extraneousattributefound", null, locale));
 			} else {
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.extraneousattributesfound", null, locale));
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.extraneousattributesfound", null, locale));
 			}
 		}
 		
 		if (config.getDiagnoseLevel() == 3){
 			currElemID = RDBDHelper.getNextElementID();
-			description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
 			description.append("<p>Extraneous attributes:</p>");
 			description.append("<table border='2' rules='all'>");
 
-			description.append("<thead><tr><th>" + messageSource.getMessage("minimalcoverreporter.functionaldependency", null, locale) + "</th><th>" + messageSource.getMessage("minimalcoverreporter.extraneousattributes", null, locale) + "</th></tr></thead><tbody>");
+			description.append("<thead><tr><th>").append(messageSource.getMessage("minimalcoverreporter.functionaldependency", null, locale)).append("</th><th>").append(messageSource.getMessage("minimalcoverreporter.extraneousattributes", null, locale)).append("</th></tr></thead><tbody>");
 
 			boolean first = true;
 			Iterator extraneousAttributesIterator;
@@ -309,12 +309,12 @@ public class MinimalCoverReporter {
 			description.append("</body></html>");
 			description.append("\"></input>");
 
-			description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + count);
+			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(count);
 
 			if (count == 1){
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.extraneousattributefounda", null, locale));
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.extraneousattributefounda", null, locale));
 			} else {
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.extraneousattributesfounda", null, locale));
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.extraneousattributesfounda", null, locale));
 			}
 		}
 		report.setDescription(description.toString());
@@ -342,7 +342,7 @@ public class MinimalCoverReporter {
 		Iterator it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
-		StringBuffer description = new StringBuffer();
+		StringBuilder description = new StringBuilder();
 		int count = analysis.getRedundantDependencies().size();;
 		
 		//SET ERROR
@@ -358,18 +358,18 @@ public class MinimalCoverReporter {
 		if (config.getDiagnoseLevel() == 2){
 			description.append(count);
 			if (count == 1){
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.dependencyis", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyis", null, locale)).append(" ");
 			} else {
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.dependenciesare", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesare", null, locale)).append(" ");
 			}
-			description.append(messageSource.getMessage("minimalcoverreporter.redundand", null, locale) + ".");
+			description.append(messageSource.getMessage("minimalcoverreporter.redundand", null, locale)).append(".");
 		}
 		
 		if (config.getDiagnoseLevel() == 3){
 			currElemID = RDBDHelper.getNextElementID();
-			description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-			description.append("<p>" + messageSource.getMessage("minimalcoverreporter.redundanddependencies", null, locale) + ":</p>");
+			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.redundanddependencies", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
 			it = analysis.iterRedundandDependencies();
@@ -382,14 +382,14 @@ public class MinimalCoverReporter {
 			description.append("</body></html>");
 			description.append("\"></input>");
 
-			description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + count);
+			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(count);
 
 			if (count == 1){
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale)).append(" ");
 			} else {
-				description.append(" " + messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale) + " ");
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
 			}
-			description.append(messageSource.getMessage("minimalcoverreporter.redundand", null, locale) + ".");
+			description.append(messageSource.getMessage("minimalcoverreporter.redundand", null, locale)).append(".");
 		}
 		report.setDescription(description.toString());
 
@@ -416,7 +416,7 @@ public class MinimalCoverReporter {
 		Iterator it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
-		StringBuffer description = new StringBuffer();
+		StringBuilder description = new StringBuilder();
 		int missingDependenciesCount = analysis.getMissingDependencies().size();
 		int additionalDependenciesCount = analysis.getAdditionalDependencies().size();
 		
@@ -442,11 +442,11 @@ public class MinimalCoverReporter {
 			if (missingDependenciesCount > 0){
 				description.append(missingDependenciesCount);
 				if (missingDependenciesCount == 1){
-					description.append(" " + messageSource.getMessage("minimalcoverreporter.dependencyis", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyis", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("minimalcoverreporter.dependenciesare", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesare", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("minimalcoverreporter.missing", null, locale) + ".");
+				description.append(messageSource.getMessage("minimalcoverreporter.missing", null, locale)).append(".");
 			}
 
 			if ((missingDependenciesCount > 0) && (additionalDependenciesCount > 0)){
@@ -456,9 +456,9 @@ public class MinimalCoverReporter {
 			if (additionalDependenciesCount > 0){
 				description.append(additionalDependenciesCount);
 				if (additionalDependenciesCount == 1){
-					description.append(" " + messageSource.getMessage("minimalcoverreporter.dependencyis", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyis", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("minimalcoverreporter.dependenciesare", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesare", null, locale)).append(" ");
 				}
 				description.append(messageSource.getMessage("minimalcoverreporter.cannotbederived", null, locale));
 			}
@@ -468,9 +468,9 @@ public class MinimalCoverReporter {
 		if (config.getDiagnoseLevel() == 3){
 			if (missingDependenciesCount > 0){
 				currElemID = RDBDHelper.getNextElementID();
-				description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-				description.append("<p>" + messageSource.getMessage("minimalcoverreporter.missingdependencies", null, locale) + ":</p>");
+				description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.missingdependencies", null, locale)).append(":</p>");
 				description.append("<table border='2' rules='all'>");
 
 				it = analysis.iterMissingDependencies();
@@ -483,14 +483,14 @@ public class MinimalCoverReporter {
 				description.append("</body></html>");
 				description.append("\"></input>");
 
-				description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + missingDependenciesCount);
+				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(missingDependenciesCount);
 
 				if (missingDependenciesCount == 1){
-					description.append(" " + messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("minimalcoverreporter.missing", null, locale) + ".");
+				description.append(messageSource.getMessage("minimalcoverreporter.missing", null, locale)).append(".");
 			}
 			
 			if ((missingDependenciesCount > 0) && (additionalDependenciesCount > 0)){
@@ -499,9 +499,9 @@ public class MinimalCoverReporter {
 			
 			if (additionalDependenciesCount > 0){
 				currElemID = RDBDHelper.getNextElementID();
-				description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-				description.append("<p>" + messageSource.getMessage("minimalcoverreporter.dependenciesnotderived", null, locale) + ":</p>");
+				description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.dependenciesnotderived", null, locale)).append(":</p>");
 				description.append("<table border='2' rules='all'>");
 
 				it = analysis.iterAdditionalDependencies();
@@ -514,12 +514,12 @@ public class MinimalCoverReporter {
 				description.append("</body></html>");
 				description.append("\"></input>");
 
-				description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + additionalDependenciesCount);
+				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(additionalDependenciesCount);
 
 				if (additionalDependenciesCount == 1){
-					description.append(" " + messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
 				}
 				description.append(messageSource.getMessage("minimalcoverreporter.determinedcannotbederived", null, locale));
 			}
@@ -551,7 +551,7 @@ public class MinimalCoverReporter {
 		Iterator attributesIterator;
 		
 		first = true;
-		s = new String();
+		s = "";
 
 		attributesIterator = dependency.iterLHSAttributes();
 		while (attributesIterator.hasNext()){

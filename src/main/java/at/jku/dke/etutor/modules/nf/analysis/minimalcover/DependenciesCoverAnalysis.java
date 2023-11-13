@@ -9,28 +9,28 @@ import java.util.Vector;
 
 public class DependenciesCoverAnalysis extends DefaultAnalysis implements Analysis {
 
-	Vector missingDependencies;
-	Vector additionalDependencies;
+	final Vector<FunctionalDependency> missingDependencies;
+	final Vector<FunctionalDependency> additionalDependencies;
 
 	public DependenciesCoverAnalysis() {
 		super();
-		this.missingDependencies = new Vector();
-		this.additionalDependencies = new Vector();
+		this.missingDependencies = new Vector<>();
+		this.additionalDependencies = new Vector<>();
 	}
 
-	public Vector getMissingDependencies(){
-		return (Vector)this.missingDependencies.clone();
+	public Vector<FunctionalDependency> getMissingDependencies(){
+		return (Vector<FunctionalDependency>)this.missingDependencies.clone();
 	}
 	
-	public Vector getAdditionalDependencies(){
-		return (Vector)this.additionalDependencies.clone();
+	public Vector<FunctionalDependency> getAdditionalDependencies(){
+		return (Vector<FunctionalDependency>)this.additionalDependencies.clone();
 	}
 
 	public void addMissingDependency(FunctionalDependency dependency){
 		this.missingDependencies.add(dependency);
 	}
 	
-	public Iterator iterMissingDependencies(){
+	public Iterator<FunctionalDependency> iterMissingDependencies(){
 		return this.missingDependencies.iterator();
 	}
 	
@@ -38,7 +38,7 @@ public class DependenciesCoverAnalysis extends DefaultAnalysis implements Analys
 		this.additionalDependencies.add(dependency);
 	}
 	
-	public Iterator iterAdditionalDependencies(){
+	public Iterator<FunctionalDependency> iterAdditionalDependencies(){
 		return this.additionalDependencies.iterator();
 	}
 }

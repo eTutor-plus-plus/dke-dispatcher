@@ -9,15 +9,13 @@ import java.util.*;
 public class KeysDeterminator {
 	
 	public static TupleSet determineMinimalKeys(TupleSet tuples){
-		int[] key;
-		boolean isKey;
 		TupleSet keys = new TupleSet();
 		Vector keyCandidates = calculateKeyCandidates(tuples.get(0).length);
 		 
 		for (int i=0; i<keyCandidates.size(); i++){
-			key = (int[])keyCandidates.get(i);
+			int[] key = (int[])keyCandidates.get(i);
 			
-			isKey = true;
+			boolean isKey = true;
 			for (int j=0; j<tuples.size(); j++){
 				if (!holdsKey(key, tuples.get(j), tuples)){
 					isKey = false;
@@ -27,10 +25,6 @@ public class KeysDeterminator {
 			if (isKey){
 				keys.add(keyCandidates.get(i));
 			}
-		}
-
-		for (int i=0; i<keys.size(); i++){
-			key = (int[])keys.toArray()[i];
 		}
 		 
 		return keys;
@@ -162,7 +156,7 @@ public class KeysDeterminator {
 							partialKey.addAttribute((String)currKey.getAttributes().toArray()[indices[j]]);
 						}
 					}
-					if (partialKey.getAttributes().size() != 0) {
+					if (!partialKey.getAttributes().isEmpty()) {
 						partialKeys.add(partialKey);
 					}
 				}
@@ -232,8 +226,7 @@ public class KeysDeterminator {
 		superKeys = new TreeSet(new KeyComparator());
 
 		//CALCULATING ATTRIBUTES THAT ARE PART OF EVERY KEY - RESTRICTING SET OF CANDIDATE ATTRIBUTES
-		constantAttributes = new HashSet();
-		constantAttributes.addAll(relation.getAttributes());
+        constantAttributes = new HashSet(relation.getAttributes());
 		dependenciesIterator = relation.iterFunctionalDependencies();
 		while (dependenciesIterator.hasNext()){
 			currDependency = (FunctionalDependency)dependenciesIterator.next();
@@ -241,11 +234,10 @@ public class KeysDeterminator {
 			constantAttributes.removeAll(currDependency.getRHSAttributes());
 		}
 
-		candidateAttributes = new HashSet();
-		candidateAttributes.addAll(relation.getAttributes());
+        candidateAttributes = new HashSet(relation.getAttributes());
 		candidateAttributes.removeAll(constantAttributes);
 		
-		if (candidateAttributes.size() != 0){
+		if (!candidateAttributes.isEmpty()){
 			//CALCULATING SUPER KEYS
 			candidate = new Key();
 

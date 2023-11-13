@@ -11,7 +11,7 @@ import java.util.TreeSet;
 public class DecomposeAnalyzerConfig implements Serializable {
 
 	private int maxLostDependencies;
-	private TreeSet decomposedRelations;
+	private final TreeSet decomposedRelations;
 	private IdentifiedRelation baseRelation;
 	private NormalformLevel desiredNormalformLevel;
 

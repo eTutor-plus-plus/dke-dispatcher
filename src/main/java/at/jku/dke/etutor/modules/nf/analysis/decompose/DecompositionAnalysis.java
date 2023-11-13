@@ -10,31 +10,31 @@ import java.util.TreeSet;
 
 public class DecompositionAnalysis extends DefaultAnalysis implements Analysis {
 
-	private TreeSet missingAttributes; 
+	private final TreeSet<String> missingAttributes;
 
 	public DecompositionAnalysis() {
 		super();
-		this.missingAttributes = new TreeSet(Collator.getInstance());
+		this.missingAttributes = new TreeSet<>(Collator.getInstance());
 	}
 
 	public void addMissingAttribute(String attribute){
 		this.missingAttributes.add(attribute);
 	}
 	
-	public void setMissingAttributes(Collection attributes){
+	public void setMissingAttributes(Collection<String> attributes){
 		this.missingAttributes.clear();
 		this.missingAttributes.addAll(attributes);
 	}
 	
-	public Iterator iterMissingAttributes(){
+	public Iterator<String> iterMissingAttributes(){
 		return this.missingAttributes.iterator();
 	}
 	
-	public TreeSet getMissingAttributes(){
-		return (TreeSet)this.missingAttributes.clone();
+	public TreeSet<String> getMissingAttributes(){
+		return (TreeSet<String>)this.missingAttributes.clone();
 	}
 	
-	public void removeAllMissingAttributes(Collection attributes){
+	public void removeAllMissingAttributes(Collection<String> attributes){
 		this.missingAttributes.removeAll(attributes);
 	}
 }

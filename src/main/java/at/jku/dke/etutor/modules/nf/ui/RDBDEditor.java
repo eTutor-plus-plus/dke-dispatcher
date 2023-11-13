@@ -18,7 +18,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class RDBDEditor  implements MessageSourceAware, Editor {
-	protected int rdbdType;
+	protected final int rdbdType;
 	private MessageSource messageSource;
 
 	public RDBDEditor(int rdbdType) {
@@ -220,7 +220,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 		} else if (RDBDConstants.CMD_DEL_REL.equals(command)) {
 			RDBDHelper.delRelation((Collection) relations, relationID);
 		} else if (RDBDConstants.CMD_ADD_ATT.equals(command)) {
-			if ((relationID == null) || ("".equals(relationID))) {
+			if ((relationID == null) || (relationID.isEmpty())) {
 				RDBDHelper.addAttribute(getFirstRelation(relations),
 						attributes);
 			} else {
@@ -228,7 +228,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 						attributes);
 			}
 		} else if (RDBDConstants.CMD_DEL_ATT.equals(command)) {
-			if ((relationID == null) || ("".equals(relationID))) {
+			if ((relationID == null) || (relationID.isEmpty())) {
 				RDBDHelper.delAttributes(
 						getFirstRelation(relations),
 						attributesToDelete);
@@ -237,7 +237,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 						attributesToDelete);
 			}
 		} else if (RDBDConstants.CMD_ADD_DEP.equals(command)) {
-			if ((relationID == null) || ("".equals(relationID))) {
+			if ((relationID == null) || (relationID.isEmpty())) {
 				
 				RDBDHelper.addDependency(
 						getFirstRelation(relations), rhsAttributes,
@@ -247,7 +247,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 						rhsAttributes, lhsAttributes);
 			}
 		} else if (RDBDConstants.CMD_DEL_DEP.equals(command)) {
-			if ((relationID == null) || ("".equals(relationID))) {
+			if ((relationID == null) || (relationID.isEmpty())) {
 				RDBDHelper.delDependencies(getFirstRelation(relations), rhsAttributes, lhsAttributes,
 						dependenciesToDelete);
 			} else {
@@ -255,7 +255,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 						rhsAttributes, lhsAttributes, dependenciesToDelete);
 			}
 		} else if (RDBDConstants.CMD_ADD_KEY.equals(command)) {
-			if ((relationID == null) || ("".equals(relationID))) {
+			if ((relationID == null) || (relationID.isEmpty())) {
 				RDBDHelper.addKey(getFirstRelation(relations),
 						attributes);
 			} else {
@@ -263,7 +263,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 						attributes);
 			}
 		} else if (RDBDConstants.CMD_DEL_KEY.equals(command)) {
-			if ((relationID == null) || ("".equals(relationID))) {
+			if ((relationID == null) || (relationID.isEmpty())) {
 				RDBDHelper.delKeys(getFirstRelation(relations),
 						attributes, keysToDelete);
 			} else {
@@ -356,8 +356,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 					parser.parse(rdbdExerciseBean.getSpecText());
 					if (rdbdExerciseBean.getMaxLostDependencies() != null
 							&& rdbdExerciseBean.getMaxLostDependencies() != null
-							&& rdbdExerciseBean.getMaxLostDependencies().trim()
-									.length() > 0) {
+							&& !rdbdExerciseBean.getMaxLostDependencies().trim().isEmpty()) {
 						maxLost = Integer.parseInt(rdbdExerciseBean
 								.getMaxLostDependencies());
 						if (maxLost < 0) {
@@ -457,9 +456,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 			dependenciesIterator = ((Relation) specification).iterFunctionalDependencies();
 			while (dependenciesIterator.hasNext()) {
 				((NormalformDeterminationSubmission) submission)
-						.setDependencyID(
-								(FunctionalDependency) dependenciesIterator
-										.next(), new Integer(lastID));
+						.setDependencyID((FunctionalDependency) dependenciesIterator.next(), lastID);
 				lastID = lastID + 1;
 			}
 		} else {
@@ -491,7 +488,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 			relation = ((DecomposeSpecification) specification)
 					.getBaseRelation();
 			if ((relation.getMinimalKeys() == null)
-					|| (relation.getMinimalKeys().size() == 0)) {
+					|| (relation.getMinimalKeys().isEmpty())) {
 				relation.setMinimalKeys(KeysDeterminator
 						.determineMinimalKeys(relation));
 			}
@@ -499,7 +496,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 			relation = ((NormalizationSpecification) specification)
 					.getBaseRelation();
 			if ((relation.getMinimalKeys() == null)
-					|| (relation.getMinimalKeys().size() == 0)) {
+					|| (relation.getMinimalKeys().isEmpty())) {
 				relation.setMinimalKeys(KeysDeterminator
 						.determineMinimalKeys(relation));
 			}

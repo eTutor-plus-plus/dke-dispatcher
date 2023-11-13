@@ -4,6 +4,7 @@ import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.nf.RDBDConstants;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalysis;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import org.springframework.context.MessageSource;
 
 import java.util.Iterator;
@@ -13,7 +14,7 @@ public class RBRReporter {
 	
 	public static Report report(RBRAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
 		Report report = new Report();
-		StringBuffer prologue = new StringBuffer();
+		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
 		if (config.getAction().equalsIgnoreCase(RDBDConstants.EVAL_ACTION_SUBMIT)) {
@@ -26,9 +27,9 @@ public class RBRReporter {
 			prologue.append(messageSource.getMessage("rbrreporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
 
 			if (grading.getPoints() == 1){
-				prologue.append(" " + messageSource.getMessage("rbrreporter.point", null, locale) + " ");
+				prologue.append(" ").append(messageSource.getMessage("rbrreporter.point", null, locale)).append(" ");
 			} else {
-				prologue.append(" " + messageSource.getMessage("rbrreporter.points", null, locale) + " ");
+				prologue.append(" ").append(messageSource.getMessage("rbrreporter.points", null, locale)).append(" ");
 			}
 
 			prologue.append(messageSource.getMessage("rbrreporter.yoursubmission", null, locale));
@@ -55,10 +56,10 @@ public class RBRReporter {
 	}	
 
 	public static ErrorReport createRBRErrorReport(RBRAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Iterator it;
+		Iterator<FunctionalDependency> it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
-		StringBuffer description = new StringBuffer();
+		StringBuilder description = new StringBuilder();
 		int missingDependenciesCount = analysis.getMissingFunctionalDependencies().size();
 		int additionalDependenciesCount = analysis.getAdditionalFunctionalDependencies().size();
 		
@@ -76,18 +77,18 @@ public class RBRReporter {
 			if (config.getDiagnoseLevel() == 2){
 				description.append(Integer.toString(missingDependenciesCount));
 				if (missingDependenciesCount == 1){
-					description.append(" " + messageSource.getMessage("rbrreporter.dependencyis", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("rbrreporter.dependencyis", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("rbrreporter.dependenciesare", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("rbrreporter.dependenciesare", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("rbrreporter.missing", null, locale) + ".");
+				description.append(messageSource.getMessage("rbrreporter.missing", null, locale)).append(".");
 			}
 			
 			if (config.getDiagnoseLevel() == 3){
 				currElemID = RDBDHelper.getNextElementID();
-				description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-				description.append("<p>" + messageSource.getMessage("rbrreporter.dependenciesmissing", null, locale) + ":</p>");
+				description.append("<p>").append(messageSource.getMessage("rbrreporter.dependenciesmissing", null, locale)).append(":</p>");
 				description.append("<table border='2' rules='all'>");
 
 				it = analysis.iterMissingFunctionalDependencies();
@@ -100,14 +101,14 @@ public class RBRReporter {
 				description.append("</body></html>");
 				description.append("\"></input>");
 
-				description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + missingDependenciesCount);
+				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(missingDependenciesCount);
 
 				if (missingDependenciesCount == 1){
-					description.append(" " + messageSource.getMessage("rbrreporter.dependencyisa", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("rbrreporter.dependencyisa", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("rbrreporter.dependenciesarea", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("rbrreporter.dependenciesarea", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("rbrreporter.missing", null, locale) + ".");
+				description.append(messageSource.getMessage("rbrreporter.missing", null, locale)).append(".");
 			}
 		}
 
@@ -123,18 +124,18 @@ public class RBRReporter {
 			if (config.getDiagnoseLevel() == 2){
 				description.append(Integer.toString(additionalDependenciesCount));
 				if (additionalDependenciesCount == 1){
-					description.append(" " + messageSource.getMessage("rbrreporter.dependencyis", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("rbrreporter.dependencyis", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("rbrreporter.dependenciesare", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("rbrreporter.dependenciesare", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("rbrreporter.toomuch", null, locale) + ".");
+				description.append(messageSource.getMessage("rbrreporter.toomuch", null, locale)).append(".");
 			}
 			
 			if (config.getDiagnoseLevel() == 3){
 				currElemID = RDBDHelper.getNextElementID();
-				description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-				description.append("<p>" + messageSource.getMessage("rbrreporter.dependenciestoomuch", null, locale) + ":</p>");
+				description.append("<p>").append(messageSource.getMessage("rbrreporter.dependenciestoomuch", null, locale)).append(":</p>");
 				description.append("<table border='2' rules='all'>");
 
 				it = analysis.iterAdditionalFunctionalDependencies();
@@ -146,14 +147,14 @@ public class RBRReporter {
 				description.append("</table>");
 				description.append("</body></html>");
 				description.append("\"></input>");
-				description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + additionalDependenciesCount);
+				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(additionalDependenciesCount);
 
 				if (additionalDependenciesCount == 1){
-					description.append(" " + messageSource.getMessage("rbrreporter.dependencyisa", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("rbrreporter.dependencyisa", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("rbrreporter.dependenciesarea", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("rbrreporter.dependenciesarea", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("rbrreporter.toomuch", null, locale) + ".");
+				description.append(messageSource.getMessage("rbrreporter.toomuch", null, locale)).append(".");
 			}
 		}
 		report.setDescription(description.toString());

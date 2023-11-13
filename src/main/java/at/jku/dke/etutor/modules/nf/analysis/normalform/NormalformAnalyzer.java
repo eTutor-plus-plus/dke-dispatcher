@@ -22,10 +22,10 @@ public class NormalformAnalyzer {
 		analysis.setSubmissionSuitsSolution(false);
 		dependenciesIterator = config.getRelation().iterFunctionalDependencies();
 		
-		StringBuffer temp = new StringBuffer();
+		StringBuilder temp = new StringBuilder();
 		Iterator keysIterator = config.getCorrectMinimalKeys().iterator();
 		while (keysIterator.hasNext()){
-			temp.append(keysIterator.next() + "; ");
+			temp.append(keysIterator.next()).append("; ");
 		}
 
 		RDBDHelper.getLogger().log(Level.INFO, "Correct Minimal Keys: " + temp.toString());
@@ -45,7 +45,7 @@ public class NormalformAnalyzer {
 		}
 		
 		//COMPUTE OVERALL NORMALFORM LEVEL
-		if (config.getRelation().getFunctionalDependencies().size() == 0){
+		if (config.getRelation().getFunctionalDependencies().isEmpty()){
 			if (config.getCorrectMinimalKeys().containsAll(config.getRelation().getMinimalKeys())) {
 				analysis.setOverallNormalformLevel(NormalformLevel.BOYCE_CODD);
 				analysis.setSubmissionSuitsSolution(true);			
@@ -54,13 +54,13 @@ public class NormalformAnalyzer {
 			}
 		} else {
 			analysis.setOverallNormalformLevel(NormalformLevel.BOYCE_CODD);
-			if (analysis.getBoyceCottNormalformViolations().size() != 0){
+			if (!analysis.getBoyceCottNormalformViolations().isEmpty()){
 				analysis.setOverallNormalformLevel(NormalformLevel.THIRD);
 			}
-			if (analysis.getThirdNormalformViolations().size() != 0){
+			if (!analysis.getThirdNormalformViolations().isEmpty()){
 				analysis.setOverallNormalformLevel(NormalformLevel.SECOND);
 			}
-			if (analysis.getSecondNormalformViolations().size() != 0){
+			if (!analysis.getSecondNormalformViolations().isEmpty()){
 				analysis.setOverallNormalformLevel(NormalformLevel.FIRST);
 			}
 		
@@ -164,7 +164,7 @@ public class NormalformAnalyzer {
 		violation = new SecondNormalformViolation();
 		violation.setFunctionalDependency(dependency);
 
-		//Deciding whether RHS comprises at least one non prim attribute
+		//Deciding whether RHS comprises at least one non-prime attribute
 		rhsComprisesNonPrimAttribute = false;
 		attributesIterator = dependency.iterRHSAttributes();
 		while (attributesIterator.hasNext() && !rhsComprisesNonPrimAttribute) {
@@ -237,7 +237,7 @@ public class NormalformAnalyzer {
 		violation = new ThirdNormalformViolation();
 		violation.setFunctionalDependency(dependency);
 
-		//Deciding whether RHS comprises at least one non prim attribute
+		//Deciding whether RHS comprises at least one non-prime attribute
 		rhsComprisesNonPrimAttribute = false;
 		attributesIterator = dependency.iterRHSAttributes();
 		while (attributesIterator.hasNext() && !rhsComprisesNonPrimAttribute) {

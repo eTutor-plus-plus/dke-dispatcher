@@ -9,8 +9,8 @@ import java.util.Vector;
 
 public class RBRAnalysis extends DefaultAnalysis implements Analysis {
 
-	private Vector missingFunctionalDependencies;
-	private Vector additionalFunctionalDependencies;
+	private final Vector<FunctionalDependency> missingFunctionalDependencies;
+	private final Vector<FunctionalDependency> additionalFunctionalDependencies;
 
 	public RBRAnalysis() {
 		super();
@@ -19,11 +19,11 @@ public class RBRAnalysis extends DefaultAnalysis implements Analysis {
 		this.additionalFunctionalDependencies = new Vector();		
 	}
 
-	public Vector getMissingFunctionalDependencies() {
-		return (Vector)this.missingFunctionalDependencies.clone();
+	public Vector<FunctionalDependency> getMissingFunctionalDependencies() {
+		return (Vector<FunctionalDependency>)this.missingFunctionalDependencies.clone();
 	}
 
-	public Iterator iterMissingFunctionalDependencies(){
+	public Iterator<FunctionalDependency> iterMissingFunctionalDependencies(){
 		return this.missingFunctionalDependencies.iterator();
 	}
 
@@ -31,11 +31,11 @@ public class RBRAnalysis extends DefaultAnalysis implements Analysis {
 		this.missingFunctionalDependencies.add(lostDependency);
 	}
 
-	public Vector getAdditionalFunctionalDependencies() {
-		return (Vector)this.additionalFunctionalDependencies.clone();
+	public Vector<FunctionalDependency> getAdditionalFunctionalDependencies() {
+		return (Vector<FunctionalDependency>)this.additionalFunctionalDependencies.clone();
 	}
 
-	public Iterator iterAdditionalFunctionalDependencies(){
+	public Iterator<FunctionalDependency> iterAdditionalFunctionalDependencies(){
 		return this.additionalFunctionalDependencies.iterator();
 	}
 

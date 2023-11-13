@@ -9,10 +9,7 @@ import java.util.TreeSet;
 
 public class Closure {
 
-	public static TreeSet execute(Collection attributes, Collection dependencies){
-		TreeSet closure;
-		Iterator attributesIterator;
-		Iterator dependenciesIterator;
+	public static TreeSet<String> execute(Collection<String> attributes, Collection<FunctionalDependency> dependencies){
 		FunctionalDependency dependency;
 
 		boolean again;
@@ -20,13 +17,13 @@ public class Closure {
 		boolean containsAllRHSAttributes;
 
 		again = true;
-		closure = new TreeSet(Collator.getInstance());
+		TreeSet<String> closure = new TreeSet<>(Collator.getInstance());
 		closure.addAll(attributes);
 		
 		while (again) {
-			dependenciesIterator = dependencies.iterator();
+			Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
 			while (dependenciesIterator.hasNext()) {
-				dependency = (FunctionalDependency)dependenciesIterator.next();
+				dependency = dependenciesIterator.next();
 				containsAllLHSAttributes = closure.containsAll(dependency.getLHSAttributes());
 				
 				if (containsAllLHSAttributes) {
@@ -37,7 +34,7 @@ public class Closure {
 			again = false;
 			dependenciesIterator = dependencies.iterator();
 			while (dependenciesIterator.hasNext()) {
-				dependency = (FunctionalDependency)dependenciesIterator.next();
+				dependency = dependenciesIterator.next();
 				containsAllLHSAttributes = closure.containsAll(dependency.getLHSAttributes());
 				containsAllRHSAttributes = closure.containsAll(dependency.getRHSAttributes());
 				

@@ -14,7 +14,7 @@ public class AttributeClosureReporter {
 
 	public static Report report(AttributeClosureAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
 		Report report = new Report();
-		StringBuffer prologue = new StringBuffer();
+		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
 		if (config.getAction().equalsIgnoreCase(RDBDConstants.EVAL_ACTION_SUBMIT)) {
@@ -27,9 +27,9 @@ public class AttributeClosureReporter {
 			prologue.append(messageSource.getMessage("attributeclosurereporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
 
 			if (grading.getPoints() == 1){
-				prologue.append(" " + messageSource.getMessage("attributeclosurereporter.point", null, locale) + "</b> ");
+				prologue.append(" ").append(messageSource.getMessage("attributeclosurereporter.point", null, locale)).append("</b> ");
 			} else {
-				prologue.append(" " + messageSource.getMessage("attributeclosurereporter.points", null, locale) + "</b> ");
+				prologue.append(" ").append(messageSource.getMessage("attributeclosurereporter.points", null, locale)).append("</b> ");
 			}
 
 			prologue.append(messageSource.getMessage("attributeclosurereporter.yoursubmission", null, locale));
@@ -54,11 +54,11 @@ public class AttributeClosureReporter {
 	}
 
 	public static ErrorReport createAttributeClosureErrorReport(AttributeClosureAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Iterator it;
+		Iterator<String> it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
-		StringBuffer prologue = new StringBuffer();
-		StringBuffer description = new StringBuffer();
+		StringBuilder prologue = new StringBuilder();
+		StringBuilder description = new StringBuilder();
 
 		int missingAttributesCount = analysis.getMissingAttributes().size();
 		int additionalAttributesCount = analysis.getAdditionalAttributes().size();
@@ -77,18 +77,18 @@ public class AttributeClosureReporter {
 			if (config.getDiagnoseLevel() == 2){
 				description.append(Integer.toString(missingAttributesCount));
 				if (missingAttributesCount == 1){
-					description.append(" " + messageSource.getMessage("attributeclosurereporter.attributeis", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeis", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("attributeclosurereporter.attributeare", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeare", null, locale)).append(" ");
 				}
 				description.append(messageSource.getMessage("attributeclosurereporter.missing", null, locale));
 			}
 			
 			if (config.getDiagnoseLevel() == 3){
 				currElemID = RDBDHelper.getNextElementID();
-				description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-				description.append("<p>" + messageSource.getMessage("attributeclosurereporter.attributesmissing", null, locale) + "</b>:</p>");
+				description.append("<p>").append(messageSource.getMessage("attributeclosurereporter.attributesmissing", null, locale)).append("</b>:</p>");
 				description.append("<table border='2' rules='all'>");
 
 				it = analysis.iterMissingAttributes();
@@ -101,14 +101,14 @@ public class AttributeClosureReporter {
 				description.append("</body></html>");
 				description.append("\"></input>");
 
-				description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + missingAttributesCount);
+				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(missingAttributesCount);
 
 				if (missingAttributesCount == 1){
-					description.append(" " + messageSource.getMessage("attributeclosurereporter.attributeisa", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeisa", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("attributeclosurereporter.attributesarea", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributesarea", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("attributeclosurereporter.missing", null, locale) + "</b>.");
+				description.append(messageSource.getMessage("attributeclosurereporter.missing", null, locale)).append("</b>.");
 			}
 		}
 		
@@ -124,18 +124,18 @@ public class AttributeClosureReporter {
 			if (config.getDiagnoseLevel() == 2){
 				description.append(Integer.toString(additionalAttributesCount));
 				if (missingAttributesCount == 1){
-					description.append(" " + messageSource.getMessage("attributeclosurereporter.attributeis", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeis", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("attributeclosurereporter.attributesare", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributesare", null, locale)).append(" ");
 				}
 				description.append(messageSource.getMessage("attributeclosurereporter.toomuch", null, locale));
 			}
 			
 			if (config.getDiagnoseLevel() == 3){
 				currElemID = RDBDHelper.getNextElementID();
-				description.append("<input type='hidden' id='" + currElemID + "' value=\"");
+				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
-				description.append("<p>" + messageSource.getMessage("attributeclosurereporter.attributestoomuch", null, locale) + "</b>:</p>");
+				description.append("<p>").append(messageSource.getMessage("attributeclosurereporter.attributestoomuch", null, locale)).append("</b>:</p>");
 				description.append("<table border='2' rules='all'>");
 
 				it = analysis.iterAdditionalAttributes();
@@ -147,14 +147,14 @@ public class AttributeClosureReporter {
 				description.append("</table>");
 				description.append("</body></html>");
 				description.append("\"></input>");
-				description.append("<a href=\"javascript:openWindow('" + currElemID + "')\">" + additionalAttributesCount);
+				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(additionalAttributesCount);
 
 				if (additionalAttributesCount == 1){
-					description.append(" " + messageSource.getMessage("attributeclosurereporter.attributeisa", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeisa", null, locale)).append(" ");
 				} else {
-					description.append(" " + messageSource.getMessage("attributeclosurereporter.attributesarea", null, locale) + " ");
+					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributesarea", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("attributeclosurereporter.toomuch", null, locale) + ".");
+				description.append(messageSource.getMessage("attributeclosurereporter.toomuch", null, locale)).append(".");
 			}
 		}
 		report.setDescription(description.toString());

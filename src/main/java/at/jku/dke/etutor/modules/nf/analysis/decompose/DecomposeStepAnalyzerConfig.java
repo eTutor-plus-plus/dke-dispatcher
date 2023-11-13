@@ -9,7 +9,7 @@ import java.util.Vector;
 
 public class DecomposeStepAnalyzerConfig extends NormalizationAnalyzerConfig {
 
-	private Vector allRelations;
+	private final Vector allRelations;
 
 	public DecomposeStepAnalyzerConfig() {
 		super();

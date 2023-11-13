@@ -10,16 +10,16 @@ public class Report implements at.jku.dke.etutor.core.evaluation.Report, Seriali
 
 	private boolean showPrologue;
 
-	private Vector errorReports;
-	private Vector errorReportGroups;
+	private final Vector<ErrorReport> errorReports;
+	private final Vector<ErrorReportGroup> errorReportGroups;
 	
 	public Report() {
 		super();
 		this.prologue = null;
 		this.showPrologue = true;
 		
-		this.errorReports = new Vector();
-		this.errorReportGroups = new Vector();
+		this.errorReports = new Vector<>();
+		this.errorReportGroups = new Vector<>();
 	}
 
 	public boolean showPrologue() {
@@ -38,11 +38,11 @@ public class Report implements at.jku.dke.etutor.core.evaluation.Report, Seriali
 		return this.prologue;
 	}
 
-	public Vector getErrorReports(){
-		return (Vector)this.errorReports.clone();
+	public Vector<ErrorReport> getErrorReports(){
+		return (Vector<ErrorReport>)this.errorReports.clone();
 	}
 	
-	public Iterator iterErrorReports(){
+	public Iterator<ErrorReport> iterErrorReports(){
 		return this.errorReports.iterator();
 	}
 	
@@ -50,11 +50,11 @@ public class Report implements at.jku.dke.etutor.core.evaluation.Report, Seriali
 		this.errorReports.add(report);
 	}
 
-	public Vector getErrorReportGroups(){
-		return (Vector)this.errorReportGroups.clone();
+	public Vector<ErrorReportGroup> getErrorReportGroups(){
+		return (Vector<ErrorReportGroup>)this.errorReportGroups.clone();
 	}
 	
-	public Iterator iterErrorReportGroups(){
+	public Iterator<ErrorReportGroup> iterErrorReportGroups(){
 		return this.errorReportGroups.iterator();
 	}
 	

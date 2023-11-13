@@ -8,17 +8,14 @@ import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.*;
 
 public class DecomposeAnalysis extends DefaultAnalysis implements Serializable, Analysis{
 
 	private int maxLostDependencies;
 	private NormalformLevel targetLevel;
-	private TreeSet decomposedRelations;
-	private HashMap decomposeStepAnalyses;
+	private final TreeSet decomposedRelations;
+	private final HashMap<String, NormalizationAnalysis> decomposeStepAnalyses;
 	private DependenciesPreservationAnalysis overallDepPresAnalysis;
 
 	public DecomposeAnalysis() {
@@ -27,8 +24,8 @@ public class DecomposeAnalysis extends DefaultAnalysis implements Serializable, 
 		this.maxLostDependencies = 0;
 		this.overallDepPresAnalysis = null;
 		this.targetLevel = NormalformLevel.FIRST;
-		this.decomposeStepAnalyses = new HashMap();
-		this.decomposedRelations = new TreeSet(new IdentifiedRelationComparator());
+		this.decomposeStepAnalyses = new HashMap<>();
+		this.decomposedRelations = new TreeSet<>(new IdentifiedRelationComparator());
 	}
 	
 	public void setDecomposedRelations(Collection decomposedRelations){
@@ -68,7 +65,7 @@ public class DecomposeAnalysis extends DefaultAnalysis implements Serializable, 
 		this.decomposeStepAnalyses.put(baseRelationID, analysis);
 	}
 	
-	public Iterator iterDecomposeStepAnalyses(){
+	public Iterator<Map.Entry<String, NormalizationAnalysis>> iterDecomposeStepAnalyses(){
 		return this.decomposeStepAnalyses.entrySet().iterator();
 	}
 	
@@ -76,7 +73,7 @@ public class DecomposeAnalysis extends DefaultAnalysis implements Serializable, 
 		return (NormalizationAnalysis)this.decomposeStepAnalyses.get(baseRelationID);
 	}
 
-	public Iterator iterAnalysedDecomposeStepBaseRelations(){
+	public Iterator<String> iterAnalysedDecomposeStepBaseRelations(){
 		return this.decomposeStepAnalyses.keySet().iterator();	
 	}
 }

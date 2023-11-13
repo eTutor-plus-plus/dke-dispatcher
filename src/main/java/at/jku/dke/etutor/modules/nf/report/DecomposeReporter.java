@@ -16,7 +16,7 @@ public class DecomposeReporter {
 	public static Report report(DecomposeReporterConfig config, MessageSource messageSource, Locale locale){
 		ErrorReport reportAtom;
 		Report report = new Report();
-		StringBuffer prologue = new StringBuffer();
+		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
 		if (config.getAction().equalsIgnoreCase(RDBDConstants.EVAL_ACTION_SUBMIT)) {
@@ -29,9 +29,9 @@ public class DecomposeReporter {
 			prologue.append(messageSource.getMessage("decomposereporter.suggestingpoints", new Object[]{config.getGrading().getPoints()}, locale));
 
 			if (config.getGrading().getPoints() == 1){
-				prologue.append(" " + messageSource.getMessage("decomposereporter.point", null, locale) + " ");
+				prologue.append(" ").append(messageSource.getMessage("decomposereporter.point", null, locale)).append(" ");
 			} else {
-				prologue.append(" " + messageSource.getMessage("decomposereporter.points", null, locale) + " ");
+				prologue.append(" ").append(messageSource.getMessage("decomposereporter.points", null, locale)).append(" ");
 			}
 
 			prologue.append(messageSource.getMessage("decomposereporter.yoursubmission", null, locale));
@@ -103,12 +103,12 @@ public class DecomposeReporter {
 		
 		//ADD RELATION SPECIFIC REPORT_ATOM_GROUPS
 		relationSpecificGroup = createRelationSpecificReportAtomGroup(baseRelationID + ".1", config.getDecomposeAnalysis().getDecomposeStepAnalyses(baseRelationID), config.getDecomposeAnalysis().getDecomposedRelations(), config, messageSource, locale);
-		if (relationSpecificGroup.getErrorReports().size() != 0){
+		if (!relationSpecificGroup.getErrorReports().isEmpty()){
 			group.addSubErrorReportGroup(relationSpecificGroup);
 		}
 
 		relationSpecificGroup = createRelationSpecificReportAtomGroup(baseRelationID + ".2", config.getDecomposeAnalysis().getDecomposeStepAnalyses(baseRelationID), config.getDecomposeAnalysis().getDecomposedRelations(), config, messageSource, locale);
-		if (relationSpecificGroup.getErrorReports().size() != 0){
+		if (!relationSpecificGroup.getErrorReports().isEmpty()){
 			group.addSubErrorReportGroup(relationSpecificGroup);
 		}
 		

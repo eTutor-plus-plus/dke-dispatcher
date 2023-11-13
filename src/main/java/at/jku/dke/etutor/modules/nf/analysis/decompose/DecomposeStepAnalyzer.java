@@ -34,11 +34,11 @@ public class DecomposeStepAnalyzer {
 		analysis.setSubmissionSuitsSolution(true);
 		analysis.setDesiredNormalformLevel(config.getDesiredNormalformLevel());
 		
-		StringBuffer temp = new StringBuffer();
+		StringBuilder temp = new StringBuilder();
 		RDBDHelper.getLogger().log(Level.INFO, "ANALYZING Decomposition of Relation '" + config.getBaseRelation().getID() + "'.");
 		decomposedRelationsIterator = config.iterNormalizedRelations();
 		while(decomposedRelationsIterator.hasNext()){
-			temp.append("Relation '" + ((IdentifiedRelation)decomposedRelationsIterator.next()).getID() + "' ");
+			temp.append("Relation '").append(((IdentifiedRelation) decomposedRelationsIterator.next()).getID()).append("' ");
 		}
 		RDBDHelper.getLogger().log(Level.INFO, "With Sub-Relations: " + temp.toString() + ".");
 		

@@ -8,9 +8,9 @@ import java.util.Iterator;
 
 public class CoverAnalyzer {
 
-	public static CoverAnalysis analyze(Collection fd1, Collection fd2){
+	public static CoverAnalysis analyze(Collection<FunctionalDependency> fd1, Collection<FunctionalDependency> fd2){
 		CoverAnalysis analysis;
-		Iterator dependenciesIterator;
+		Iterator<FunctionalDependency> dependenciesIterator;
 		FunctionalDependency currDependency;
  
  		analysis = new CoverAnalysis();
@@ -18,7 +18,7 @@ public class CoverAnalyzer {
  
 		dependenciesIterator = fd1.iterator();
 		while (dependenciesIterator.hasNext()) {
-			currDependency = (FunctionalDependency)dependenciesIterator.next();
+			currDependency = dependenciesIterator.next();
 			
 			if (!Member.execute(currDependency, fd2)) {
 				analysis.setSubmissionSuitsSolution(false);
@@ -28,7 +28,7 @@ public class CoverAnalyzer {
 
 		dependenciesIterator = fd2.iterator();
 		while (dependenciesIterator.hasNext()) {
-			currDependency = (FunctionalDependency)dependenciesIterator.next();
+			currDependency = dependenciesIterator.next();
 
 			if (!Member.execute(currDependency, fd1)) {
 				analysis.setSubmissionSuitsSolution(false);

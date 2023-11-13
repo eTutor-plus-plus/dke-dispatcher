@@ -11,7 +11,7 @@ import java.util.Vector;
 public class NormalformDeterminationAnalysis extends NormalformAnalysis implements Analysis {
 
 	private NormalformLevel submittedLevel;
-	private Vector wrongLeveledDependencies;
+	private final Vector wrongLeveledDependencies;
 
 	public NormalformDeterminationAnalysis() {
 		super();

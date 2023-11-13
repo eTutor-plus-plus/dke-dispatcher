@@ -34,7 +34,7 @@ public class SpecificationParser implements Serializable {
 	public final static String QUALIFIER_ATTRIBUTES_RELATION = "3";
 	public final static String PATTERN_ATTRIBUTE = "\\s*\\w*\\s*";
 
-	private Map qualifiers;
+	private final Map qualifiers;
 	private Set baseAttributes;
 	private Set relationAttributes;
 	private Set dependencies;
@@ -65,7 +65,7 @@ public class SpecificationParser implements Serializable {
 		String body;
 	
 		reset();
-		if (txt == null || txt.trim().length() < 1) {
+		if (txt == null || txt.trim().isEmpty()) {
 			return;
 		}
 		do {
@@ -103,7 +103,7 @@ public class SpecificationParser implements Serializable {
 					throw new SpecificationParserException(msg);
 				}
 				txt = txt.substring(++index).trim();
-			} else if (txt.length() > 0){
+			} else if (!txt.isEmpty()){
 				msg = "Invalid qualifier specified: " + txt;
 				throw new SpecificationParserException(msg);
 			}
@@ -123,7 +123,7 @@ public class SpecificationParser implements Serializable {
 		tokens = txt.split(",");
 		for (int i = 0; i < tokens.length; i++) {
 			token = tokens[i].trim();
-			if (token.length() > 0) {
+			if (!token.isEmpty()) {
 				dependency = parseDependency(token);
 				if (set.contains(dependency)) {
 					msg = "Duplicate dependencies specification " + dependency;
@@ -181,7 +181,7 @@ public class SpecificationParser implements Serializable {
 		tokens = txt.split("\\s");
 		for (int i = 0; i < tokens.length; i++) {
 			token = tokens[i].trim();
-			if (token.length() > 0) {
+			if (!token.isEmpty()) {
 				if (!token.matches(PATTERN_ATTRIBUTE)) {
 					msg = "Invalid attribute: " + token;
 					throw new SpecificationParserException(msg);		
@@ -206,7 +206,7 @@ public class SpecificationParser implements Serializable {
 
 	protected void validateQualifier(String txt) throws SpecificationParserException {
 		String msg;
-		if (txt == null || txt.trim().equals("")) {
+		if (txt == null || txt.trim().isEmpty()) {
 			msg = "No qualifier specified";
 			throw new SpecificationParserException(msg);
 		}
@@ -228,20 +228,16 @@ public class SpecificationParser implements Serializable {
 		if (this.baseAttributes == null) {
 			return;
 		}
-		String msg;
-		Iterator it;
-		Set set;
+
+		Set set = new TreeSet(getUnfoundedAttributes(this.baseAttributes));
 		
-		set = new TreeSet();
-		set.addAll(getUnfoundedAttributes(this.baseAttributes));
-		
-		if (set.size() > 0) {
-			msg = "Base attributes have been specified which are not part of the relation:";
-			it = set.iterator();
+		if (!set.isEmpty()) {
+			StringBuilder msg = new StringBuilder("Base attributes have been specified which are not part of the relation:");
+			Iterator it = set.iterator();
 			while (it.hasNext()) {
-				msg += " " + it.next();
+				msg.append(" ").append(it.next());
 			}
-			throw new SpecificationParserException(msg);
+			throw new SpecificationParserException(msg.toString());
 		}
 	}
 
@@ -249,26 +245,24 @@ public class SpecificationParser implements Serializable {
 		if (this.dependencies == null) {
 			return;
 		}
-		String msg;
-		Iterator it;
-		Set set;
+
 		FunctionalDependency dependency;
 		
-		set = new TreeSet();
-		it = this.dependencies.iterator();
+		Set set = new TreeSet();
+		Iterator it = this.dependencies.iterator();
 		while (it.hasNext()) {
 			dependency = (FunctionalDependency)it.next();
 			set.addAll(getUnfoundedAttributes(dependency.getLHSAttributes()));
 			set.addAll(getUnfoundedAttributes(dependency.getRHSAttributes()));
 		}
 		
-		if (set.size() > 0) {
-			msg = "Attributes have been specified in dependencies which are not part of the relation:";
+		if (!set.isEmpty()) {
+			StringBuilder msg = new StringBuilder("Attributes have been specified in dependencies which are not part of the relation:");
 			it = set.iterator();
 			while (it.hasNext()) {
-				msg += " " + it.next();
+				msg.append(" ").append(it.next());
 			}
-			throw new SpecificationParserException(msg);
+			throw new SpecificationParserException(msg.toString());
 		}
 	}
 	
@@ -286,10 +280,6 @@ public class SpecificationParser implements Serializable {
 			}
 		}
 		return set;
-	}
-	
-	public String toString() {
-		return super.toString();
 	}
 	
 	/**
@@ -320,7 +310,7 @@ public class SpecificationParser implements Serializable {
 		Iterator it;
 		boolean first;
 
-		buffer.append(qualifier + " {");
+		buffer.append(qualifier).append(" {");
 		first = true;
 		it = items.iterator();
 		while (it.hasNext()) {
@@ -435,7 +425,7 @@ public class SpecificationParser implements Serializable {
 		System.out.print("RELATION ATTRIBUTES: ");
 		if (parser.relationAttributes == null) {
 			System.out.println("No specification.");
-		} else if (parser.relationAttributes.size() < 1) {
+		} else if (parser.relationAttributes.isEmpty()) {
 			System.out.println("Empty attribute list.");
 		} else {
 			first = true;
@@ -449,7 +439,7 @@ public class SpecificationParser implements Serializable {
 		System.out.print("BASE ATTRIBUTES: ");
 		if (parser.baseAttributes == null) {
 			System.out.println("No specification.");
-		} else if (parser.baseAttributes.size() < 1) {
+		} else if (parser.baseAttributes.isEmpty()) {
 			System.out.println("Empty attribute list.");
 		} else {
 			it = parser.baseAttributes.iterator();
@@ -463,7 +453,7 @@ public class SpecificationParser implements Serializable {
 		System.out.print("DEPENDENCIES: ");
 		if (parser.dependencies == null) {
 			System.out.println("No specification.");
-		} else if (parser.dependencies.size() < 1) {
+		} else if (parser.dependencies.isEmpty()) {
 			System.out.println("Empty dependencies list.");
 		} else {
 			it = parser.dependencies.iterator();

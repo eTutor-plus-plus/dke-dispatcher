@@ -34,8 +34,8 @@ public class RDBDHelper {
 	
 	private static int elementID;
 	private static Logger rdbdLogger;
-	private static Logger testLogger;
-	private static Connection permanentConn;
+	private static final Logger testLogger;
+	private static final Connection permanentConn;
 	private static DataSource dataSource;
 
 	static {
@@ -266,7 +266,7 @@ public class RDBDHelper {
 	
 	public static void newRelation(Collection relations) throws Exception{
 		int maxID;
-		StringBuffer increasedID;
+		StringBuilder increasedID;
 		Iterator relationsIterator;
 		IdentifiedRelation newRelation;
 		IdentifiedRelation currRelation;
@@ -281,7 +281,7 @@ public class RDBDHelper {
 			}
 		}
 		
-		increasedID = new StringBuffer(String.valueOf(maxID + 1));
+		increasedID = new StringBuilder(String.valueOf(maxID + 1));
 		
 		for (int i=0; i<increasedID.length(); i++){
 			if ((increasedID.charAt(i) != '.') && (i+1 <increasedID.length())){
@@ -296,11 +296,11 @@ public class RDBDHelper {
 	public static void delRelation(Collection relations, String relationID) throws Exception{
 		int currID;
 		boolean found;
-		StringBuffer reducedID;
+		StringBuilder reducedID;
 		Iterator relationsIterator;
 		IdentifiedRelation currRelation;
 
-		if ((relationID != null) && (relationID.length() != 0) && (relations != null)){
+		if ((relationID != null) && (!relationID.isEmpty()) && (relations != null)){
 
 			found = false;
 			relationsIterator = relations.iterator();
@@ -314,7 +314,7 @@ public class RDBDHelper {
 				}
 				if (found){
 					currID = Integer.parseInt(currRelation.getID().replaceAll("\\.", ""));
-					reducedID = new StringBuffer(String.valueOf(currID-1));
+					reducedID = new StringBuilder(String.valueOf(currID-1));
 
 					for (int i=0; i<reducedID.length(); i++){
 						if ((reducedID.charAt(i) != '.') && (i+1 <reducedID.length())){
@@ -333,7 +333,7 @@ public class RDBDHelper {
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && 
-				(relationID.length() != 0) && 
+				(!relationID.isEmpty()) &&
 				(attributes != null) && 
 				(attributes.length != 0)){
 
@@ -358,7 +358,7 @@ public class RDBDHelper {
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && 
-				(relationID.length() != 0) && 
+				(!relationID.isEmpty()) &&
 				(attributesToDelete != null) && 
 				(attributesToDelete.length != 0)){
 
@@ -377,7 +377,7 @@ public class RDBDHelper {
 	public static void delAttributes(Relation relation, String[] attributesToDelete) throws Exception{
 		String currAttribute;
 		for (int i=0; i<attributesToDelete.length; i++){
-			currAttribute = attributesToDelete[i].toString();
+			currAttribute = attributesToDelete[i];
 			relation.removeAttribute(currAttribute);	
 		}
 		checkRelation(relation);
@@ -388,7 +388,7 @@ public class RDBDHelper {
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && 
-			(relationID.length() != 0) &&
+			(!relationID.isEmpty()) &&
 			(rhsAttributes != null) &&
 			(rhsAttributes.length != 0) &&
 			(lhsAttributes != null) &&
@@ -424,7 +424,7 @@ public class RDBDHelper {
 		Iterator relationsIterator;
 		IdentifiedRelation currRelation;
 
-		if ((relationID != null) && (relationID.length() != 0)){
+		if ((relationID != null) && (!relationID.isEmpty())){
 
 			relationsIterator = relations.iterator();
 			while (relationsIterator.hasNext()){
@@ -464,7 +464,7 @@ public class RDBDHelper {
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && 
-			(relationID.length() != 0) &&
+			(!relationID.isEmpty()) &&
 			(attributes != null) &&
 			(attributes.length != 0)){
 
@@ -484,7 +484,7 @@ public class RDBDHelper {
 		currKey = new Key();
 
 		for (int i=0; i<attributes.length; i++){
-			currKey.addAttribute(new String(attributes[i]));
+			currKey.addAttribute(attributes[i]);
 		}
 
 		relation.addMinimalKey(currKey);
@@ -496,7 +496,7 @@ public class RDBDHelper {
 
 		RDBDHelper.getLogger().log(Level.INFO, "DELETING KEYS");
 
-		if ((relationID != null) && (relationID.length() != 0)){
+		if ((relationID != null) && (!relationID.isEmpty())){
 			RDBDHelper.getLogger().log(Level.INFO, "SEARCHING FOR RELATION '" + relationID + "'");
 
 			relationsIterator = relations.iterator();
@@ -519,7 +519,7 @@ public class RDBDHelper {
 			keyToDelete = new Key();
 			attributes = keysToDelete[i].split(" ");					
 			for (int j=0; j<attributes.length; j++){
-				keyToDelete.addAttribute(new String(attributes[j]));
+				keyToDelete.addAttribute(attributes[j]);
 			}
 
 			boolean removed = relation.removeMinimalKey(keyToDelete);

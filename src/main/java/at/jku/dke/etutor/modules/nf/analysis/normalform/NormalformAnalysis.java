@@ -11,10 +11,10 @@ import java.util.Vector;
 public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
 
 
-	private Vector firstNormalFormViolations;
-	private Vector secondNormalFormViolations;
-	private Vector thirdNormalFormViolations;
-	private Vector boyceCottNormalFormViolations;
+	private final Vector firstNormalFormViolations;
+	private final Vector secondNormalFormViolations;
+	private final Vector thirdNormalFormViolations;
+	private final Vector boyceCottNormalFormViolations;
 
 	private NormalformLevel overallNormalformLevel;
 

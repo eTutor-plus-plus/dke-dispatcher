@@ -9,26 +9,26 @@ import java.util.Iterator;
 
 public class TrivialDependenciesAnalysis extends DefaultAnalysis implements Analysis {
 
-	private HashSet trivialDependencies;
+	private HashSet<FunctionalDependency> trivialDependencies;
 
 	public TrivialDependenciesAnalysis() {
 		super();
-		this.trivialDependencies = new HashSet();
+		this.trivialDependencies = new HashSet<>();
 	}
 
 	public void addTrivialDependency(FunctionalDependency dependency){
 		this.trivialDependencies.add(dependency);
 	}
 
-	public HashSet getTrivialDependencies() {
-		return (HashSet)this.trivialDependencies.clone();
+	public HashSet<FunctionalDependency> getTrivialDependencies() {
+		return (HashSet<FunctionalDependency>)this.trivialDependencies.clone();
 	}
 	
-	public Iterator iterTrivialDependencies(){
+	public Iterator<FunctionalDependency> iterTrivialDependencies(){
 		return this.trivialDependencies.iterator();
 	}
 
-	public void setTrivialDependencies(HashSet trivialDependencies) {
+	public void setTrivialDependencies(HashSet<FunctionalDependency> trivialDependencies) {
 		this.trivialDependencies = trivialDependencies;
 	}
 }

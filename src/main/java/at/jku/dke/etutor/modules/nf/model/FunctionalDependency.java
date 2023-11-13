@@ -8,32 +8,30 @@ import java.util.Vector;
 
 public class FunctionalDependency implements Serializable{
 
-	private TreeSet lhs;
-	private TreeSet rhs;
+	private final TreeSet<String> lhs;
+	private final TreeSet<String> rhs;
 
 	public FunctionalDependency() {
 		super();
-		this.lhs = new TreeSet(new AttributeCollator());
-		this.rhs = new TreeSet(new AttributeCollator());
+		this.lhs = new TreeSet<>(new AttributeCollator());
+		this.rhs = new TreeSet<>(new AttributeCollator());
 	}
 
-	public FunctionalDependency(Collection lhs, Collection rhs) {
+	public FunctionalDependency(Collection<String> lhs, Collection<String> rhs) {
 		this();
 		this.setLHSAttributes(lhs);
 		this.setRHSAttributes(rhs);
 	}
 
-	public Vector unfold() {
+	public Vector<FunctionalDependency> unfold() {
 		FunctionalDependency dependency;
-		Vector unfoldedRepresentation;
-		Iterator rhsAttributesIterator;
 
-		unfoldedRepresentation = new Vector();
-		rhsAttributesIterator = this.rhs.iterator();
+		Vector<FunctionalDependency> unfoldedRepresentation = new Vector<>();
+		Iterator<String> rhsAttributesIterator = this.rhs.iterator();
 
 		while (rhsAttributesIterator.hasNext()) {
 			dependency = new FunctionalDependency(this.lhs, null);
-			dependency.addRHSAttribute((String)rhsAttributesIterator.next());
+			dependency.addRHSAttribute(rhsAttributesIterator.next());
 			if (!dependency.isTrivial()) {
 				unfoldedRepresentation.add(dependency);
 			}
@@ -44,10 +42,10 @@ public class FunctionalDependency implements Serializable{
 
 	public boolean isTrivial() {
 
-		if (this.lhs.size() == 0) {
+		if (this.lhs.isEmpty()) {
 			return true;
 		}
-		if (this.rhs.size() == 0) {
+		if (this.rhs.isEmpty()) {
 			return true;
 		}
 
@@ -56,7 +54,6 @@ public class FunctionalDependency implements Serializable{
 
 	public boolean equals(Object obj) {
 		FunctionalDependency dependency;
-		Iterator attributesIterator;
 
 		if (obj == null) {
 			return false;
@@ -94,9 +91,9 @@ public class FunctionalDependency implements Serializable{
 	public String toString() {
 		boolean first;
 		String toString;
-		Iterator attributesIterator;
+		Iterator<String> attributesIterator;
 
-		toString = new String();
+		toString = "";
 		
 		first = true;
 		attributesIterator = this.iterLHSAttributes();
@@ -141,46 +138,38 @@ public class FunctionalDependency implements Serializable{
 		}
 	}
 
-	public void addAllLHSAttributes(Collection attributes){
-		Iterator attributesIterator;
-		
-		attributesIterator = attributes.iterator();
+	public void addAllLHSAttributes(Collection<String> attributes){
+		Iterator<String> attributesIterator = attributes.iterator();
 		while (attributesIterator.hasNext()){
-			this.addLHSAttribute((String)attributesIterator.next());
+			this.addLHSAttribute(attributesIterator.next());
 		}
 		
 	}
 
-	public void addAllRHSAttributes(Collection attributes){
-		Iterator attributesIterator;
-		
-		attributesIterator = attributes.iterator();
+	public void addAllRHSAttributes(Collection<String> attributes){
+		Iterator<String> attributesIterator = attributes.iterator();
 		while (attributesIterator.hasNext()){
-			this.addRHSAttribute((String)attributesIterator.next());
+			this.addRHSAttribute(attributesIterator.next());
 		}
 		
 	}
 
-	public void setLHSAttributes(Collection attributes) {
-		Iterator attributesIterator;
-
+	public void setLHSAttributes(Collection<String> attributes) {
 		this.lhs.clear();
 		if (attributes != null) {
-			attributesIterator = attributes.iterator();
+			Iterator<String> attributesIterator = attributes.iterator();
 			while (attributesIterator.hasNext()) {
-				this.addLHSAttribute((String)attributesIterator.next());
+				this.addLHSAttribute(attributesIterator.next());
 			}
 		}
 	}
 
-	public void setRHSAttributes(Collection attributes) {
-		Iterator attributesIterator;
-
+	public void setRHSAttributes(Collection<String> attributes) {
 		this.rhs.clear();
 		if (attributes != null) {
-			attributesIterator = attributes.iterator();
+			Iterator<String> attributesIterator = attributes.iterator();
 			while (attributesIterator.hasNext()) {
-				this.addRHSAttribute((String)attributesIterator.next());
+				this.addRHSAttribute(attributesIterator.next());
 			}
 		}
 	}
@@ -201,27 +190,27 @@ public class FunctionalDependency implements Serializable{
 		this.rhs.clear();
 	}
 
-	public void removeLHSAttributes(Collection attributes) {
+	public void removeLHSAttributes(Collection<String> attributes) {
 		this.lhs.removeAll(attributes);
 	}
 
-	public void removeRHSAttributes(Collection attributes) {
+	public void removeRHSAttributes(Collection<String> attributes) {
 		this.rhs.removeAll(attributes);
 	}
 
-	public Iterator iterLHSAttributes() {
+	public Iterator<String> iterLHSAttributes() {
 		return this.lhs.iterator();
 	}
 
-	public Iterator iterRHSAttributes() {
+	public Iterator<String> iterRHSAttributes() {
 		return this.rhs.iterator();
 	}
 
-	public TreeSet getLHSAttributes(){
-		return (TreeSet)this.lhs.clone();
+	public TreeSet<String> getLHSAttributes(){
+		return (TreeSet<String>)this.lhs.clone();
 	}
 
-	public TreeSet getRHSAttributes(){
-		return (TreeSet)this.rhs.clone();
+	public TreeSet<String> getRHSAttributes(){
+		return (TreeSet<String>)this.rhs.clone();
 	}
 }

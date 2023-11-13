@@ -10,26 +10,26 @@ import java.util.Iterator;
 
 public class CanonicalRepresentationAnalysis extends DefaultAnalysis implements Analysis {
 
-	private HashSet notCanonicalDependencies;
+	private final HashSet<FunctionalDependency> notCanonicalDependencies;
 
 	public CanonicalRepresentationAnalysis() {
 		super();
-		this.notCanonicalDependencies = new HashSet();
+		this.notCanonicalDependencies = new HashSet<>();
 	}
 	
 	public void addNotCanonicalDependency(FunctionalDependency dependency){
 		this.notCanonicalDependencies.add(dependency);
 	}
 	
-	public Iterator iterNotCananonicalDependencies(){
+	public Iterator<FunctionalDependency> iterNotCananonicalDependencies(){
 		return this.notCanonicalDependencies.iterator();
 	}
 	
-	public HashSet getNotCanonicalDependencies(){
-		return (HashSet)this.notCanonicalDependencies.clone();
+	public HashSet<FunctionalDependency> getNotCanonicalDependencies(){
+		return (HashSet<FunctionalDependency>)this.notCanonicalDependencies.clone();
 	}
 	
-	public void setNotCanonicalDependencies(Collection c){
+	public void setNotCanonicalDependencies(Collection<FunctionalDependency> c){
 		this.notCanonicalDependencies.clear();
 		this.notCanonicalDependencies.addAll(c);
 	}

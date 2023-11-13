@@ -39,7 +39,7 @@ public class TuplesGenerator{
 		TupleSet invalidKeys = calcInvalidKeys(tuples, keys);
 		TupleSet undesiredKeys = calcUndesiredKeys(tuples, keys);
 
-		while ((invalidKeys.size() > 0) || (undesiredKeys.size() > 0)){
+		while ((!invalidKeys.isEmpty()) || (!undesiredKeys.isEmpty())){
 			System.out.println("\nINITIAL POPULATION:");
 			TuplesPrinter.printToConsole(tuples, prefixes);
 
@@ -83,12 +83,12 @@ public class TuplesGenerator{
 				disableKey((int[])undesiredKeys.get(pos), tuples);
 			}*/
 
-			if (invalidKeys.size() > 0){
+			if (!invalidKeys.isEmpty()){
 				System.out.println("\nENABLING KEY: (" + TuplesPrinter.toString((int[])invalidKeys.get(0)) + ")");
 				enableKey((int[])invalidKeys.get(0), tuples);
 			}
 
-			if (undesiredKeys.size() > 0){
+			if (!undesiredKeys.isEmpty()){
 				System.out.println("\nDISABLING KEY: (" + TuplesPrinter.toString((int[])undesiredKeys.get(0)) + ")");
 				disableKey((int[])undesiredKeys.get(0), tuples);
 			}			

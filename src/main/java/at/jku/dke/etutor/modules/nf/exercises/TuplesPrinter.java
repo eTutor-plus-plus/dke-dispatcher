@@ -10,7 +10,7 @@ public class TuplesPrinter {
 	}
 
 	public static String toString(TupleSet tuplePopulation, Vector prefixes){
-		String s = new String();
+		String s = "";
 		Iterator tuplesIterator = tuplePopulation.iterator();
 		
 		while (tuplesIterator.hasNext()){
@@ -22,7 +22,7 @@ public class TuplesPrinter {
 	}
 
 	public static String toString(int[] tuple){
-		String s = new String(); 
+		String s = "";
 		
 		for (int i=0; i<tuple.length; i++){
 			s = s.concat(String.valueOf(tuple[i]));
@@ -35,7 +35,7 @@ public class TuplesPrinter {
 	}
 
 	public static String toString(int[] tuple, Vector prefixes){
-		String s = new String(); 
+		String s = "";
 		
 		for (int i=0; i<tuple.length; i++){
 			s = s.concat((String)prefixes.get(i));

@@ -2,22 +2,23 @@ package at.jku.dke.etutor.modules.nf.analysis.closure;
 
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.algorithms.Closure;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.Collection;
 import java.util.logging.Level;
 
 public class AttributeClosureAnalyzer {
 
-	public static AttributeClosureAnalysis analyze(Collection dependencies, Collection baseAttributes, Collection submittedAttributes){
+	public static AttributeClosureAnalysis analyze(Collection<FunctionalDependency> dependencies, Collection<String> baseAttributes, Collection<String> submittedAttributes){
 		AttributeClosureAnalysis analysis = new AttributeClosureAnalysis();
-		Collection correctAttributes = Closure.execute(baseAttributes, dependencies);
+		Collection<String> correctAttributes = Closure.execute(baseAttributes, dependencies);
 
 		analysis.setSubmissionSuitsSolution(true);
 
 		//DETERMINING MISSING ATTRIBUTES
 		analysis.setMissingAttributes(correctAttributes);
 		analysis.removeAllMissingAttributes(submittedAttributes);
-		if (analysis.getMissingAttributes().size() > 0){
+		if (!analysis.getMissingAttributes().isEmpty()){
 			analysis.setSubmissionSuitsSolution(false);
 			RDBDHelper.getLogger().log(Level.INFO, "FOUND MISSING ATTRIBUTES");
 		}
@@ -25,7 +26,7 @@ public class AttributeClosureAnalyzer {
 		//DETERMINING ADDITIONAL ATTRIBUTES
 		analysis.setAdditionalAttributes(submittedAttributes);
 		analysis.removeAllAdditionalAttributes(correctAttributes);
-		if (analysis.getAdditionalAttributes().size() > 0){
+		if (!analysis.getAdditionalAttributes().isEmpty()){
 			analysis.setSubmissionSuitsSolution(false);
 			RDBDHelper.getLogger().log(Level.INFO, "FOUND ADDITIONAL ATTRIBUTES");
 		}

@@ -8,26 +8,26 @@ import java.util.TreeSet;
 
 public class CoverAnalysis extends DefaultAnalysis implements Analysis {
 
-	private TreeSet missingDependenciesInSet1;
-	private TreeSet missingDependenciesInSet2;
+	private final TreeSet<FunctionalDependency> missingDependenciesInSet1;
+	private final TreeSet<FunctionalDependency> missingDependenciesInSet2;
 
 	public CoverAnalysis() {
 		super();
 		
-		this.missingDependenciesInSet1 = new TreeSet();
-		this.missingDependenciesInSet2 = new TreeSet();
+		this.missingDependenciesInSet1 = new TreeSet<>();
+		this.missingDependenciesInSet2 = new TreeSet<>();
 	}
 
-	public TreeSet getMissingDependenciesInSet1() {
-		return (TreeSet)this.missingDependenciesInSet1.clone();
+	public TreeSet<FunctionalDependency> getMissingDependenciesInSet1() {
+		return (TreeSet<FunctionalDependency>)this.missingDependenciesInSet1.clone();
 	}
 
 	public void addMissingDependencyInSet1(FunctionalDependency missingDependency) {
 		this.missingDependenciesInSet1.add(missingDependency);
 	}
 
-	public TreeSet getMissingDependenciesInSet2() {
-		return (TreeSet)this.missingDependenciesInSet2.clone();
+	public TreeSet<FunctionalDependency> getMissingDependenciesInSet2() {
+		return (TreeSet<FunctionalDependency>)this.missingDependenciesInSet2.clone();
 	}
 
 	public void addMissingDependencyInSet2(FunctionalDependency missingDependency) {

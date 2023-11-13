@@ -10,7 +10,7 @@ import java.util.Vector;
 
 public class RBRSpecification implements Serializable, Cloneable, RDBDSpecification{
 
-	static final long serialVersionUID = 2025183566330710558L;
+	private static final long serialVersionUID = 2025183566330710558L;
 
 	private Vector baseAttributes;
 	private IdentifiedRelation baseRelation;
@@ -99,10 +99,10 @@ public class RBRSpecification implements Serializable, Cloneable, RDBDSpecificat
 	}
 
 	public String toString(){
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		checkAttributes();
-		buffer.append("BASE ATTRIBUTES: " + this.baseAttributes + "\n");
-		buffer.append("BASE RELATION:\n" + this.baseRelation + "\n");
+		buffer.append("BASE ATTRIBUTES: ").append(this.baseAttributes).append("\n");
+		buffer.append("BASE RELATION:\n").append(this.baseRelation).append("\n");
 		
 		return buffer.toString();
 	}

@@ -131,7 +131,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			allRelations.addAll(submissionTreeSet);
 			
 			String baseRelationID;
-			if (passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION) != null && ((String)passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION)).length() > 0){
+			if (passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION) != null && !((String) passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION)).isEmpty()){
 				baseRelationID = ((String)passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION));
 			} else {
 				baseRelationID = ((DecomposeSpecification)specification).getBaseRelation().getID();

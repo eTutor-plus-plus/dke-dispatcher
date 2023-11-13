@@ -15,9 +15,9 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 
 	private int maxLostDependencies;
 
-	private HashMap rbrAnalyses;	
-	private HashMap keysAnalyses;
-	private HashMap normalformAnalyses;
+	private final HashMap<String, RBRAnalysis> rbrAnalyses;
+	private final HashMap<String, KeysAnalysis> keysAnalyses;
+	private final HashMap<String, NormalformAnalysis> normalformAnalyses;
 
 	private NormalformLevel desiredNormalformLevel;
 
@@ -25,10 +25,10 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 	private DecompositionAnalysis decompositionAnalysis;
 	private DependenciesPreservationAnalysis depPresAnalysis;
 
-	private HashMap trivialDependenciesAnalyses;
-	private HashMap extraneousAttributesAnalyses;
-	private HashMap redundandDependenciesAnalyses;
-	private HashMap canonicalRepresentationAnalyses;
+	private final HashMap<String, TrivialDependenciesAnalysis> trivialDependenciesAnalyses;
+	private final HashMap<String, ExtraneousAttributesAnalysis> extraneousAttributesAnalyses;
+	private final HashMap<String, RedundantDependenciesAnalysis> redundantDependenciesAnalyses;
+	private final HashMap<String, CanonicalRepresentationAnalysis> canonicalRepresentationAnalyses;
 
 	public NormalizationAnalysis() {
 		super();
@@ -42,7 +42,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 		
 		this.trivialDependenciesAnalyses = new HashMap();
 		this.extraneousAttributesAnalyses = new HashMap();
-		this.redundandDependenciesAnalyses = new HashMap();
+		this.redundantDependenciesAnalyses = new HashMap();
 		this.canonicalRepresentationAnalyses = new HashMap();
 	}
 
@@ -122,11 +122,11 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 	}
 
 	public RedundantDependenciesAnalysis getRedundandDependenciesAnalysis(String relationID){
-		return (RedundantDependenciesAnalysis)this.redundandDependenciesAnalyses.get(relationID);
+		return (RedundantDependenciesAnalysis)this.redundantDependenciesAnalyses.get(relationID);
 	}
 	
 	public void addRedundandDependenciesAnalysis(String relationID, RedundantDependenciesAnalysis analysis){
-		this.redundandDependenciesAnalyses.put(relationID, analysis);
+		this.redundantDependenciesAnalyses.put(relationID, analysis);
 	}
 
 	public CanonicalRepresentationAnalysis getCanonicalRepresentationAnalysis(String relationID) {

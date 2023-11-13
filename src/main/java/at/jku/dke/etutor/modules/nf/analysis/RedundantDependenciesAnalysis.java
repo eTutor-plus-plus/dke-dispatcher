@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 public class RedundantDependenciesAnalysis extends DefaultAnalysis implements Analysis {
 
-	private HashSet redundantDependencies;
+	private final HashSet redundantDependencies;
 
 	public RedundantDependenciesAnalysis() {
 		super();

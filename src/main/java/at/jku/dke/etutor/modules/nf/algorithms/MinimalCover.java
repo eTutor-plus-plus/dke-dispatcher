@@ -16,8 +16,6 @@ public class MinimalCover {
 		Iterator keyFDsIterator;
 		Iterator dependenciesIterator;
 
-		minimalCover = new HashSet(dependencies);
-		
 		//DERIVE CANONICAL FORM OF FUNCTIONAL DEPENDENCIES
 		minimalCover = unfold(dependencies);
 

@@ -12,7 +12,7 @@ public class NormalizationAnalyzerConfig {
 
 
 	private int maxLostDependencies;
-	private TreeSet normalizedRelations;
+	private final TreeSet normalizedRelations;
 	private IdentifiedRelation baseRelation;
 	private NormalformLevel desiredNormalformLevel;
 	

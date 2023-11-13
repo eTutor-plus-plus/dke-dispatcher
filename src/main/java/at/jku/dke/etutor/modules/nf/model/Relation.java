@@ -10,33 +10,33 @@ import java.util.TreeSet;
 
 public class Relation implements Serializable, Cloneable, RDBDSpecification {
 
-	static final long serialVersionUID = 7982386529581622533L;
+	private static final long serialVersionUID = 7982386529581622533L;
 
 	private String name;
-	private TreeSet attributes;
-	private HashSet dependencies;
+	private TreeSet<String> attributes;
+	private HashSet<FunctionalDependency> dependencies;
 
-	private HashSet subKeys;
-	private TreeSet superKeys;
-	private TreeSet minimalKeys;
+	private HashSet<Key> subKeys;
+	private TreeSet<Key> superKeys;
+	private TreeSet<Key> minimalKeys;
 	
 	public Relation() {
 		super();
-		this.name = new String();
-		this.subKeys = new HashSet();
-		this.dependencies = new HashSet();
-		this.superKeys = new TreeSet(new KeyComparator());
-		this.minimalKeys = new TreeSet(new KeyComparator());
-		this.attributes = new TreeSet(new AttributeCollator());
+		this.name = "";
+		this.subKeys = new HashSet<>();
+		this.dependencies = new HashSet<>();
+		this.superKeys = new TreeSet<Key>(new KeyComparator());
+		this.minimalKeys = new TreeSet<Key>(new KeyComparator());
+		this.attributes = new TreeSet<String>(new AttributeCollator());
 	}
 
 	public Object clone() throws CloneNotSupportedException {
 		Relation clone = (Relation)super.clone();
-		clone.attributes = (TreeSet)this.attributes.clone();
-		clone.dependencies = (HashSet)this.dependencies.clone();
-		clone.minimalKeys = (TreeSet)this.minimalKeys.clone();
-		clone.subKeys = (HashSet)this.subKeys.clone();
-		clone.superKeys = (TreeSet)this.superKeys.clone();
+		clone.attributes = (TreeSet<String>)this.attributes.clone();
+		clone.dependencies = (HashSet<FunctionalDependency>)this.dependencies.clone();
+		clone.minimalKeys = (TreeSet<Key>)this.minimalKeys.clone();
+		clone.subKeys = (HashSet<Key>)this.subKeys.clone();
+		clone.superKeys = (TreeSet<Key>)this.superKeys.clone();
 		return clone;
 	}
 
@@ -50,29 +50,29 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		e.printStackTrace();
 	}
 }
-	public Relation(Collection attributes, Collection dependencies) {
+	public Relation(Collection<String> attributes, Collection<FunctionalDependency> dependencies) {
 		this();
 		this.setAttributes(attributes);
 		this.setFunctionalDependencies(dependencies);
 	}
 
-	public Iterator iterSubKeys() {
+	public Iterator<Key> iterSubKeys() {
 		return this.subKeys.iterator();
 	}
 
-	public Iterator iterSuperKeys() {
+	public Iterator<Key> iterSuperKeys() {
 		return this.superKeys.iterator();
 	}
 
-	public Iterator iterAttributes() {
+	public Iterator<String> iterAttributes() {
 		return this.attributes.iterator();
 	}
 
-	public Iterator iterMinimalKeys() {
+	public Iterator<Key> iterMinimalKeys() {
 		return this.minimalKeys.iterator();
 	}
 
-	public Iterator iterFunctionalDependencies() {
+	public Iterator<FunctionalDependency> iterFunctionalDependencies() {
 		return this.dependencies.iterator();
 	}
 
@@ -125,8 +125,8 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		}
 	}
 
-	public void setSubKeys(Collection subKeys) {
-		Iterator subKeysIterator;
+	public void setSubKeys(Collection<Key> subKeys) {
+		Iterator<Key> subKeysIterator;
 
 		this.subKeys.clear();
 		if (subKeys != null) {
@@ -137,8 +137,8 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		}
 	}
 
-	public void setSuperKeys(Collection superKeys) {
-		Iterator superKeysIterator;
+	public void setSuperKeys(Collection<Key> superKeys) {
+		Iterator<Key> superKeysIterator;
 
 		this.superKeys.clear();
 		if (superKeys != null) {
@@ -149,8 +149,8 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		}
 	}
 
-	public void setAttributes(Collection attributes) {
-		Iterator attributesIterator;
+	public void setAttributes(Collection<String> attributes) {
+		Iterator<String> attributesIterator;
 
 		this.attributes.clear();
 		if (attributes != null) {
@@ -161,8 +161,8 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		}
 	}
 
-	public void setMinimalKeys(Collection minimalKeys) {
-		Iterator minimalKeysIterator;
+	public void setMinimalKeys(Collection<Key> minimalKeys) {
+		Iterator<Key> minimalKeysIterator;
 
 		this.minimalKeys.clear();
 		if (superKeys != null) {
@@ -173,8 +173,8 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		}
 	}
 
-	public void setFunctionalDependencies(Collection dependencies) {
-		Iterator dependenciesIterator;
+	public void setFunctionalDependencies(Collection<FunctionalDependency> dependencies) {
+		Iterator<FunctionalDependency> dependenciesIterator;
 
 		this.dependencies.clear();
 		if (dependencies != null) {
@@ -229,26 +229,23 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		return this.name;
 	}
 	
-	public HashSet getSubKeys(){
-		return (HashSet)this.subKeys.clone();
+	public HashSet<Key> getSubKeys(){
+		return (HashSet<Key>)this.subKeys.clone();
 	}
 	
-	public TreeSet getSuperKeys(){
-		return (TreeSet)this.superKeys.clone();
+	public TreeSet<Key> getSuperKeys(){
+		return (TreeSet<Key>)this.superKeys.clone();
 	}
 	
-	public TreeSet getAttributes(){
-		return (TreeSet)this.attributes.clone();
+	public TreeSet<String> getAttributes(){
+		return (TreeSet<String>)this.attributes.clone();
 	}
 	
 	public String[] getAttributesArray(){
-		int pos;
-		String[] attributes;
-		Iterator attributesIterator;
-		
-		pos = 0;
-		attributes = new String[this.attributes.size()];
-		attributesIterator = this.attributes.iterator();
+		int pos = 0;
+		String[] attributes = new String[this.attributes.size()];
+		Iterator<String> attributesIterator = this.attributes.iterator();
+
 		while (attributesIterator.hasNext()){
 			attributes[pos] = attributesIterator.next().toString();
 			pos = pos + 1;
@@ -257,16 +254,16 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		return attributes;
 	}
 	
-	public TreeSet getMinimalKeys(){
-		return (TreeSet)this.minimalKeys.clone();
+	public TreeSet<Key> getMinimalKeys(){
+		return (TreeSet<Key>)this.minimalKeys.clone();
 	}
 	
-	public HashSet getFunctionalDependencies(){
-		return (HashSet)this.dependencies.clone();
+	public HashSet<FunctionalDependency> getFunctionalDependencies(){
+		return (HashSet<FunctionalDependency>)this.dependencies.clone();
 	}
 
 	/*
-	 * name wird nicht �berpr�ft
+	 * name wird nicht ueberprueft
 	 */
 	public boolean semanticallyEquals(Object obj){
 		Relation rel;

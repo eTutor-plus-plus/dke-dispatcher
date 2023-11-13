@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public class Member{
 	
-	public static boolean execute(FunctionalDependency dependency, Collection dependencies){
+	public static boolean execute(FunctionalDependency dependency, Collection<FunctionalDependency> dependencies){
 		return Closure.execute(dependency.getLHSAttributes(), dependencies).containsAll(dependency.getRHSAttributes());
 	}
 }

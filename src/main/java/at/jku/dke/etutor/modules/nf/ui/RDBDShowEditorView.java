@@ -13,7 +13,7 @@ import java.util.*;
 
 public class RDBDShowEditorView extends DefaultPrintView implements
 		ShowEditorView {
-	protected int rdbdType;
+	protected final int rdbdType;
 
 	public RDBDShowEditorView(int rdbdType) {
 		this.rdbdType = rdbdType;
