@@ -15,8 +15,8 @@ public class RBRAnalysis extends DefaultAnalysis implements Analysis {
 	public RBRAnalysis() {
 		super();
 		
-		this.missingFunctionalDependencies = new Vector();
-		this.additionalFunctionalDependencies = new Vector();		
+		this.missingFunctionalDependencies = new Vector<>();
+		this.additionalFunctionalDependencies = new Vector<>();
 	}
 
 	public Vector<FunctionalDependency> getMissingFunctionalDependencies() {

@@ -4,6 +4,7 @@ import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.nf.RDBDConstants;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalysis;
+import at.jku.dke.etutor.modules.nf.model.Key;
 import org.springframework.context.MessageSource;
 
 import java.util.Iterator;
@@ -54,10 +55,9 @@ public class KeysReporter {
 	}
 
 	public static ErrorReport createKeysErrorReport(KeysAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Iterator it;
+		Iterator<Key> it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
-		StringBuilder prologue = new StringBuilder();
 		StringBuilder description = new StringBuilder();
 
 		int missingKeysCount = analysis.getMissingKeys().size();
@@ -75,7 +75,7 @@ public class KeysReporter {
 			}
 
 			if (config.getDiagnoseLevel() == 2){
-				description.append(Integer.toString(missingKeysCount));
+				description.append(missingKeysCount);
 				if (missingKeysCount == 1){
 					description.append(" ").append(messageSource.getMessage("keysreporter.keyis", null, locale)).append(" ");
   			} else {
@@ -122,7 +122,7 @@ public class KeysReporter {
 			}
 
 			if (config.getDiagnoseLevel() == 2){
-				description.append(Integer.toString(additionalKeysCount));
+				description.append(additionalKeysCount);
 				if (missingKeysCount == 1){
 					description.append(" ").append(messageSource.getMessage("keysreporter.keyis", null, locale)).append(" ");
 				} else {

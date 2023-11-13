@@ -72,7 +72,7 @@ public class IdentifiedRelationComparator  implements Comparator, Serializable{
 	}
 	
 	public static void main(String[] args){
-		TreeSet s = new TreeSet(new IdentifiedRelationComparator());
+		TreeSet<IdentifiedRelation> s = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
 		IdentifiedRelation relation;
 		
 		try{
@@ -105,9 +105,9 @@ public class IdentifiedRelationComparator  implements Comparator, Serializable{
 			return;
 		}
 		
-		Iterator i = s.iterator();
+		Iterator<IdentifiedRelation> i = s.iterator();
 		while (i.hasNext()){
-			relation = (IdentifiedRelation)i.next();
+			relation = i.next();
 			System.out.println("Relation: " + relation.getID() + " Ident: " + relation.getID().split("\\.").length);
 		}
 	}

@@ -201,9 +201,9 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 	
 	private Relation getFirstRelation(Object relations) {
 		if (relations instanceof TreeSet) {
-			return ((Relation) ((TreeSet) relations).first());
+			return ((TreeSet<Relation>) relations).first();
 		} else {
-			return ((Relation) ((Vector) relations).get(0));
+			return ((Vector<Relation>) relations).get(0);
 		}
 	}
 
@@ -440,14 +440,14 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 		IdentifiedRelation relation = null;
 
 		if (rdbdType == RDBDConstants.TYPE_NORMALIZATION) {
-			submission = new TreeSet(new IdentifiedRelationComparator());
+			submission = new TreeSet<>(new IdentifiedRelationComparator());
 
 			relation = new IdentifiedRelation();
 			relation.setID("1");
 			relation.setName("R1");
 			((Collection) submission).add(relation);
 		} else if (rdbdType == RDBDConstants.TYPE_DECOMPOSE) {
-			submission = new TreeSet(new IdentifiedRelationComparator());
+			submission = new TreeSet<>(new IdentifiedRelationComparator());
 		} else if (rdbdType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
 			int lastID = 1;
 			Iterator dependenciesIterator;
@@ -460,7 +460,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 				lastID = lastID + 1;
 			}
 		} else {
-			submission = new Vector();
+			submission = new Vector<>();
 			relation = new IdentifiedRelation();
 			relation.setID("1");
 			relation.setName("R1");

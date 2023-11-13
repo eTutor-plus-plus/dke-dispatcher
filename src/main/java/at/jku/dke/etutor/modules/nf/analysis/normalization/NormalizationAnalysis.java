@@ -32,18 +32,18 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 
 	public NormalizationAnalysis() {
 		super();
-		this.rbrAnalyses = new HashMap();
-		this.keysAnalyses = new HashMap();
-		this.normalformAnalyses = new HashMap();
+		this.rbrAnalyses = new HashMap<>();
+		this.keysAnalyses = new HashMap<>();
+		this.normalformAnalyses = new HashMap<>();
 
 		this.depPresAnalysis = null;
 		this.lossLessAnalysis = null;
 		this.decompositionAnalysis = null;
 		
-		this.trivialDependenciesAnalyses = new HashMap();
-		this.extraneousAttributesAnalyses = new HashMap();
-		this.redundantDependenciesAnalyses = new HashMap();
-		this.canonicalRepresentationAnalyses = new HashMap();
+		this.trivialDependenciesAnalyses = new HashMap<>();
+		this.extraneousAttributesAnalyses = new HashMap<>();
+		this.redundantDependenciesAnalyses = new HashMap<>();
+		this.canonicalRepresentationAnalyses = new HashMap<>();
 	}
 
 	public DecompositionAnalysis getDecompositionAnalysis() {

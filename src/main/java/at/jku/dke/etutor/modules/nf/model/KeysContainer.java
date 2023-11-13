@@ -5,9 +5,9 @@ import java.util.TreeSet;
 
 public class KeysContainer implements Serializable{
 
-	private TreeSet minimalKeys;
-	private TreeSet superKeys;
-	private TreeSet partialKeys;
+	private TreeSet<Key> minimalKeys;
+	private TreeSet<Key> superKeys;
+	private TreeSet<Key> partialKeys;
 	
 
 	public KeysContainer() {
@@ -18,27 +18,27 @@ public class KeysContainer implements Serializable{
 		this.partialKeys = null;
 	}
 
-	public void setMinimalKeys(TreeSet minimalKeys){
+	public void setMinimalKeys(TreeSet<Key> minimalKeys){
 		this.minimalKeys = minimalKeys;	
 	}
 	
-	public TreeSet getMinimalKeys(){
-		return (TreeSet)this.minimalKeys.clone();
+	public TreeSet<Key> getMinimalKeys(){
+		return (TreeSet<Key>)this.minimalKeys.clone();
 	}
 
-	public void setSuperKeys(TreeSet keys){
+	public void setSuperKeys(TreeSet<Key> keys){
 		this.superKeys = keys;	
 	}
 	
-	public TreeSet getSuperKeys(){
-		return (TreeSet)this.superKeys.clone();
+	public TreeSet<Key> getSuperKeys(){
+		return (TreeSet<Key>)this.superKeys.clone();
 	}
 	
-	public void setPartialKeys(TreeSet keys){
+	public void setPartialKeys(TreeSet<Key> keys){
 		this.partialKeys = keys;	
 	}
 	
-	public TreeSet getPartialKeys(){
-		return (TreeSet)this.partialKeys.clone();
+	public TreeSet<Key> getPartialKeys(){
+		return (TreeSet<Key>)this.partialKeys.clone();
 	}
 }

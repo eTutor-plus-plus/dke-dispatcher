@@ -2,6 +2,7 @@ package at.jku.dke.etutor.modules.nf.exercises;
 
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.KeysDeterminator;
+import at.jku.dke.etutor.modules.nf.model.Key;
 
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -11,7 +12,7 @@ import java.util.logging.Level;
 public class TuplesGenerator{
 	
 	public static TupleSet generate(TupleSet keys, int valuesNumber, int tuplesNumber, int minValue, int maxValue){
-		Vector prefixes = new Vector();
+		Vector<String> prefixes = new Vector<>();
 		prefixes.add("A");
 		prefixes.add("B");
 		prefixes.add("C");
@@ -35,7 +36,6 @@ public class TuplesGenerator{
 			tuples.add(tuple);
 		}
 
-		Iterator it;
 		TupleSet invalidKeys = calcInvalidKeys(tuples, keys);
 		TupleSet undesiredKeys = calcUndesiredKeys(tuples, keys);
 
@@ -45,7 +45,7 @@ public class TuplesGenerator{
 
 			/*
 			System.out.println("\nDESIRED KEYS:");
-			it = keys.iterator();
+			Iterator<Key> it = keys.iterator();
 			while (it.hasNext()){
 				System.out.println(TuplesPrinter.toString((int[])it.next()));
 			}
@@ -58,7 +58,7 @@ public class TuplesGenerator{
 			}*/
 
 			System.out.println("\nINVALID KEYS:");
-			it = invalidKeys.iterator();
+			Iterator<Key> it = invalidKeys.iterator();
 			while (it.hasNext()){
 				System.out.print("(" + TuplesPrinter.toString((int[])it.next()) + ") ");
 			}
@@ -104,7 +104,7 @@ public class TuplesGenerator{
 	}
 	
 	private static void disableKey(int[] key, TupleSet tuples){
-		Vector prefixes = new Vector();
+		Vector<String> prefixes = new Vector<>();
 		prefixes.add("A");
 		prefixes.add("B");
 		prefixes.add("C");
@@ -154,7 +154,7 @@ public class TuplesGenerator{
 		return invalidKeys; 
 	}
 
-	private static TupleSet calcUndesiredKeys(TupleSet tuples, TreeSet desiredKeys){
+	private static TupleSet calcUndesiredKeys(TupleSet tuples, TreeSet<Key> desiredKeys){
 		TupleSet undesiredKeys = KeysDeterminator.determineMinimalKeys(tuples);
 		undesiredKeys.removeAll(desiredKeys);
 
@@ -186,7 +186,7 @@ public class TuplesGenerator{
 		return mutation;
 	}
 	
-	private static boolean causesNewKey(int[] newTuple, TupleSet tuples, Vector expectedKeys){
+	private static boolean causesNewKey(int[] newTuple, TupleSet tuples, Vector<Key> expectedKeys){
 		TupleSet keys;
 		TupleSet temp; 
 
@@ -197,7 +197,7 @@ public class TuplesGenerator{
 		return !(keys.size() == expectedKeys.size());
 	}
 	
-	private static boolean holdsAllKeys(Vector keys, TupleSet tuples, int[] tuple){
+	private static boolean holdsAllKeys(Vector<Key> keys, TupleSet tuples, int[] tuple){
 		for (int keyID=0; keyID<keys.size(); keyID++){
 			if (!KeysDeterminator.holdsKey((int[])keys.get(keyID), tuple, tuples)){
 				return false;
@@ -245,7 +245,7 @@ public class TuplesGenerator{
 		
 		tuples = TuplesGenerator.generate(keys, 5, 5, 0, 9);
 		
-		Vector prefixes = new Vector();
+		Vector<String> prefixes = new Vector<>();
 		prefixes.add("A");
 		prefixes.add("B");
 		prefixes.add("C");

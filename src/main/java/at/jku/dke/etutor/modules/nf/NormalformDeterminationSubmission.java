@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.modules.nf;
 
+import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformViolation;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
@@ -11,7 +12,7 @@ public class NormalformDeterminationSubmission implements Serializable {
 
 	private final HashMap<Integer, FunctionalDependency> dependencyIDs;
 	private NormalformLevel overallLevel;
-	private final HashMap normalformViolations;
+	private final HashMap<Integer, NormalformLevel> normalformViolations;
 
 	public NormalformDeterminationSubmission() {
 		super();
@@ -22,14 +23,13 @@ public class NormalformDeterminationSubmission implements Serializable {
 	}
 
 	public Integer getIDForDependency(FunctionalDependency dependency) {
-		Iterator iter;
 		Integer currID;
 		FunctionalDependency currDependency;
 
-		iter = this.dependencyIDs.keySet().iterator();
+		Iterator<Integer> iter = this.dependencyIDs.keySet().iterator();
 		while (iter.hasNext()) {
-			currID = (Integer) iter.next();
-			currDependency = (FunctionalDependency) this.dependencyIDs
+			currID = iter.next();
+			currDependency = this.dependencyIDs
 					.get(currID);
 			if (currDependency.equals(dependency)) {
 				return currID;
@@ -44,7 +44,7 @@ public class NormalformDeterminationSubmission implements Serializable {
 	}
 
 	public FunctionalDependency getDependency(Integer id) {
-		return (FunctionalDependency) this.dependencyIDs.get(id);
+		return this.dependencyIDs.get(id);
 	}
 
 	public Iterator<Integer> iterDependencyIDs() {
@@ -59,7 +59,7 @@ public class NormalformDeterminationSubmission implements Serializable {
 	public NormalformLevel getViolatedNormalformLevel(Integer dependencyID) {
 		if (this.normalformViolations.containsKey(dependencyID)) {
 			if (this.normalformViolations.get(dependencyID) != null) {
-				return (NormalformLevel) this.normalformViolations
+				return this.normalformViolations
 						.get(dependencyID);
 			}
 		}

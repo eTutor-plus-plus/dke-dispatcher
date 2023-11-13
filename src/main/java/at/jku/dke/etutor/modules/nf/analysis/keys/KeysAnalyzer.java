@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.modules.nf.analysis.keys;
 
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.util.TreeSet;
@@ -9,18 +10,13 @@ import java.util.logging.Level;
 public class KeysAnalyzer {
 
 	public static KeysAnalysis analyze(Relation relation, KeysAnalyzerConfig config){
-		String message;
-		TreeSet correctKeys;
-		KeysAnalysis analysis;
-
-		message = "";
-		message = message.concat("Start analyzing keys determination.");
+		String message = "Start analyzing keys determination.";
 		RDBDHelper.getLogger().log(Level.INFO, message);
 
-		analysis = new KeysAnalysis();
+		KeysAnalysis analysis = new KeysAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
-		
-		correctKeys = config.getCorrectMinimalKeys();
+
+		TreeSet<Key> correctKeys = config.getCorrectMinimalKeys();
 		analysis.setSubmission(relation.getMinimalKeys());
 
 		analysis.setMissingKeys(correctKeys);

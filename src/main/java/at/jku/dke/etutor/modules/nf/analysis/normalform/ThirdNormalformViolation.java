@@ -5,23 +5,23 @@ import java.util.Vector;
 
 public class ThirdNormalformViolation extends NormalformViolation {
 
-	private final Vector nonPrimRHSAttributes;
+	private final Vector<String> nonPrimRHSAttributes;
 
 	public ThirdNormalformViolation() {
 		super();
-		this.nonPrimRHSAttributes = new Vector();
+		this.nonPrimRHSAttributes = new Vector<>();
 	}
 
 	public void addNonPrimRHSAttribute(String attribute){
 		this.nonPrimRHSAttributes.add(attribute);
 	}
 	
-	public Iterator iterNonPrimRHSAttributes(){
+	public Iterator<String> iterNonPrimRHSAttributes(){
 		return this.nonPrimRHSAttributes.iterator();
 	}
 	
-	public Vector getNonPrimRHSAttributes(){
-		return (Vector)this.nonPrimRHSAttributes.clone();
+	public Vector<String> getNonPrimRHSAttributes(){
+		return (Vector<String>)this.nonPrimRHSAttributes.clone();
 	}
 	
 	public int nonPrimRHSAttributesCount(){

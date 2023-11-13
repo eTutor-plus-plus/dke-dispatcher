@@ -9,6 +9,7 @@ import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformViolation;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 
@@ -34,10 +35,10 @@ public class SpecificationParser implements Serializable {
 	public final static String QUALIFIER_ATTRIBUTES_RELATION = "3";
 	public final static String PATTERN_ATTRIBUTE = "\\s*\\w*\\s*";
 
-	private final Map qualifiers;
-	private Set baseAttributes;
-	private Set relationAttributes;
-	private Set dependencies;
+	private final Map<String, String> qualifiers;
+	private Set<String> baseAttributes;
+	private Set<String> relationAttributes;
+	private Set<FunctionalDependency> dependencies;
 	
 	private SpecificationParser() {
 		this("R", "B", "F");
@@ -46,7 +47,7 @@ public class SpecificationParser implements Serializable {
 	public SpecificationParser(String qualRelation, String qualBase, String qualDependencies) {
 		super();
 		reset();
-		this.qualifiers = new HashMap();
+		this.qualifiers = new HashMap<>();
 		qualifiers.put(QUALIFIER_ATTRIBUTES_RELATION, qualRelation);
 		qualifiers.put(QUALIFIER_ATTRIBUTES_BASE, qualBase);
 		qualifiers.put(QUALIFIER_DEPENDENCIES, qualDependencies);
@@ -112,27 +113,21 @@ public class SpecificationParser implements Serializable {
 		validateDependencies();
 	}
 
-	protected Set parseDependencies(String txt) throws SpecificationParserException {
-		String msg;
-		String[] tokens;
-		String token;
-		HashSet set;
-		FunctionalDependency dependency;
+	protected Set<FunctionalDependency> parseDependencies(String txt) throws SpecificationParserException {
+		HashSet<FunctionalDependency> dependencySet = new HashSet<>();
+		String [] tokens = txt.split(",");
 
-		set = new HashSet();
-		tokens = txt.split(",");
 		for (int i = 0; i < tokens.length; i++) {
-			token = tokens[i].trim();
+			String token = tokens[i].trim();
 			if (!token.isEmpty()) {
-				dependency = parseDependency(token);
-				if (set.contains(dependency)) {
-					msg = "Duplicate dependencies specification " + dependency;
-					throw new SpecificationParserException(msg);
+				FunctionalDependency dependency = parseDependency(token);
+				if (dependencySet.contains(dependency)) {
+					throw new SpecificationParserException("Duplicate dependencies specification " + dependency);
 				}
-				set.add(dependency);
+				dependencySet.add(dependency);
 			}
 		}
-		return set;
+		return dependencySet;
 	}
 		
 	protected FunctionalDependency parseDependency(String txt) throws SpecificationParserException {
@@ -171,37 +166,29 @@ public class SpecificationParser implements Serializable {
 		return dependency;
 	}
 
-	protected Set parseAttributes(String txt, String qualifier) throws SpecificationParserException {
-		String msg;
-		String[] tokens;
-		String token;
-		Set set;
-		
-		set = new TreeSet();
-		tokens = txt.split("\\s");
+	protected Set<String> parseAttributes(String txt, String qualifier) throws SpecificationParserException {
+		Set<String> attributeSet = new TreeSet<>();
+		String[] tokens = txt.split("\\s");
+
 		for (int i = 0; i < tokens.length; i++) {
-			token = tokens[i].trim();
+			String token = tokens[i].trim();
 			if (!token.isEmpty()) {
 				if (!token.matches(PATTERN_ATTRIBUTE)) {
-					msg = "Invalid attribute: " + token;
-					throw new SpecificationParserException(msg);		
+					throw new SpecificationParserException("Invalid attribute: " + token);
 				}
-				if (set.contains(token)) {
+				if (attributeSet.contains(token)) {
 					if (qualifier.equals(qualifiers.get(QUALIFIER_ATTRIBUTES_BASE))) {
-						msg = "Duplicate attribute in base attributes specification " + qualifier;
-						throw new SpecificationParserException(msg);	
+						throw new SpecificationParserException("Duplicate attribute in base attributes specification " + qualifier);
 					} else if (qualifier.equals(qualifiers.get(QUALIFIER_ATTRIBUTES_RELATION))) {
-						msg = "Duplicate attribute in relation attributes specification " + qualifier;
-						throw new SpecificationParserException(msg);	
+						throw new SpecificationParserException("Duplicate attribute in relation attributes specification " + qualifier);
 					} else if (qualifier.equals(qualifiers.get(QUALIFIER_DEPENDENCIES))) {
-						msg = "Duplicate attribute in dependency specification " + qualifier;
-						throw new SpecificationParserException(msg);	
+						throw new SpecificationParserException("Duplicate attribute in dependency specification " + qualifier);
 					}
 				}
-				set.add(token);
+				attributeSet.add(token);
 			}
 		}
-		return set;
+		return attributeSet;
 	}
 
 	protected void validateQualifier(String txt) throws SpecificationParserException {
@@ -229,11 +216,11 @@ public class SpecificationParser implements Serializable {
 			return;
 		}
 
-		Set set = new TreeSet(getUnfoundedAttributes(this.baseAttributes));
+		Set<String> set = new TreeSet<>(getUnfoundedAttributes(this.baseAttributes));
 		
 		if (!set.isEmpty()) {
 			StringBuilder msg = new StringBuilder("Base attributes have been specified which are not part of the relation:");
-			Iterator it = set.iterator();
+			Iterator<String> it = set.iterator();
 			while (it.hasNext()) {
 				msg.append(" ").append(it.next());
 			}
@@ -246,19 +233,17 @@ public class SpecificationParser implements Serializable {
 			return;
 		}
 
-		FunctionalDependency dependency;
-		
-		Set set = new TreeSet();
+		Set<String> attributeSet = new TreeSet<>();
 		Iterator it = this.dependencies.iterator();
 		while (it.hasNext()) {
-			dependency = (FunctionalDependency)it.next();
-			set.addAll(getUnfoundedAttributes(dependency.getLHSAttributes()));
-			set.addAll(getUnfoundedAttributes(dependency.getRHSAttributes()));
+			FunctionalDependency dependency = (FunctionalDependency)it.next();
+			attributeSet.addAll(getUnfoundedAttributes(dependency.getLHSAttributes()));
+			attributeSet.addAll(getUnfoundedAttributes(dependency.getRHSAttributes()));
 		}
 		
-		if (!set.isEmpty()) {
+		if (!attributeSet.isEmpty()) {
 			StringBuilder msg = new StringBuilder("Attributes have been specified in dependencies which are not part of the relation:");
-			it = set.iterator();
+			it = attributeSet.iterator();
 			while (it.hasNext()) {
 				msg.append(" ").append(it.next());
 			}
@@ -266,15 +251,11 @@ public class SpecificationParser implements Serializable {
 		}
 	}
 	
-	protected Set getUnfoundedAttributes(Collection attributes) throws SpecificationParserException {
-		Object attribute;
-		Iterator it;
-		Set set;
-		
-		set = new TreeSet();
-		it = attributes.iterator();
+	protected Set<String> getUnfoundedAttributes(Collection<String> attributes) throws SpecificationParserException {
+		Set<String> set = new TreeSet<>();
+		Iterator<String> it = attributes.iterator();
 		while (it.hasNext()) {
-			attribute = it.next();
+			String attribute = it.next();
 			if (this.relationAttributes == null || !this.relationAttributes.contains(attribute)) {
 				set.add(attribute);
 			}
@@ -286,7 +267,7 @@ public class SpecificationParser implements Serializable {
 	 * @return <code>null</code> if not specified, an empty set if no attributes are specified, 
 	 * or a set containing all specified base attributes
 	 */
-	public Set getBaseAttributes() {
+	public Set<String> getBaseAttributes() {
 		return baseAttributes;
 	}
 
@@ -294,7 +275,7 @@ public class SpecificationParser implements Serializable {
 	 * @return <code>null</code> if not specified, an empty set if no dependencies are specified, 
 	 * or a set containing all specified dependencies
 	 */
-	public Set getDependencies() {
+	public Set<FunctionalDependency> getDependencies() {
 		return dependencies;
 	}
 
@@ -302,17 +283,16 @@ public class SpecificationParser implements Serializable {
 	 * @return <code>null</code> if not specified, an empty set if no relation attributes are specified, 
 	 * or a set containing all specified relation attributes
 	 */
-	public Set getRelationAttributes() {
+	public Set<String> getRelationAttributes() {
 		return relationAttributes;
 	}
 	
 	private static void print(Collection items, String qualifier, String delim, StringBuffer buffer) {
-		Iterator it;
 		boolean first;
 
 		buffer.append(qualifier).append(" {");
 		first = true;
-		it = items.iterator();
+		Iterator it = items.iterator();
 		while (it.hasNext()) {
 			if (!first) {
 				buffer.append(delim);
@@ -326,13 +306,10 @@ public class SpecificationParser implements Serializable {
 
 	public String getText(RDBDSpecification specification) {
 		String msg;
-		Vector baseAttributes;
 		Relation relation;
-		StringBuffer buffer;
-		
-		relation = null;
-		baseAttributes = null;
-		buffer = new StringBuffer();
+
+		Vector<String> baseAttributes = null;
+		StringBuilder buffer = new StringBuilder();
 		
 		//RDBD TYPE SPECIFIC TASKS
 		if (specification instanceof Relation) {
@@ -357,7 +334,7 @@ public class SpecificationParser implements Serializable {
 			print(relation.getAttributes(), (String)qualifiers.get(QUALIFIER_ATTRIBUTES_RELATION), " ", buffer);
 			buffer.append(LINE_SEP);
 		}
-		if (relation != null && (String)qualifiers.get(QUALIFIER_DEPENDENCIES) != null) {
+		if (relation != null && qualifiers.get(QUALIFIER_DEPENDENCIES) != null) {
 			print(relation.getFunctionalDependencies(), (String)qualifiers.get(QUALIFIER_DEPENDENCIES), ", ", buffer);
 			buffer.append(LINE_SEP);
 		}
@@ -467,16 +444,12 @@ public class SpecificationParser implements Serializable {
 	}
 	
 	private static void testNormalformDetermination() throws Exception {
-		NormalformAnalysis analysis;
-		SpecificationParser parser;
-		Relation specification;
 		Iterator it;
-		NormalformLevel level;
-		
-		parser = RDBDHelper.initParser(RDBDConstants.TYPE_NORMALFORM_DETERMINATION);
+
+		SpecificationParser parser = RDBDHelper.initParser(RDBDConstants.TYPE_NORMALFORM_DETERMINATION);
 		parser.parse("R	{A B C D E }	F {A B -> C, C -> D, D E -> B, E -> C }");
 
-		specification = (Relation)RDBDHelper.initSpecification(RDBDConstants.TYPE_NORMALFORM_DETERMINATION);
+		Relation specification = (Relation)RDBDHelper.initSpecification(RDBDConstants.TYPE_NORMALFORM_DETERMINATION);
 		specification.setAttributes(parser.getRelationAttributes());
 		specification.setFunctionalDependencies(parser.getDependencies());
 		
@@ -490,8 +463,8 @@ public class SpecificationParser implements Serializable {
 			System.out.println(it.next());
 		}
 		
-		analysis = NormalformAnalyzer.analyze(normalformAnalyzerConfig);
-		level = analysis.getOverallNormalformLevel();
+		NormalformAnalysis analysis = NormalformAnalyzer.analyze(normalformAnalyzerConfig);
+		NormalformLevel level = analysis.getOverallNormalformLevel();
 		System.out.println("Overall level: " + level);
 		System.out.println("Violations: ");
 		System.out.println("\tFirst: ");
@@ -510,29 +483,24 @@ public class SpecificationParser implements Serializable {
 			System.out.println(((NormalformViolation)it.next()).getFunctionalDependency());
 		}
 		System.out.println("\tBCNF: ");
-		it = analysis.getBoyceCottNormalformViolations().iterator();
+		it = analysis.getBoyceCoddNormalformViolations().iterator();
 		while (it.hasNext()) {
 			System.out.println(((NormalformViolation)it.next()).getFunctionalDependency());
 		}
 	}
 
 	private static void testKeysDetermination() throws Exception {
-		SpecificationParser parser;
-		Relation specification;
-		Collection keys;
-		Iterator it;
-		
-		parser = RDBDHelper.initParser(RDBDConstants.TYPE_KEYS_DETERMINATION);
+		SpecificationParser parser = RDBDHelper.initParser(RDBDConstants.TYPE_KEYS_DETERMINATION);
 		parser.parse("R{A B C D E} F{A B -> C, C -> D, D E -> B, E -> C }");
 
-		specification = (Relation)RDBDHelper.initSpecification(RDBDConstants.TYPE_KEYS_DETERMINATION);
+		Relation specification = (Relation)RDBDHelper.initSpecification(RDBDConstants.TYPE_KEYS_DETERMINATION);
 		specification.setAttributes(parser.getRelationAttributes());
 		specification.setFunctionalDependencies(parser.getDependencies());
-		
-		keys = KeysDeterminator.determineMinimalKeys((Relation)specification);
+
+		Collection<Key> keys = KeysDeterminator.determineMinimalKeys(specification);
 		
 		System.out.println("Minimal keys: ");
-		it = keys.iterator();
+		Iterator<Key> it = keys.iterator();
 		while (it.hasNext()) {
 			System.out.println(it.next());
 		}
@@ -582,22 +550,18 @@ public class SpecificationParser implements Serializable {
 	}
 	
 	private static void testRBR() throws Exception {
-		SpecificationParser parser;
-		RBRSpecification specification;
-		Collection correctDependencies;
-		Iterator it;
-		
-		parser = RDBDHelper.initParser(RDBDConstants.TYPE_RBR);
+		SpecificationParser parser = RDBDHelper.initParser(RDBDConstants.TYPE_RBR);
 		parser.parse("R	{A B C D E F  G H}F {A G -> B, E -> D, A B -> F, C D -> G, D -> B, A E H -> F, E F -> C, A E -> C }S{A D E F G H}");
-		specification = (RBRSpecification)RDBDHelper.initSpecification(RDBDConstants.TYPE_RBR);
+
+		RBRSpecification specification = (RBRSpecification)RDBDHelper.initSpecification(RDBDConstants.TYPE_RBR);
 		specification.getBaseRelation().setAttributes(parser.getRelationAttributes());
 		specification.getBaseRelation().setFunctionalDependencies(parser.getDependencies());
 		specification.setBaseAttributes(parser.getBaseAttributes());
 
-		correctDependencies = ReductionByResolution.execute(specification.getBaseRelation(), specification.getBaseAttributes());
+		Collection<FunctionalDependency> correctDependencies = ReductionByResolution.execute(specification.getBaseRelation(), specification.getBaseAttributes());
 		
 		System.out.println("\tCorrect dependencies: ");
-		it = correctDependencies.iterator();
+		Iterator<FunctionalDependency> it = correctDependencies.iterator();
 		while (it.hasNext()) {
 			System.out.println(it.next());
 		}

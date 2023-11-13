@@ -19,18 +19,14 @@ import java.util.logging.Level;
 public class DecomposeStepAnalyzer {
 
 	public static NormalizationAnalysis analyze(DecomposeStepAnalyzerConfig config){
-		NormalizationAnalysis analysis;
 		IdentifiedRelation currRelation;
 		Iterator decomposedRelationsIterator;
 		KeysAnalyzerConfig keysAnalyzerConfig;
-		HashMap correctKeysOfDecomposedRelations;
+		HashMap correctKeysOfDecomposedRelations = new HashMap();
 		IdentifiedRelation currDecomposedRelation;
-		DependenciesPreservationAnalysis depPresAnalysis;
 		NormalformAnalyzerConfig normalformAnalyzerConfig;
-		
-		correctKeysOfDecomposedRelations = new HashMap();
 
-		analysis = new NormalizationAnalysis();
+		NormalizationAnalysis analysis = new NormalizationAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
 		analysis.setDesiredNormalformLevel(config.getDesiredNormalformLevel());
 		

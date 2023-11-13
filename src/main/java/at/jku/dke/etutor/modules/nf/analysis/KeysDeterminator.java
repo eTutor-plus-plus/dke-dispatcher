@@ -10,10 +10,10 @@ public class KeysDeterminator {
 	
 	public static TupleSet determineMinimalKeys(TupleSet tuples){
 		TupleSet keys = new TupleSet();
-		Vector keyCandidates = calculateKeyCandidates(tuples.get(0).length);
+		Vector<int[]> keyCandidates = calculateKeyCandidates(tuples.get(0).length);
 		 
 		for (int i=0; i<keyCandidates.size(); i++){
-			int[] key = (int[])keyCandidates.get(i);
+			int[] key = keyCandidates.get(i);
 			
 			boolean isKey = true;
 			for (int j=0; j<tuples.size(); j++){
@@ -30,13 +30,10 @@ public class KeysDeterminator {
 		return keys;
 	}
 
-	public static Vector calculateKeyCandidates(int valueNumber){
-		int[] indices;
-		int[] keyCandidate;
+	public static Vector<int[]> calculateKeyCandidates(int valueNumber){
 		int[] keyAttributePositions = new int[valueNumber];;
 
-		CombinationGenerator generator;
-		Vector keyCandidates = new Vector();
+		Vector<int[]> keyCandidates = new Vector<>();
 
 		//CALCULATE KEY ATTRIBUTE POSITIONS
 		for (int i=0; i<valueNumber; i++){
@@ -45,12 +42,12 @@ public class KeysDeterminator {
 
 		//CALCULATE KEY CANDIDATES
 		for (int i = 1; i <= keyAttributePositions.length; i++) {
-			generator = new CombinationGenerator(keyAttributePositions.length, i);
+			CombinationGenerator generator = new CombinationGenerator(keyAttributePositions.length, i);
 
 			while (generator.hasMore()) {
-				indices = generator.getNext();
+				int[] indices = generator.getNext();
 				
-				keyCandidate = new int[indices.length];
+				int [] keyCandidate = new int[indices.length];
 				for (int j = 0; j < indices.length; j++) {
 					keyCandidate[j] = keyAttributePositions[indices[j]];
 				}
@@ -104,17 +101,12 @@ public class KeysDeterminator {
 	}
 
 	private static void determineMinimalKeys(Relation relation, KeysContainer container){
-		TreeSet keys;
-		Key superKey;
-		TreeSet superKeys;
-		Iterator superKeysIterator;
+		TreeSet<Key> keys = new TreeSet<Key>(new KeyComparator());
+		TreeSet<Key> superKeys = determineSuperKeys(relation);
 
-		keys = new TreeSet(new KeyComparator());
-		superKeys = determineSuperKeys(relation);
-
-		superKeysIterator = superKeys.iterator();
+		Iterator<Key> superKeysIterator = superKeys.iterator();
 		while (superKeysIterator.hasNext()) {
-			superKey = (Key)superKeysIterator.next();
+			Key superKey = superKeysIterator.next();
 			if (isMinimalKey(superKey, relation)) {
 				keys.add(superKey);
 			}
@@ -124,33 +116,26 @@ public class KeysDeterminator {
 		container.setSuperKeys(superKeys);
 	}
 
-	public static TreeSet determineMinimalKeys(Relation relation){
+	public static TreeSet<Key> determineMinimalKeys(Relation relation){
 		KeysContainer container = new KeysContainer();
 		determineMinimalKeys(relation, container);
 
 		return container.getMinimalKeys();
 	}
 	
-	public static TreeSet determinePartialKeys(Collection minimalKeys) {
-		Key currKey;
-		int[] indices;
-		Key partialKey;
-		TreeSet partialKeys;
-		Iterator keysIterator;
-		CombinationGenerator generator;
+	public static TreeSet<Key> determinePartialKeys(Collection<Key> minimalKeys) {
+		TreeSet<Key> partialKeys = new TreeSet<Key>(new KeyComparator());
 
-		partialKeys = new TreeSet(new KeyComparator());
-
-		keysIterator = minimalKeys.iterator();
+		Iterator<Key> keysIterator = minimalKeys.iterator();
 		while (keysIterator.hasNext()) {
-			currKey = (Key)keysIterator.next();
+			Key currKey = keysIterator.next();
 
 			for (int i = 1; i <= currKey.getAttributes().size(); i++) {
-				generator = new CombinationGenerator(currKey.getAttributes().size(), i);
+				CombinationGenerator generator = new CombinationGenerator(currKey.getAttributes().size(), i);
 
 				while (generator.hasMore()) {
-					indices = generator.getNext();
-					partialKey = new Key();
+					int[] indices = generator.getNext();
+					Key partialKey = new Key();
 					if (indices.length != currKey.getAttributes().size()) {
 						for (int j = 0; j < indices.length; j++) {
 							partialKey.addAttribute((String)currKey.getAttributes().toArray()[indices[j]]);
@@ -167,21 +152,13 @@ public class KeysDeterminator {
 	}
 
 	private static boolean isMinimalKey(Key key, Relation relation) {
-		Key candidate;
-		int[] indices;
-		Vector attributes;
-		Collection closure;
-		Iterator subKeysIterator;
-		Iterator attributesIterator;
-		CombinationGenerator generator;
-
-		candidate = new Key();
+		Key candidate = new Key();
 
 		for (int i = 1; i <= key.getAttributes().size(); i++) {
-			generator = new CombinationGenerator(key.getAttributes().size(), i);
+			CombinationGenerator generator = new CombinationGenerator(key.getAttributes().size(), i);
 
 			while (generator.hasMore()) {
-				indices = generator.getNext();
+				int[] indices = generator.getNext();
 				candidate.removeAllAttributes();
 				if (indices.length != key.getAttributes().size()) {
 					for (int j = 0; j < indices.length; j++) {
@@ -189,13 +166,13 @@ public class KeysDeterminator {
 					}
 				}
 
-				attributes = new Vector();
-				attributesIterator = candidate.iterAttributes();
+				Vector<String> attributes = new Vector<>();
+				Iterator<String> attributesIterator = candidate.iterAttributes();
 				while (attributesIterator.hasNext()) {
 					attributes.add(attributesIterator.next());
 				}
 
-				closure = Closure.execute(attributes, relation.getFunctionalDependencies());
+				Collection<String> closure = Closure.execute(attributes, relation.getFunctionalDependencies());
 				if (closure.containsAll(relation.getAttributes())) {
 					return false;
 				}
@@ -205,61 +182,46 @@ public class KeysDeterminator {
 		return true;
 	}
 
-	public static TreeSet determineSuperKeys(Relation relation) {
+	public static TreeSet<Key> determineSuperKeys(Relation relation) {
 		Key superKey;
-		Key candidate;
-		int[] indices;
-		TreeSet superKeys;
-		Vector attributes;
-		Collection closure;
-		CombinationGenerator generator;
-		FunctionalDependency currDependency;
 
-		Iterator superKeysIterator;
-		Iterator attributesIterator;
-		Iterator dependenciesIterator;
-
-		HashSet allLHSAttributes;
-		HashSet constantAttributes;
-		HashSet candidateAttributes;
-
-		superKeys = new TreeSet(new KeyComparator());
+		TreeSet<Key> superKeys = new TreeSet<Key>(new KeyComparator());
 
 		//CALCULATING ATTRIBUTES THAT ARE PART OF EVERY KEY - RESTRICTING SET OF CANDIDATE ATTRIBUTES
-        constantAttributes = new HashSet(relation.getAttributes());
-		dependenciesIterator = relation.iterFunctionalDependencies();
+        HashSet<String> constantAttributes = new HashSet<>(relation.getAttributes());
+		Iterator<FunctionalDependency> dependenciesIterator = relation.iterFunctionalDependencies();
 		while (dependenciesIterator.hasNext()){
-			currDependency = (FunctionalDependency)dependenciesIterator.next();
+			FunctionalDependency currDependency = (FunctionalDependency)dependenciesIterator.next();
 			constantAttributes.removeAll(currDependency.getLHSAttributes());
 			constantAttributes.removeAll(currDependency.getRHSAttributes());
 		}
 
-        candidateAttributes = new HashSet(relation.getAttributes());
+        HashSet<String> candidateAttributes = new HashSet<>(relation.getAttributes());
 		candidateAttributes.removeAll(constantAttributes);
 		
 		if (!candidateAttributes.isEmpty()){
 			//CALCULATING SUPER KEYS
-			candidate = new Key();
+			Key candidate = new Key();
 
 			for (int i = 1; i <= candidateAttributes.size(); i++) {
-				generator = new CombinationGenerator(candidateAttributes.size(), i);
+				CombinationGenerator generator = new CombinationGenerator(candidateAttributes.size(), i);
 
 				while (generator.hasMore()) {
 					candidate.removeAllAttributes();
-					indices = generator.getNext();
+					int[] indices = generator.getNext();
 					for (int j = 0; j < indices.length; j++) {
 						candidate.addAttribute((String)candidateAttributes.toArray()[indices[j]]);
 					}
 
 					candidate.addAllAttributes(constantAttributes);
 
-					attributes = new Vector();
-					attributesIterator = candidate.iterAttributes();
+					Vector<String> attributes = new Vector<>();
+					Iterator<String> attributesIterator = candidate.iterAttributes();
 					while (attributesIterator.hasNext()) {
 						attributes.add(attributesIterator.next());
 					}
 
-					closure = Closure.execute(attributes, relation.getFunctionalDependencies());
+					Collection<String> closure = Closure.execute(attributes, relation.getFunctionalDependencies());
 					if (closure.containsAll(relation.getAttributes())) {
 						superKey = new Key();
 						superKey.addAllAttributes(attributes);

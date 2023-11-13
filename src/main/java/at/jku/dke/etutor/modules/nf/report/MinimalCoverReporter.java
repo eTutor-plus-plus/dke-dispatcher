@@ -88,10 +88,7 @@ public class MinimalCoverReporter {
 	}
 	
 	public static ErrorReport createCanonicalRepresentationErrorReport(CanonicalRepresentationAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Iterator it;
-		String currElemID;
 		ErrorReport report = new ErrorReport();
-		StringBuilder prologue = new StringBuilder();
 		StringBuilder description = new StringBuilder();
 		int count = analysis.getNotCanonicalDependencies().size();
 		
@@ -116,16 +113,16 @@ public class MinimalCoverReporter {
 		}
 		
 		if (config.getDiagnoseLevel() == 3){
-			currElemID = RDBDHelper.getNextElementID();
+			String currElemID = RDBDHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
 			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.dependenciesnotcanonical", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
-			it = analysis.iterNotCananonicalDependencies();
+			Iterator<FunctionalDependency> it = analysis.iterNotCananonicalDependencies();
 			while (it.hasNext()){
 				description.append("<tr><td>");
-				description.append(printDependency((FunctionalDependency)it.next()));
+				description.append(printDependency(it.next()));
 				description.append("</td></tr>");
 			}
 			description.append("</table>");
@@ -163,10 +160,7 @@ public class MinimalCoverReporter {
 	}
 
 	public static ErrorReport createTrivialDependenciesErrorReport(TrivialDependenciesAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Iterator it;
-		String currElemID;
 		ErrorReport report = new ErrorReport();
-		StringBuilder prologue = new StringBuilder();
 		StringBuilder description = new StringBuilder();
 		int count = analysis.getTrivialDependencies().size();
 		
@@ -194,13 +188,13 @@ public class MinimalCoverReporter {
 		
 		
 		if (config.getDiagnoseLevel() == 3){
-			currElemID = RDBDHelper.getNextElementID();
+			String currElemID = RDBDHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
 			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.trivialdependencies", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
-			it = analysis.iterTrivialDependencies();
+		 	Iterator<FunctionalDependency> it = analysis.iterTrivialDependencies();
 			while (it.hasNext()){
 				description.append("<tr><td>");
 				description.append(printDependency((FunctionalDependency)it.next()));
@@ -242,17 +236,14 @@ public class MinimalCoverReporter {
 	
 	public static ErrorReport createExtraneousAttributesErrorReport(ExtraneousAttributesAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
 		int count = 0;
-		String currElemID;
-		Iterator badDependenciesIterator;
-		FunctionalDependency currBadDependency;
 
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();;
 		
 		//COUNT BAD DEPENDECIES		
-		badDependenciesIterator = analysis.getExtraneousAttributes().keySet().iterator();
+		Iterator<FunctionalDependency> badDependenciesIterator = analysis.getExtraneousAttributes().keySet().iterator();
 		while (badDependenciesIterator.hasNext()){
-			count = count + analysis.getExtraneousAttributes((FunctionalDependency)badDependenciesIterator.next()).size();
+			count = count + analysis.getExtraneousAttributes(badDependenciesIterator.next()).size();
 		}
 
 		//SET ERROR
@@ -276,7 +267,7 @@ public class MinimalCoverReporter {
 		}
 		
 		if (config.getDiagnoseLevel() == 3){
-			currElemID = RDBDHelper.getNextElementID();
+			String currElemID = RDBDHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
 			description.append("<p>Extraneous attributes:</p>");
@@ -285,10 +276,10 @@ public class MinimalCoverReporter {
 			description.append("<thead><tr><th>").append(messageSource.getMessage("minimalcoverreporter.functionaldependency", null, locale)).append("</th><th>").append(messageSource.getMessage("minimalcoverreporter.extraneousattributes", null, locale)).append("</th></tr></thead><tbody>");
 
 			boolean first = true;
-			Iterator extraneousAttributesIterator;
+			Iterator<String> extraneousAttributesIterator;
 			badDependenciesIterator = analysis.getExtraneousAttributes().keySet().iterator();
 			while (badDependenciesIterator.hasNext()){
-				currBadDependency = (FunctionalDependency)badDependenciesIterator.next();
+				FunctionalDependency currBadDependency = badDependenciesIterator.next();
 
 				description.append("<tr><td>");
 				description.append(printDependency(currBadDependency));
@@ -339,8 +330,6 @@ public class MinimalCoverReporter {
 	}
 	
 	public static ErrorReport createRedundandDependenciesErrorReport(RedundantDependenciesAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Iterator it;
-		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
 		int count = analysis.getRedundantDependencies().size();;
@@ -366,13 +355,13 @@ public class MinimalCoverReporter {
 		}
 		
 		if (config.getDiagnoseLevel() == 3){
-			currElemID = RDBDHelper.getNextElementID();
+			String currElemID = RDBDHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
 			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.redundanddependencies", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
-			it = analysis.iterRedundandDependencies();
+			Iterator<FunctionalDependency> it = analysis.iterRedundandDependencies();
 			while (it.hasNext()){
 				description.append("<tr><td>");
 				description.append(printDependency((FunctionalDependency)it.next()));
@@ -413,7 +402,7 @@ public class MinimalCoverReporter {
 	}
 	
 	public static ErrorReport createDependenciesCoverErrorReport(DependenciesCoverAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Iterator it;
+		Iterator<FunctionalDependency> it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
@@ -507,7 +496,7 @@ public class MinimalCoverReporter {
 				it = analysis.iterAdditionalDependencies();
 				while (it.hasNext()){
 					description.append("<tr><td>");
-					description.append(printDependency((FunctionalDependency)it.next()));
+					description.append(printDependency(it.next()));
 					description.append("</td></tr>");
 				}
 				description.append("</table>");
@@ -546,14 +535,10 @@ public class MinimalCoverReporter {
 	}
 	
 	public static String printDependency(FunctionalDependency dependency){
-		String s;
-		boolean first;
-		Iterator attributesIterator;
-		
-		first = true;
-		s = "";
+		boolean first = true;
+		String s = "";
 
-		attributesIterator = dependency.iterLHSAttributes();
+		Iterator<String> attributesIterator = dependency.iterLHSAttributes();
 		while (attributesIterator.hasNext()){
 			if (first){
 				first = false;

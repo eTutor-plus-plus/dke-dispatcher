@@ -10,14 +10,14 @@ import java.util.Iterator;
 
 public class RedundantDependenciesAnalysis extends DefaultAnalysis implements Analysis {
 
-	private final HashSet redundantDependencies;
+	private final HashSet<FunctionalDependency> redundantDependencies;
 
 	public RedundantDependenciesAnalysis() {
 		super();
-		this.redundantDependencies = new HashSet();
+		this.redundantDependencies = new HashSet<>();
 	}
 
-	public void setRedundantDependencies(Collection redundantDependencies) {
+	public void setRedundantDependencies(Collection<FunctionalDependency> redundantDependencies) {
 		this.redundantDependencies.clear();
 		this.redundantDependencies.addAll(redundantDependencies);
 	}
@@ -26,11 +26,11 @@ public class RedundantDependenciesAnalysis extends DefaultAnalysis implements An
 		this.redundantDependencies.add(dependency);
 	}
 
-	public HashSet getRedundantDependencies() {
-		return (HashSet)this.redundantDependencies.clone();
+	public HashSet<FunctionalDependency> getRedundantDependencies() {
+		return (HashSet<FunctionalDependency>)this.redundantDependencies.clone();
 	}
 	
-	public Iterator iterRedundandDependencies(){
+	public Iterator<FunctionalDependency> iterRedundandDependencies(){
 		return this.redundantDependencies.iterator();
 	}
 }

@@ -7,16 +7,15 @@ import java.util.TreeSet;
 
 public class Key implements Serializable{
 
-	private final TreeSet attributes;
+	private final TreeSet<String> attributes;
 
 	public Key() {
 		super();
-		this.attributes = new TreeSet(new AttributeCollator());
+		this.attributes = new TreeSet<String>(new AttributeCollator());
 	}
 	
 	public boolean equals(Object obj) {
 		Key key;
-		Iterator attributesIterator;
 
 		if (obj == null) {
 			return false;
@@ -27,14 +26,14 @@ public class Key implements Serializable{
 		}
 		
 		key = (Key)obj;
-		attributesIterator = key.iterAttributes();
+		Iterator<String> attributesIterator = key.iterAttributes();
 
 		if (!(key.getAttributes().containsAll(this.attributes))){
 			return false;
 		}
 
 		while (attributesIterator.hasNext()){
-			if (!(this.attributes.contains((String)attributesIterator.next()))){
+			if (!(this.attributes.contains(attributesIterator.next()))){
 				return false;
 			}
 		}
@@ -49,7 +48,7 @@ public class Key implements Serializable{
 	public String toString() {
 		boolean first = true;
 		StringBuilder toStringBuilder = new StringBuilder();
-		Iterator attributesIterator = this.attributes.iterator();
+		Iterator<String> attributesIterator = this.attributes.iterator();
 
 		while (attributesIterator.hasNext()) {
 			if (first) {
@@ -63,11 +62,11 @@ public class Key implements Serializable{
 		return toStringBuilder.toString();
 	}
 	
-	public TreeSet getAttributes(){
-		return (TreeSet)this.attributes.clone();
+	public TreeSet<String> getAttributes(){
+		return (TreeSet<String>)this.attributes.clone();
 	}
 	
-	public Iterator iterAttributes() {
+	public Iterator<String> iterAttributes() {
 		return this.attributes.iterator();
 	}
 
@@ -79,13 +78,11 @@ public class Key implements Serializable{
 		}
 	}
 	
-	public void addAllAttributes(Collection attributes){
-		Iterator attributesIterator;
-		
+	public void addAllAttributes(Collection<String> attributes){
 		if (attributes != null){
-			attributesIterator = attributes.iterator();
+			Iterator<String> attributesIterator = attributes.iterator();
 			while (attributesIterator.hasNext()){
-				this.addAttribute((String)attributesIterator.next());
+				this.addAttribute(attributesIterator.next());
 			}
 		}
 	}

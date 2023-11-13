@@ -147,15 +147,10 @@ public class NormalformReporter {
 		boolean first;
 		boolean appendLineBreak = false;;
 
-		Iterator it;
+		Iterator<String> it;
 		Iterator violations;
 
 		String currElemID;
-
-		FirstNormalformViolation firstNFViolation;
-		ThirdNormalformViolation thirdNFViolation;
-		SecondNormalformViolation secondNFViolation;
-		BoyceCoddNormalformViolation boyceCottNFViolation;
 
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
@@ -183,7 +178,7 @@ public class NormalformReporter {
 					description.append("<br><br>");
 				}
 
-				firstNFViolation = (FirstNormalformViolation)violations.next();
+				FirstNormalformViolation firstNFViolation = (FirstNormalformViolation)violations.next();
 				description.append(messageSource.getMessage("normalformreporter.dependencyviolatesnormalform", new Object[]{firstNFViolation.getFunctionalDependency()}, locale));
 			}
 		}
@@ -206,7 +201,7 @@ public class NormalformReporter {
 					description.append("<br><br>");
 				}
 
-				secondNFViolation = (SecondNormalformViolation)violations.next();
+				SecondNormalformViolation secondNFViolation = (SecondNormalformViolation)violations.next();
 				description.append(messageSource.getMessage("normalformreporter.violatesnormalform", new Object[]{secondNFViolation.getFunctionalDependency(), "second"}, locale));
 
 				if (config.getDiagnoseLevel() == 0){
@@ -282,7 +277,7 @@ public class NormalformReporter {
 					description.append("<br><br>");
 				}
 
-				thirdNFViolation = (ThirdNormalformViolation)violations.next();
+				ThirdNormalformViolation thirdNFViolation = (ThirdNormalformViolation)violations.next();
 				description.append(messageSource.getMessage("normalformreporter.violatesnormalform", new Object[]{thirdNFViolation.getFunctionalDependency(), "third"}, locale));
 
 				if (config.getDiagnoseLevel() == 0){
@@ -339,14 +334,14 @@ public class NormalformReporter {
 
 		//REPORTING BOYCE COTT NORMALFORM VIOLATIONS IF NECESSARY
 		if (comparator.compare(config.getDesiredNormalformLevel(), NormalformLevel.BOYCE_CODD) >= 0){
-			if (!analysis.getBoyceCottNormalformViolations().isEmpty()){
+			if (!analysis.getBoyceCoddNormalformViolations().isEmpty()){
 				if (appendLineBreak){
 					description.append("<br><br>");
 				}
 			}
 
 			first = true;
-			violations = analysis.getBoyceCottNormalformViolations().iterator();
+			violations = analysis.getBoyceCoddNormalformViolations().iterator();
 			while (violations.hasNext()){
 				if (first){
 					first = false;
@@ -354,8 +349,8 @@ public class NormalformReporter {
 					description.append("<br><br>");
 				}
 
-				boyceCottNFViolation = (BoyceCoddNormalformViolation)violations.next();
-				description.append(messageSource.getMessage("normalformreporter.violatesnormalform", new Object[]{boyceCottNFViolation.getFunctionalDependency(), "boyce cott"}, locale));
+				BoyceCoddNormalformViolation boyceCoddNFViolation = (BoyceCoddNormalformViolation)violations.next();
+				description.append(messageSource.getMessage("normalformreporter.violatesnormalform", new Object[]{boyceCoddNFViolation.getFunctionalDependency(), "boyce cott"}, locale));
 				description.append("<br>");
 				description.append(messageSource.getMessage("normalformreporter.leftsidenotsuperkey", null, locale));
 			}

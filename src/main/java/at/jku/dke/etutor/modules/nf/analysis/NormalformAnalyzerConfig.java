@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
+import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.KeyComparator;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
@@ -9,16 +10,16 @@ import java.util.TreeSet;
 public class NormalformAnalyzerConfig {
 
 	private Relation relation;
-	private TreeSet correctMinimalKeys;
-	private TreeSet correctPartialKeys;
+	private TreeSet<Key> correctMinimalKeys;
+	private TreeSet<Key> correctPartialKeys;
 	private NormalformLevel desiredLevel;
 	
 	public NormalformAnalyzerConfig() {
 		super();
 		this.relation = new Relation();
 		this.desiredLevel = NormalformLevel.FIRST;
-		this.correctMinimalKeys = new TreeSet(new KeyComparator());
-		this.correctPartialKeys = new TreeSet(new KeyComparator());
+		this.correctMinimalKeys = new TreeSet<Key>(new KeyComparator());
+		this.correctPartialKeys = new TreeSet<Key>(new KeyComparator());
 	}
 
 	public void setDesiredNormalformLevel(NormalformLevel level){
@@ -37,19 +38,19 @@ public class NormalformAnalyzerConfig {
 		return this.relation;
 	}
 	
-	public void setCorrectMinimalKeys(TreeSet correctMinimalKeys){
+	public void setCorrectMinimalKeys(TreeSet<Key> correctMinimalKeys){
 		this.correctMinimalKeys = correctMinimalKeys;
 	}
 	
-	public TreeSet getCorrectMinimalKeys(){
-		return (TreeSet)this.correctMinimalKeys.clone();
+	public TreeSet<Key> getCorrectMinimalKeys(){
+		return (TreeSet<Key>)this.correctMinimalKeys.clone();
 	}
 
-	public void setCorrectPartialKeys(TreeSet correctPartialKeys){
+	public void setCorrectPartialKeys(TreeSet<Key> correctPartialKeys){
 		this.correctPartialKeys = correctPartialKeys;
 	}
 	
-	public TreeSet getCorrectPartialKeys(){
-		return (TreeSet)this.correctPartialKeys.clone();
+	public TreeSet<Key> getCorrectPartialKeys(){
+		return (TreeSet<Key>)this.correctPartialKeys.clone();
 	}
 }

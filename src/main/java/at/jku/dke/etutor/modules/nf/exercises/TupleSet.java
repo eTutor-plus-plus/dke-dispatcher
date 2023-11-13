@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
+// TODO: Now that we have generics, do we even need (most of) this? (Gerald Wimmer, 2023-11-13)
 public class TupleSet extends TreeSet implements Set {
 
 	public TupleSet() {

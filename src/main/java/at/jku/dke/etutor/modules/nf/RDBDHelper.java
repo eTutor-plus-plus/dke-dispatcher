@@ -602,7 +602,7 @@ public class RDBDHelper {
 		}
 		if (spec instanceof AttributeClosureSpecification) {
 			attributes = ((AttributeClosureSpecification)spec).getBaseAttributes();
-			((AttributeClosureSpecification)spec).setBaseAttributes(new Vector());
+			((AttributeClosureSpecification)spec).setBaseAttributes(new Vector<>());
 			for (int i = 0; i < attributes.size(); i++) {
 				remove = false;
 				for (int j = 0; !remove && j < attributesToDelete.length; j++) {
@@ -616,7 +616,7 @@ public class RDBDHelper {
 			}
 		} else if (spec instanceof RBRSpecification) {
 			attributes = ((RBRSpecification)spec).getBaseAttributes();
-			((RBRSpecification)spec).setBaseAttributes(new Vector());
+			((RBRSpecification)spec).setBaseAttributes(new Vector<>());
 			for (int i = 0; i < attributes.size(); i++) {
 				remove = false;
 				for (int j = 0; !remove && j < attributesToDelete.length; j++) {

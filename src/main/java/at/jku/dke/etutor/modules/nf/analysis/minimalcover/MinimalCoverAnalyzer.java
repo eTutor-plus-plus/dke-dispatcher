@@ -30,24 +30,14 @@ public class MinimalCoverAnalyzer {
 	}
 	
 	public static MinimalCoverAnalysis analyze(Relation relation, Relation specification){
-		HashSet correctDependencies;
-		HashSet submittedDependencies;
-
-		MinimalCoverAnalysis analysis;
-		DependenciesCoverAnalysis dependenciesCoverAnalysis;
-		TrivialDependenciesAnalysis trivialDependenciesAnalysis;
-		ExtraneousAttributesAnalysis extraneousAttributesAnalysis;
-		RedundantDependenciesAnalysis redundantDependenciesAnalysis;
-		CanonicalRepresentationAnalysis canonicalRepresentationAnalysis;
-		
 		//INIT LOCAL VARIABLES
-		analysis = new MinimalCoverAnalysis();
+		MinimalCoverAnalysis analysis = new MinimalCoverAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
-		submittedDependencies = relation.getFunctionalDependencies();
-		correctDependencies = MinimalCover.execute(specification.getFunctionalDependencies());
+		HashSet<FunctionalDependency> submittedDependencies = relation.getFunctionalDependencies();
+		HashSet<FunctionalDependency> correctDependencies = MinimalCover.execute(specification.getFunctionalDependencies());
 
 		//ANALYZE CANONICAL REPRESENTATION OF SUBMITTED DEPENDENCIES
-		canonicalRepresentationAnalysis = analyzeCanonicalRepresentation(submittedDependencies);
+		CanonicalRepresentationAnalysis canonicalRepresentationAnalysis = analyzeCanonicalRepresentation(submittedDependencies);
 		analysis.setCanonicalRepresentationAnalysis(canonicalRepresentationAnalysis);
 		if (!canonicalRepresentationAnalysis.submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
@@ -55,7 +45,7 @@ public class MinimalCoverAnalyzer {
 		}
 	
 		//ANALYZE TRIVIAL FUNCTIONAL DEPENDENCIES
-		trivialDependenciesAnalysis = analyzeTrivialDependencies(submittedDependencies);
+		TrivialDependenciesAnalysis trivialDependenciesAnalysis = analyzeTrivialDependencies(submittedDependencies);
 		analysis.setTrivialDependenciesAnalysis(trivialDependenciesAnalysis);
 		if (!trivialDependenciesAnalysis.submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
@@ -63,7 +53,7 @@ public class MinimalCoverAnalyzer {
 		}
 		
 		//ANALYZE EXTRANEOUS ATTRIBUTES
-		extraneousAttributesAnalysis = analyzeExtraneousAttributes(submittedDependencies);
+		ExtraneousAttributesAnalysis extraneousAttributesAnalysis = analyzeExtraneousAttributes(submittedDependencies);
 		analysis.setExtraneousAttributesAnalysis(extraneousAttributesAnalysis);
 		if (!extraneousAttributesAnalysis.submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
@@ -71,7 +61,7 @@ public class MinimalCoverAnalyzer {
 		}
 		
 		//ANALYZE REDUNDAND FUNCTIONAL DEPENDENCIES
-		redundantDependenciesAnalysis = analyzeRedundandDependencies(submittedDependencies);
+		RedundantDependenciesAnalysis redundantDependenciesAnalysis = analyzeRedundandDependencies(submittedDependencies);
 		analysis.setRedundandDependenciesAnalysis(redundantDependenciesAnalysis);
 		if (!redundantDependenciesAnalysis.submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
@@ -79,7 +69,7 @@ public class MinimalCoverAnalyzer {
 		}
 
 		//ANALYZE DEPENDENCIES COVER
-		dependenciesCoverAnalysis = analyzeDependenciesCover(submittedDependencies, correctDependencies);
+		DependenciesCoverAnalysis dependenciesCoverAnalysis = analyzeDependenciesCover(submittedDependencies, correctDependencies);
 		analysis.setDependenciesCoverAnalysis(dependenciesCoverAnalysis);
 		if (!dependenciesCoverAnalysis.submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
@@ -88,17 +78,15 @@ public class MinimalCoverAnalyzer {
 		return analysis;
 	}
 	
-	public static DependenciesCoverAnalysis analyzeDependenciesCover(Collection submittedDependencies, Collection correctDependencies){
-		Iterator dependenciesIterator;
-		DependenciesCoverAnalysis analysis;
+	public static DependenciesCoverAnalysis analyzeDependenciesCover(Collection<FunctionalDependency> submittedDependencies, Collection<FunctionalDependency> correctDependencies){
 		FunctionalDependency currDependency;
 
-		analysis = new DependenciesCoverAnalysis();
+		DependenciesCoverAnalysis analysis = new DependenciesCoverAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
 
-		dependenciesIterator = submittedDependencies.iterator();
+		Iterator<FunctionalDependency> dependenciesIterator = submittedDependencies.iterator();
 		while (dependenciesIterator.hasNext()){
-			currDependency = (FunctionalDependency)dependenciesIterator.next();
+			currDependency = dependenciesIterator.next();
 			if (!Member.execute(currDependency, correctDependencies)){
 				analysis.addAdditionalDependency(currDependency);
 				analysis.setSubmissionSuitsSolution(false);
@@ -108,7 +96,7 @@ public class MinimalCoverAnalyzer {
 
 		dependenciesIterator = correctDependencies.iterator();
 		while (dependenciesIterator.hasNext()){
-			currDependency = (FunctionalDependency)dependenciesIterator.next();
+			currDependency = dependenciesIterator.next();
 			if (!Member.execute(currDependency, submittedDependencies)){
 				analysis.addMissingDependency(currDependency);
 				analysis.setSubmissionSuitsSolution(false);
@@ -119,15 +107,12 @@ public class MinimalCoverAnalyzer {
 		return analysis;
 	}
 	
-	public static RedundantDependenciesAnalysis analyzeRedundandDependencies(Collection dependencies){
-		Vector tempDependencies;
-		Iterator dependenciesIterator;
+	public static RedundantDependenciesAnalysis analyzeRedundandDependencies(Collection<FunctionalDependency> dependencies){
 		FunctionalDependency currDependency;
-		RedundantDependenciesAnalysis analysis;
-		
-		tempDependencies = new Vector();
-		dependenciesIterator = dependencies.iterator();
-		analysis = new RedundantDependenciesAnalysis();
+
+		Vector<FunctionalDependency> tempDependencies = new Vector<>();
+		Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
+		RedundantDependenciesAnalysis analysis = new RedundantDependenciesAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
 
 		while (dependenciesIterator.hasNext()){
@@ -148,34 +133,26 @@ public class MinimalCoverAnalyzer {
 		return analysis;
 	}
 	
-	public static ExtraneousAttributesAnalysis analyzeExtraneousAttributes(Collection dependencies){
-		String currAttribute;
-		Vector tempDependencies;
-		Iterator attributesIterator;
-		Iterator dependenciesIterator;
-		FunctionalDependency tempDependency;
-		FunctionalDependency currDependency;
-		ExtraneousAttributesAnalysis analysis;
-		
-		tempDependencies = new Vector();
-		tempDependency = new FunctionalDependency();
-		analysis = new ExtraneousAttributesAnalysis();
-		dependenciesIterator = dependencies.iterator();
+	public static ExtraneousAttributesAnalysis analyzeExtraneousAttributes(Collection<FunctionalDependency> dependencies){
+		Vector<FunctionalDependency> tempDependencies = new Vector<>();
+		FunctionalDependency tempDependency = new FunctionalDependency();
+		ExtraneousAttributesAnalysis analysis = new ExtraneousAttributesAnalysis();
+		Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
 		analysis.setSubmissionSuitsSolution(true);
 
 		while (dependenciesIterator.hasNext()) {
-			currDependency = (FunctionalDependency)dependenciesIterator.next();
-			attributesIterator = currDependency.iterLHSAttributes();
+			FunctionalDependency currDependency = dependenciesIterator.next();
+			Iterator<String> attributesIterator = currDependency.iterLHSAttributes();
 
 			while (attributesIterator.hasNext()) {
-				currAttribute = (String)attributesIterator.next();
+				String currAttribute = attributesIterator.next();
 
 				tempDependency.setLHSAttributes(currDependency.getLHSAttributes());
 				tempDependency.setRHSAttributes(currDependency.getRHSAttributes());
 				tempDependency.removeLHSAttribute(currAttribute);
 
 				if (analysis.getExtraneousAttributes().containsKey(currDependency)){
-					tempDependency.removeLHSAttributes(((Vector)analysis.getExtraneousAttributes().get(currDependency)));
+					tempDependency.removeLHSAttributes(analysis.getExtraneousAttributes().get(currDependency));
 				}
 
 				tempDependencies.clear();
@@ -194,17 +171,13 @@ public class MinimalCoverAnalyzer {
 		return analysis;
 	}
 	
-	public static TrivialDependenciesAnalysis analyzeTrivialDependencies(HashSet dependencies){
-		Iterator dependenciesIterator;
-		FunctionalDependency currDependency;
-		TrivialDependenciesAnalysis analysis;
-		
-		dependenciesIterator = dependencies.iterator();
-		analysis = new TrivialDependenciesAnalysis();
+	public static TrivialDependenciesAnalysis analyzeTrivialDependencies(HashSet<FunctionalDependency> dependencies){
+		Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
+		TrivialDependenciesAnalysis analysis = new TrivialDependenciesAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
 		
 		while (dependenciesIterator.hasNext()){
-			currDependency = (FunctionalDependency)dependenciesIterator.next();
+			FunctionalDependency currDependency = dependenciesIterator.next();
 			if (currDependency.isTrivial()){
 				analysis.addTrivialDependency(currDependency);
 				analysis.setSubmissionSuitsSolution(false);
@@ -215,17 +188,13 @@ public class MinimalCoverAnalyzer {
 		return analysis;
 	}
 	
-	public static CanonicalRepresentationAnalysis analyzeCanonicalRepresentation(HashSet dependencies){
-		Iterator dependenciesIterator;
-		FunctionalDependency currDependency;
-		CanonicalRepresentationAnalysis analysis;
-		
-		dependenciesIterator = dependencies.iterator();
-		analysis = new CanonicalRepresentationAnalysis();
+	public static CanonicalRepresentationAnalysis analyzeCanonicalRepresentation(HashSet<FunctionalDependency> dependencies){
+		Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
+		CanonicalRepresentationAnalysis analysis = new CanonicalRepresentationAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
 		
 		while (dependenciesIterator.hasNext()){
-			currDependency = (FunctionalDependency)dependenciesIterator.next();
+			FunctionalDependency currDependency = dependenciesIterator.next();
 			if (currDependency.getRHSAttributes().size() > 1){
 				analysis.addNotCanonicalDependency(currDependency);
 				RDBDHelper.getLogger().log(Level.INFO, "Found not canonically represented dependency.");

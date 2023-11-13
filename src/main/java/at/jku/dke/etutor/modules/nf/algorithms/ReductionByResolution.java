@@ -106,30 +106,23 @@ public class ReductionByResolution {
 		
 	}
 	
-	public static HashSet execute_old(Relation rel, Collection subScheme) {
-		HashSet result;
-		Vector attributes;
-		HashSet dependencies;
+	public static HashSet<FunctionalDependency> execute_old(Relation rel, Collection<String> subScheme) {
 		String currAttribute;
-		FunctionalDependency currFD;
 
-		Iterator resultIterator;
-		Iterator attributesIterator;
-
-		attributes = new Vector();
-		attributesIterator = rel.iterAttributes();
+		Vector<String> attributes = new Vector<>();
+		Iterator<String> attributesIterator = rel.iterAttributes();
 		while (attributesIterator.hasNext()) {
-			currAttribute = (String)attributesIterator.next();
+			currAttribute = attributesIterator.next();
 			if (!subScheme.contains(currAttribute)) {
 				attributes.add(currAttribute);
 			}
 		}
 
-		dependencies = rel.getFunctionalDependencies();
-		result = MinimalCover.unfold(dependencies);
+		HashSet<FunctionalDependency> dependencies = rel.getFunctionalDependencies();
+		HashSet<FunctionalDependency> result = MinimalCover.unfold(dependencies);
 
 		while (!attributes.isEmpty()) {
-			currAttribute = (String)attributes.get(0);
+			currAttribute = attributes.get(0);
 			
 			/*
 			System.out.println("Processing Attribute '" + currAttribute + "'");
@@ -149,9 +142,9 @@ public class ReductionByResolution {
 				System.out.println(resultIterator.next());
 			}*/
 
-			resultIterator = result.iterator();
+			Iterator<FunctionalDependency> resultIterator = result.iterator();
 			while (resultIterator.hasNext()) {
-				currFD = (FunctionalDependency)resultIterator.next();
+				FunctionalDependency currFD = resultIterator.next();
 
 				//HACK - VORIGE VERSION - WAR FALSCH
 				//if ((!subScheme.containsAll(currFD.getLHSAttributes())) || (!subScheme.containsAll(currFD.getRHSAttributes()))){
@@ -178,30 +171,23 @@ public class ReductionByResolution {
 	}
 	
 	
-	public static HashSet execute(Relation rel, Collection subScheme) {
-		HashSet result;
-		Vector attributes;
-		HashSet dependencies;
+	public static HashSet<FunctionalDependency> execute(Relation rel, Collection<String> subScheme) {
 		String currAttribute;
-		FunctionalDependency currFD;
 
-		Iterator resultIterator;
-		Iterator attributesIterator;
-
-		attributes = new Vector();
-		attributesIterator = rel.iterAttributes();
+		Vector<String> attributes = new Vector<>();
+		Iterator<String> attributesIterator = rel.iterAttributes();
 		while (attributesIterator.hasNext()) {
-			currAttribute = (String)attributesIterator.next();
+			currAttribute = attributesIterator.next();
 			if (!subScheme.contains(currAttribute)) {
 				attributes.add(currAttribute);
 			}
 		}
 
-		dependencies = rel.getFunctionalDependencies();
-		result = MinimalCover.unfold(dependencies);
+		HashSet<FunctionalDependency> dependencies = rel.getFunctionalDependencies();
+		HashSet<FunctionalDependency> result = MinimalCover.unfold(dependencies);
 
 		while (!attributes.isEmpty()) {
-			currAttribute = (String)attributes.get(0);
+			currAttribute = attributes.get(0);
 			
 			/*
 			System.out.println("Processing Attribute '" + currAttribute + "'");
@@ -221,9 +207,9 @@ public class ReductionByResolution {
 				System.out.println(resultIterator.next());
 			}*/
 
-			resultIterator = result.iterator();
+			Iterator<FunctionalDependency> resultIterator = result.iterator();
 			while (resultIterator.hasNext()) {
-				currFD = (FunctionalDependency)resultIterator.next();
+				FunctionalDependency currFD = resultIterator.next();
 
 				//HACK - VORIGE VERSION - WAR FALSCH
 				//if ((!subScheme.containsAll(currFD.getLHSAttributes())) || (!subScheme.containsAll(currFD.getRHSAttributes()))){
@@ -249,32 +235,26 @@ public class ReductionByResolution {
 		return MinimalCover.fold(result);
 	}
 
-	public static HashSet calculateResolvents(String a, Collection dependencies) {
-		HashSet resolvents;
-		Vector containingDependencies;
-		FunctionalDependency resolvent;
+	public static HashSet<FunctionalDependency> calculateResolvents(String a, Collection<FunctionalDependency> dependencies) {
 		FunctionalDependency currDependency;
 
-		Iterator dependenciesIterator;
-		Iterator containingDependenciesIterator;
-
-		resolvents = new HashSet();
-		containingDependencies = new Vector();
-		containingDependenciesIterator = dependencies.iterator();
+		HashSet<FunctionalDependency> resolvents = new HashSet<>();
+		Vector<FunctionalDependency> containingDependencies = new Vector<>();
+		Iterator<FunctionalDependency> containingDependenciesIterator = dependencies.iterator();
 
 		while (containingDependenciesIterator.hasNext()) {
-			currDependency = (FunctionalDependency)containingDependenciesIterator.next();
+			currDependency = containingDependenciesIterator.next();
 			if (currDependency.getRHSAttributes().contains(a)) {
 				containingDependencies.add(currDependency);
 			}
 		}
 
-		dependenciesIterator = dependencies.iterator();
+		Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
 		while (dependenciesIterator.hasNext()) {
-			currDependency = (FunctionalDependency)dependenciesIterator.next();
+			currDependency = dependenciesIterator.next();
 			if (currDependency.getLHSAttributes().contains(a)) {
 				for (int i = 0; i < containingDependencies.size(); i++) {
-					resolvent = new FunctionalDependency();
+					FunctionalDependency resolvent = new FunctionalDependency();
 					resolvent.addAllLHSAttributes(currDependency.getLHSAttributes());
 					resolvent.removeLHSAttribute(a);
 					resolvent.addAllLHSAttributes(((FunctionalDependency)containingDependencies.get(i)).getLHSAttributes());

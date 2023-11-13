@@ -12,48 +12,47 @@ public class RBRSpecification implements Serializable, Cloneable, RDBDSpecificat
 
 	private static final long serialVersionUID = 2025183566330710558L;
 
-	private Vector baseAttributes;
+	private Vector<String> baseAttributes;
 	private IdentifiedRelation baseRelation;
 
 	public RBRSpecification() {
 		super();
 		this.baseRelation = null;
-		this.baseAttributes = new Vector();
+		this.baseAttributes = new Vector<>();
 	}
 
 	public Object clone() throws CloneNotSupportedException {
 		RBRSpecification clone = (RBRSpecification)super.clone();
-		clone.baseAttributes = (Vector)this.baseAttributes.clone();
+		clone.baseAttributes = (Vector<String>)this.baseAttributes.clone();
 		if (this.baseRelation != null) {
 			clone.baseRelation = (IdentifiedRelation)this.baseRelation.clone();
 		}
 		return clone;
 	}
 	
-	public Vector getBaseAttributes() {
+	public Vector<String> getBaseAttributes() {
 		checkAttributes();
-		return (Vector)this.baseAttributes.clone();
+		return (Vector<String>)this.baseAttributes.clone();
 	}
 	
 	/**
 	 * Removing duplicates and not anymore existing attributes of the base relation 
 	 */
 	private void checkAttributes() {
-		TreeSet set = new TreeSet();
-		Iterator it;
+		TreeSet<String> attributeSet = new TreeSet<>();
 		for (int i = 0; baseAttributes != null && i < baseAttributes.size(); i++) {
 			if (this.baseRelation.getAttributes().contains(baseAttributes.get(i))) {
-				set.add(baseAttributes.get(i));
+				attributeSet.add(baseAttributes.get(i));
 			}
 		}
-		this.baseAttributes = new Vector();
-		it = set.iterator();
+		this.baseAttributes = new Vector<>();
+		Iterator<String> it = attributeSet.iterator();
 		while (it.hasNext()) {
 			this.baseAttributes.add(it.next());
 		}
 	}
 
-	public void setBaseAttributes(Collection attributeCombination) {
+	public void setBaseAttributes(Collection<String> attributeCombination) {
 		this.baseAttributes.clear();
 		this.baseAttributes.addAll(attributeCombination);
 	}

@@ -54,9 +54,9 @@ public class DecomposeReporter {
 		//ADD REPORT_ATOM_GROUP FOR EACH DECOMPOSE STEP
 		if (!config.getAction().equals(RDBDConstants.EVAL_ACTION_CHECK)){
 			String baseRelationID;
-			Iterator decomposeStepAnalysesIterator = config.getDecomposeAnalysis().iterAnalysedDecomposeStepBaseRelations();
+			Iterator<String> decomposeStepAnalysesIterator = config.getDecomposeAnalysis().iterAnalysedDecomposeStepBaseRelations();
 			while (decomposeStepAnalysesIterator.hasNext()){
-				baseRelationID = (String)decomposeStepAnalysesIterator.next();
+				baseRelationID = decomposeStepAnalysesIterator.next();
 				report.addErrorReportGroup(createDecomposeStepReportAtomGroup(baseRelationID, config, messageSource, locale));	
 			}
 		}
@@ -69,8 +69,6 @@ public class DecomposeReporter {
 
 	public static ErrorReportGroup createDecomposeStepReportAtomGroup(String baseRelationID, DecomposeReporterConfig config, MessageSource messageSource, Locale locale){
 		ErrorReport reportAtom;
-		String currRelationID;
-		Iterator decomposedRelationsIterator;
 		ErrorReportGroup relationSpecificGroup;
 		ErrorReportGroup group = new ErrorReportGroup();
 		NormalizationAnalysis analysis = config.getDecomposeAnalysis().getDecomposeStepAnalyses(baseRelationID);

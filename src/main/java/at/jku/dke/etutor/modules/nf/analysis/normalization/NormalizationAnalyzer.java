@@ -10,6 +10,7 @@ import at.jku.dke.etutor.modules.nf.analysis.minimalcover.MinimalCoverAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalyzer;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.KeysContainer;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
@@ -28,11 +29,10 @@ public class NormalizationAnalyzer {
 		IdentifiedRelation currRelation;
 		Iterator normalizedRelationsIterator;
 		KeysAnalyzerConfig keysAnalyzerConfig;
-		HashMap correctKeysOfNormalizedRelations;
 		IdentifiedRelation currNormalizedRelation;
 		NormalformAnalyzerConfig normalformAnalyzerConfig;
 		
-		correctKeysOfNormalizedRelations = new HashMap();
+		HashMap<String, KeysContainer> correctKeysOfNormalizedRelations = new HashMap<>();
 
 		analysis = new NormalizationAnalysis();
 		analysis.setSubmissionSuitsSolution(true);

@@ -4,9 +4,7 @@ import at.jku.dke.etutor.modules.nf.NormalformDeterminationSubmission;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.NormalformAnalyzerConfig;
-import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
-import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
-import at.jku.dke.etutor.modules.nf.model.NormalformLevelComparator;
+import at.jku.dke.etutor.modules.nf.model.*;
 
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -14,16 +12,14 @@ import java.util.logging.Level;
 public class NormalformDeterminationAnalyzer {
 
 	public static NormalformDeterminationAnalysis analyze(NormalformDeterminationSubmission submission, NormalformAnalyzerConfig config){
-		NormalformDeterminationAnalysis analysis;
-		Iterator dependenciesIterator;
 		FunctionalDependency currDependency;
 		
-		analysis = new NormalformDeterminationAnalysis();
+		NormalformDeterminationAnalysis analysis = new NormalformDeterminationAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
-		dependenciesIterator = config.getRelation().iterFunctionalDependencies();
+		Iterator<FunctionalDependency> dependenciesIterator = config.getRelation().iterFunctionalDependencies();
 		
 		StringBuilder temp = new StringBuilder();
-		Iterator keysIterator = config.getCorrectMinimalKeys().iterator();
+		Iterator<Key> keysIterator = config.getCorrectMinimalKeys().iterator();
 		while (keysIterator.hasNext()){
 			temp.append(keysIterator.next()).append("; ");
 		}
@@ -53,7 +49,7 @@ public class NormalformDeterminationAnalyzer {
 			}
 		} else {
 			analysis.setOverallNormalformLevel(NormalformLevel.BOYCE_CODD);
-			if (!analysis.getBoyceCottNormalformViolations().isEmpty()){
+			if (!analysis.getBoyceCoddNormalformViolations().isEmpty()){
 				analysis.setOverallNormalformLevel(NormalformLevel.THIRD);
 			}
 			if (!analysis.getThirdNormalformViolations().isEmpty()){
@@ -68,9 +64,9 @@ public class NormalformDeterminationAnalyzer {
 		Integer currID;
 		NormalformLevel foundViolatedLevel;
 		NormalformLevel correctViolatedLevel;
-		Iterator iter = config.getRelation().iterFunctionalDependencies();
+		Iterator<FunctionalDependency> iter = config.getRelation().iterFunctionalDependencies();
 		while (iter.hasNext()){
-			currDependency = (FunctionalDependency)iter.next();
+			currDependency = iter.next();
 			currID = submission.getIDForDependency(currDependency);
 			RDBDHelper.getLogger().log(Level.INFO, "Check NF-Level of dependency: " + currDependency);
 			

@@ -13,8 +13,8 @@ public class FunctionalDependency implements Serializable{
 
 	public FunctionalDependency() {
 		super();
-		this.lhs = new TreeSet<>(new AttributeCollator());
-		this.rhs = new TreeSet<>(new AttributeCollator());
+		this.lhs = new TreeSet<String>(new AttributeCollator());
+		this.rhs = new TreeSet<String>(new AttributeCollator());
 	}
 
 	public FunctionalDependency(Collection<String> lhs, Collection<String> rhs) {

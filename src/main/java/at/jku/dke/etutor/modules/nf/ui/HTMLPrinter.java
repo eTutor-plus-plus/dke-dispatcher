@@ -105,8 +105,8 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String printReport(Report report, int displayIndent, int codeIndent, Locale locale) throws IOException{
-		Vector errorReports;
-		Vector errorReportGroups;
+		Vector<ErrorReport> errorReports;
+		Vector<ErrorReportGroup> errorReportGroups;
 		ErrorReport currErrorReport;
 		ErrorReportGroup currErrorReportGroup;
 		StringBuilder out = new StringBuilder();
@@ -214,8 +214,8 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 	
 	public static String printErrorReportGroup(ErrorReportGroup group, int displayIndent, int codeIndent) throws IOException{
-		Vector errorReports = group.getErrorReports();
-		Vector subGroups = group.getSubErrorReportGroups();
+		Vector<ErrorReport> errorReports = group.getErrorReports();
+		Vector<ErrorReportGroup> subGroups = group.getSubErrorReportGroups();
 		StringBuilder out = new StringBuilder();
 
 		out.append("<div class='error_report_group'>").append(LINE_SEP);
@@ -224,7 +224,7 @@ public class HTMLPrinter implements MessageSourceAware {
 
 		if (!errorReports.isEmpty()){
 			for (int i=0; i<errorReports.size(); i++){
-				out.append(printErrorReport((ErrorReport)errorReports.get(i), 0, codeIndent));
+				out.append(printErrorReport(errorReports.get(i), 0, codeIndent));
 				if (i < errorReports.size()-1){
 					out.append("						<div class='gap'></div>").append(LINE_SEP);
 				}
@@ -233,7 +233,7 @@ public class HTMLPrinter implements MessageSourceAware {
 
 		if (!subGroups.isEmpty()){
 			for (int i=0; i<subGroups.size(); i++){
-				out.append(printErrorReportGroup((ErrorReportGroup)subGroups.get(i), 1, codeIndent));
+				out.append(printErrorReportGroup(subGroups.get(i), 1, codeIndent));
 				if (i < errorReports.size()-1){
 					out.append("						<div class='gap'></div>").append(LINE_SEP);
 				}
@@ -245,12 +245,12 @@ public class HTMLPrinter implements MessageSourceAware {
 		return out.toString();
 	}
 
-	public static String printParameters(Collection relations, int indent) throws IOException {
+	public static String printParameters(Collection<IdentifiedRelation> relations, int indent) throws IOException {
 		IdentifiedRelation relation;
-		Iterator relationsIterator = relations.iterator();
+		Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
 		StringBuilder out = new StringBuilder();
 		while (relationsIterator.hasNext()) {
-			relation = (IdentifiedRelation)relationsIterator.next();
+			relation = relationsIterator.next();
 			out.append(printParameters(relation, indent));
 		}
 		return out.toString();
@@ -264,9 +264,9 @@ public class HTMLPrinter implements MessageSourceAware {
 		String relationID;
 		StringBuilder out = new StringBuilder();
 		
-		Iterator keysIterator;
-		Iterator attributesIterator;
-		Iterator dependenciesIterator;
+		Iterator<Key> keysIterator;
+		Iterator<String> attributesIterator;
+		Iterator<FunctionalDependency> dependenciesIterator;
 
 		if (relation instanceof IdentifiedRelation) {
 			relationID = ((IdentifiedRelation)relation).getID();
@@ -320,11 +320,11 @@ public class HTMLPrinter implements MessageSourceAware {
 		return out.toString();
 	}
 
-	public static String printKeysRow(Collection keys, String relationID, int indent, boolean editable, Locale locale) throws IOException  {
+	public static String printKeysRow(Collection<Key> keys, String relationID, int indent, boolean editable, Locale locale) throws IOException  {
 		return printKeysRow(keys, relationID, messageSource.getMessage("printkeysrow.title", null, locale), indent, editable, locale);
 	}
 	
-	public static String printKeysRow(Collection keys, String relationID, String title, int indent, boolean editable, Locale locale) throws IOException  {
+	public static String printKeysRow(Collection<Key> keys, String relationID, String title, int indent, boolean editable, Locale locale) throws IOException  {
 		String offset;
 		String content;
 		String addFunction;
@@ -365,11 +365,11 @@ public class HTMLPrinter implements MessageSourceAware {
 		return out.toString();
 	}
 
-	public static String printDependenciesRow(Collection dependencies, String relationID, int indent, boolean editable, Locale locale) throws IOException {
+	public static String printDependenciesRow(Collection<FunctionalDependency> dependencies, String relationID, int indent, boolean editable, Locale locale) throws IOException {
 		return printDependenciesRow(dependencies, relationID, messageSource.getMessage("printdependenciesrow.title", null, locale), indent, editable, locale);
 	}
 
-	public static String printDependenciesRow(Collection dependencies, String relationID, String title, int indent, boolean editable, Locale locale) throws IOException {
+	public static String printDependenciesRow(Collection<FunctionalDependency> dependencies, String relationID, String title, int indent, boolean editable, Locale locale) throws IOException {
 		String content;
 		String offset;
 		String addFunction;
@@ -411,22 +411,17 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 	
 	public static String printDependenciesWithNormalformRow(Relation relation, String title, int indent, Locale locale) throws IOException {
-		String content;
-		String offset;
-		NormalformAnalyzerConfig normalformAnalyzerConfig;
-		Collection dependencies;
-		NormalformAnalysis analysis;
 		StringBuilder out = new StringBuilder();
 		
-		normalformAnalyzerConfig = new NormalformAnalyzerConfig();
+		NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();
 		normalformAnalyzerConfig.setCorrectMinimalKeys(KeysDeterminator.determineMinimalKeys(relation));
 		normalformAnalyzerConfig.setRelation(relation);
-		analysis = NormalformAnalyzer.analyze(normalformAnalyzerConfig);
-		dependencies = relation.getFunctionalDependencies();
+		NormalformAnalysis analysis = NormalformAnalyzer.analyze(normalformAnalyzerConfig);
+		Collection<FunctionalDependency> dependencies = relation.getFunctionalDependencies();
 		
-		offset = getOffset(indent);
+		String offset = getOffset(indent);
 		
-		content = "";
+		String content = "";
 		for (int i = 0; i < dependencies.toArray().length; i++) {
 			content = content.concat(offset + "<tr>" + LINE_SEP);
 			content = content.concat(offset + "	<td>" + LINE_SEP);
@@ -481,7 +476,7 @@ public class HTMLPrinter implements MessageSourceAware {
 			}
 		}
 		
-		v = analysis.getBoyceCottNormalformViolations();
+		v = analysis.getBoyceCoddNormalformViolations();
 		for (int i = 0; i < v.size(); i++) {
 			violation = (NormalformViolation)v.get(i);
 			if (violation.getFunctionalDependency().equals(dependency)) {
@@ -492,11 +487,11 @@ public class HTMLPrinter implements MessageSourceAware {
 		return messageSource.getMessage("getnormalform.boycecodd", null, locale);
 	}
 	
-	public static String printAttributesRow(Collection attributes, String baseRelationID, String currRelationID, int indent, boolean editable, Locale locale) throws IOException {
+	public static String printAttributesRow(Collection<String> attributes, String baseRelationID, String currRelationID, int indent, boolean editable, Locale locale) throws IOException {
 		return printAttributesRow(attributes, baseRelationID, currRelationID, "Attributes", indent, editable, locale);
 	}
 	
-	public static String printAttributesRow(Collection attributes, String baseRelationID, String currRelationID, String title, int indent, boolean editable, Locale locale) throws IOException {
+	public static String printAttributesRow(Collection<String> attributes, String baseRelationID, String currRelationID, String title, int indent, boolean editable, Locale locale) throws IOException {
 		String offset;
 		String content;
 		String addFunction;

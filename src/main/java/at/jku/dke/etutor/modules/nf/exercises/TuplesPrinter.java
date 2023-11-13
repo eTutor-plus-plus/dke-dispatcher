@@ -5,11 +5,11 @@ import java.util.Vector;
 
 public class TuplesPrinter {
 	
-	public static void printToConsole(TupleSet tuplePopulation, Vector prefixes){
+	public static void printToConsole(TupleSet tuplePopulation, Vector<String> prefixes){
 		System.out.println(toString(tuplePopulation, prefixes));
 	}
 
-	public static String toString(TupleSet tuplePopulation, Vector prefixes){
+	public static String toString(TupleSet tuplePopulation, Vector<String> prefixes){
 		String s = "";
 		Iterator tuplesIterator = tuplePopulation.iterator();
 		
@@ -34,11 +34,11 @@ public class TuplesPrinter {
 		return s;
 	}
 
-	public static String toString(int[] tuple, Vector prefixes){
+	public static String toString(int[] tuple, Vector<String> prefixes){
 		String s = "";
 		
 		for (int i=0; i<tuple.length; i++){
-			s = s.concat((String)prefixes.get(i));
+			s = s.concat(prefixes.get(i));
 			s = s.concat(String.valueOf(tuple[i]));
 			s = s.concat(" ");
 		}
