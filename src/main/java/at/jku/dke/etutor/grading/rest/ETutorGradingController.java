@@ -61,7 +61,6 @@ public class ETutorGradingController {
         logger.info( "Received request for Grading with Submission ID:  {}",  submissionId);
         logger.info("Fetching Grading from database ");
         GradingDTO gradingDTO = new GradingDTO();
-
         waitingThreadMap.put(submissionId, Thread.currentThread());
         for(int i = 0; ((i * properties.getGrading().getSleepDuration()) < properties.getGrading().getMaxWaitTime())
                 && runningEvaluations.contains(submissionId); i++){
@@ -92,7 +91,6 @@ public class ETutorGradingController {
             gradingDTO.setResult(grading.getResult());
             gradingDTO.setSubmissionId(grading.getSubmissionId());
             gradingDTO.setSubmissionSuitsSolution(grading.isSubmissionSuitsSolution());
-
             if(Boolean.TRUE.equals(delete))
                 gradingDTORepository.deleteById(submissionId);
 

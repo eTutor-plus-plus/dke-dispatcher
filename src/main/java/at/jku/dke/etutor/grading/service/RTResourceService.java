@@ -27,11 +27,17 @@ public class RTResourceService {
     private ApplicationProperties properties;
     private RTDataSource rtDataSource;
 
+    private GradingDTORepository gradingDTORepository;
+
+    private SubmissionDispatcherService dispatcherService;
 
 
-    public RTResourceService(ApplicationProperties properties) throws SQLException {
+
+    public RTResourceService(ApplicationProperties properties, SubmissionDispatcherService dispatcherService, GradingDTORepository gradingDTORepository) throws SQLException {
         this.properties = properties;
         this.rtDataSource = new RTDataSource(properties);
+        this.gradingDTORepository = gradingDTORepository;
+        this.dispatcherService = dispatcherService;
     }
 
     public Long insertTask(String solution, Integer maxPoints) throws SQLException {

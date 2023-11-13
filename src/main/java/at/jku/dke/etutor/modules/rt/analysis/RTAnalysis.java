@@ -26,13 +26,17 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class RTAnalysis extends DefaultAnalysis implements Analysis {
+public class RTAnalysis extends DefaultAnalysis {
     private int id;
     private String inputSolution;
     private List<String> solution;
     private List<String> solutionStudent;
     private ApplicationProperties applicationProperties;
     private int maxPoints;
+
+    private boolean hasSyntaxError = false;
+
+    private boolean hasSemantikError = false;
 
     public RTAnalysis(int id, String inputSolution, ApplicationProperties applicationProperties) throws SQLException {
         super();
@@ -58,7 +62,7 @@ public class RTAnalysis extends DefaultAnalysis implements Analysis {
                     ParseTree tree = parser.start();
                 } catch (Exception e) {
                     checkSuccess = false;
-                    System.out.println(e.toString() + " Yes");
+                    hasSyntaxError = true;
                 }
             }
         }
@@ -66,18 +70,20 @@ public class RTAnalysis extends DefaultAnalysis implements Analysis {
     }
 
     public boolean checkSemantik() {
-        //Muss auf Sicht aus der DB, abgeholt werden.
-        String muster = "test(|id|)";
-        boolean checkSuccess = true;
-        if (this.inputSolution != muster) {
-            return false;
+        boolean checkSuccess = false;
+        if (this.getSolutionStudent().equals(this.solution)){
+        checkSuccess = true;
         }
         return checkSuccess;
     }
 
     @Override
     public boolean submissionSuitsSolution() {
-        return true;
+        if (this.checkSemantik()){
+            return true;
+        }
+        this.hasSemantikError = true;
+        return false;
     }
 
     public void setDataBaseProperties() throws SQLException {
@@ -135,5 +141,13 @@ public class RTAnalysis extends DefaultAnalysis implements Analysis {
     }
     public int getMaxPoints() {
         return maxPoints;
+    }
+
+    public boolean getHasSyntaxError() {
+        return hasSyntaxError;
+    }
+
+    public boolean getHasSemantikError() {
+        return hasSemantikError;
     }
 }
