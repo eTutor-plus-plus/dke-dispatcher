@@ -28,14 +28,14 @@ public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
 	}
 	
 	public NormalformLevel getViolatedNormalformLevel(FunctionalDependency dependency){
-		Iterator iter;
+		Iterator<? extends NormalformViolation> iter;
 		NormalformLevel level = null;
 		NormalformViolation violation;
 		
 		if (level == null) {
 			iter = this.firstNormalFormViolations.iterator();
 			while((iter.hasNext()) && (level == null)){
-				violation = (NormalformViolation)iter.next();
+				violation = iter.next();
 				if (violation.getFunctionalDependency().equals(dependency)){
 					level = NormalformLevel.FIRST;
 				}
@@ -45,7 +45,7 @@ public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
 		if (level == null) {
 			iter = this.secondNormalFormViolations.iterator();
 			while((iter.hasNext()) && (level == null)){
-				violation = (NormalformViolation)iter.next();
+				violation = iter.next();
 				if (violation.getFunctionalDependency().equals(dependency)){
 					level = NormalformLevel.SECOND;
 				}
@@ -55,7 +55,7 @@ public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
 		if (level == null) {
 			iter = this.thirdNormalFormViolations.iterator();
 			while((iter.hasNext()) && (level == null)){
-				violation = (NormalformViolation)iter.next();
+				violation = iter.next();
 				if (violation.getFunctionalDependency().equals(dependency)){
 					level = NormalformLevel.THIRD;
 				}
@@ -65,7 +65,7 @@ public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
 		if (level == null) {
 			iter = this.boyceCoddNormalFormViolations.iterator();
 			while((iter.hasNext()) && (level == null)){
-				violation = (NormalformViolation)iter.next();
+				violation = iter.next();
 				if (violation.getFunctionalDependency().equals(dependency)){
 					level = NormalformLevel.BOYCE_CODD;
 				}

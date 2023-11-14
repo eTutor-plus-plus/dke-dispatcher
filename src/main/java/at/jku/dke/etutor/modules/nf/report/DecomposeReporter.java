@@ -4,6 +4,7 @@ import at.jku.dke.etutor.modules.nf.RDBDConstants;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
 import org.springframework.context.MessageSource;
 
 import java.util.Collection;
@@ -113,7 +114,7 @@ public class DecomposeReporter {
 		return group;
 	}
 	
-	public static ErrorReportGroup createRelationSpecificReportAtomGroup(String relationID, NormalizationAnalysis analysis, Collection decomposedRelations, DecomposeReporterConfig config, MessageSource messageSource, Locale locale){
+	public static ErrorReportGroup createRelationSpecificReportAtomGroup(String relationID, NormalizationAnalysis analysis, Collection<IdentifiedRelation> decomposedRelations, DecomposeReporterConfig config, MessageSource messageSource, Locale locale){
 		ErrorReport reportAtom;
 		NormalformReporterConfig nfReporterConfig;
 		ErrorReportGroup group = new ErrorReportGroup();

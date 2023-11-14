@@ -9,6 +9,7 @@ import at.jku.dke.etutor.modules.nf.ui.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.Id;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.Serializable;
@@ -103,16 +104,12 @@ public class RDBDHelper {
 
 	// TODO: Replace with HikariDataSource like in SQL module (Gerald Wimmer, 2023-11-12)
 	private static synchronized DataSource getDataSource() {
-		String msg;
-		InitialContext ctx;
-		Hashtable env;
-		
 		if (dataSource == null) {
 			try {
-				ctx = new InitialContext();
-				env = ctx.getEnvironment();
+				InitialContext ctx = new InitialContext();
+				Hashtable<?, ?> env = ctx.getEnvironment();
 				
-				msg = "Main environment properties effectively set for JNDI context: \n";
+				String msg = "Main environment properties effectively set for JNDI context: \n";
 				msg += Context.INITIAL_CONTEXT_FACTORY + "=";
 				msg += env.get(Context.INITIAL_CONTEXT_FACTORY) + "\n";
 				msg += Context.PROVIDER_URL + "=";
@@ -124,7 +121,7 @@ public class RDBDHelper {
 	
 				dataSource = (DataSource)ctx.lookup(RDBDConstants.NAMING_DATASOURCE);
 			} catch (NamingException e) {
-				msg = "Exception when trying to retrieve a " + DataSource.class.getName() 
+				String msg = "Exception when trying to retrieve a " + DataSource.class.getName()
 				+ " object from JNDI context, mapped to the context '" 
 				+ RDBDConstants.NAMING_DATASOURCE + "'. ";
 		        rdbdLogger.log(Level.SEVERE, msg, e);
@@ -134,13 +131,13 @@ public class RDBDHelper {
 		return dataSource;
 	}
 	
-	public static TreeSet findSubRelations(String relationID, TreeSet relations){
+	public static TreeSet<IdentifiedRelation> findSubRelations(String relationID, TreeSet<IdentifiedRelation> relations){
 		IdentifiedRelation currRelation;
-		Iterator relationsIterator = relations.iterator();
-		TreeSet subRelations = new TreeSet(new IdentifiedRelationComparator());
+		Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
+		TreeSet<IdentifiedRelation> subRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
 		
 		while (relationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)relationsIterator.next();
+			currRelation = relationsIterator.next();
 			RDBDHelper.getLogger().log(Level.INFO, "Check Relation: '" + currRelation.getID() + "'.");			
 			if ((currRelation.getID().startsWith(relationID)) && (currRelation.getID().length() > relationID.length())){
 				subRelations.add(currRelation);
@@ -151,12 +148,12 @@ public class RDBDHelper {
 		return subRelations;
 	}
 	
-	public static IdentifiedRelation findRelation(String relationID, TreeSet relations){
+	public static IdentifiedRelation findRelation(String relationID, TreeSet<IdentifiedRelation> relations){
 		IdentifiedRelation relation;
-		Iterator i = relations.iterator();
-		
+
+		Iterator<IdentifiedRelation> i = relations.iterator();
 		while (i.hasNext()){
-			relation = (IdentifiedRelation)i.next();
+			relation = i.next();
 			if (relation.getID().equals(relationID)){
 				return relation;
 			}
@@ -165,15 +162,15 @@ public class RDBDHelper {
 		return null;
 	}
 	
-	public static boolean isInnerNode(String relationID, Collection relations){
+	public static boolean isInnerNode(String relationID, Collection<IdentifiedRelation> relations){
 		String currID;
 		boolean isInnerNode = false;
 		IdentifiedRelation currRelation;
-		Iterator it = relations.iterator();
+		Iterator<IdentifiedRelation> it = relations.iterator();
 	
 		while ((it.hasNext()) && (!isInnerNode)){
 			
-			currRelation = (IdentifiedRelation)it.next(); 
+			currRelation = it.next();
 			//RDBDHelper.getLogger().log(Level.INFO, "RELATION IS NULL: " + (currRelation == null));
 			
 			currID = currRelation.getID();
@@ -229,7 +226,7 @@ public class RDBDHelper {
 		relation.addFunctionalDependency(dependency);
 	}
 	
-	public static void splitRelation(Collection relations, String relationID, String[] subRelation1Attributes, String[] subRelation2Attributes) throws Exception{
+	public static void splitRelation(Collection<IdentifiedRelation> relations, String relationID, String[] subRelation1Attributes, String[] subRelation2Attributes) throws Exception{
 		IdentifiedRelation subRelation1 = new IdentifiedRelation();
 		IdentifiedRelation subRelation2 = new IdentifiedRelation();
 
@@ -249,14 +246,13 @@ public class RDBDHelper {
 		relations.add(subRelation2);
 	}
 	
-	public static void delSubRelations(Collection relations, String relationID) throws Exception{
+	public static void delSubRelations(Collection<IdentifiedRelation> relations, String relationID) throws Exception{
 		String currRelationID;
-		Iterator relationsIterator;
 		
-		relationsIterator = relations.iterator();
+		Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
 
 		while (relationsIterator.hasNext()){
-			currRelationID = ((IdentifiedRelation)relationsIterator.next()).getID();
+			currRelationID = relationsIterator.next().getID();
 
 			if (currRelationID.startsWith(relationID) && (currRelationID.length() > relationID.length())){
 				relationsIterator.remove();
@@ -264,18 +260,17 @@ public class RDBDHelper {
 		}
 	}
 	
-	public static void newRelation(Collection relations) throws Exception{
+	public static void newRelation(Collection<IdentifiedRelation> relations) throws Exception{
 		int maxID;
 		StringBuilder increasedID;
-		Iterator relationsIterator;
 		IdentifiedRelation newRelation;
 		IdentifiedRelation currRelation;
 
 		maxID = 0;
 		newRelation = new IdentifiedRelation();
-		relationsIterator = relations.iterator();
+		Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
 		while (relationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)relationsIterator.next();
+			currRelation = relationsIterator.next();
 			if (Integer.parseInt(currRelation.getID().replaceAll("\\.", ""))>maxID){
 				maxID = Integer.parseInt(currRelation.getID().replaceAll("\\.", ""));
 			}
@@ -293,20 +288,19 @@ public class RDBDHelper {
 		relations.add(newRelation);
 	}
 
-	public static void delRelation(Collection relations, String relationID) throws Exception{
+	public static void delRelation(Collection<IdentifiedRelation> relations, String relationID) throws Exception{
 		int currID;
 		boolean found;
 		StringBuilder reducedID;
-		Iterator relationsIterator;
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && (!relationID.isEmpty()) && (relations != null)){
 
 			found = false;
-			relationsIterator = relations.iterator();
+			Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
 
 			while (relationsIterator.hasNext()){
-				currRelation = (IdentifiedRelation)relationsIterator.next();
+				currRelation = relationsIterator.next();
 
 				if (currRelation.getID().equals(relationID)){
 					relationsIterator.remove();
@@ -328,8 +322,7 @@ public class RDBDHelper {
 		}
 	}
 	
-	public static void addAttribute(Collection relations, String relationID, String[] attributes) throws Exception{
-		Iterator relationsIterator;
+	public static void addAttribute(Collection<IdentifiedRelation> relations, String relationID, String[] attributes) throws Exception{
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && 
@@ -337,9 +330,9 @@ public class RDBDHelper {
 				(attributes != null) && 
 				(attributes.length != 0)){
 
-			relationsIterator = relations.iterator();
+			Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
 			while (relationsIterator.hasNext()){
-				currRelation = (IdentifiedRelation)relationsIterator.next();
+				currRelation = relationsIterator.next();
 				if (currRelation.getID().equals(relationID)){
 					addAttribute(currRelation, attributes);
 				}
@@ -353,8 +346,7 @@ public class RDBDHelper {
 		}
 	}
 	
-	public static void delAttributes(Collection relations, String relationID, String[] attributesToDelete) throws Exception{
-		Iterator relationsIterator;
+	public static void delAttributes(Collection<IdentifiedRelation> relations, String relationID, String[] attributesToDelete) throws Exception{
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && 
@@ -362,9 +354,9 @@ public class RDBDHelper {
 				(attributesToDelete != null) && 
 				(attributesToDelete.length != 0)){
 
-			relationsIterator = relations.iterator();
+			Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
 			while (relationsIterator.hasNext()){
-				currRelation = (IdentifiedRelation)relationsIterator.next();
+				currRelation = relationsIterator.next();
 				if (currRelation.getID().equals(relationID)){
 					delAttributes(currRelation, attributesToDelete);
 				}
@@ -383,8 +375,7 @@ public class RDBDHelper {
 		checkRelation(relation);
 	}
 	
-	public static void addDependency(Collection relations, String relationID, String[] rhsAttributes, String[] lhsAttributes) throws Exception{
-		Iterator relationsIterator;
+	public static void addDependency(Collection<IdentifiedRelation> relations, String relationID, String[] rhsAttributes, String[] lhsAttributes) throws Exception{
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && 
@@ -394,9 +385,9 @@ public class RDBDHelper {
 			(lhsAttributes != null) &&
 			(lhsAttributes.length != 0)){
 
-			relationsIterator = relations.iterator();
+			Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
 			while (relationsIterator.hasNext()){
-				currRelation = (IdentifiedRelation)relationsIterator.next();
+				currRelation = relationsIterator.next();
 				if (currRelation.getID().equals(relationID)){
 					addDependency(currRelation, rhsAttributes, lhsAttributes);
 				}
@@ -420,15 +411,14 @@ public class RDBDHelper {
 		relation.addFunctionalDependency(currDependency);
 	}
 	
-	public static void delDependencies(Collection relations, String relationID, String[] rhsAttributes, String[] lhsAttributes, String[] dependenciesToDelete) throws Exception{
-		Iterator relationsIterator;
+	public static void delDependencies(Collection<IdentifiedRelation> relations, String relationID, String[] rhsAttributes, String[] lhsAttributes, String[] dependenciesToDelete) throws Exception{
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && (!relationID.isEmpty())){
 
-			relationsIterator = relations.iterator();
+			Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
 			while (relationsIterator.hasNext()){
-				currRelation = (IdentifiedRelation)relationsIterator.next();
+				currRelation = relationsIterator.next();
 				if (currRelation.getID().equals(relationID)){
 					delDependencies(currRelation, rhsAttributes, lhsAttributes, dependenciesToDelete);
 				}
@@ -459,8 +449,7 @@ public class RDBDHelper {
 		}
 	}
 
-	public static void addKey(Collection relations, String relationID, String[] attributes) throws Exception{
-		Iterator relationsIterator;
+	public static void addKey(Collection<IdentifiedRelation> relations, String relationID, String[] attributes) throws Exception{
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && 
@@ -468,9 +457,9 @@ public class RDBDHelper {
 			(attributes != null) &&
 			(attributes.length != 0)){
 
-			relationsIterator = relations.iterator();
+			Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
 			while (relationsIterator.hasNext()){
-				currRelation = (IdentifiedRelation)relationsIterator.next();
+				currRelation = relationsIterator.next();
 				if (currRelation.getID().equals(relationID)){
 					addKey(currRelation, attributes);
 				}
@@ -490,8 +479,7 @@ public class RDBDHelper {
 		relation.addMinimalKey(currKey);
 	}
 
-	public static void delKeys(Collection relations, String relationID, String[] attributes, String[] keysToDelete) throws Exception{
-		Iterator relationsIterator;
+	public static void delKeys(Collection<IdentifiedRelation> relations, String relationID, String[] attributes, String[] keysToDelete) throws Exception{
 		IdentifiedRelation currRelation;
 
 		RDBDHelper.getLogger().log(Level.INFO, "DELETING KEYS");
@@ -499,9 +487,9 @@ public class RDBDHelper {
 		if ((relationID != null) && (!relationID.isEmpty())){
 			RDBDHelper.getLogger().log(Level.INFO, "SEARCHING FOR RELATION '" + relationID + "'");
 
-			relationsIterator = relations.iterator();
+			Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
 			while (relationsIterator.hasNext()){
-				currRelation = (IdentifiedRelation)relationsIterator.next();
+				currRelation = relationsIterator.next();
 				if (currRelation.getID().equals(relationID)){
 					RDBDHelper.getLogger().log(Level.INFO, "FOUND RELATION '" + relationID + "'");
 					delKeys(currRelation, attributes, keysToDelete);
@@ -531,37 +519,33 @@ public class RDBDHelper {
 		}
 	}
 	
-	public static void checkRelations(Collection relations) {
+	public static void checkRelations(Collection<Relation> relations) {
 		Relation relation;
-		Iterator relationsIterator;
-		
-		relationsIterator = relations.iterator();
+
+		Iterator<Relation> relationsIterator = relations.iterator();
 		while (relationsIterator.hasNext()){
-			relation = (Relation)relationsIterator.next();
+			relation = relationsIterator.next();
 			checkRelation(relation);
 		}
 	}
 	
 	public static void checkRelation(Relation relation) {
 		Key key;
-		Collection attributes;
 		FunctionalDependency dependency;
-		Iterator keysIterator;
-		Iterator dependenciesIterator;
 		
-		attributes = relation.getAttributes();
+		Collection<String> attributes = relation.getAttributes();
 
-		dependenciesIterator = relation.iterFunctionalDependencies();
+		Iterator<FunctionalDependency> dependenciesIterator = relation.iterFunctionalDependencies();
 		while (dependenciesIterator.hasNext()){
-			dependency = (FunctionalDependency)dependenciesIterator.next();
+			dependency = dependenciesIterator.next();
 			if ((!attributes.containsAll(dependency.getLHSAttributes())) || (!attributes.containsAll(dependency.getRHSAttributes()))){			
 				dependenciesIterator.remove();
 			}
 		}
 
-		keysIterator = relation.iterMinimalKeys();
+		Iterator<Key> keysIterator = relation.iterMinimalKeys();
 		while (keysIterator.hasNext()){
-			key = (Key)keysIterator.next();
+			key = keysIterator.next();
 			if (!attributes.containsAll(key.getAttributes())){			
 				keysIterator.remove();
 			}
@@ -583,7 +567,7 @@ public class RDBDHelper {
 		}
 	}
 	
-	public static void setBaseAttributes(Serializable spec, Collection attributes) {
+	public static void setBaseAttributes(Serializable spec, Collection<String> attributes) {
 		if (attributes == null) {
 			return;
 		}
@@ -595,7 +579,7 @@ public class RDBDHelper {
 	}
 	
 	public static void delBaseAttributes(Serializable spec, String[] attributesToDelete) {
-		Vector attributes;
+		Vector<String> attributes;
 		boolean remove;
 		if (attributesToDelete == null || attributesToDelete.length < 1) {
 			return;
@@ -611,7 +595,7 @@ public class RDBDHelper {
 					}
 				}
 				if (!remove) {
-					((AttributeClosureSpecification)spec).addBaseAttribute((String)attributes.get(i));					
+					((AttributeClosureSpecification)spec).addBaseAttribute(attributes.get(i));
 				}
 			}
 		} else if (spec instanceof RBRSpecification) {
@@ -625,7 +609,7 @@ public class RDBDHelper {
 					}
 				}
 				if (!remove) {
-					((RBRSpecification)spec).addBaseAttribute((String)attributes.get(i));					
+					((RBRSpecification)spec).addBaseAttribute(attributes.get(i));
 				}
 			}
 		}

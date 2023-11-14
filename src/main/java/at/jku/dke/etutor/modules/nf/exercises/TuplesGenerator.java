@@ -58,7 +58,7 @@ public class TuplesGenerator{
 			}*/
 
 			System.out.println("\nINVALID KEYS:");
-			Iterator<Key> it = invalidKeys.iterator();
+			Iterator<int[]> it = invalidKeys.iterator();
 			while (it.hasNext()){
 				System.out.print("(" + TuplesPrinter.toString((int[])it.next()) + ") ");
 			}

@@ -30,11 +30,9 @@ public class RDBDShowEditorView extends DefaultPrintView implements
 			Locale locale) {
 		StringBuilder xhtml = new StringBuilder();
 
-		Set actions = passedAttributes.get(SQLConstants.ATTR_ACTIONS) != null ? (Set) passedAttributes
-				.get(SQLConstants.ATTR_ACTIONS)
-				: null;
+		Set actions = passedAttributes.get(SQLConstants.ATTR_ACTIONS) != null ? (Set) passedAttributes.get(SQLConstants.ATTR_ACTIONS) : null;
 
-		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> model = new HashMap<>();
 		int exerciseId = Integer.parseInt(passedAttributes.get(
 				RDBDConstants.ATT_EXERCISE_ID).toString());
 		Serializable submission = (Serializable) passedAttributes
@@ -57,7 +55,7 @@ public class RDBDShowEditorView extends DefaultPrintView implements
 			IdentifiedRelation specification = (IdentifiedRelation) passedAttributes
 					.get(RDBDConstants.calcSpecificationIDFor(exerciseId));
 			model.put("specification", specification);
-			IdentifiedRelation relation = (IdentifiedRelation) ((Vector) submission)
+			IdentifiedRelation relation = ((Vector<IdentifiedRelation>) submission)
 					.get(0);
 			model.put("relation", relation);
 			model.put("numberAttempts", passedAttributes.get("numberAttempts"));
@@ -90,7 +88,7 @@ public class RDBDShowEditorView extends DefaultPrintView implements
 			IdentifiedRelation specification = (IdentifiedRelation) passedAttributes
 					.get(RDBDConstants.calcSpecificationIDFor(exerciseId));
 			model.put("specification", specification);
-			IdentifiedRelation relation = (IdentifiedRelation) ((Vector) submission)
+			IdentifiedRelation relation = ((Vector<IdentifiedRelation>) submission)
 					.get(0);
 			model.put("relation", relation);
 			model.put("numberAttempts", passedAttributes.get("numberAttempts"));
@@ -103,7 +101,7 @@ public class RDBDShowEditorView extends DefaultPrintView implements
 			AttributeClosureSpecification specification = (AttributeClosureSpecification) passedAttributes
 					.get(RDBDConstants.calcSpecificationIDFor(exerciseId));
 			model.put("specification", specification);
-			IdentifiedRelation relation = (IdentifiedRelation) ((Vector) submission)
+			IdentifiedRelation relation = ((Vector<IdentifiedRelation>) submission)
 					.get(0);
 			model.put("relation", relation);
 			model.put("numberAttempts", passedAttributes.get("numberAttempts"));
@@ -116,7 +114,7 @@ public class RDBDShowEditorView extends DefaultPrintView implements
 			RBRSpecification specification = (RBRSpecification) passedAttributes
 					.get(RDBDConstants.calcSpecificationIDFor(exerciseId));
 			model.put("specification", specification);
-			IdentifiedRelation relation = (IdentifiedRelation) ((Vector) submission)
+			IdentifiedRelation relation = ((Vector<IdentifiedRelation>) submission)
 					.get(0);
 			model.put("relation", relation);
 			model.put("numberAttempts", passedAttributes.get("numberAttempts"));

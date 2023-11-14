@@ -12,7 +12,7 @@ public class NormalizationAnalyzerConfig {
 
 
 	private int maxLostDependencies;
-	private final TreeSet normalizedRelations;
+	private final TreeSet<IdentifiedRelation> normalizedRelations;
 	private IdentifiedRelation baseRelation;
 	private NormalformLevel desiredNormalformLevel;
 	
@@ -21,7 +21,7 @@ public class NormalizationAnalyzerConfig {
 		this.baseRelation = null;
 		this.maxLostDependencies = 0;
 		this.desiredNormalformLevel = NormalformLevel.FIRST;
-		this.normalizedRelations = new TreeSet(new IdentifiedRelationComparator());
+		this.normalizedRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
 	}
 
 	public void setMaxLostDependencies(int maxLostDependencies){
@@ -32,7 +32,7 @@ public class NormalizationAnalyzerConfig {
 		return this.maxLostDependencies;
 	}
 
-	public void setNormalizedRelations(Collection normalizedRelations){
+	public void setNormalizedRelations(Collection<IdentifiedRelation> normalizedRelations){
 		this.normalizedRelations.clear();
 		this.normalizedRelations.addAll(normalizedRelations);
 	}
@@ -41,12 +41,12 @@ public class NormalizationAnalyzerConfig {
 		this.normalizedRelations.add(normalizedRelation);
 	}
 
-	public Iterator iterNormalizedRelations(){
+	public Iterator<IdentifiedRelation> iterNormalizedRelations(){
 		return this.normalizedRelations.iterator();
 	}
 	
-	public TreeSet getNormalizedRelations(){
-		return (TreeSet)this.normalizedRelations.clone();
+	public TreeSet<IdentifiedRelation> getNormalizedRelations(){
+		return (TreeSet<IdentifiedRelation>)this.normalizedRelations.clone();
 	}
 	
 	public void setBaseRelation(IdentifiedRelation baseRelation){

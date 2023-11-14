@@ -257,7 +257,7 @@ public class ReductionByResolution {
 					FunctionalDependency resolvent = new FunctionalDependency();
 					resolvent.addAllLHSAttributes(currDependency.getLHSAttributes());
 					resolvent.removeLHSAttribute(a);
-					resolvent.addAllLHSAttributes(((FunctionalDependency)containingDependencies.get(i)).getLHSAttributes());
+					resolvent.addAllLHSAttributes(containingDependencies.get(i).getLHSAttributes());
 					resolvent.addAllRHSAttributes(currDependency.getRHSAttributes());
 
 					if (!resolvent.isTrivial()) {

@@ -11,13 +11,13 @@ import java.util.Vector;
 public class NormalformDeterminationAnalysis extends NormalformAnalysis implements Analysis {
 
 	private NormalformLevel submittedLevel;
-	private final Vector wrongLeveledDependencies;
+	private final Vector<Object[]> wrongLeveledDependencies;
 
 	public NormalformDeterminationAnalysis() {
 		super();
 		
 		this.submittedLevel = NormalformLevel.FIRST;
-		this.wrongLeveledDependencies = new Vector();
+		this.wrongLeveledDependencies = new Vector<>();
 	}
 
 	public void addWrongLeveledDependency(FunctionalDependency dependency, NormalformLevel correctLevel, NormalformLevel foundLevel){
@@ -29,12 +29,12 @@ public class NormalformDeterminationAnalysis extends NormalformAnalysis implemen
 		this.wrongLeveledDependencies.add(entry);
 	}
 	
-	public Iterator iterWrongLeveledDependencies(){
+	public Iterator<Object[]> iterWrongLeveledDependencies(){
 		return this.wrongLeveledDependencies.iterator();
 	}
 	
-	public Vector getWrongLeveledDependencies(){
-		return (Vector)this.wrongLeveledDependencies.clone();
+	public Vector<Object[]> getWrongLeveledDependencies(){
+		return (Vector<Object[]>)this.wrongLeveledDependencies.clone();
 	}
 
 	public int wrongLeveledDependenciesCount(){

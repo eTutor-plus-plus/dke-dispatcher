@@ -120,9 +120,9 @@ public class NormalformReporter {
 			description.append("	</tr>");
 			
 			Object[] entry;
-			Iterator iter = analysis.iterWrongLeveledDependencies();
+			Iterator<Object[]> iter = analysis.iterWrongLeveledDependencies();
 			while (iter.hasNext()){
-				entry = (Object[])iter.next();
+				entry = iter.next();
 				
 				description.append("	<tr>");
 				description.append("		<td align='center'>").append(entry[0].toString().replaceAll("->", "&rarr;")).append("</td>");
@@ -148,7 +148,7 @@ public class NormalformReporter {
 		boolean appendLineBreak = false;;
 
 		Iterator<String> it;
-		Iterator violations;
+		Iterator<? extends NormalformViolation> violations;
 
 		String currElemID;
 

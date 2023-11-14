@@ -37,7 +37,6 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 			throws Exception {
 		HashMap<String, Object> sessionAttributes = new HashMap<String, Object>();
 
-		String msg;
 		String command = "";
 		String relationID = null;
 		String[] attributes;
@@ -216,15 +215,15 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 		// process commands w.r.t. relation manipulations, relations object must
 		// be a Collection
 		if (RDBDConstants.CMD_NEW_REL.equals(command)) {
-			RDBDHelper.newRelation((Collection) relations);
+			RDBDHelper.newRelation((Collection<IdentifiedRelation>) relations);
 		} else if (RDBDConstants.CMD_DEL_REL.equals(command)) {
-			RDBDHelper.delRelation((Collection) relations, relationID);
+			RDBDHelper.delRelation((Collection<IdentifiedRelation>) relations, relationID);
 		} else if (RDBDConstants.CMD_ADD_ATT.equals(command)) {
 			if ((relationID == null) || (relationID.isEmpty())) {
 				RDBDHelper.addAttribute(getFirstRelation(relations),
 						attributes);
 			} else {
-				RDBDHelper.addAttribute((Collection) relations, relationID,
+				RDBDHelper.addAttribute((Collection<IdentifiedRelation>) relations, relationID,
 						attributes);
 			}
 		} else if (RDBDConstants.CMD_DEL_ATT.equals(command)) {
@@ -233,7 +232,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 						getFirstRelation(relations),
 						attributesToDelete);
 			} else {
-				RDBDHelper.delAttributes((Collection) relations, relationID,
+				RDBDHelper.delAttributes((Collection<IdentifiedRelation>) relations, relationID,
 						attributesToDelete);
 			}
 		} else if (RDBDConstants.CMD_ADD_DEP.equals(command)) {
@@ -243,7 +242,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 						getFirstRelation(relations), rhsAttributes,
 						lhsAttributes);
 			} else {
-				RDBDHelper.addDependency((Collection) relations, relationID,
+				RDBDHelper.addDependency((Collection<IdentifiedRelation>) relations, relationID,
 						rhsAttributes, lhsAttributes);
 			}
 		} else if (RDBDConstants.CMD_DEL_DEP.equals(command)) {
@@ -251,7 +250,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 				RDBDHelper.delDependencies(getFirstRelation(relations), rhsAttributes, lhsAttributes,
 						dependenciesToDelete);
 			} else {
-				RDBDHelper.delDependencies((Collection) relations, relationID,
+				RDBDHelper.delDependencies((Collection<IdentifiedRelation>) relations, relationID,
 						rhsAttributes, lhsAttributes, dependenciesToDelete);
 			}
 		} else if (RDBDConstants.CMD_ADD_KEY.equals(command)) {
@@ -259,7 +258,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 				RDBDHelper.addKey(getFirstRelation(relations),
 						attributes);
 			} else {
-				RDBDHelper.addKey((Collection) relations, relationID,
+				RDBDHelper.addKey((Collection<IdentifiedRelation>) relations, relationID,
 						attributes);
 			}
 		} else if (RDBDConstants.CMD_DEL_KEY.equals(command)) {
@@ -267,14 +266,14 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 				RDBDHelper.delKeys(getFirstRelation(relations),
 						attributes, keysToDelete);
 			} else {
-				RDBDHelper.delKeys((Collection) relations, relationID,
+				RDBDHelper.delKeys((Collection<IdentifiedRelation>) relations, relationID,
 						attributes, keysToDelete);
 			}
 		} else if (RDBDConstants.CMD_SPLIT_REL.equals(command)) {
-			RDBDHelper.splitRelation((Collection) relations, relationID,
+			RDBDHelper.splitRelation((Collection<IdentifiedRelation>) relations, relationID,
 					subRelation1Attributes, subRelation2Attributes);
 		} else if (RDBDConstants.CMD_DEL_SUB_RELATIONS.equals(command)) {
-			RDBDHelper.delSubRelations((Collection) relations, relationID);
+			RDBDHelper.delSubRelations((Collection<IdentifiedRelation>) relations, relationID);
 		}
 	}
 
@@ -440,23 +439,23 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 		IdentifiedRelation relation = null;
 
 		if (rdbdType == RDBDConstants.TYPE_NORMALIZATION) {
-			submission = new TreeSet<>(new IdentifiedRelationComparator());
+			submission = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
 
 			relation = new IdentifiedRelation();
 			relation.setID("1");
 			relation.setName("R1");
-			((Collection) submission).add(relation);
+			((Collection<IdentifiedRelation>) submission).add(relation);
 		} else if (rdbdType == RDBDConstants.TYPE_DECOMPOSE) {
-			submission = new TreeSet<>(new IdentifiedRelationComparator());
+			submission = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
 		} else if (rdbdType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
 			int lastID = 1;
-			Iterator dependenciesIterator;
+			Iterator<FunctionalDependency> dependenciesIterator;
 			submission = new NormalformDeterminationSubmission();
 
 			dependenciesIterator = ((Relation) specification).iterFunctionalDependencies();
 			while (dependenciesIterator.hasNext()) {
 				((NormalformDeterminationSubmission) submission)
-						.setDependencyID((FunctionalDependency) dependenciesIterator.next(), lastID);
+						.setDependencyID(dependenciesIterator.next(), lastID);
 				lastID = lastID + 1;
 			}
 		} else {
@@ -464,7 +463,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 			relation = new IdentifiedRelation();
 			relation.setID("1");
 			relation.setName("R1");
-			((Collection) submission).add(relation);
+			((Collection<IdentifiedRelation>) submission).add(relation);
 		}
 		sessionAttributes.put(RDBDConstants.calcSubmissionIDFor(exerciseId),
 				submission);

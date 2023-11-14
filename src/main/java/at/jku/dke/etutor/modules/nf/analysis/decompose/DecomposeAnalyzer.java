@@ -17,41 +17,36 @@ public class DecomposeAnalyzer {
 	}
 	
 	public static DecomposeAnalysis analyze(DecomposeAnalyzerConfig config){
-		TreeSet allRelations;
-		TreeSet leafRelations;
-		DecomposeAnalysis analysis;
-		Iterator relationsIterator;
 		IdentifiedRelation relation;
-		NormalizationAnalysis decomposeStepAnalysis;
-		DecomposeStepAnalyzerConfig decomposeStepAnalyzerConfig;
 		
 		RDBDHelper.getLogger().log(Level.INFO, "Analyze Decompose.");
 		
 		//INIT DECOMPOSE ANALYSIS
-		analysis = new DecomposeAnalysis();
+		DecomposeAnalysis analysis = new DecomposeAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
 		analysis.setTargetLevel(config.getDesiredNormalformLevel());
 		analysis.setMaxLostDependencies(config.getMaxLostDependencies());
 		analysis.setDecomposedRelations(config.getDecomposedRelations());
 
 		//INIT ALL RELATIONS SET
-		allRelations = new TreeSet(new IdentifiedRelationComparator());
+		TreeSet<IdentifiedRelation> allRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
 		allRelations.add(config.getBaseRelation());
 		allRelations.addAll(config.getDecomposedRelations());
 		
 		//ANALYZE DECOMPOSE STEPS
-		relationsIterator = allRelations.iterator();
+		Iterator<IdentifiedRelation> relationsIterator = allRelations.iterator();
 		while((relationsIterator.hasNext()) && (analysis.submissionSuitsSolution())){
-			relation = (IdentifiedRelation)relationsIterator.next();
+			relation = relationsIterator.next();
 			
 			if (RDBDHelper.isInnerNode(relation.getID(), allRelations)){
-				decomposeStepAnalyzerConfig = new DecomposeStepAnalyzerConfig();
+				DecomposeStepAnalyzerConfig decomposeStepAnalyzerConfig = new DecomposeStepAnalyzerConfig();
 				decomposeStepAnalyzerConfig.setBaseRelation(relation);
 				decomposeStepAnalyzerConfig.setAllRelations(allRelations);
 				decomposeStepAnalyzerConfig.setDesiredNormalformLevel(config.getDesiredNormalformLevel());
 				decomposeStepAnalyzerConfig.addNormalizedRelation(RDBDHelper.findRelation(relation.getID() + ".1", allRelations));
 				decomposeStepAnalyzerConfig.addNormalizedRelation(RDBDHelper.findRelation(relation.getID() + ".2", allRelations));
-				decomposeStepAnalysis = DecomposeStepAnalyzer.analyze(decomposeStepAnalyzerConfig);
+
+				NormalizationAnalysis decomposeStepAnalysis = DecomposeStepAnalyzer.analyze(decomposeStepAnalyzerConfig);
 				analysis.addDecomposeStepAnalysis(relation.getID(),decomposeStepAnalysis);
 				RDBDHelper.getLogger().log(Level.INFO, "Add DecomposeStepAnalysis for Relation '" + relation.getID() + "'.");
 				if (!decomposeStepAnalysis.submissionSuitsSolution()){
@@ -62,10 +57,10 @@ public class DecomposeAnalyzer {
 		}
 
 		//ANALYZE DEPENDENCIES PRESERVATION FOR LEAF-RELATIONS
-		leafRelations = new TreeSet(new IdentifiedRelationComparator());
+		TreeSet<IdentifiedRelation> leafRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
 		relationsIterator = allRelations.iterator();
 		while(relationsIterator.hasNext()){
-			relation = (IdentifiedRelation)relationsIterator.next();
+			relation = relationsIterator.next();
 			if (!RDBDHelper.isInnerNode(relation.getID(), allRelations)){
 				leafRelations.add(relation);			
 			}

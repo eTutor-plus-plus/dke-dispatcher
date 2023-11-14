@@ -132,7 +132,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		if (subKeys != null) {
 			subKeysIterator = subKeys.iterator();
 			while (subKeysIterator.hasNext()) {
-				this.addSubKey((Key)subKeysIterator.next());
+				this.addSubKey(subKeysIterator.next());
 			}
 		}
 	}
@@ -144,7 +144,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		if (superKeys != null) {
 			superKeysIterator = superKeys.iterator();
 			while (superKeysIterator.hasNext()) {
-				this.addSuperKey((Key)superKeysIterator.next());
+				this.addSuperKey(superKeysIterator.next());
 			}
 		}
 	}
@@ -156,7 +156,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		if (attributes != null) {
 			attributesIterator = attributes.iterator();
 			while (attributesIterator.hasNext()) {
-				this.addAttribute((String)attributesIterator.next());
+				this.addAttribute(attributesIterator.next());
 			}
 		}
 	}
@@ -168,7 +168,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		if (superKeys != null) {
 			minimalKeysIterator = minimalKeys.iterator();
 			while (minimalKeysIterator.hasNext()) {
-				this.addMinimalKey((Key)minimalKeysIterator.next());
+				this.addMinimalKey(minimalKeysIterator.next());
 			}
 		}
 	}
@@ -180,7 +180,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		if (dependencies != null) {
 			dependenciesIterator = dependencies.iterator();
 			while (dependenciesIterator.hasNext()) {
-				this.addFunctionalDependency((FunctionalDependency)dependenciesIterator.next());
+				this.addFunctionalDependency(dependenciesIterator.next());
 			}
 		}
 	}

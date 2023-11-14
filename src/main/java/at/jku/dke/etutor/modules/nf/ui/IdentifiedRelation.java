@@ -2,6 +2,7 @@ package at.jku.dke.etutor.modules.nf.ui;
 
 import at.jku.dke.etutor.modules.nf.RDBDSpecification;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.io.Serializable;
@@ -50,23 +51,23 @@ public class IdentifiedRelation extends Relation implements Serializable, Clonea
 		toString = toString.concat("Relation: " + this.getName() + "(" + this.getID() + ")\n");
 
 		toString = toString.concat("Attributes: \n");
-		Iterator iter = this.iterAttributes();
-		while (iter.hasNext()){
-			toString = toString.concat(iter.next().toString() + "; ");
+		Iterator<String> attributesIter = this.iterAttributes();
+		while (attributesIter.hasNext()){
+			toString = toString.concat(attributesIter.next().toString() + "; ");
 		}
 		toString = toString.concat("\n");
 
 		toString = toString.concat("Dependencies: \n");
-		iter = this.iterFunctionalDependencies();
-		while (iter.hasNext()){
-			toString = toString.concat(iter.next().toString() + "; ");
+		Iterator<FunctionalDependency> fdIter = this.iterFunctionalDependencies();
+		while (fdIter.hasNext()){
+			toString = toString.concat(fdIter.next().toString() + "; ");
 		}
 		toString = toString.concat("\n");
 
 		toString = toString.concat("Keys: \n");
-		iter = this.iterMinimalKeys();
-		while (iter.hasNext()){
-			toString = toString.concat(iter.next().toString() + "; ");
+		Iterator<Key> minKeysiter = this.iterMinimalKeys();
+		while (minKeysiter.hasNext()){
+			toString = toString.concat(minKeysiter.next().toString() + "; ");
 		}
 		toString = toString.concat("\n");
 		
@@ -83,8 +84,5 @@ public class IdentifiedRelation extends Relation implements Serializable, Clonea
 		}
 
 		return super.semanticallyEquals(obj);
-	}
-	public static void main(String[] args) {
-		new Vector().contains(null);
 	}
 }

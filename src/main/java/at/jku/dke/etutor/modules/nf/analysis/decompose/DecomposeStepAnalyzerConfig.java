@@ -9,14 +9,14 @@ import java.util.Vector;
 
 public class DecomposeStepAnalyzerConfig extends NormalizationAnalyzerConfig {
 
-	private final Vector allRelations;
+	private final Vector<IdentifiedRelation> allRelations;
 
 	public DecomposeStepAnalyzerConfig() {
 		super();
-		this.allRelations = new Vector();
+		this.allRelations = new Vector<>();
 	}
 
-	public void setAllRelations(Collection allRelations){
+	public void setAllRelations(Collection<IdentifiedRelation> allRelations){
 		this.allRelations.clear();
 		this.allRelations.addAll(allRelations);
 	}
@@ -25,11 +25,11 @@ public class DecomposeStepAnalyzerConfig extends NormalizationAnalyzerConfig {
 		this.allRelations.add(relation);
 	}
 
-	public Iterator iterAllRelations(){
+	public Iterator<IdentifiedRelation> iterAllRelations(){
 		return this.allRelations.iterator();
 	}
 	
-	public Vector getAllRelations(){
-		return (Vector)this.allRelations.clone();
+	public Vector<IdentifiedRelation> getAllRelations(){
+		return (Vector<IdentifiedRelation>)this.allRelations.clone();
 	}
 }

@@ -10,13 +10,13 @@ import java.util.TreeSet;
 
 public class NormalizationReporterConfig extends ReporterConfig {
 
-	private final TreeSet decomposedRelations;
+	private final TreeSet<IdentifiedRelation> decomposedRelations;
 	private NormalformLevel desiredNormalformLevel;
 
 	public NormalizationReporterConfig() {
 		super();
 		this.desiredNormalformLevel = NormalformLevel.FIRST;
-		this.decomposedRelations = new TreeSet(new IdentifiedRelationComparator());
+		this.decomposedRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
 	}
 	
 	public void setDesiredNormalformLevel(NormalformLevel level){
@@ -27,11 +27,11 @@ public class NormalizationReporterConfig extends ReporterConfig {
 		return this.desiredNormalformLevel;
 	}
 
-	public TreeSet getDecomposedRelations() {
-		return (TreeSet)this.decomposedRelations.clone();
+	public TreeSet<IdentifiedRelation> getDecomposedRelations() {
+		return (TreeSet<IdentifiedRelation>)this.decomposedRelations.clone();
 	}
 
-	public void setDecomposedRelations(Collection decomposedRelations) {
+	public void setDecomposedRelations(Collection<IdentifiedRelation> decomposedRelations) {
 		this.decomposedRelations.clear();
 		this.decomposedRelations.addAll(decomposedRelations);
 	}
@@ -40,7 +40,7 @@ public class NormalizationReporterConfig extends ReporterConfig {
 		this.decomposedRelations.add(relation);
 	}
 
-	public Iterator iterDecomposedRelations(){
+	public Iterator<IdentifiedRelation> iterDecomposedRelations(){
 		return this.decomposedRelations.iterator();
 	}
 }

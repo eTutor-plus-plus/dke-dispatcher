@@ -7,6 +7,7 @@ import at.jku.dke.etutor.modules.nf.analysis.decompose.DecompositionAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.DependenciesPreservationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.LossLessAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
 import org.springframework.context.MessageSource;
 
@@ -17,10 +18,6 @@ import java.util.logging.Level;
 public class NormalizationReporter {
 
 	public static Report report(NormalizationAnalysis analysis, DefaultGrading grading, NormalizationReporterConfig config, MessageSource messageSource, Locale locale){
-		ErrorReport reportAtom;
-		ErrorReportGroup reportGroup;
-		Iterator decomposedRelationsIterator;
-
 		Report report = new Report();
 		StringBuilder prologue = new StringBuilder();
 		
@@ -64,7 +61,7 @@ public class NormalizationReporter {
 	
 			//REPORT DEPENDENCIES_PRESERVATION_ANALYSIS
 			if ((analysis.getDepPresAnalysis() != null) && (!analysis.getDepPresAnalysis().submissionSuitsSolution())){
-				reportAtom = createDependenciesPreservationErrorReport(analysis.getDepPresAnalysis(), config, messageSource, locale);
+				ErrorReport reportAtom = createDependenciesPreservationErrorReport(analysis.getDepPresAnalysis(), config, messageSource, locale);
 				RDBDHelper.getLogger().log(Level.INFO, "Max Lost Dependencies: " + analysis.getMaxLostDependencies() +  " - Lost Dependencies: " + analysis.getDepPresAnalysis().lostFunctionalDependenciesCount());
 	
 				if (analysis.getMaxLostDependencies() < analysis.getDepPresAnalysis().lostFunctionalDependenciesCount()){
@@ -76,9 +73,9 @@ public class NormalizationReporter {
 			}
 	
 			//ADD RELATION SPECIFIC ERROR REPORT GROUPS
-			decomposedRelationsIterator = config.iterDecomposedRelations();
+			Iterator<IdentifiedRelation> decomposedRelationsIterator = config.iterDecomposedRelations();
 			while (decomposedRelationsIterator.hasNext()){
-				reportGroup = createRelationSpecificErrorReportsGroup(((IdentifiedRelation)decomposedRelationsIterator.next()).getID(), analysis, config, grading, messageSource, locale);
+				ErrorReportGroup reportGroup = createRelationSpecificErrorReportsGroup(decomposedRelationsIterator.next().getID(), analysis, config, grading, messageSource, locale);
 				if (!reportGroup.getErrorReports().isEmpty()){
 					report.addErrorReportGroup(reportGroup);
 				}
@@ -155,7 +152,6 @@ public class NormalizationReporter {
 	}
 
 	public static ErrorReport createDependenciesPreservationErrorReport(DependenciesPreservationAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Iterator it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
@@ -188,7 +184,7 @@ public class NormalizationReporter {
 			description.append("<p>").append(messageSource.getMessage("normalizationreporter.dependencieslost", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
-			it = analysis.iterLostFunctionalDependencies();
+			Iterator<FunctionalDependency> it = analysis.iterLostFunctionalDependencies();
 			while (it.hasNext()){
 				description.append("<tr><td>");
 				description.append(it.next().toString());
@@ -237,7 +233,6 @@ public class NormalizationReporter {
 	}
 	
 	public static ErrorReport createDecompositionErrorReport(DecompositionAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Iterator it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
@@ -270,7 +265,7 @@ public class NormalizationReporter {
 			description.append("<p>").append(messageSource.getMessage("normalizationreporter.attributenotcomprised", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
-			it = analysis.iterMissingAttributes();
+			Iterator<String> it = analysis.iterMissingAttributes();
 			while (it.hasNext()){
 				description.append("<tr><td>");
 				description.append(it.next().toString());

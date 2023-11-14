@@ -5,6 +5,7 @@ import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.DependenciesPreservationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
 
 import java.io.Serializable;
@@ -14,7 +15,7 @@ public class DecomposeAnalysis extends DefaultAnalysis implements Serializable, 
 
 	private int maxLostDependencies;
 	private NormalformLevel targetLevel;
-	private final TreeSet decomposedRelations;
+	private final TreeSet<IdentifiedRelation> decomposedRelations;
 	private final HashMap<String, NormalizationAnalysis> decomposeStepAnalyses;
 	private DependenciesPreservationAnalysis overallDepPresAnalysis;
 
@@ -25,16 +26,16 @@ public class DecomposeAnalysis extends DefaultAnalysis implements Serializable, 
 		this.overallDepPresAnalysis = null;
 		this.targetLevel = NormalformLevel.FIRST;
 		this.decomposeStepAnalyses = new HashMap<>();
-		this.decomposedRelations = new TreeSet<>(new IdentifiedRelationComparator());
+		this.decomposedRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
 	}
 	
-	public void setDecomposedRelations(Collection decomposedRelations){
+	public void setDecomposedRelations(Collection<IdentifiedRelation> decomposedRelations){
 		this.decomposedRelations.clear();
 		this.decomposedRelations.addAll(decomposedRelations);
 	}
 	
-	public TreeSet getDecomposedRelations(){
-		return (TreeSet)this.decomposedRelations.clone();
+	public TreeSet<IdentifiedRelation> getDecomposedRelations(){
+		return (TreeSet<IdentifiedRelation>)this.decomposedRelations.clone();
 	}
 	
 	public NormalformLevel getTargetLevel() {

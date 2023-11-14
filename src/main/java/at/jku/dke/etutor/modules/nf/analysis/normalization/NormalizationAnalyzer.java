@@ -27,7 +27,6 @@ public class NormalizationAnalyzer {
 	public static NormalizationAnalysis analyze(NormalizationAnalyzerConfig config){
 		NormalizationAnalysis analysis;
 		IdentifiedRelation currRelation;
-		Iterator normalizedRelationsIterator;
 		KeysAnalyzerConfig keysAnalyzerConfig;
 		IdentifiedRelation currNormalizedRelation;
 		NormalformAnalyzerConfig normalformAnalyzerConfig;
@@ -54,16 +53,16 @@ public class NormalizationAnalyzer {
 		}
 
 		//INITIALIZE CORRECT KEYS
-		normalizedRelationsIterator = config.getNormalizedRelations().iterator();
+		Iterator<IdentifiedRelation> normalizedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (normalizedRelationsIterator.hasNext()){
-			currNormalizedRelation = (IdentifiedRelation)normalizedRelationsIterator.next();
+			currNormalizedRelation = normalizedRelationsIterator.next();
 			correctKeysOfNormalizedRelations.put(currNormalizedRelation.getID(), KeysDeterminator.determineAllKeys(currNormalizedRelation));
 		}
 
 		//ANALYZE CANONICAL REPRESENTATION
 		normalizedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (normalizedRelationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)normalizedRelationsIterator.next();
+			currRelation = normalizedRelationsIterator.next();
 
 			analysis.addCanonicalRepresentationAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeCanonicalRepresentation(currRelation.getFunctionalDependencies()));
 			if (!analysis.getCanonicalRepresentationAnalysis(currRelation.getID()).submissionSuitsSolution()){
@@ -75,7 +74,7 @@ public class NormalizationAnalyzer {
 		//ANALYZE TRIVIAL FUNCTIONAL DEPENDENCIES
 		normalizedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (normalizedRelationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)normalizedRelationsIterator.next();
+			currRelation = normalizedRelationsIterator.next();
 
 			analysis.addTrivialDependenciesAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeTrivialDependencies(currRelation.getFunctionalDependencies()));
 			if (!analysis.getTrivialDependenciesAnalysis(currRelation.getID()).submissionSuitsSolution()){
@@ -87,7 +86,7 @@ public class NormalizationAnalyzer {
 		//ANALYZE EXTRANEOUS ATTRIBUTES
 		normalizedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (normalizedRelationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)normalizedRelationsIterator.next();
+			currRelation = normalizedRelationsIterator.next();
 
 			analysis.addExtraneousAttributesAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeExtraneousAttributes(currRelation.getFunctionalDependencies()));
 			if (!analysis.getExtraneousAttributesAnalysis(currRelation.getID()).submissionSuitsSolution()){
@@ -99,7 +98,7 @@ public class NormalizationAnalyzer {
 		//ANALYZE REDUNDAND FUNCTIONAL DEPENDENCIES
 		normalizedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (normalizedRelationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)normalizedRelationsIterator.next();
+			currRelation = normalizedRelationsIterator.next();
 
 			analysis.addRedundandDependenciesAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeRedundandDependencies(currRelation.getFunctionalDependencies()));
 			if (!analysis.getRedundandDependenciesAnalysis(currRelation.getID()).submissionSuitsSolution()){
@@ -117,7 +116,7 @@ public class NormalizationAnalyzer {
 		//ANALYZE RBR DECOMPOSITION
 		normalizedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (normalizedRelationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)normalizedRelationsIterator.next();
+			currRelation = normalizedRelationsIterator.next();
 
 			analysis.addRBRAnalysis(currRelation.getID(), RBRAnalyzer.analyze(config.getBaseRelation(), currRelation));
 			if (!analysis.getRBRAnalysis(currRelation.getID()).submissionSuitsSolution()){
@@ -129,8 +128,8 @@ public class NormalizationAnalyzer {
 		keysAnalyzerConfig = new KeysAnalyzerConfig();
 		normalizedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (normalizedRelationsIterator.hasNext()){
-			currNormalizedRelation = (IdentifiedRelation)normalizedRelationsIterator.next();
-			keysAnalyzerConfig.setCorrectMinimalKeys(((KeysContainer)correctKeysOfNormalizedRelations.get(currNormalizedRelation.getID())).getMinimalKeys());
+			currNormalizedRelation = normalizedRelationsIterator.next();
+			keysAnalyzerConfig.setCorrectMinimalKeys(correctKeysOfNormalizedRelations.get(currNormalizedRelation.getID()).getMinimalKeys());
 
 			analysis.addKeysAnalysis(currNormalizedRelation.getID(), KeysAnalyzer.analyze(currNormalizedRelation, keysAnalyzerConfig));
 			if (!analysis.getKeysAnalysis(currNormalizedRelation.getID()).submissionSuitsSolution()){
@@ -142,11 +141,11 @@ public class NormalizationAnalyzer {
 		normalformAnalyzerConfig = new NormalformAnalyzerConfig();
 		normalizedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (normalizedRelationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)normalizedRelationsIterator.next();
+			currRelation = normalizedRelationsIterator.next();
 			normalformAnalyzerConfig.setRelation(currRelation);
 			normalformAnalyzerConfig.setDesiredNormalformLevel(config.getDesiredNormalformLevel());
-			normalformAnalyzerConfig.setCorrectMinimalKeys(((KeysContainer)correctKeysOfNormalizedRelations.get(currRelation.getID())).getMinimalKeys());
-			normalformAnalyzerConfig.setCorrectPartialKeys(((KeysContainer)correctKeysOfNormalizedRelations.get(currRelation.getID())).getPartialKeys());
+			normalformAnalyzerConfig.setCorrectMinimalKeys(correctKeysOfNormalizedRelations.get(currRelation.getID()).getMinimalKeys());
+			normalformAnalyzerConfig.setCorrectPartialKeys(correctKeysOfNormalizedRelations.get(currRelation.getID()).getPartialKeys());
 
 			analysis.addNormalformAnalysis(currRelation.getID(), NormalformAnalyzer.analyze(normalformAnalyzerConfig));
 			if (!analysis.getNormalformAnalysis(currRelation.getID()).submissionSuitsSolution()){
@@ -157,16 +156,15 @@ public class NormalizationAnalyzer {
 		return analysis;
 	}
 	
-	public static DecompositionAnalysis analyzeDecomposition(Relation baseRelation, Collection decomposedRelations){
+	public static DecompositionAnalysis analyzeDecomposition(Relation baseRelation, Collection<? extends Relation> decomposedRelations){
 		DecompositionAnalysis analysis;
-		Iterator decomposedRelationsIterator;
 
 		analysis = new DecompositionAnalysis();
 	
 		analysis.setMissingAttributes(baseRelation.getAttributes());
-		decomposedRelationsIterator = decomposedRelations.iterator();
+		Iterator<? extends Relation> decomposedRelationsIterator = decomposedRelations.iterator();
 		while (decomposedRelationsIterator.hasNext()){
-			analysis.removeAllMissingAttributes(((Relation)decomposedRelationsIterator.next()).getAttributes());
+			analysis.removeAllMissingAttributes(decomposedRelationsIterator.next().getAttributes());
 		}
 
 		analysis.setSubmissionSuitsSolution((analysis.getMissingAttributes().isEmpty()));
@@ -174,24 +172,21 @@ public class NormalizationAnalyzer {
 		return analysis;
 	}
 	
-	public static LossLessAnalysis analyzeLossLess(Relation baseRelation, Collection decomposedRelations){
-		TreeSet closure;
+	public static LossLessAnalysis analyzeLossLess(Relation baseRelation, Collection<? extends Relation> decomposedRelations){
 		LossLessAnalysis analysis;
-		Iterator decomposedRelationsIterator;
-		HashSet decomposedRelationsDependencies;
 		
 		analysis = new LossLessAnalysis();
 		analysis.setSubmissionSuitsSolution(false);
-		decomposedRelationsDependencies = new HashSet();
+		HashSet<FunctionalDependency> decomposedRelationsDependencies = new HashSet<>();
 
-		decomposedRelationsIterator = decomposedRelations.iterator();
+		Iterator<? extends Relation> decomposedRelationsIterator = decomposedRelations.iterator();
 		while (decomposedRelationsIterator.hasNext()){
-			decomposedRelationsDependencies.addAll(((Relation)decomposedRelationsIterator.next()).getFunctionalDependencies());
+			decomposedRelationsDependencies.addAll(decomposedRelationsIterator.next().getFunctionalDependencies());
 		}
 
 		decomposedRelationsIterator = decomposedRelations.iterator();
 		while (decomposedRelationsIterator.hasNext()){
-			closure = Closure.execute(((Relation)decomposedRelationsIterator.next()).getAttributes(), decomposedRelationsDependencies);
+			TreeSet<String> closure = Closure.execute(decomposedRelationsIterator.next().getAttributes(), decomposedRelationsDependencies);
 			if (closure.containsAll(baseRelation.getAttributes())){
 				analysis.setSubmissionSuitsSolution(true);
 			}
@@ -200,24 +195,18 @@ public class NormalizationAnalyzer {
 		return analysis;
 	}
 
-	public static DependenciesPreservationAnalysis analyzeDependenciesPreservation(Relation baseRelation, Collection decomposedRelations){
-		Iterator decomposedRelationsIterator;
-		FunctionalDependency currBaseDependency;
-		HashSet decomposedRelationsDependencies;
-		Iterator baseRelationDependenciesIterator;
-		DependenciesPreservationAnalysis analysis;
-		
-		decomposedRelationsDependencies = new HashSet();
-		analysis = new DependenciesPreservationAnalysis();
+	public static DependenciesPreservationAnalysis analyzeDependenciesPreservation(Relation baseRelation, Collection<? extends Relation> decomposedRelations){
+		HashSet<FunctionalDependency> decomposedRelationsDependencies = new HashSet<>();
+		DependenciesPreservationAnalysis analysis = new DependenciesPreservationAnalysis();
 
-		decomposedRelationsIterator = decomposedRelations.iterator();
+		Iterator<? extends Relation> decomposedRelationsIterator = decomposedRelations.iterator();
 		while (decomposedRelationsIterator.hasNext()){
-			decomposedRelationsDependencies.addAll(((Relation)decomposedRelationsIterator.next()).getFunctionalDependencies());
+			decomposedRelationsDependencies.addAll(decomposedRelationsIterator.next().getFunctionalDependencies());
 		}
 		
-		baseRelationDependenciesIterator = baseRelation.iterFunctionalDependencies();
+		Iterator<FunctionalDependency> baseRelationDependenciesIterator = baseRelation.iterFunctionalDependencies();
 		while(baseRelationDependenciesIterator.hasNext()){
-			currBaseDependency = (FunctionalDependency)baseRelationDependenciesIterator.next();
+			FunctionalDependency currBaseDependency = baseRelationDependenciesIterator.next();
 			if (!Member.execute(currBaseDependency, decomposedRelationsDependencies)){
 				analysis.addLostFunctionalDependency(currBaseDependency);						
 			}
@@ -227,19 +216,15 @@ public class NormalizationAnalyzer {
 		return analysis;
 	}
 
-	public static void analyzeNormalform(Collection decomposedRelations, NormalizationAnalysis analysis, HashMap correctKeys){
-		NormalformAnalyzerConfig config;
-		IdentifiedRelation currRelation;
-		Iterator decomposedRelationsIterator;
-
-		config = new NormalformAnalyzerConfig();
-		decomposedRelationsIterator = decomposedRelations.iterator();
+	public static void analyzeNormalform(Collection<? extends Relation> decomposedRelations, NormalizationAnalysis analysis, HashMap<String, KeysContainer> correctKeys){
+		NormalformAnalyzerConfig config = new NormalformAnalyzerConfig();
+		Iterator<? extends Relation> decomposedRelationsIterator = decomposedRelations.iterator();
 		while (decomposedRelationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)decomposedRelationsIterator.next();
+			IdentifiedRelation currRelation = (IdentifiedRelation)decomposedRelationsIterator.next();
 
 			config.setRelation(currRelation);
-			config.setCorrectMinimalKeys(((KeysContainer)correctKeys.get(currRelation.getID())).getMinimalKeys());
-			config.setCorrectPartialKeys(((KeysContainer)correctKeys.get(currRelation.getID())).getPartialKeys());
+			config.setCorrectMinimalKeys(correctKeys.get(currRelation.getID()).getMinimalKeys());
+			config.setCorrectPartialKeys(correctKeys.get(currRelation.getID()).getPartialKeys());
 			analysis.addNormalformAnalysis(currRelation.getID(), NormalformAnalyzer.analyze(config));
 		}
 	}

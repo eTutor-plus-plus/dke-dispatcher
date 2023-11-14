@@ -449,12 +449,11 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String getNormalform(FunctionalDependency dependency, NormalformAnalysis analysis, Locale locale) {
-		Vector v;
 		NormalformViolation violation;
 		
-		v = analysis.getFirstNormalformViolations();
+		Vector<? extends NormalformViolation> v = analysis.getFirstNormalformViolations();
 		for (int i = 0; i < v.size(); i++) {
-			violation = (NormalformViolation)v.get(i);
+			violation = v.get(i);
 			if (violation.getFunctionalDependency().equals(dependency)) {
 				return "";
 			}
@@ -462,7 +461,7 @@ public class HTMLPrinter implements MessageSourceAware {
 		
 		v = analysis.getSecondNormalformViolations();
 		for (int i = 0; i < v.size(); i++) {
-			violation = (NormalformViolation)v.get(i);
+			violation = v.get(i);
 			if (violation.getFunctionalDependency().equals(dependency)) {
 				return messageSource.getMessage("getnormalform.first", null, locale);
 			}
@@ -470,7 +469,7 @@ public class HTMLPrinter implements MessageSourceAware {
 		
 		v = analysis.getThirdNormalformViolations();
 		for (int i = 0; i < v.size(); i++) {
-			violation = (NormalformViolation)v.get(i);
+			violation = v.get(i);
 			if (violation.getFunctionalDependency().equals(dependency)) {
 				return messageSource.getMessage("getnormalform.second", null, locale);
 			}
@@ -478,7 +477,7 @@ public class HTMLPrinter implements MessageSourceAware {
 		
 		v = analysis.getBoyceCoddNormalformViolations();
 		for (int i = 0; i < v.size(); i++) {
-			violation = (NormalformViolation)v.get(i);
+			violation = v.get(i);
 			if (violation.getFunctionalDependency().equals(dependency)) {
 				return messageSource.getMessage("getnormalform.third", null, locale);
 			}
@@ -608,30 +607,29 @@ public class HTMLPrinter implements MessageSourceAware {
 		String dependencies;
 		String baseAttributes;
 		String offset;
-		Iterator it;
 		boolean first;
 		StringBuilder out = new StringBuilder();
 		
 		offset = getOffset(indent);
 		relationAttributes = "";
 		first = true;
-		it = spec.getBaseRelation().iterAttributes();
-		while (it.hasNext()){
-			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + it.next());
+		Iterator<String> attributesIt = spec.getBaseRelation().iterAttributes();
+		while (attributesIt.hasNext()){
+			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + attributesIt.next());
 			first = false;
 		}
 		dependencies = "";
 		first = true;
-		it = spec.getBaseRelation().getFunctionalDependencies().iterator();
-		while (it.hasNext()){
-			dependencies = dependencies.concat((first ? "" : ", ") + it.next().toString().replaceAll("->", "&rarr;"));
+		Iterator<FunctionalDependency> fdIt = spec.getBaseRelation().getFunctionalDependencies().iterator();
+		while (fdIt.hasNext()){
+			dependencies = dependencies.concat((first ? "" : ", ") + fdIt.next().toString().replaceAll("->", "&rarr;"));
 			first = false;
 		}
 		baseAttributes = "";
 		first = true;
-		it = spec.getBaseAttributes().iterator();
-		while (it.hasNext()){
-			baseAttributes = baseAttributes.concat((first ? "" : "&nbsp;") + it.next());
+		Iterator<String> baseAttributeIt = spec.getBaseAttributes().iterator();
+		while (baseAttributeIt.hasNext()){
+			baseAttributes = baseAttributes.concat((first ? "" : "&nbsp;") + baseAttributeIt.next());
 			first = false;
 		}
 
@@ -664,34 +662,28 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String printAssignmentForAttributeClosure(AttributeClosureSpecification spec, int indent, Locale locale) throws IOException {
-		String relationAttributes;
-		String dependencies;
-		String baseAttributes;
-		String offset;
-		Iterator it;
-		boolean first;
 		StringBuilder out = new StringBuilder();
 		
-		offset = getOffset(indent);
-		relationAttributes = "";
-		first = true;
-		it = spec.getBaseRelation().iterAttributes();
+		String offset = getOffset(indent);
+		String relationAttributes = "";
+		boolean first = true;
+		Iterator<String> it = spec.getBaseRelation().iterAttributes();
 		while (it.hasNext()){
 			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + it.next());
 			first = false;
 		}
-		dependencies = "";
+		String dependencies = "";
 		first = true;
-		it = spec.getBaseRelation().getFunctionalDependencies().iterator();
-		while (it.hasNext()){
-			dependencies = dependencies.concat((first ? "" : ", ") + it.next().toString().replaceAll("->", "&rarr;"));
+		Iterator<FunctionalDependency> fdIt = spec.getBaseRelation().getFunctionalDependencies().iterator();
+		while (fdIt.hasNext()){
+			dependencies = dependencies.concat((first ? "" : ", ") + fdIt.next().toString().replaceAll("->", "&rarr;"));
 			first = false;
 		}
-		baseAttributes = "";
+		String baseAttributes = "";
 		first = true;
-		it = spec.getBaseAttributes().iterator();
-		while (it.hasNext()){
-			baseAttributes = baseAttributes.concat((first ? "" : "&nbsp;") + it.next());
+		Iterator<String> baseAttributeIt = spec.getBaseAttributes().iterator();
+		while (baseAttributeIt.hasNext()){
+			baseAttributes = baseAttributes.concat((first ? "" : "&nbsp;") + baseAttributeIt.next());
 			first = false;
 		}
 
@@ -724,26 +716,21 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String printAssignmentForNormalization(NormalizationSpecification spec, int indent, Locale locale) throws IOException {
-		String relationAttributes;
-		String dependencies;
-		String offset;
-		Iterator it;
-		boolean first;
 		StringBuilder out = new StringBuilder();
 		
-		offset = getOffset(indent);
-		relationAttributes = "";
-		first = true;
-		it = spec.getBaseRelation().iterAttributes();
+		String offset = getOffset(indent);
+		String relationAttributes = "";
+		boolean first = true;
+		Iterator<String> it = spec.getBaseRelation().iterAttributes();
 		while (it.hasNext()){
 			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + it.next());
 			first = false;
 		}
-		dependencies = "";
+		String dependencies = "";
 		first = true;
-		it = spec.getBaseRelation().getFunctionalDependencies().iterator();
-		while (it.hasNext()){
-			dependencies = dependencies.concat((first ? "" : ", ") + it.next().toString().replaceAll("->", "&rarr;"));
+		Iterator<FunctionalDependency> fdIt = spec.getBaseRelation().getFunctionalDependencies().iterator();
+		while (fdIt.hasNext()){
+			dependencies = dependencies.concat((first ? "" : ", ") + fdIt.next().toString().replaceAll("->", "&rarr;"));
 			first = false;
 		}
 
@@ -822,23 +809,22 @@ public class HTMLPrinter implements MessageSourceAware {
 		String relationAttributes;
 		String dependencies;
 		String offset;
-		Iterator it;
 		boolean first;
 		StringBuilder out = new StringBuilder();
 		
 		offset = getOffset(indent);
 		relationAttributes = "";
 		first = true;
-		it = spec.getBaseRelation().iterAttributes();
+		Iterator<String> it = spec.getBaseRelation().iterAttributes();
 		while (it.hasNext()){
 			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + it.next());
 			first = false;
 		}
 		dependencies = "";
 		first = true;
-		it = spec.getBaseRelation().getFunctionalDependencies().iterator();
-		while (it.hasNext()){
-			dependencies = dependencies.concat((first ? "" : ", ") + it.next().toString().replaceAll("->", "&rarr;"));
+		Iterator<FunctionalDependency> fdIt = spec.getBaseRelation().getFunctionalDependencies().iterator();
+		while (fdIt.hasNext()){
+			dependencies = dependencies.concat((first ? "" : ", ") + fdIt.next().toString().replaceAll("->", "&rarr;"));
 			first = false;
 		}
 
@@ -915,23 +901,22 @@ public class HTMLPrinter implements MessageSourceAware {
 		String relationAttributes;
 		String dependencies;
 		String offset;
-		Iterator it;
 		boolean first;
 		StringBuilder out = new StringBuilder();
 		
 		offset = getOffset(indent);
 		relationAttributes = "";
 		first = true;
-		it = spec.iterAttributes();
+		Iterator<String> it = spec.iterAttributes();
 		while (it.hasNext()){
 			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + it.next());
 			first = false;
 		}
 		dependencies = "";
 		first = true;
-		it = spec.getFunctionalDependencies().iterator();
-		while (it.hasNext()){
-			dependencies = dependencies.concat((first ? "" : ", ") + it.next().toString().replaceAll("->", "&rarr;"));
+		Iterator<FunctionalDependency> fdIt = spec.getFunctionalDependencies().iterator();
+		while (fdIt.hasNext()){
+			dependencies = dependencies.concat((first ? "" : ", ") + fdIt.next().toString().replaceAll("->", "&rarr;"));
 			first = false;
 		}
 
@@ -960,14 +945,13 @@ public class HTMLPrinter implements MessageSourceAware {
 	public static String printAssignmentForMinimalCover(IdentifiedRelation spec, int indent, Locale locale) throws IOException {
 		String dependencies;
 		String offset;
-		Iterator it;
 		boolean first;
 		StringBuilder out = new StringBuilder();
 		
 		offset = getOffset(indent);
 		dependencies = "";
 		first = true;
-		it = spec.getFunctionalDependencies().iterator();
+		Iterator<FunctionalDependency> it = spec.getFunctionalDependencies().iterator();
 		while (it.hasNext()){
 			dependencies = dependencies.concat((first ? "" : ", ") + it.next().toString().replaceAll("->", "&rarr;"));
 			first = false;
@@ -997,23 +981,22 @@ public class HTMLPrinter implements MessageSourceAware {
 		String relationAttributes;
 		String dependencies;
 		String offset;
-		Iterator it;
 		boolean first;
 		StringBuilder out = new StringBuilder();
 		
 		offset = getOffset(indent);
 		relationAttributes = "";
 		first = true;
-		it = spec.iterAttributes();
+		Iterator<String> it = spec.iterAttributes();
 		while (it.hasNext()){
 			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + it.next());
 			first = false;
 		}
 		dependencies = "";
 		first = true;
-		it = spec.getFunctionalDependencies().iterator();
-		while (it.hasNext()){
-			dependencies = dependencies.concat((first ? "" : ", ") + it.next().toString().replaceAll("->", "&rarr;"));
+		Iterator<FunctionalDependency> fdIt = spec.getFunctionalDependencies().iterator();
+		while (fdIt.hasNext()){
+			dependencies = dependencies.concat((first ? "" : ", ") + fdIt.next().toString().replaceAll("->", "&rarr;"));
 			first = false;
 		}
 
@@ -1156,7 +1139,7 @@ public class HTMLPrinter implements MessageSourceAware {
 		}
 	}
 	
-	public static void createHTMLSiteForDecompose(Collection relations, Locale locale){
+	public static void createHTMLSiteForDecompose(Collection<IdentifiedRelation> relations, Locale locale){
 
 		PrintWriter writer = null;
 		FileOutputStream out = null;
@@ -1181,9 +1164,9 @@ public class HTMLPrinter implements MessageSourceAware {
 			writer.println("<body>");
 			
 			writer.println("	<form id='commandForm' method='POST' action='/etutor/modules/rdbd/RDBDEditor'>");
-			Iterator i = relations.iterator();
+			Iterator<IdentifiedRelation> i = relations.iterator();
 			while (i.hasNext()){
-				writer.println(printParameters((IdentifiedRelation)i.next(), 2));
+				writer.println(printParameters(i.next(), 2));
 			}
 
 			writer.println("	</form>");
@@ -1192,7 +1175,7 @@ public class HTMLPrinter implements MessageSourceAware {
 			IdentifiedRelation currRelation;
 			boolean isInnerNode;			
 			while (i.hasNext()){
-				currRelation = (IdentifiedRelation)i.next();
+				currRelation = i.next();
 				isInnerNode = RDBDHelper.isInnerNode(currRelation.getID(), relations);
 				writer.println(printDecomposeStep(currRelation, !isInnerNode, isInnerNode, true, locale));
 			}
@@ -1217,13 +1200,8 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static void testDecompose(){
-		Key key;
-		TreeSet relations = new TreeSet(new IdentifiedRelationComparator());
-		IdentifiedRelation relation;
-		FunctionalDependency dependency;
-		
 		//CREATE RELATION 1
-		relation = new IdentifiedRelation();
+		IdentifiedRelation relation = new IdentifiedRelation();
 		try{
 			relation.setID("1");
 		} catch (Exception e){
@@ -1235,17 +1213,18 @@ public class HTMLPrinter implements MessageSourceAware {
 		relation.addAttribute("C");
 		relation.addAttribute("D");
 		 
-		dependency = new FunctionalDependency();
+		FunctionalDependency dependency = new FunctionalDependency();
 		dependency.addLHSAttribute("A"); 
 		dependency.addRHSAttribute("B"); 
 		dependency.addRHSAttribute("C"); 
-		relation.addFunctionalDependency(dependency); 
+		relation.addFunctionalDependency(dependency);
 		 
-		key = new Key();
+		Key key = new Key();
 		key.addAttribute("A");
 		key.addAttribute("D");
 		relation.addMinimalKey(key);
-		
+
+		TreeSet<IdentifiedRelation> relations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
 		relations.add(relation);
 
 		//CREATE RELATION 2

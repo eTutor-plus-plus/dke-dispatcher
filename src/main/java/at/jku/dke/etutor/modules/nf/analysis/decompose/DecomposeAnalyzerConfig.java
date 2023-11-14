@@ -11,7 +11,7 @@ import java.util.TreeSet;
 public class DecomposeAnalyzerConfig implements Serializable {
 
 	private int maxLostDependencies;
-	private final TreeSet decomposedRelations;
+	private final TreeSet<IdentifiedRelation> decomposedRelations;
 	private IdentifiedRelation baseRelation;
 	private NormalformLevel desiredNormalformLevel;
 
@@ -21,7 +21,7 @@ public class DecomposeAnalyzerConfig implements Serializable {
 		this.baseRelation = null;
 		this.maxLostDependencies = 0;
 		this.desiredNormalformLevel = NormalformLevel.FIRST;
-		this.decomposedRelations = new TreeSet(new IdentifiedRelationComparator());
+		this.decomposedRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
 	}
 
 	public void setBaseRelation(IdentifiedRelation baseRelation){
@@ -48,7 +48,7 @@ public class DecomposeAnalyzerConfig implements Serializable {
 		return this.maxLostDependencies;
 	}
 
-	public void setDecomposedRelations(TreeSet decomposedRelations){
+	public void setDecomposedRelations(TreeSet<IdentifiedRelation> decomposedRelations){
 		this.decomposedRelations.clear();
 		this.decomposedRelations.addAll(decomposedRelations);
 	}
@@ -57,11 +57,11 @@ public class DecomposeAnalyzerConfig implements Serializable {
 		this.decomposedRelations.add(decomposedRelation);
 	}
 
-	public Iterator iterDecomposedRelations(){
+	public Iterator<IdentifiedRelation> iterDecomposedRelations(){
 		return this.decomposedRelations.iterator();
 	}
 	
-	public TreeSet getDecomposedRelations(){
-		return (TreeSet)this.decomposedRelations.clone();
+	public TreeSet<IdentifiedRelation> getDecomposedRelations(){
+		return (TreeSet<IdentifiedRelation>)this.decomposedRelations.clone();
 	}
 }

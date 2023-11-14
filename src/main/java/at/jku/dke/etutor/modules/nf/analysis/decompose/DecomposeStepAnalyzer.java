@@ -20,9 +20,8 @@ public class DecomposeStepAnalyzer {
 
 	public static NormalizationAnalysis analyze(DecomposeStepAnalyzerConfig config){
 		IdentifiedRelation currRelation;
-		Iterator decomposedRelationsIterator;
 		KeysAnalyzerConfig keysAnalyzerConfig;
-		HashMap correctKeysOfDecomposedRelations = new HashMap();
+		HashMap<String, KeysContainer> correctKeysOfDecomposedRelations = new HashMap<>();
 		IdentifiedRelation currDecomposedRelation;
 		NormalformAnalyzerConfig normalformAnalyzerConfig;
 
@@ -32,9 +31,9 @@ public class DecomposeStepAnalyzer {
 		
 		StringBuilder temp = new StringBuilder();
 		RDBDHelper.getLogger().log(Level.INFO, "ANALYZING Decomposition of Relation '" + config.getBaseRelation().getID() + "'.");
-		decomposedRelationsIterator = config.iterNormalizedRelations();
+		Iterator<IdentifiedRelation> decomposedRelationsIterator = config.iterNormalizedRelations();
 		while(decomposedRelationsIterator.hasNext()){
-			temp.append("Relation '").append(((IdentifiedRelation) decomposedRelationsIterator.next()).getID()).append("' ");
+			temp.append("Relation '").append(decomposedRelationsIterator.next().getID()).append("' ");
 		}
 		RDBDHelper.getLogger().log(Level.INFO, "With Sub-Relations: " + temp.toString() + ".");
 		
@@ -56,14 +55,14 @@ public class DecomposeStepAnalyzer {
 		//INITIALIZE CORRECT KEYS
 		decomposedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (decomposedRelationsIterator.hasNext()){
-			currDecomposedRelation = (IdentifiedRelation)decomposedRelationsIterator.next();
+			currDecomposedRelation = decomposedRelationsIterator.next();
 			correctKeysOfDecomposedRelations.put(currDecomposedRelation.getID(), KeysDeterminator.determineAllKeys(currDecomposedRelation));
 		}
 		
 		//ANALYZE CANONICAL REPRESENTATION
 		decomposedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (decomposedRelationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)decomposedRelationsIterator.next();
+			currRelation = decomposedRelationsIterator.next();
 
 			analysis.addCanonicalRepresentationAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeCanonicalRepresentation(currRelation.getFunctionalDependencies()));
 			if (!analysis.getCanonicalRepresentationAnalysis(currRelation.getID()).submissionSuitsSolution()){
@@ -75,7 +74,7 @@ public class DecomposeStepAnalyzer {
 		//ANALYZE TRIVIAL FUNCTIONAL DEPENDENCIES
 		decomposedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (decomposedRelationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)decomposedRelationsIterator.next();
+			currRelation = decomposedRelationsIterator.next();
 
 			analysis.addTrivialDependenciesAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeTrivialDependencies(currRelation.getFunctionalDependencies()));
 			if (!analysis.getTrivialDependenciesAnalysis(currRelation.getID()).submissionSuitsSolution()){
@@ -87,7 +86,7 @@ public class DecomposeStepAnalyzer {
 		//ANALYZE EXTRANEOUS ATTRIBUTES
 		decomposedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (decomposedRelationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)decomposedRelationsIterator.next();
+			currRelation = decomposedRelationsIterator.next();
 
 			analysis.addExtraneousAttributesAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeExtraneousAttributes(currRelation.getFunctionalDependencies()));
 			if (!analysis.getExtraneousAttributesAnalysis(currRelation.getID()).submissionSuitsSolution()){
