@@ -475,7 +475,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 		Statement stmt = null;
 		ResultSet rset = null;
 		ObjectInputStream in = null;
-		RDBDSpecification refSpecification = null;
+		RDBDSpecification refSpecification;
 		
 		int duplicateExerciseID = -1;
 		

@@ -5,7 +5,6 @@ import at.jku.dke.etutor.modules.nf.analysis.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.model.Key;
 
 import java.util.Iterator;
-import java.util.TreeSet;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -154,7 +153,7 @@ public class TuplesGenerator{
 		return invalidKeys; 
 	}
 
-	private static TupleSet calcUndesiredKeys(TupleSet tuples, TreeSet<Key> desiredKeys){
+	private static TupleSet calcUndesiredKeys(TupleSet tuples, TupleSet desiredKeys){
 		TupleSet undesiredKeys = KeysDeterminator.determineMinimalKeys(tuples);
 		undesiredKeys.removeAll(desiredKeys);
 

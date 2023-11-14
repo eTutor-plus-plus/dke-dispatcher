@@ -288,11 +288,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		if (!this.attributes.containsAll(rel.getAttributes())){
 			return false;
 		}
-		
-		if (!this.dependencies.containsAll(rel.getFunctionalDependencies())){
-			return false;
-		}
-		
-		return true;
-	}
+
+        return this.dependencies.containsAll(rel.getFunctionalDependencies());
+    }
 }

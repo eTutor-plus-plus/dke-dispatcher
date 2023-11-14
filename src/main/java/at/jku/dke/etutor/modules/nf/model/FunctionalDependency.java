@@ -76,12 +76,8 @@ public class FunctionalDependency implements Serializable{
 			return false;
 		}
 
-		if (!(this.rhs.containsAll(dependency.getRHSAttributes()))) {
-			return false;
-		}
-
-		return true;
-	}
+        return this.rhs.containsAll(dependency.getRHSAttributes());
+    }
 
 	public int hashCode() {
 		return -1;

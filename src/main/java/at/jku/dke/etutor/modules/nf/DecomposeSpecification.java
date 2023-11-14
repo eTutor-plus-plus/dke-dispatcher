@@ -77,13 +77,9 @@ public class DecomposeSpecification implements Serializable, Cloneable, RDBDSpec
 		if (!(spec.getMaxLostDependencies() == this.maxLostDependencies)){
 			return false;
 		}
-		
-		if (!(spec.getBaseRelation().semanticallyEquals(this.getBaseRelation()))){
-			return false;
-		}
 
-		return true;
-	}
+        return spec.getBaseRelation().semanticallyEquals(this.getBaseRelation());
+    }
 
 	@Override
 	public String toString(){

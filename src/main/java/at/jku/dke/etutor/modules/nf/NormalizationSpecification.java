@@ -72,13 +72,9 @@ public class NormalizationSpecification implements Serializable, Cloneable, RDBD
 		if (!(spec.getMaxLostDependencies() == this.maxLostDependencies)){
 			return false;
 		}
-		
-		if (!(spec.getBaseRelation().semanticallyEquals(this.getBaseRelation()))){
-			return false;
-		}
 
-		return true;
-	}
+        return spec.getBaseRelation().semanticallyEquals(this.getBaseRelation());
+    }
 
 	@Override
 	public String toString(){

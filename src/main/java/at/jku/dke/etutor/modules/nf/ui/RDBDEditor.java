@@ -407,12 +407,8 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 				}
 			}
 			boolean authoringEnd;
-			if (("yes".equals(passedParameters.get("preview")) || ("yes"
-					.equals(passedParameters.get("reset"))))) {
-				authoringEnd = false;
-			} else {
-				authoringEnd = true;
-			}
+            authoringEnd = !"yes".equals(passedParameters.get("preview")) && (!"yes"
+                    .equals(passedParameters.get("reset")));
 			sessionAttributes.put("authoringEnd", authoringEnd);
 		} else {
 			// first call -> set exercise bean

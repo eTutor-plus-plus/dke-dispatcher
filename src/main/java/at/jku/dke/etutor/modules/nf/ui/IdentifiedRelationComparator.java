@@ -2,7 +2,6 @@ package at.jku.dke.etutor.modules.nf.ui;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.TreeSet;
 
 public class IdentifiedRelationComparator  implements Comparator<IdentifiedRelation>, Serializable{

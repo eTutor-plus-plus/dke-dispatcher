@@ -1,15 +1,14 @@
 package at.jku.dke.etutor.modules.nf.exercises;
 
-import java.util.Iterator;
 import java.util.Vector;
 
 public class TuplesPrinter {
 	
-	public static void printToConsole(TupleSet tuplePopulation, Vector<String> prefixes){
+	public static void printToConsole(TupleSet tuplePopulation, Vector<String> prefixes) {
 		System.out.println(toString(tuplePopulation, prefixes));
 	}
 
-	public static String toString(TupleSet tuplePopulation, Vector<String> prefixes){
+	public static String toString(TupleSet tuplePopulation, Vector<String> prefixes) {
 		String s = "";
 
         for (int[] ints : tuplePopulation) {
@@ -20,7 +19,7 @@ public class TuplesPrinter {
 		return s;
 	}
 
-	public static String toString(int[] tuple){
+	public static String toString(int[] tuple) {
 		String s = "";
 		
 		for (int i=0; i<tuple.length; i++){
@@ -33,7 +32,7 @@ public class TuplesPrinter {
 		return s;
 	}
 
-	public static String toString(int[] tuple, Vector<String> prefixes){
+	public static String toString(int[] tuple, Vector<String> prefixes) {
 		String s = "";
 		
 		for (int i=0; i<tuple.length; i++){

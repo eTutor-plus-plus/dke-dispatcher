@@ -69,13 +69,9 @@ public class AttributeClosureSpecification implements Serializable, Cloneable, R
 		if (!(this.baseAttributes.containsAll(spec.getBaseAttributes()))){
 			return false;
 		}
-		
-		if (!(this.baseRelation.semanticallyEquals(spec.getBaseRelation()))){
-			return false;
-		}
 
-		return true;
-	}
+        return this.baseRelation.semanticallyEquals(spec.getBaseRelation());
+    }
 
 	@Override
 	public String toString(){
