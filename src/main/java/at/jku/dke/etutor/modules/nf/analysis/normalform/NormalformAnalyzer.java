@@ -265,7 +265,7 @@ public class NormalformAnalyzer {
 		Iterator<Key> keysIterator = config.getCorrectMinimalKeys().iterator();
 
 		while (keysIterator.hasNext()) {
-			Key currKey = (Key)keysIterator.next();
+			Key currKey = keysIterator.next();
 			/* OLD
 			if ((currKey.getAttributes().containsAll(dependency.getLHSAttributes()))
 				&& (currKey.getAttributes().size() == dependency.getLHSAttributes().size())) {

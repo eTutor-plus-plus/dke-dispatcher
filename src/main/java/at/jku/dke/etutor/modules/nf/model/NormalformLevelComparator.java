@@ -34,8 +34,8 @@ public class NormalformLevelComparator implements Comparator, Serializable{
 			return 0;
 		}
 
-		nl1 = ((NormalformLevel)o1).hashCode();
-		nl2 = ((NormalformLevel)o2).hashCode();
+		nl1 = o1.hashCode();
+		nl2 = o2.hashCode();
 
 		if (nl1 > nl2){
 			return 1;			

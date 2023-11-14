@@ -71,7 +71,7 @@ public class DecomposeAnalysis extends DefaultAnalysis implements Serializable, 
 	}
 	
 	public NormalizationAnalysis getDecomposeStepAnalyses(String baseRelationID){
-		return (NormalizationAnalysis)this.decomposeStepAnalyses.get(baseRelationID);
+		return this.decomposeStepAnalyses.get(baseRelationID);
 	}
 
 	public Iterator<String> iterAnalysedDecomposeStepBaseRelations(){

@@ -116,7 +116,7 @@ public class MinimalCoverAnalyzer {
 		analysis.setSubmissionSuitsSolution(true);
 
 		while (dependenciesIterator.hasNext()){
-			currDependency = (FunctionalDependency)dependenciesIterator.next();
+			currDependency = dependenciesIterator.next();
 
 			tempDependencies.clear();
 			tempDependencies.addAll(dependencies);

@@ -22,7 +22,7 @@ public class IdentifiedRelation extends Relation implements Serializable, Clonea
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-        return (IdentifiedRelation)super.clone();
+        return super.clone();
 	}
 
 	public IdentifiedRelation(Collection<String> attributes, Collection<FunctionalDependency> dependencies) {

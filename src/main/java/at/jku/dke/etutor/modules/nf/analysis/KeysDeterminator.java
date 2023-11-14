@@ -85,7 +85,7 @@ public class KeysDeterminator {
 		TupleSet keyValueCombinations = new TupleSet();
 		
 		for (int tupleNumber=0; tupleNumber<tuples.size(); tupleNumber++){
-			currTuple = (int[])tuples.get(tupleNumber);
+			currTuple = tuples.get(tupleNumber);
 			keyValueCombinations.add(extractKeyValueCombination(key, currTuple));
 		}
 		
@@ -191,7 +191,7 @@ public class KeysDeterminator {
         HashSet<String> constantAttributes = new HashSet<>(relation.getAttributes());
 		Iterator<FunctionalDependency> dependenciesIterator = relation.iterFunctionalDependencies();
 		while (dependenciesIterator.hasNext()){
-			FunctionalDependency currDependency = (FunctionalDependency)dependenciesIterator.next();
+			FunctionalDependency currDependency = dependenciesIterator.next();
 			constantAttributes.removeAll(currDependency.getLHSAttributes());
 			constantAttributes.removeAll(currDependency.getRHSAttributes());
 		}

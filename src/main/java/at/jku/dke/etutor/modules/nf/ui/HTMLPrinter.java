@@ -140,7 +140,7 @@ public class HTMLPrinter implements MessageSourceAware {
 			//PRINT ERROR REPORTS
 			if (!errorReports.isEmpty()) {
 				for (int i=0; i<errorReports.size(); i++){
-					currErrorReport = (ErrorReport)errorReports.get(i);
+					currErrorReport = errorReports.get(i);
 					out.append(printErrorReport(currErrorReport, displayIndent, codeIndent));
 					if (i < errorReports.size()-1){
 						out.append("						<div class='gap'></div>").append(LINE_SEP);
@@ -151,7 +151,7 @@ public class HTMLPrinter implements MessageSourceAware {
 			//PRINT ERROR REPORT GROUPS
 			if (!errorReportGroups.isEmpty()) {
 				for (int i=0; i<errorReportGroups.size(); i++){
-					currErrorReportGroup = (ErrorReportGroup)errorReportGroups.get(i);
+					currErrorReportGroup = errorReportGroups.get(i);
 					out.append(printErrorReportGroup(currErrorReportGroup, displayIndent + 1, codeIndent));
 					if (i < errorReports.size()-1){
 						out.append("						<div class='gap'></div>").append(LINE_SEP);

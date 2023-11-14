@@ -27,7 +27,7 @@ public class NormalformDeterminationAnalyzer {
 		
 		//CHECK DEPENDENCIES
 		while (dependenciesIterator.hasNext()){
-			currDependency = (FunctionalDependency)dependenciesIterator.next();
+			currDependency = dependenciesIterator.next();
 			//RDBDHelper.getLogger().log(Level.INFO, "Check Dependency: " + currDependency);
 
 			if (NormalformAnalyzer.satisfiesFirstNormalform(analysis, currDependency, config)){;

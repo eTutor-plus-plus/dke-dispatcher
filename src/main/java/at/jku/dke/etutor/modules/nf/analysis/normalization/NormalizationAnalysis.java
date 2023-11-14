@@ -76,7 +76,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 
 	public KeysAnalysis getKeysAnalysis(String relationID){
 		if (this.keysAnalyses.containsKey(relationID)){
-			return (KeysAnalysis)this.keysAnalyses.get(relationID);
+			return this.keysAnalyses.get(relationID);
 		} else {
 			return null;			
 		}
@@ -88,7 +88,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 	
 	public RBRAnalysis getRBRAnalysis(String relationID){
 		if (this.rbrAnalyses.containsKey(relationID)){
-			return (RBRAnalysis)this.rbrAnalyses.get(relationID);
+			return this.rbrAnalyses.get(relationID);
 		} else {
 			return null;			
 		}
@@ -100,7 +100,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 	
 	public NormalformAnalysis getNormalformAnalysis(String relationID){
 		if (this.normalformAnalyses.containsKey(relationID)){
-			return (NormalformAnalysis)this.normalformAnalyses.get(relationID);
+			return this.normalformAnalyses.get(relationID);
 		} else {
 			return null;			
 		}
@@ -114,7 +114,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 	}
 
 	public ExtraneousAttributesAnalysis getExtraneousAttributesAnalysis(String relationID){
-		return (ExtraneousAttributesAnalysis)this.extraneousAttributesAnalyses.get(relationID);
+		return this.extraneousAttributesAnalyses.get(relationID);
 	}
 
 	public void addExtraneousAttributesAnalysis(String relationID, ExtraneousAttributesAnalysis analysis){
@@ -122,7 +122,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 	}
 
 	public RedundantDependenciesAnalysis getRedundandDependenciesAnalysis(String relationID){
-		return (RedundantDependenciesAnalysis)this.redundantDependenciesAnalyses.get(relationID);
+		return this.redundantDependenciesAnalyses.get(relationID);
 	}
 	
 	public void addRedundandDependenciesAnalysis(String relationID, RedundantDependenciesAnalysis analysis){
@@ -130,7 +130,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 	}
 
 	public CanonicalRepresentationAnalysis getCanonicalRepresentationAnalysis(String relationID) {
-		return (CanonicalRepresentationAnalysis)this.canonicalRepresentationAnalyses.get(relationID);
+		return this.canonicalRepresentationAnalyses.get(relationID);
 	}
 
 	public void addCanonicalRepresentationAnalysis(String relationID, CanonicalRepresentationAnalysis analysis) {
@@ -138,7 +138,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 	}
 	
 	public TrivialDependenciesAnalysis getTrivialDependenciesAnalysis(String relationID) {
-		return (TrivialDependenciesAnalysis)this.trivialDependenciesAnalyses.get(relationID);
+		return this.trivialDependenciesAnalyses.get(relationID);
 	}
 
 	public void addTrivialDependenciesAnalysis(String relationID, TrivialDependenciesAnalysis analysis) {

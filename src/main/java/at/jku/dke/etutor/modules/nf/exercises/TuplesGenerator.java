@@ -60,14 +60,14 @@ public class TuplesGenerator{
 			System.out.println("\nINVALID KEYS:");
 			Iterator<int[]> it = invalidKeys.iterator();
 			while (it.hasNext()){
-				System.out.print("(" + TuplesPrinter.toString((int[])it.next()) + ") ");
+				System.out.print("(" + TuplesPrinter.toString(it.next()) + ") ");
 			}
 			System.out.print("\n");
 
 			System.out.println("\nUNDESIRED KEYS:");
 			it = undesiredKeys.iterator();
 			while (it.hasNext()){
-				System.out.print("(" + TuplesPrinter.toString((int[])it.next()) + ") ");
+				System.out.print("(" + TuplesPrinter.toString(it.next()) + ") ");
 			}
 			System.out.print("\n");
 			
@@ -84,13 +84,13 @@ public class TuplesGenerator{
 			}*/
 
 			if (!invalidKeys.isEmpty()){
-				System.out.println("\nENABLING KEY: (" + TuplesPrinter.toString((int[])invalidKeys.get(0)) + ")");
-				enableKey((int[])invalidKeys.get(0), tuples);
+				System.out.println("\nENABLING KEY: (" + TuplesPrinter.toString(invalidKeys.get(0)) + ")");
+				enableKey(invalidKeys.get(0), tuples);
 			}
 
 			if (!undesiredKeys.isEmpty()){
-				System.out.println("\nDISABLING KEY: (" + TuplesPrinter.toString((int[])undesiredKeys.get(0)) + ")");
-				disableKey((int[])undesiredKeys.get(0), tuples);
+				System.out.println("\nDISABLING KEY: (" + TuplesPrinter.toString(undesiredKeys.get(0)) + ")");
+				disableKey(undesiredKeys.get(0), tuples);
 			}			
 			
 			invalidKeys = calcInvalidKeys(tuples, keys);

@@ -197,7 +197,7 @@ public class MinimalCoverReporter {
 		 	Iterator<FunctionalDependency> it = analysis.iterTrivialDependencies();
 			while (it.hasNext()){
 				description.append("<tr><td>");
-				description.append(printDependency((FunctionalDependency)it.next()));
+				description.append(printDependency(it.next()));
 				description.append("</td></tr>");
 			}
 			description.append("</table>");
@@ -364,7 +364,7 @@ public class MinimalCoverReporter {
 			Iterator<FunctionalDependency> it = analysis.iterRedundandDependencies();
 			while (it.hasNext()){
 				description.append("<tr><td>");
-				description.append(printDependency((FunctionalDependency)it.next()));
+				description.append(printDependency(it.next()));
 				description.append("</td></tr>");
 			}
 			description.append("</table>");
@@ -465,7 +465,7 @@ public class MinimalCoverReporter {
 				it = analysis.iterMissingDependencies();
 				while (it.hasNext()){
 					description.append("<tr><td>");
-					description.append(printDependency((FunctionalDependency)it.next()));
+					description.append(printDependency(it.next()));
 					description.append("</td></tr>");
 				}
 				description.append("</table>");

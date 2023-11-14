@@ -98,7 +98,7 @@ public class DecomposeStepAnalyzer {
 		//ANALYZE REDUNDAND FUNCTIONAL DEPENDENCIES
 		decomposedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (decomposedRelationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)decomposedRelationsIterator.next();
+			currRelation = decomposedRelationsIterator.next();
 
 			analysis.addRedundandDependenciesAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeRedundandDependencies(currRelation.getFunctionalDependencies()));
 			if (!analysis.getRedundandDependenciesAnalysis(currRelation.getID()).submissionSuitsSolution()){
@@ -113,7 +113,7 @@ public class DecomposeStepAnalyzer {
 		//ANALYZE RBR DECOMPOSITION
 		decomposedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (decomposedRelationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)decomposedRelationsIterator.next();
+			currRelation = decomposedRelationsIterator.next();
 
 			analysis.addRBRAnalysis(currRelation.getID(), RBRAnalyzer.analyze(config.getBaseRelation(), currRelation));
 			if (!analysis.getRBRAnalysis(currRelation.getID()).submissionSuitsSolution()){
@@ -125,8 +125,8 @@ public class DecomposeStepAnalyzer {
 		keysAnalyzerConfig = new KeysAnalyzerConfig();
 		decomposedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (decomposedRelationsIterator.hasNext()){
-			currDecomposedRelation = (IdentifiedRelation)decomposedRelationsIterator.next();
-			keysAnalyzerConfig.setCorrectMinimalKeys(((KeysContainer)correctKeysOfDecomposedRelations.get(currDecomposedRelation.getID())).getMinimalKeys());
+			currDecomposedRelation = decomposedRelationsIterator.next();
+			keysAnalyzerConfig.setCorrectMinimalKeys(correctKeysOfDecomposedRelations.get(currDecomposedRelation.getID()).getMinimalKeys());
 
 			analysis.addKeysAnalysis(currDecomposedRelation.getID(), KeysAnalyzer.analyze(currDecomposedRelation, keysAnalyzerConfig));
 			if (!analysis.getKeysAnalysis(currDecomposedRelation.getID()).submissionSuitsSolution()){
@@ -138,11 +138,11 @@ public class DecomposeStepAnalyzer {
 		normalformAnalyzerConfig = new NormalformAnalyzerConfig();
 		decomposedRelationsIterator = config.getNormalizedRelations().iterator();
 		while (decomposedRelationsIterator.hasNext()){
-			currRelation = (IdentifiedRelation)decomposedRelationsIterator.next();
+			currRelation = decomposedRelationsIterator.next();
 			normalformAnalyzerConfig.setRelation(currRelation);
 			normalformAnalyzerConfig.setDesiredNormalformLevel(config.getDesiredNormalformLevel());
-			normalformAnalyzerConfig.setCorrectMinimalKeys(((KeysContainer)correctKeysOfDecomposedRelations.get(currRelation.getID())).getMinimalKeys());
-			normalformAnalyzerConfig.setCorrectPartialKeys(((KeysContainer)correctKeysOfDecomposedRelations.get(currRelation.getID())).getPartialKeys());
+			normalformAnalyzerConfig.setCorrectMinimalKeys(correctKeysOfDecomposedRelations.get(currRelation.getID()).getMinimalKeys());
+			normalformAnalyzerConfig.setCorrectPartialKeys(correctKeysOfDecomposedRelations.get(currRelation.getID()).getPartialKeys());
 
 			analysis.addNormalformAnalysis(currRelation.getID(), NormalformAnalyzer.analyze(normalformAnalyzerConfig));
 			if (!RDBDHelper.isInnerNode(currRelation.getID(), config.getAllRelations())){
