@@ -10,6 +10,7 @@ public class ApplicationProperties {
     private Async async = new Async();
 
     private SQL sql = new SQL();
+    private DDL ddl = new DDL();
 
     private ProcessMining processMining = new ProcessMining();
 
@@ -35,6 +36,14 @@ public class ApplicationProperties {
 
     public void setSql(SQL sql) {
         this.sql = sql;
+    }
+
+    public DDL getDdl() {
+        return ddl;
+    }
+
+    public void setDdl(DDL ddl) {
+        this.ddl = ddl;
     }
 
     public ProcessMining getProcessMining(){
@@ -323,6 +332,235 @@ public class ApplicationProperties {
         public void setTableUrlForLink(String tableUrlForLink) {
             this.tableUrlForLink = tableUrlForLink;
         }
+    }
+
+    /**
+     * The properties for the DDL module
+     */
+    public static class DDL {
+        //region Fields
+        private String systemConnPwd;
+        private String systemConnUser;
+        private String connUrl;
+        private String exerciseDatabase;
+
+        private String connUser1;
+        private String connPwdUser1;
+        private String connUser2;
+        private String connPwdUser2;
+        private String connUser3;
+        private String connPwdUser3;
+        private String connUser4;
+        private String connPwdUser4;
+        private String connUser5;
+        private String connPwdUser5;
+        private String connUser6;
+        private String connPwdUser6;
+        private String connUser7;
+        private String connPwdUser7;
+        private String connUser8;
+        private String connPwdUser8;
+        private String connUser9;
+        private String connPwdUser9;
+        private String connUser10;
+        private String connPwdUser10;
+        //endregion
+
+        //region Getter/Setter
+
+        public String getSystemConnPwd() {
+            return systemConnPwd;
+        }
+
+        public void setSystemConnPwd(String systemConnPwd) {
+            this.systemConnPwd = systemConnPwd;
+        }
+
+        public String getSystemConnUser() {
+            return systemConnUser;
+        }
+
+        public void setSystemConnUser(String systemConnUser) {
+            this.systemConnUser = systemConnUser;
+        }
+
+        public String getConnUrl() {
+            return connUrl;
+        }
+
+        public void setConnUrl(String connUrl) {
+            this.connUrl = connUrl;
+        }
+
+        public String getExerciseDatabase() {
+            return exerciseDatabase;
+        }
+
+        public void setExerciseDatabase(String exerciseDatabase) {
+            this.exerciseDatabase = exerciseDatabase;
+        }
+
+        public String getConnUser1() {
+            return connUser1;
+        }
+
+        public void setConnUser1(String connUser1) {
+            this.connUser1 = connUser1;
+        }
+
+        public String getConnPwdUser1() {
+            return connPwdUser1;
+        }
+
+        public void setConnPwdUser1(String connPwdUser1) {
+            this.connPwdUser1 = connPwdUser1;
+        }
+
+        public String getConnUser2() {
+            return connUser2;
+        }
+
+        public void setConnUser2(String connUser2) {
+            this.connUser2 = connUser2;
+        }
+
+        public String getConnPwdUser2() {
+            return connPwdUser2;
+        }
+
+        public void setConnPwdUser2(String connPwdUser2) {
+            this.connPwdUser2 = connPwdUser2;
+        }
+
+        public String getConnUser3() {
+            return connUser3;
+        }
+
+        public void setConnUser3(String connUser3) {
+            this.connUser3 = connUser3;
+        }
+
+        public String getConnPwdUser3() {
+            return connPwdUser3;
+        }
+
+        public void setConnPwdUser3(String connPwdUser3) {
+            this.connPwdUser3 = connPwdUser3;
+        }
+
+        public String getConnUser4() {
+            return connUser4;
+        }
+
+        public void setConnUser4(String connUser4) {
+            this.connUser4 = connUser4;
+        }
+
+        public String getConnPwdUser4() {
+            return connPwdUser4;
+        }
+
+        public void setConnPwdUser4(String connPwdUser4) {
+            this.connPwdUser4 = connPwdUser4;
+        }
+
+        public String getConnUser5() {
+            return connUser5;
+        }
+
+        public void setConnUser5(String connUser5) {
+            this.connUser5 = connUser5;
+        }
+
+        public String getConnPwdUser5() {
+            return connPwdUser5;
+        }
+
+        public void setConnPwdUser5(String connPwdUser5) {
+            this.connPwdUser5 = connPwdUser5;
+        }
+
+        public String getConnUser6() {
+            return connUser6;
+        }
+
+        public void setConnUser6(String connUser6) {
+            this.connUser6 = connUser6;
+        }
+
+        public String getConnPwdUser6() {
+            return connPwdUser6;
+        }
+
+        public void setConnPwdUser6(String connPwdUser6) {
+            this.connPwdUser6 = connPwdUser6;
+        }
+
+        public String getConnUser7() {
+            return connUser7;
+        }
+
+        public void setConnUser7(String connUser7) {
+            this.connUser7 = connUser7;
+        }
+
+        public String getConnPwdUser7() {
+            return connPwdUser7;
+        }
+
+        public void setConnPwdUser7(String connPwdUser7) {
+            this.connPwdUser7 = connPwdUser7;
+        }
+
+        public String getConnUser8() {
+            return connUser8;
+        }
+
+        public void setConnUser8(String connUser8) {
+            this.connUser8 = connUser8;
+        }
+
+        public String getConnPwdUser8() {
+            return connPwdUser8;
+        }
+
+        public void setConnPwdUser8(String connPwdUser8) {
+            this.connPwdUser8 = connPwdUser8;
+        }
+
+        public String getConnUser9() {
+            return connUser9;
+        }
+
+        public void setConnUser9(String connUser9) {
+            this.connUser9 = connUser9;
+        }
+
+        public String getConnPwdUser9() {
+            return connPwdUser9;
+        }
+
+        public void setConnPwdUser9(String connPwdUser9) {
+            this.connPwdUser9 = connPwdUser9;
+        }
+
+        public String getConnUser10() {
+            return connUser10;
+        }
+
+        public void setConnUser10(String connUser10) {
+            this.connUser10 = connUser10;
+        }
+
+        public String getConnPwdUser10() {
+            return connPwdUser10;
+        }
+
+        public void setConnPwdUser10(String connPwdUser10) {
+            this.connPwdUser10 = connPwdUser10;
+        }
+
+        //endregion
     }
 
     /**

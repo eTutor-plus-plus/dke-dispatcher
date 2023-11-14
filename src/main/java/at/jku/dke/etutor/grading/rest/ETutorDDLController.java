@@ -1,6 +1,9 @@
 package at.jku.dke.etutor.grading.rest;
 
 import at.jku.dke.etutor.grading.ETutorCORSPolicy;
+import at.jku.dke.etutor.grading.service.DDLResourceService;
+import at.jku.dke.etutor.grading.service.DatabaseException;
+import at.jku.dke.etutor.objects.dispatcher.ddl.DDLExerciseDTO;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +16,12 @@ import org.springframework.web.bind.annotation.*;
 public class ETutorDDLController {
     //region Fields
     private final Logger logger;
+    private final DDLResourceService resourceService;
     //endregion
 
-    public ETutorDDLController() {
+    public ETutorDDLController(DDLResourceService resourceService) {
         this.logger = (Logger) LoggerFactory.getLogger(ETutorDDLController.class);
+        this.resourceService = resourceService;
     }
 
     /**
@@ -32,9 +37,18 @@ public class ETutorDDLController {
 
     // Function to create a new exercise
     @PutMapping("/exercise")
-    public ResponseEntity<Integer> createExercise() {
+    public ResponseEntity<Integer> createExercise(@RequestBody DDLExerciseDTO exerciseDTO) throws ApiException {
         logger.info("Enter: createExercise()");
-        return ResponseEntity.ok(1);
+        try {
+            int id = resourceService.createExercise(exerciseDTO);
+
+            logger.info("Exit: createExercise() {} with Status Code 200", id);
+            return ResponseEntity.ok(id);
+        } catch (DatabaseException e) {
+            logger.error("Exit: createExercise() with Status Code 500", e);
+            logger.info("Deleting exercise");
+            throw new ApiException(500, e.toString(), null);
+        }
     }
 
     /**
@@ -42,21 +56,35 @@ public class ETutorDDLController {
      * @param id Specifies the exercise
      * @return
      */
-    @PostMapping("/exercise/{id}")
-    public ResponseEntity<Void> deleteExercise(@PathVariable int id) {
+    @DeleteMapping("/exercise/{id}")
+    public ResponseEntity<Void> deleteExercise(@PathVariable int id) throws ApiException {
         logger.info("Enter: deleteExercise(): {}", id);
-        return ResponseEntity.ok().build();
+        try {
+            resourceService.deleteExercise(id);
+            logger.info("Exit: deleteExercise() with Status Code 200");
+            return ResponseEntity.ok().build();
+        } catch (DatabaseException e) {
+            logger.error("Exit: deleteExercise() with Status Code 500", e);
+            throw new ApiException(500, e.toString(), null);
+        }
     }
 
     /**
      * Function to change the solution for an exercise
      * @param id Specifies the exercise
-     * @param newSolution Specifies the new solution for the exercise
+     * @param exerciseDTO Specifies the new exercise element
      * @return
      */
-    @PostMapping("/exercise/{id}/solution")
-    public ResponseEntity<Void> updateExerciseSolution(@PathVariable int id, @RequestBody String newSolution) {
+    @PostMapping("/exercise/{id}")
+    public ResponseEntity<Void> updateExerciseSolution(@PathVariable int id, @RequestBody DDLExerciseDTO exerciseDTO) throws ApiException {
         logger.info("Enter: updateExerciseSolution(): {}",id);
-        return ResponseEntity.ok().build();
+        try{
+            resourceService.updateExercise(id, exerciseDTO);
+            logger.info("Exit: updateExerciseSolution() with Status Code 200");
+            return ResponseEntity.ok().build();
+        }catch(DatabaseException e){
+            logger.error("Exit: updateExerciseSolution() with Status Code 500", e);
+            throw new ApiException(500, e.toString(), null);
+        }
     }
 }
