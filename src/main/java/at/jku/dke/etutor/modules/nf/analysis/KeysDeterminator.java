@@ -81,11 +81,10 @@ public class KeysDeterminator {
 	}
 	
 	private static TupleSet extractKeyValueCombinations(int[] key, TupleSet tuples){
-		int[] currTuple;
 		TupleSet keyValueCombinations = new TupleSet();
 		
 		for (int tupleNumber=0; tupleNumber<tuples.size(); tupleNumber++){
-			currTuple = tuples.get(tupleNumber);
+			int[] currTuple = tuples.get(tupleNumber);
 			keyValueCombinations.add(extractKeyValueCombination(key, currTuple));
 		}
 		
