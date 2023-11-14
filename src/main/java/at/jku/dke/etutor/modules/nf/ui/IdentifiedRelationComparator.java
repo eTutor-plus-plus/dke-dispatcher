@@ -7,13 +7,13 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-public class IdentifiedRelationComparator  implements Comparator, Serializable{
+public class IdentifiedRelationComparator  implements Comparator<IdentifiedRelation>, Serializable{
 
 	public IdentifiedRelationComparator() {
 		super();
 	}
 
-	public int compare(Object o1, Object o2) {
+	public int compare(IdentifiedRelation o1, IdentifiedRelation o2) {
 
 		String[] id1;
 		String[] id2;
@@ -34,16 +34,8 @@ public class IdentifiedRelationComparator  implements Comparator, Serializable{
 			return -1;
 		}
 
-		if (!(o1 instanceof Relation)){
-			return 0;
-		}
-		
-		if (!(o2 instanceof Relation)){
-			return 0;
-		}
-		
-		id1 = ((IdentifiedRelation)o1).getID().split("\\.");
-		id2 = ((IdentifiedRelation)o2).getID().split("\\.");
+        id1 = o1.getID().split("\\.");
+		id2 = o2.getID().split("\\.");
 
         maxComparisons = Math.min(id1.length, id2.length);
 		

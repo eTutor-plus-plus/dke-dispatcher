@@ -3,19 +3,19 @@ package at.jku.dke.etutor.modules.nf.exercises;
 import java.io.Serializable;
 import java.util.Comparator;
 
-public class TupleComparator implements Comparator, Serializable {
+public class TupleComparator implements Comparator<int[]>, Serializable {
 
 	public TupleComparator() {
 		super();
 	}
 
-	public int compare(Object o1, Object o2) {
+	public int compare(int[] o1, int[] o2) {
 		int[] tuple1;
 		int[] tuple2;
 		int maxComparisons;
 
-		tuple1 = (int[])o1;
-		tuple2 = (int[])o2;
+		tuple1 = o1;
+		tuple2 = o2;
 
 		if (tuple1.length > tuple2.length){
 			return 1;

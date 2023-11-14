@@ -4,16 +4,16 @@ import java.io.Serializable;
 import java.text.Collator;
 import java.util.Comparator;
 
-public class KeyComparator implements Comparator, Serializable{
+public class KeyComparator implements Comparator<Key>, Serializable{
 
 	public KeyComparator() {
 		super();
 	}
 
-	public int compare(Object o1, Object o2) {
+	public int compare(Key o1, Key o2) {
 		Key k1;
 		Key k2;
-		Comparator ac;
+		Collator ac;
 
 		if ((o1 == null) && (o2 == null)) {
 			return 0;
@@ -27,16 +27,8 @@ public class KeyComparator implements Comparator, Serializable{
 			return -1;
 		}
 
-		if (!(o1 instanceof Key)) {
-			return 0;
-		}
-
-		if (!(o2 instanceof Key)) {
-			return 0;
-		}
-
-		k1 = (Key)o1;
-		k2 = (Key)o2;
+        k1 = o1;
+		k2 = o2;
 		ac = Collator.getInstance();
 
 		if (k1.getAttributes().size() > k2.getAttributes().size()) {

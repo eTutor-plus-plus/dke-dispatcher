@@ -3,13 +3,13 @@ package at.jku.dke.etutor.modules.nf.model;
 import java.io.Serializable;
 import java.util.Comparator;
 
-public class NormalformLevelComparator implements Comparator, Serializable{
+public class NormalformLevelComparator implements Comparator<NormalformLevel>, Serializable{
 
 	public NormalformLevelComparator() {
 		super();
 	}
 
-	public int compare(Object o1, Object o2) {
+	public int compare(NormalformLevel o1, NormalformLevel o2) {
 		int nl1;
 		int nl2;
 
@@ -25,16 +25,8 @@ public class NormalformLevelComparator implements Comparator, Serializable{
 		if ((o1 != null) && (o2 == null)) {
 			return -1;
 		}
-		
-		if (!(o1 instanceof NormalformLevel)) {
-			return 0;
-		} 
-		
-		if (!(o2 instanceof NormalformLevel)) {
-			return 0;
-		}
 
-		nl1 = o1.hashCode();
+        nl1 = o1.hashCode();
 		nl2 = o2.hashCode();
 
 		if (nl1 > nl2){
