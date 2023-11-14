@@ -220,10 +220,9 @@ public class SpecificationParser implements Serializable {
 		
 		if (!set.isEmpty()) {
 			StringBuilder msg = new StringBuilder("Base attributes have been specified which are not part of the relation:");
-			Iterator<String> it = set.iterator();
-			while (it.hasNext()) {
-				msg.append(" ").append(it.next());
-			}
+            for (String s : set) {
+                msg.append(" ").append(s);
+            }
 			throw new SpecificationParserException(msg.toString());
 		}
 	}
@@ -234,32 +233,27 @@ public class SpecificationParser implements Serializable {
 		}
 
 		Set<String> attributeSet = new TreeSet<>();
-		Iterator<FunctionalDependency> it = this.dependencies.iterator();
-		while (it.hasNext()) {
-			FunctionalDependency dependency = it.next();
-			attributeSet.addAll(getUnfoundedAttributes(dependency.getLHSAttributes()));
-			attributeSet.addAll(getUnfoundedAttributes(dependency.getRHSAttributes()));
-		}
+        for (FunctionalDependency dependency : this.dependencies) {
+            attributeSet.addAll(getUnfoundedAttributes(dependency.getLHSAttributes()));
+            attributeSet.addAll(getUnfoundedAttributes(dependency.getRHSAttributes()));
+        }
 		
 		if (!attributeSet.isEmpty()) {
 			StringBuilder msg = new StringBuilder("Attributes have been specified in dependencies which are not part of the relation:");
-			Iterator<String> attributesIt = attributeSet.iterator();
-			while (attributesIt.hasNext()) {
-				msg.append(" ").append(attributesIt.next());
-			}
+            for (String s : attributeSet) {
+                msg.append(" ").append(s);
+            }
 			throw new SpecificationParserException(msg.toString());
 		}
 	}
 	
 	protected Set<String> getUnfoundedAttributes(Collection<String> attributes) throws SpecificationParserException {
 		Set<String> set = new TreeSet<>();
-		Iterator<String> it = attributes.iterator();
-		while (it.hasNext()) {
-			String attribute = it.next();
-			if (this.relationAttributes == null || !this.relationAttributes.contains(attribute)) {
-				set.add(attribute);
-			}
-		}
+        for (String attribute : attributes) {
+            if (this.relationAttributes == null || !this.relationAttributes.contains(attribute)) {
+                set.add(attribute);
+            }
+        }
 		return set;
 	}
 	
@@ -292,15 +286,14 @@ public class SpecificationParser implements Serializable {
 
 		buffer.append(qualifier).append(" {");
 		first = true;
-		Iterator<?> it = items.iterator();
-		while (it.hasNext()) {
-			if (!first) {
-				buffer.append(delim);
-			} else {
-				first = false;
-			}
-			buffer.append(it.next());
-		}
+        for (Object item : items) {
+            if (!first) {
+                buffer.append(delim);
+            } else {
+                first = false;
+            }
+            buffer.append(item);
+        }
 		buffer.append("}");
 	}
 
@@ -389,11 +382,10 @@ public class SpecificationParser implements Serializable {
 			System.out.println("Empty attribute list.");
 		} else {
 			first = true;
-			Iterator<String> it = parser.relationAttributes.iterator();
-			while (it.hasNext()) {
-				System.out.print((first ? "" : " " ) + it.next());
-				first = false;
-			}
+            for (String relationAttribute : parser.relationAttributes) {
+                System.out.print((first ? "" : " ") + relationAttribute);
+                first = false;
+            }
 			System.out.println();
 		}
 		System.out.print("BASE ATTRIBUTES: ");
@@ -439,10 +431,9 @@ public class SpecificationParser implements Serializable {
 		normalformAnalyzerConfig.setRelation(specification);
 		
 		System.out.println("Minimal keys: ");
-		Iterator<Key> it = normalformAnalyzerConfig.getCorrectMinimalKeys().iterator();
-		while (it.hasNext()) {
-			System.out.println(it.next());
-		}
+        for (Key key : normalformAnalyzerConfig.getCorrectMinimalKeys()) {
+            System.out.println(key);
+        }
 		
 		NormalformAnalysis analysis = NormalformAnalyzer.analyze(normalformAnalyzerConfig);
 		NormalformLevel level = analysis.getOverallNormalformLevel();
@@ -481,10 +472,9 @@ public class SpecificationParser implements Serializable {
 		Collection<Key> keys = KeysDeterminator.determineMinimalKeys(specification);
 		
 		System.out.println("Minimal keys: ");
-		Iterator<Key> it = keys.iterator();
-		while (it.hasNext()) {
-			System.out.println(it.next());
-		}
+        for (Key key : keys) {
+            System.out.println(key);
+        }
 	}
 	
 	private static void testMinimalCover() throws Exception {
@@ -497,10 +487,9 @@ public class SpecificationParser implements Serializable {
 		HashSet<FunctionalDependency> correctDependencies = MinimalCover.execute(specification.getFunctionalDependencies());
 		
 		System.out.println("\tCorrect dependencies: ");
-		Iterator<FunctionalDependency> it = correctDependencies.iterator();
-		while (it.hasNext()) {
-			System.out.println(it.next());
-		}
+        for (FunctionalDependency correctDependency : correctDependencies) {
+            System.out.println(correctDependency);
+        }
 	}
 	
 	private static void testAttributeClosure() throws Exception {
@@ -517,10 +506,9 @@ public class SpecificationParser implements Serializable {
 		Collection<String> correctAttributes = Closure.execute(specification.getBaseAttributes(), specification.getBaseRelation().getFunctionalDependencies());
 		
 		System.out.println("\tCorrect attributes: ");
-		Iterator<String> it = correctAttributes.iterator();
-		while (it.hasNext()) {
-			System.out.println(it.next());
-		}
+        for (String correctAttribute : correctAttributes) {
+            System.out.println(correctAttribute);
+        }
 	}
 	
 	private static void testRBR() throws Exception {
@@ -535,9 +523,8 @@ public class SpecificationParser implements Serializable {
 		Collection<FunctionalDependency> correctDependencies = ReductionByResolution.execute(specification.getBaseRelation(), specification.getBaseAttributes());
 		
 		System.out.println("\tCorrect dependencies: ");
-		Iterator<FunctionalDependency> it = correctDependencies.iterator();
-		while (it.hasNext()) {
-			System.out.println(it.next());
-		}
+        for (FunctionalDependency correctDependency : correctDependencies) {
+            System.out.println(correctDependency);
+        }
 	}
 }

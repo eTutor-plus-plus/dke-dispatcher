@@ -159,13 +159,12 @@ public class RDBDHelper {
 	public static IdentifiedRelation findRelation(String relationID, TreeSet<IdentifiedRelation> relations){
 		IdentifiedRelation relation;
 
-		Iterator<IdentifiedRelation> i = relations.iterator();
-		while (i.hasNext()){
-			relation = i.next();
-			if (relation.getID().equals(relationID)){
-				return relation;
-			}
-		}
+        for (IdentifiedRelation identifiedRelation : relations) {
+            relation = identifiedRelation;
+            if (relation.getID().equals(relationID)) {
+                return relation;
+            }
+        }
 		
 		return null;
 	}
@@ -276,13 +275,12 @@ public class RDBDHelper {
 
 		maxID = 0;
 		newRelation = new IdentifiedRelation();
-		Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
-		while (relationsIterator.hasNext()){
-			currRelation = relationsIterator.next();
-			if (Integer.parseInt(currRelation.getID().replaceAll("\\.", ""))>maxID){
-				maxID = Integer.parseInt(currRelation.getID().replaceAll("\\.", ""));
-			}
-		}
+        for (IdentifiedRelation relation : relations) {
+            currRelation = relation;
+            if (Integer.parseInt(currRelation.getID().replaceAll("\\.", "")) > maxID) {
+                maxID = Integer.parseInt(currRelation.getID().replaceAll("\\.", ""));
+            }
+        }
 		
 		increasedID = new StringBuilder(String.valueOf(maxID + 1));
 		
@@ -338,13 +336,12 @@ public class RDBDHelper {
 				(attributes != null) && 
 				(attributes.length != 0)){
 
-			Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
-			while (relationsIterator.hasNext()){
-				currRelation = relationsIterator.next();
-				if (currRelation.getID().equals(relationID)){
-					addAttribute(currRelation, attributes);
-				}
-			}
+            for (IdentifiedRelation relation : relations) {
+                currRelation = relation;
+                if (currRelation.getID().equals(relationID)) {
+                    addAttribute(currRelation, attributes);
+                }
+            }
 		}
 	}
 	
@@ -362,13 +359,12 @@ public class RDBDHelper {
 				(attributesToDelete != null) && 
 				(attributesToDelete.length != 0)){
 
-			Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
-			while (relationsIterator.hasNext()){
-				currRelation = relationsIterator.next();
-				if (currRelation.getID().equals(relationID)){
-					delAttributes(currRelation, attributesToDelete);
-				}
-			}
+            for (IdentifiedRelation relation : relations) {
+                currRelation = relation;
+                if (currRelation.getID().equals(relationID)) {
+                    delAttributes(currRelation, attributesToDelete);
+                }
+            }
 		}
 
 		checkRelations(relations);
@@ -393,13 +389,12 @@ public class RDBDHelper {
 			(lhsAttributes != null) &&
 			(lhsAttributes.length != 0)){
 
-			Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
-			while (relationsIterator.hasNext()){
-				currRelation = relationsIterator.next();
-				if (currRelation.getID().equals(relationID)){
-					addDependency(currRelation, rhsAttributes, lhsAttributes);
-				}
-			}
+            for (IdentifiedRelation relation : relations) {
+                currRelation = relation;
+                if (currRelation.getID().equals(relationID)) {
+                    addDependency(currRelation, rhsAttributes, lhsAttributes);
+                }
+            }
 		}
 	}
 	
@@ -424,13 +419,12 @@ public class RDBDHelper {
 
 		if ((relationID != null) && (!relationID.isEmpty())){
 
-			Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
-			while (relationsIterator.hasNext()){
-				currRelation = relationsIterator.next();
-				if (currRelation.getID().equals(relationID)){
-					delDependencies(currRelation, rhsAttributes, lhsAttributes, dependenciesToDelete);
-				}
-			}
+            for (IdentifiedRelation relation : relations) {
+                currRelation = relation;
+                if (currRelation.getID().equals(relationID)) {
+                    delDependencies(currRelation, rhsAttributes, lhsAttributes, dependenciesToDelete);
+                }
+            }
 		}
 	}
 	
@@ -465,13 +459,12 @@ public class RDBDHelper {
 			(attributes != null) &&
 			(attributes.length != 0)){
 
-			Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
-			while (relationsIterator.hasNext()){
-				currRelation = relationsIterator.next();
-				if (currRelation.getID().equals(relationID)){
-					addKey(currRelation, attributes);
-				}
-			}
+            for (IdentifiedRelation relation : relations) {
+                currRelation = relation;
+                if (currRelation.getID().equals(relationID)) {
+                    addKey(currRelation, attributes);
+                }
+            }
 		}
 	}
 	
@@ -495,14 +488,13 @@ public class RDBDHelper {
 		if ((relationID != null) && (!relationID.isEmpty())){
 			RDBDHelper.getLogger().log(Level.INFO, "SEARCHING FOR RELATION '" + relationID + "'");
 
-			Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
-			while (relationsIterator.hasNext()){
-				currRelation = relationsIterator.next();
-				if (currRelation.getID().equals(relationID)){
-					RDBDHelper.getLogger().log(Level.INFO, "FOUND RELATION '" + relationID + "'");
-					delKeys(currRelation, attributes, keysToDelete);
-				}
-			}
+            for (IdentifiedRelation relation : relations) {
+                currRelation = relation;
+                if (currRelation.getID().equals(relationID)) {
+                    RDBDHelper.getLogger().log(Level.INFO, "FOUND RELATION '" + relationID + "'");
+                    delKeys(currRelation, attributes, keysToDelete);
+                }
+            }
 		}
 	}
 	
@@ -530,11 +522,10 @@ public class RDBDHelper {
 	public static void checkRelations(Collection<Relation> relations) {
 		Relation relation;
 
-		Iterator<Relation> relationsIterator = relations.iterator();
-		while (relationsIterator.hasNext()){
-			relation = relationsIterator.next();
-			checkRelation(relation);
-		}
+        for (Relation value : relations) {
+            relation = value;
+            checkRelation(relation);
+        }
 	}
 	
 	public static void checkRelation(Relation relation) {

@@ -244,12 +244,11 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 	public String[] getAttributesArray(){
 		int pos = 0;
 		String[] attributes = new String[this.attributes.size()];
-		Iterator<String> attributesIterator = this.attributes.iterator();
 
-		while (attributesIterator.hasNext()){
-			attributes[pos] = attributesIterator.next();
-			pos = pos + 1;
-		}
+        for (String attribute : this.attributes) {
+            attributes[pos] = attribute;
+            pos = pos + 1;
+        }
 		
 		return attributes;
 	}

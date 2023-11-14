@@ -620,18 +620,16 @@ public class HTMLPrinter implements MessageSourceAware {
 		}
 		dependencies = "";
 		first = true;
-		Iterator<FunctionalDependency> fdIt = spec.getBaseRelation().getFunctionalDependencies().iterator();
-		while (fdIt.hasNext()){
-			dependencies = dependencies.concat((first ? "" : ", ") + fdIt.next().toString().replaceAll("->", "&rarr;"));
-			first = false;
-		}
+        for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
+            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
+            first = false;
+        }
 		baseAttributes = "";
 		first = true;
-		Iterator<String> baseAttributeIt = spec.getBaseAttributes().iterator();
-		while (baseAttributeIt.hasNext()){
-			baseAttributes = baseAttributes.concat((first ? "" : "&nbsp;") + baseAttributeIt.next());
-			first = false;
-		}
+        for (String s : spec.getBaseAttributes()) {
+            baseAttributes = baseAttributes.concat((first ? "" : "&nbsp;") + s);
+            first = false;
+        }
 
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
@@ -674,18 +672,16 @@ public class HTMLPrinter implements MessageSourceAware {
 		}
 		String dependencies = "";
 		first = true;
-		Iterator<FunctionalDependency> fdIt = spec.getBaseRelation().getFunctionalDependencies().iterator();
-		while (fdIt.hasNext()){
-			dependencies = dependencies.concat((first ? "" : ", ") + fdIt.next().toString().replaceAll("->", "&rarr;"));
-			first = false;
-		}
+        for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
+            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
+            first = false;
+        }
 		String baseAttributes = "";
 		first = true;
-		Iterator<String> baseAttributeIt = spec.getBaseAttributes().iterator();
-		while (baseAttributeIt.hasNext()){
-			baseAttributes = baseAttributes.concat((first ? "" : "&nbsp;") + baseAttributeIt.next());
-			first = false;
-		}
+        for (String s : spec.getBaseAttributes()) {
+            baseAttributes = baseAttributes.concat((first ? "" : "&nbsp;") + s);
+            first = false;
+        }
 
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
@@ -728,11 +724,10 @@ public class HTMLPrinter implements MessageSourceAware {
 		}
 		String dependencies = "";
 		first = true;
-		Iterator<FunctionalDependency> fdIt = spec.getBaseRelation().getFunctionalDependencies().iterator();
-		while (fdIt.hasNext()){
-			dependencies = dependencies.concat((first ? "" : ", ") + fdIt.next().toString().replaceAll("->", "&rarr;"));
-			first = false;
-		}
+        for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
+            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
+            first = false;
+        }
 
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
@@ -822,11 +817,10 @@ public class HTMLPrinter implements MessageSourceAware {
 		}
 		dependencies = "";
 		first = true;
-		Iterator<FunctionalDependency> fdIt = spec.getBaseRelation().getFunctionalDependencies().iterator();
-		while (fdIt.hasNext()){
-			dependencies = dependencies.concat((first ? "" : ", ") + fdIt.next().toString().replaceAll("->", "&rarr;"));
-			first = false;
-		}
+        for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
+            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
+            first = false;
+        }
 
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
@@ -914,11 +908,10 @@ public class HTMLPrinter implements MessageSourceAware {
 		}
 		dependencies = "";
 		first = true;
-		Iterator<FunctionalDependency> fdIt = spec.getFunctionalDependencies().iterator();
-		while (fdIt.hasNext()){
-			dependencies = dependencies.concat((first ? "" : ", ") + fdIt.next().toString().replaceAll("->", "&rarr;"));
-			first = false;
-		}
+        for (FunctionalDependency functionalDependency : spec.getFunctionalDependencies()) {
+            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
+            first = false;
+        }
 
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
@@ -951,11 +944,10 @@ public class HTMLPrinter implements MessageSourceAware {
 		offset = getOffset(indent);
 		dependencies = "";
 		first = true;
-		Iterator<FunctionalDependency> it = spec.getFunctionalDependencies().iterator();
-		while (it.hasNext()){
-			dependencies = dependencies.concat((first ? "" : ", ") + it.next().toString().replaceAll("->", "&rarr;"));
-			first = false;
-		}
+        for (FunctionalDependency functionalDependency : spec.getFunctionalDependencies()) {
+            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
+            first = false;
+        }
 
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
@@ -994,11 +986,10 @@ public class HTMLPrinter implements MessageSourceAware {
 		}
 		dependencies = "";
 		first = true;
-		Iterator<FunctionalDependency> fdIt = spec.getFunctionalDependencies().iterator();
-		while (fdIt.hasNext()){
-			dependencies = dependencies.concat((first ? "" : ", ") + fdIt.next().toString().replaceAll("->", "&rarr;"));
-			first = false;
-		}
+        for (FunctionalDependency functionalDependency : spec.getFunctionalDependencies()) {
+            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
+            first = false;
+        }
 
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {

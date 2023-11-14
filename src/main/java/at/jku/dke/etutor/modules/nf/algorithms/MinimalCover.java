@@ -41,20 +41,17 @@ public class MinimalCover {
 	public static HashSet<FunctionalDependency> calculateRedundantFunctionalDependencies(Collection<FunctionalDependency> dependencies){
 		Vector<FunctionalDependency> tempDependencies = new Vector<>();
 		HashSet<FunctionalDependency> redundantDependencies = new HashSet<>();
-		Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
-				
-		while (dependenciesIterator.hasNext()){
-			FunctionalDependency currDependency = dependenciesIterator.next();
 
-			tempDependencies.clear();
-			tempDependencies.addAll(dependencies);
-			tempDependencies.remove(currDependency);
-			tempDependencies.removeAll(redundantDependencies);
+        for (FunctionalDependency currDependency : dependencies) {
+            tempDependencies.clear();
+            tempDependencies.addAll(dependencies);
+            tempDependencies.remove(currDependency);
+            tempDependencies.removeAll(redundantDependencies);
 
-			if (Cover.execute(tempDependencies, dependencies)){
-				redundantDependencies.add(currDependency);
-			}
-		}
+            if (Cover.execute(tempDependencies, dependencies)) {
+                redundantDependencies.add(currDependency);
+            }
+        }
 
 		return redundantDependencies;
 	}
@@ -64,36 +61,34 @@ public class MinimalCover {
 		Vector<FunctionalDependency> tempFDs = new Vector<>();
 		FunctionalDependency tempFD = new FunctionalDependency();
 		HashMap<FunctionalDependency, Vector<String>> extraneusAttributes = new HashMap<>();
-		Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
 
-		while (dependenciesIterator.hasNext()) {
-			FunctionalDependency currFD = dependenciesIterator.next();
-			Iterator<String> attributesIterator = currFD.iterLHSAttributes();
+        for (FunctionalDependency currFD : dependencies) {
+            Iterator<String> attributesIterator = currFD.iterLHSAttributes();
 
-			while (attributesIterator.hasNext()) {
-				String currAttribute = attributesIterator.next();
+            while (attributesIterator.hasNext()) {
+                String currAttribute = attributesIterator.next();
 
-				tempFD.setLHSAttributes(currFD.getLHSAttributes());
-				tempFD.setRHSAttributes(currFD.getRHSAttributes());
-				tempFD.removeLHSAttribute(currAttribute);
+                tempFD.setLHSAttributes(currFD.getLHSAttributes());
+                tempFD.setRHSAttributes(currFD.getRHSAttributes());
+                tempFD.removeLHSAttribute(currAttribute);
 
-				if (extraneusAttributes.containsKey(currFD)){
-					tempFD.removeLHSAttributes(extraneusAttributes.get(currFD));
-				}
+                if (extraneusAttributes.containsKey(currFD)) {
+                    tempFD.removeLHSAttributes(extraneusAttributes.get(currFD));
+                }
 
-				tempFDs.clear();
-				tempFDs.addAll(dependencies);
-				tempFDs.remove(currFD);
-				tempFDs.add(tempFD);
-				
-				if (Cover.execute(dependencies, tempFDs)){
-					if (!extraneusAttributes.containsKey(currFD)){
-						extraneusAttributes.put(currFD, new Vector<>());
-					}
-					extraneusAttributes.get(currFD).add(currAttribute);
-				}
-			}
-		}
+                tempFDs.clear();
+                tempFDs.addAll(dependencies);
+                tempFDs.remove(currFD);
+                tempFDs.add(tempFD);
+
+                if (Cover.execute(dependencies, tempFDs)) {
+                    if (!extraneusAttributes.containsKey(currFD)) {
+                        extraneusAttributes.put(currFD, new Vector<>());
+                    }
+                    extraneusAttributes.get(currFD).add(currAttribute);
+                }
+            }
+        }
 
 		return extraneusAttributes;
 	}
@@ -129,11 +124,10 @@ public class MinimalCover {
 
 	public static HashSet<FunctionalDependency> unfold(Collection<FunctionalDependency> dependencies) {
 		HashSet<FunctionalDependency> unfoldedDependencies = new HashSet<>();
-		Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
 
-		while (dependenciesIterator.hasNext()) {
-			unfoldedDependencies.addAll(dependenciesIterator.next().unfold());
-		}
+        for (FunctionalDependency dependency : dependencies) {
+            unfoldedDependencies.addAll(dependency.unfold());
+        }
 
 		return unfoldedDependencies;
 	}

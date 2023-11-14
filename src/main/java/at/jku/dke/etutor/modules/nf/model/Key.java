@@ -48,16 +48,15 @@ public class Key implements Serializable{
 	public String toString() {
 		boolean first = true;
 		StringBuilder toStringBuilder = new StringBuilder();
-		Iterator<String> attributesIterator = this.attributes.iterator();
 
-		while (attributesIterator.hasNext()) {
-			if (first) {
-				first = false;
-			} else {
-				toStringBuilder.append(" ");
-			}
-			toStringBuilder.append(attributesIterator.next());
-		}
+        for (String attribute : this.attributes) {
+            if (first) {
+                first = false;
+            } else {
+                toStringBuilder.append(" ");
+            }
+            toStringBuilder.append(attribute);
+        }
 
 		return toStringBuilder.toString();
 	}
@@ -80,10 +79,9 @@ public class Key implements Serializable{
 	
 	public void addAllAttributes(Collection<String> attributes){
 		if (attributes != null){
-			Iterator<String> attributesIterator = attributes.iterator();
-			while (attributesIterator.hasNext()){
-				this.addAttribute(attributesIterator.next());
-			}
+            for (String attribute : attributes) {
+                this.addAttribute(attribute);
+            }
 		}
 	}
 

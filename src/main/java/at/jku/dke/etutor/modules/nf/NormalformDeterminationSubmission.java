@@ -25,15 +25,14 @@ public class NormalformDeterminationSubmission implements Serializable {
 		Integer currID;
 		FunctionalDependency currDependency;
 
-		Iterator<Integer> iter = this.dependencyIDs.keySet().iterator();
-		while (iter.hasNext()) {
-			currID = iter.next();
-			currDependency = this.dependencyIDs
-					.get(currID);
-			if (currDependency.equals(dependency)) {
-				return currID;
-			}
-		}
+        for (Integer integer : this.dependencyIDs.keySet()) {
+            currID = integer;
+            currDependency = this.dependencyIDs
+                    .get(currID);
+            if (currDependency.equals(dependency)) {
+                return currID;
+            }
+        }
 
 		return null;
 	}

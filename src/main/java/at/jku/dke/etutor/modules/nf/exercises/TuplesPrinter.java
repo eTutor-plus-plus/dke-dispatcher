@@ -11,12 +11,11 @@ public class TuplesPrinter {
 
 	public static String toString(TupleSet tuplePopulation, Vector<String> prefixes){
 		String s = "";
-		Iterator<int[]> tuplesIterator = tuplePopulation.iterator();
-		
-		while (tuplesIterator.hasNext()){
-			s = s.concat(toString(tuplesIterator.next(), prefixes));
-			s = s.concat("\n");
-		}
+
+        for (int[] ints : tuplePopulation) {
+            s = s.concat(toString(ints, prefixes));
+            s = s.concat("\n");
+        }
 		
 		return s;
 	}

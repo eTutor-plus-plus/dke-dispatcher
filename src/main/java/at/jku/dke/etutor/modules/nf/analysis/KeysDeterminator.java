@@ -103,13 +103,11 @@ public class KeysDeterminator {
 		TreeSet<Key> keys = new TreeSet<>(new KeyComparator());
 		TreeSet<Key> superKeys = determineSuperKeys(relation);
 
-		Iterator<Key> superKeysIterator = superKeys.iterator();
-		while (superKeysIterator.hasNext()) {
-			Key superKey = superKeysIterator.next();
-			if (isMinimalKey(superKey, relation)) {
-				keys.add(superKey);
-			}
-		}
+        for (Key superKey : superKeys) {
+            if (isMinimalKey(superKey, relation)) {
+                keys.add(superKey);
+            }
+        }
 	
 		container.setMinimalKeys(keys);
 		container.setSuperKeys(superKeys);
@@ -125,27 +123,24 @@ public class KeysDeterminator {
 	public static TreeSet<Key> determinePartialKeys(Collection<Key> minimalKeys) {
 		TreeSet<Key> partialKeys = new TreeSet<>(new KeyComparator());
 
-		Iterator<Key> keysIterator = minimalKeys.iterator();
-		while (keysIterator.hasNext()) {
-			Key currKey = keysIterator.next();
+        for (Key currKey : minimalKeys) {
+            for (int i = 1; i <= currKey.getAttributes().size(); i++) {
+                CombinationGenerator generator = new CombinationGenerator(currKey.getAttributes().size(), i);
 
-			for (int i = 1; i <= currKey.getAttributes().size(); i++) {
-				CombinationGenerator generator = new CombinationGenerator(currKey.getAttributes().size(), i);
-
-				while (generator.hasMore()) {
-					int[] indices = generator.getNext();
-					Key partialKey = new Key();
-					if (indices.length != currKey.getAttributes().size()) {
-						for (int j = 0; j < indices.length; j++) {
-							partialKey.addAttribute((String)currKey.getAttributes().toArray()[indices[j]]);
-						}
-					}
-					if (!partialKey.getAttributes().isEmpty()) {
-						partialKeys.add(partialKey);
-					}
-				}
-			}
-		}
+                while (generator.hasMore()) {
+                    int[] indices = generator.getNext();
+                    Key partialKey = new Key();
+                    if (indices.length != currKey.getAttributes().size()) {
+                        for (int j = 0; j < indices.length; j++) {
+                            partialKey.addAttribute((String) currKey.getAttributes().toArray()[indices[j]]);
+                        }
+                    }
+                    if (!partialKey.getAttributes().isEmpty()) {
+                        partialKeys.add(partialKey);
+                    }
+                }
+            }
+        }
 		
 		return partialKeys;
 	}

@@ -19,10 +19,9 @@ public class NormalformAnalyzer {
 		Iterator<FunctionalDependency> dependenciesIterator = config.getRelation().iterFunctionalDependencies();
 		
 		StringBuilder temp = new StringBuilder();
-		Iterator<Key> keysIterator = config.getCorrectMinimalKeys().iterator();
-		while (keysIterator.hasNext()){
-			temp.append(keysIterator.next()).append("; ");
-		}
+        for (Key key : config.getCorrectMinimalKeys()) {
+            temp.append(key).append("; ");
+        }
 
 		RDBDHelper.getLogger().log(Level.INFO, "Correct Minimal Keys: " + temp);
 		
@@ -69,14 +68,12 @@ public class NormalformAnalyzer {
 	}
 
 	private static boolean isPrimAttribute(String attribute, Collection<Key> minimalKeys) {
-		Iterator<Key> minimalKeysIterator = minimalKeys.iterator();
 
-		while (minimalKeysIterator.hasNext()) {
-			Key currMinimalKey = minimalKeysIterator.next();
-			if (currMinimalKey.getAttributes().contains(attribute)) {
-				return true;
-			}
-		}
+        for (Key currMinimalKey : minimalKeys) {
+            if (currMinimalKey.getAttributes().contains(attribute)) {
+                return true;
+            }
+        }
 		return false;
 	}
 
@@ -164,15 +161,13 @@ public class NormalformAnalyzer {
 		if (rhsComprisesNonPrimAttribute) {
 			isViolated = false;
 
-			Iterator<Key> keysIterator = config.getCorrectMinimalKeys().iterator();
-			while (keysIterator.hasNext()) {
-				Key currKey = keysIterator.next();
-				//RDBDHelper.getLogger().log(Level.INFO, "Check Key: " + currKey + " (Key: " + currKey.getAttributes().size() + " -  Dependency: " + dependency.getLHSAttributes().size() + ")");
+            for (Key currKey : config.getCorrectMinimalKeys()) {
+                //RDBDHelper.getLogger().log(Level.INFO, "Check Key: " + currKey + " (Key: " + currKey.getAttributes().size() + " -  Dependency: " + dependency.getLHSAttributes().size() + ")");
 
-				if ((currKey.getAttributes().containsAll(dependency.getLHSAttributes())) && (currKey.getAttributes().size() > dependency.getLHSAttributes().size())) {
-					isViolated = true;
-				}
-			}
+                if ((currKey.getAttributes().containsAll(dependency.getLHSAttributes())) && (currKey.getAttributes().size() > dependency.getLHSAttributes().size())) {
+                    isViolated = true;
+                }
+            }
 			
 			/* OLD
 			lhsIsKey = false;
@@ -262,20 +257,18 @@ public class NormalformAnalyzer {
 		violation.setFunctionalDependency(dependency);
 
 		boolean isViolated = true;
-		Iterator<Key> keysIterator = config.getCorrectMinimalKeys().iterator();
 
-		while (keysIterator.hasNext()) {
-			Key currKey = keysIterator.next();
+        for (Key currKey : config.getCorrectMinimalKeys()) {
 			/* OLD
 			if ((currKey.getAttributes().containsAll(dependency.getLHSAttributes()))
 				&& (currKey.getAttributes().size() == dependency.getLHSAttributes().size())) {
 				isViolated = true;
 			}*/
 
-			if (dependency.getLHSAttributes().containsAll(currKey.getAttributes())){
-				isViolated = false;
-			}
-		}
+            if (dependency.getLHSAttributes().containsAll(currKey.getAttributes())) {
+                isViolated = false;
+            }
+        }
 
 		if (isViolated){
 			return violation;		

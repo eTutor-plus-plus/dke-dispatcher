@@ -27,15 +27,14 @@ public class FunctionalDependency implements Serializable{
 		FunctionalDependency dependency;
 
 		Vector<FunctionalDependency> unfoldedRepresentation = new Vector<>();
-		Iterator<String> rhsAttributesIterator = this.rhs.iterator();
 
-		while (rhsAttributesIterator.hasNext()) {
-			dependency = new FunctionalDependency(this.lhs, null);
-			dependency.addRHSAttribute(rhsAttributesIterator.next());
-			if (!dependency.isTrivial()) {
-				unfoldedRepresentation.add(dependency);
-			}
-		}
+        for (String rh : this.rhs) {
+            dependency = new FunctionalDependency(this.lhs, null);
+            dependency.addRHSAttribute(rh);
+            if (!dependency.isTrivial()) {
+                unfoldedRepresentation.add(dependency);
+            }
+        }
 
 		return unfoldedRepresentation;
 	}
@@ -139,38 +138,34 @@ public class FunctionalDependency implements Serializable{
 	}
 
 	public void addAllLHSAttributes(Collection<String> attributes){
-		Iterator<String> attributesIterator = attributes.iterator();
-		while (attributesIterator.hasNext()){
-			this.addLHSAttribute(attributesIterator.next());
-		}
+        for (String attribute : attributes) {
+            this.addLHSAttribute(attribute);
+        }
 		
 	}
 
 	public void addAllRHSAttributes(Collection<String> attributes){
-		Iterator<String> attributesIterator = attributes.iterator();
-		while (attributesIterator.hasNext()){
-			this.addRHSAttribute(attributesIterator.next());
-		}
+        for (String attribute : attributes) {
+            this.addRHSAttribute(attribute);
+        }
 		
 	}
 
 	public void setLHSAttributes(Collection<String> attributes) {
 		this.lhs.clear();
 		if (attributes != null) {
-			Iterator<String> attributesIterator = attributes.iterator();
-			while (attributesIterator.hasNext()) {
-				this.addLHSAttribute(attributesIterator.next());
-			}
+            for (String attribute : attributes) {
+                this.addLHSAttribute(attribute);
+            }
 		}
 	}
 
 	public void setRHSAttributes(Collection<String> attributes) {
 		this.rhs.clear();
 		if (attributes != null) {
-			Iterator<String> attributesIterator = attributes.iterator();
-			while (attributesIterator.hasNext()) {
-				this.addRHSAttribute(attributesIterator.next());
-			}
+            for (String attribute : attributes) {
+                this.addRHSAttribute(attribute);
+            }
 		}
 	}
 

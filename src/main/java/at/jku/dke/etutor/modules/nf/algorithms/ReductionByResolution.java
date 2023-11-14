@@ -240,32 +240,30 @@ public class ReductionByResolution {
 
 		HashSet<FunctionalDependency> resolvents = new HashSet<>();
 		Vector<FunctionalDependency> containingDependencies = new Vector<>();
-		Iterator<FunctionalDependency> containingDependenciesIterator = dependencies.iterator();
 
-		while (containingDependenciesIterator.hasNext()) {
-			currDependency = containingDependenciesIterator.next();
-			if (currDependency.getRHSAttributes().contains(a)) {
-				containingDependencies.add(currDependency);
-			}
-		}
+        for (FunctionalDependency functionalDependency : dependencies) {
+            currDependency = functionalDependency;
+            if (currDependency.getRHSAttributes().contains(a)) {
+                containingDependencies.add(currDependency);
+            }
+        }
 
-		Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
-		while (dependenciesIterator.hasNext()) {
-			currDependency = dependenciesIterator.next();
-			if (currDependency.getLHSAttributes().contains(a)) {
-				for (int i = 0; i < containingDependencies.size(); i++) {
-					FunctionalDependency resolvent = new FunctionalDependency();
-					resolvent.addAllLHSAttributes(currDependency.getLHSAttributes());
-					resolvent.removeLHSAttribute(a);
-					resolvent.addAllLHSAttributes(containingDependencies.get(i).getLHSAttributes());
-					resolvent.addAllRHSAttributes(currDependency.getRHSAttributes());
+        for (FunctionalDependency dependency : dependencies) {
+            currDependency = dependency;
+            if (currDependency.getLHSAttributes().contains(a)) {
+                for (int i = 0; i < containingDependencies.size(); i++) {
+                    FunctionalDependency resolvent = new FunctionalDependency();
+                    resolvent.addAllLHSAttributes(currDependency.getLHSAttributes());
+                    resolvent.removeLHSAttribute(a);
+                    resolvent.addAllLHSAttributes(containingDependencies.get(i).getLHSAttributes());
+                    resolvent.addAllRHSAttributes(currDependency.getRHSAttributes());
 
-					if (!resolvent.isTrivial()) {
-						resolvents.add(resolvent);
-					}
-				}
-			}
-		}
+                    if (!resolvent.isTrivial()) {
+                        resolvents.add(resolvent);
+                    }
+                }
+            }
+        }
 
 		/*
 		System.out.println("-----------------------------------------------");

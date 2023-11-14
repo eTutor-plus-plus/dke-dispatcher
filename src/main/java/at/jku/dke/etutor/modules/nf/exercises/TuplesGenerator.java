@@ -164,26 +164,25 @@ public class TuplesGenerator{
 	private static int[] mutateTuple(int[] tuple, int[] key, int maxValue, int minValue, TupleSet triedMutations) throws Exception{
 		int newValue;
 		int oldValue;
-		int[] mutation = tuple;
-		
-		RDBDHelper.getTestLogger().log(Level.INFO, "MUTATE TUPLE: " + TuplesPrinter.toString(tuple));
+
+        RDBDHelper.getTestLogger().log(Level.INFO, "MUTATE TUPLE: " + TuplesPrinter.toString(tuple));
 		
 		for (int pos=0; pos<key.length; pos++){
-			oldValue = mutation[key[pos]];
+			oldValue = tuple[key[pos]];
 			newValue = incrementValue(oldValue, maxValue, minValue);
-			mutation[key[pos]] = newValue;
+			tuple[key[pos]] = newValue;
 
-			triedMutations.add(mutation);
+			triedMutations.add(tuple);
 			
-			if (!triedMutations.contains(mutation)){
-				return mutation;
+			if (!triedMutations.contains(tuple)){
+				return tuple;
 			} else {
 				if (pos == key.length-1){
 					throw new Exception("No more mutations available for tuple '" + TuplesPrinter.toString(tuple) + "'!");
 				}
 			}
 		}
-		return mutation;
+		return tuple;
 	}
 	
 	private static boolean causesNewKey(int[] newTuple, TupleSet tuples, Vector<Key> expectedKeys){

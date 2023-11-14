@@ -87,11 +87,10 @@ public class IdentifiedRelationComparator  implements Comparator<IdentifiedRelat
 			e.printStackTrace();
 			return;
 		}
-		
-		Iterator<IdentifiedRelation> i = s.iterator();
-		while (i.hasNext()){
-			relation = i.next();
-			System.out.println("Relation: " + relation.getID() + " Ident: " + relation.getID().split("\\.").length);
-		}
+
+        for (IdentifiedRelation identifiedRelation : s) {
+            relation = identifiedRelation;
+            System.out.println("Relation: " + relation.getID() + " Ident: " + relation.getID().split("\\.").length);
+        }
 	}
 }

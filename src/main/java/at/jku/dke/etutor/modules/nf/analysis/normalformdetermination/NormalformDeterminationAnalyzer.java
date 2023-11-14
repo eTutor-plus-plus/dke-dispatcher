@@ -19,10 +19,9 @@ public class NormalformDeterminationAnalyzer {
 		Iterator<FunctionalDependency> dependenciesIterator = config.getRelation().iterFunctionalDependencies();
 		
 		StringBuilder temp = new StringBuilder();
-		Iterator<Key> keysIterator = config.getCorrectMinimalKeys().iterator();
-		while (keysIterator.hasNext()){
-			temp.append(keysIterator.next()).append("; ");
-		}
+        for (Key key : config.getCorrectMinimalKeys()) {
+            temp.append(key).append("; ");
+        }
 		RDBDHelper.getLogger().log(Level.INFO, "Correct Minimal Keys: " + temp);
 		
 		//CHECK DEPENDENCIES

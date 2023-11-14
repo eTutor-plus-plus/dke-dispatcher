@@ -167,10 +167,9 @@ public class NormalizationAnalyzer {
 		analysis = new DecompositionAnalysis();
 	
 		analysis.setMissingAttributes(baseRelation.getAttributes());
-		Iterator<? extends Relation> decomposedRelationsIterator = decomposedRelations.iterator();
-		while (decomposedRelationsIterator.hasNext()){
-			analysis.removeAllMissingAttributes(decomposedRelationsIterator.next().getAttributes());
-		}
+        for (Relation decomposedRelation : decomposedRelations) {
+            analysis.removeAllMissingAttributes(decomposedRelation.getAttributes());
+        }
 
 		analysis.setSubmissionSuitsSolution((analysis.getMissingAttributes().isEmpty()));
 
@@ -204,10 +203,9 @@ public class NormalizationAnalyzer {
 		HashSet<FunctionalDependency> decomposedRelationsDependencies = new HashSet<>();
 		DependenciesPreservationAnalysis analysis = new DependenciesPreservationAnalysis();
 
-		Iterator<? extends Relation> decomposedRelationsIterator = decomposedRelations.iterator();
-		while (decomposedRelationsIterator.hasNext()){
-			decomposedRelationsDependencies.addAll(decomposedRelationsIterator.next().getFunctionalDependencies());
-		}
+        for (Relation decomposedRelation : decomposedRelations) {
+            decomposedRelationsDependencies.addAll(decomposedRelation.getFunctionalDependencies());
+        }
 		
 		Iterator<FunctionalDependency> baseRelationDependenciesIterator = baseRelation.iterFunctionalDependencies();
 		while(baseRelationDependenciesIterator.hasNext()){
@@ -223,14 +221,13 @@ public class NormalizationAnalyzer {
 
 	public static void analyzeNormalform(Collection<? extends Relation> decomposedRelations, NormalizationAnalysis analysis, HashMap<String, KeysContainer> correctKeys){
 		NormalformAnalyzerConfig config = new NormalformAnalyzerConfig();
-		Iterator<? extends Relation> decomposedRelationsIterator = decomposedRelations.iterator();
-		while (decomposedRelationsIterator.hasNext()){
-			IdentifiedRelation currRelation = (IdentifiedRelation)decomposedRelationsIterator.next();
+        for (Relation decomposedRelation : decomposedRelations) {
+            IdentifiedRelation currRelation = (IdentifiedRelation) decomposedRelation;
 
-			config.setRelation(currRelation);
-			config.setCorrectMinimalKeys(correctKeys.get(currRelation.getID()).getMinimalKeys());
-			config.setCorrectPartialKeys(correctKeys.get(currRelation.getID()).getPartialKeys());
-			analysis.addNormalformAnalysis(currRelation.getID(), NormalformAnalyzer.analyze(config));
-		}
+            config.setRelation(currRelation);
+            config.setCorrectMinimalKeys(correctKeys.get(currRelation.getID()).getMinimalKeys());
+            config.setCorrectPartialKeys(correctKeys.get(currRelation.getID()).getPartialKeys());
+            analysis.addNormalformAnalysis(currRelation.getID(), NormalformAnalyzer.analyze(config));
+        }
 	}
 }

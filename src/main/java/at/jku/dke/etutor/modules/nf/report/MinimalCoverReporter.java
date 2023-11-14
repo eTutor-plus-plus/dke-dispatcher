@@ -241,10 +241,9 @@ public class MinimalCoverReporter {
 		StringBuilder description = new StringBuilder();
 
         //COUNT BAD DEPENDECIES
-		Iterator<FunctionalDependency> badDependenciesIterator = analysis.getExtraneousAttributes().keySet().iterator();
-		while (badDependenciesIterator.hasNext()){
-			count = count + analysis.getExtraneousAttributes(badDependenciesIterator.next()).size();
-		}
+        for (FunctionalDependency functionalDependency : analysis.getExtraneousAttributes().keySet()) {
+            count = count + analysis.getExtraneousAttributes(functionalDependency).size();
+        }
 
 		//SET ERROR
 		report.setError(messageSource.getMessage("minimalcoverreporter.extraneousattribute", null, locale) + ".");
@@ -277,25 +276,22 @@ public class MinimalCoverReporter {
 
 			boolean first = true;
 			Iterator<String> extraneousAttributesIterator;
-			badDependenciesIterator = analysis.getExtraneousAttributes().keySet().iterator();
-			while (badDependenciesIterator.hasNext()){
-				FunctionalDependency currBadDependency = badDependenciesIterator.next();
+            for (FunctionalDependency currBadDependency : analysis.getExtraneousAttributes().keySet()) {
+                description.append("<tr><td>");
+                description.append(printDependency(currBadDependency));
+                description.append("</td><td>");
 
-				description.append("<tr><td>");
-				description.append(printDependency(currBadDependency));
-				description.append("</td><td>");
-				
-				extraneousAttributesIterator = analysis.getExtraneousAttributes(currBadDependency).iterator();
-				while (extraneousAttributesIterator.hasNext()){
-					if (first){
-						first = false;
-					} else {
-						description.append(" ");
-						description.append(extraneousAttributesIterator.next());
-					}
-				}
-				description.append("</td></tr>");
-			}
+                extraneousAttributesIterator = analysis.getExtraneousAttributes(currBadDependency).iterator();
+                while (extraneousAttributesIterator.hasNext()) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        description.append(" ");
+                        description.append(extraneousAttributesIterator.next());
+                    }
+                }
+                description.append("</td></tr>");
+            }
 			description.append("</tbody></table>");
 			description.append("</body></html>");
 			description.append("\"></input>");
