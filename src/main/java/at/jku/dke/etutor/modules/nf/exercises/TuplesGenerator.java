@@ -133,9 +133,9 @@ public class TuplesGenerator{
 					sampleTuple = tuples.get(tuples.size()-1);				
 				}
 
-				for (int keyAtt=0; keyAtt<key.length; keyAtt++){
-					tuple[key[keyAtt]] = sampleTuple[key[keyAtt]];
-				}
+                for (int i : key) {
+                    tuple[i] = sampleTuple[i];
+                }
 				
 				tuples.add(tuple);
 
@@ -197,11 +197,11 @@ public class TuplesGenerator{
 	}
 	
 	private static boolean holdsAllKeys(Vector<Key> keys, TupleSet tuples, int[] tuple){
-		for (int keyID=0; keyID<keys.size(); keyID++){
-			if (!KeysDeterminator.holdsKey((int[])keys.get(keyID), tuple, tuples)){
-				return false;
-			}
-		}
+        for (Key key : keys) {
+            if (!KeysDeterminator.holdsKey((int[]) key, tuple, tuples)) {
+                return false;
+            }
+        }
 		return true;
 	}
 

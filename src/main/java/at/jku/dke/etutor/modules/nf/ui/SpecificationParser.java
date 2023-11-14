@@ -117,16 +117,16 @@ public class SpecificationParser implements Serializable {
 		HashSet<FunctionalDependency> dependencySet = new HashSet<>();
 		String [] tokens = txt.split(",");
 
-		for (int i = 0; i < tokens.length; i++) {
-			String token = tokens[i].trim();
-			if (!token.isEmpty()) {
-				FunctionalDependency dependency = parseDependency(token);
-				if (dependencySet.contains(dependency)) {
-					throw new SpecificationParserException("Duplicate dependencies specification " + dependency);
-				}
-				dependencySet.add(dependency);
-			}
-		}
+        for (String s : tokens) {
+            String token = s.trim();
+            if (!token.isEmpty()) {
+                FunctionalDependency dependency = parseDependency(token);
+                if (dependencySet.contains(dependency)) {
+                    throw new SpecificationParserException("Duplicate dependencies specification " + dependency);
+                }
+                dependencySet.add(dependency);
+            }
+        }
 		return dependencySet;
 	}
 		
@@ -142,19 +142,19 @@ public class SpecificationParser implements Serializable {
 		rhs = null;
 		dependency = new FunctionalDependency();
 		tokens = txt.split("->");
-		for (int j = 0; j < tokens.length; j++) {
-			token = tokens[j].trim();
-			if (lhs == null) {
-				lhs = token.trim();
-				dependency.setLHSAttributes(parseAttributes(lhs, qualifiers.get(QUALIFIER_DEPENDENCIES)));
-			} else if (rhs == null) {
-				rhs = token.trim();
-				dependency.setRHSAttributes(parseAttributes(rhs, qualifiers.get(QUALIFIER_DEPENDENCIES)));
-			} else {
-				msg = "Invalid dependency definition: " + txt;
-				throw new SpecificationParserException(msg);			
-			}
-		}
+        for (String s : tokens) {
+            token = s.trim();
+            if (lhs == null) {
+                lhs = token.trim();
+                dependency.setLHSAttributes(parseAttributes(lhs, qualifiers.get(QUALIFIER_DEPENDENCIES)));
+            } else if (rhs == null) {
+                rhs = token.trim();
+                dependency.setRHSAttributes(parseAttributes(rhs, qualifiers.get(QUALIFIER_DEPENDENCIES)));
+            } else {
+                msg = "Invalid dependency definition: " + txt;
+                throw new SpecificationParserException(msg);
+            }
+        }
 		if (lhs == null) {
 			msg = "Missing left hand side of dependency " + txt;
 			throw new SpecificationParserException(msg);			
@@ -170,24 +170,24 @@ public class SpecificationParser implements Serializable {
 		Set<String> attributeSet = new TreeSet<>();
 		String[] tokens = txt.split("\\s");
 
-		for (int i = 0; i < tokens.length; i++) {
-			String token = tokens[i].trim();
-			if (!token.isEmpty()) {
-				if (!token.matches(PATTERN_ATTRIBUTE)) {
-					throw new SpecificationParserException("Invalid attribute: " + token);
-				}
-				if (attributeSet.contains(token)) {
-					if (qualifier.equals(qualifiers.get(QUALIFIER_ATTRIBUTES_BASE))) {
-						throw new SpecificationParserException("Duplicate attribute in base attributes specification " + qualifier);
-					} else if (qualifier.equals(qualifiers.get(QUALIFIER_ATTRIBUTES_RELATION))) {
-						throw new SpecificationParserException("Duplicate attribute in relation attributes specification " + qualifier);
-					} else if (qualifier.equals(qualifiers.get(QUALIFIER_DEPENDENCIES))) {
-						throw new SpecificationParserException("Duplicate attribute in dependency specification " + qualifier);
-					}
-				}
-				attributeSet.add(token);
-			}
-		}
+        for (String s : tokens) {
+            String token = s.trim();
+            if (!token.isEmpty()) {
+                if (!token.matches(PATTERN_ATTRIBUTE)) {
+                    throw new SpecificationParserException("Invalid attribute: " + token);
+                }
+                if (attributeSet.contains(token)) {
+                    if (qualifier.equals(qualifiers.get(QUALIFIER_ATTRIBUTES_BASE))) {
+                        throw new SpecificationParserException("Duplicate attribute in base attributes specification " + qualifier);
+                    } else if (qualifier.equals(qualifiers.get(QUALIFIER_ATTRIBUTES_RELATION))) {
+                        throw new SpecificationParserException("Duplicate attribute in relation attributes specification " + qualifier);
+                    } else if (qualifier.equals(qualifiers.get(QUALIFIER_DEPENDENCIES))) {
+                        throw new SpecificationParserException("Duplicate attribute in dependency specification " + qualifier);
+                    }
+                }
+                attributeSet.add(token);
+            }
+        }
 		return attributeSet;
 	}
 

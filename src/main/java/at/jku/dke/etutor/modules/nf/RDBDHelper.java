@@ -196,9 +196,9 @@ public class RDBDHelper {
 		relation.setName(name);
 		
 		String[] temp = attributes.split(" ");
-		for (int i=0; i<temp.length; i++){
-			relation.addAttribute(temp[i]);
-		}
+        for (String s : temp) {
+            relation.addAttribute(s);
+        }
 		
 		return relation; 
 	}
@@ -209,9 +209,9 @@ public class RDBDHelper {
 		relation.setName(name);
 		
 		String[] temp = attributes.split(" ");
-		for (int i=0; i<temp.length; i++){
-			relation.addAttribute(temp[i]);
-		}
+        for (String s : temp) {
+            relation.addAttribute(s);
+        }
 		
 		return relation; 
 	}
@@ -221,14 +221,14 @@ public class RDBDHelper {
 		FunctionalDependency dependency = new FunctionalDependency();
 		
 		temp = lhsAttributes.split(" ");
-		for (int i=0; i<temp.length; i++){
-			dependency.addLHSAttribute(temp[i]);
-		}
+        for (String string : temp) {
+            dependency.addLHSAttribute(string);
+        }
 	
 		temp = rhsAttributes.split(" ");
-		for (int i=0; i<temp.length; i++){
-			dependency.addRHSAttribute(temp[i]);
-		}
+        for (String s : temp) {
+            dependency.addRHSAttribute(s);
+        }
 		
 		relation.addFunctionalDependency(dependency);
 	}
@@ -239,15 +239,15 @@ public class RDBDHelper {
 
 		subRelation1.setID(relationID + ".1");
 		subRelation1.setName("R" + relationID + ".1");
-		for (int i=0; i<subRelation1Attributes.length; i++){
-			subRelation1.addAttribute(subRelation1Attributes[i]);
-		}
+        for (String subRelation1Attribute : subRelation1Attributes) {
+            subRelation1.addAttribute(subRelation1Attribute);
+        }
 
 		subRelation2.setID(relationID + ".2");
 		subRelation2.setName("R" + relationID + ".2");
-		for (int i=0; i<subRelation2Attributes.length; i++){
-			subRelation2.addAttribute(subRelation2Attributes[i]);
-		}
+        for (String subRelation2Attribute : subRelation2Attributes) {
+            subRelation2.addAttribute(subRelation2Attribute);
+        }
 
 		relations.add(subRelation1);
 		relations.add(subRelation2);
@@ -346,9 +346,9 @@ public class RDBDHelper {
 	}
 	
 	public static void addAttribute(Relation relation, String[] attributes) throws Exception{
-		for (int i=0; i<attributes.length; i++){
-			relation.addAttribute(attributes[i]);
-		}
+        for (String attribute : attributes) {
+            relation.addAttribute(attribute);
+        }
 	}
 	
 	public static void delAttributes(Collection<IdentifiedRelation> relations, String relationID, String[] attributesToDelete) throws Exception{
@@ -372,10 +372,10 @@ public class RDBDHelper {
 
 	public static void delAttributes(Relation relation, String[] attributesToDelete) throws Exception{
 		String currAttribute;
-		for (int i=0; i<attributesToDelete.length; i++){
-			currAttribute = attributesToDelete[i];
-			relation.removeAttribute(currAttribute);	
-		}
+        for (String s : attributesToDelete) {
+            currAttribute = s;
+            relation.removeAttribute(currAttribute);
+        }
 		checkRelation(relation);
 	}
 	
@@ -403,13 +403,13 @@ public class RDBDHelper {
 
 		currDependency = new FunctionalDependency();
 
-		for (int i=0; i<rhsAttributes.length; i++){
-			currDependency.addRHSAttribute(rhsAttributes[i]);
-		}
+        for (String rhsAttribute : rhsAttributes) {
+            currDependency.addRHSAttribute(rhsAttribute);
+        }
 
-		for (int i=0; i<lhsAttributes.length; i++){
-			currDependency.addLHSAttribute(lhsAttributes[i]);
-		}
+        for (String lhsAttribute : lhsAttributes) {
+            currDependency.addLHSAttribute(lhsAttribute);
+        }
 				
 		relation.addFunctionalDependency(currDependency);
 	}
@@ -432,23 +432,23 @@ public class RDBDHelper {
 		String currDependency;
 		FunctionalDependency dependencyToDelete;
 
-		for (int i=0; i<dependenciesToDelete.length; i++){
-			currDependency = dependenciesToDelete[i];
-			dependencyToDelete = new FunctionalDependency();
-	
-			lhsAttributes = currDependency.substring(0, currDependency.indexOf("->")).split(" ");					
-			rhsAttributes = currDependency.substring(currDependency.indexOf("->") + 3).split(" ");
-			
-			for (int j=0; j<lhsAttributes.length; j++){
-				dependencyToDelete.addLHSAttribute(lhsAttributes[j]);
-			}
-	
-			for (int j=0; j<rhsAttributes.length; j++){
-				dependencyToDelete.addRHSAttribute(rhsAttributes[j]);
-			}
-	
-			relation.removeFunctionalDependency(dependencyToDelete);
-		}
+        for (String s : dependenciesToDelete) {
+            currDependency = s;
+            dependencyToDelete = new FunctionalDependency();
+
+            lhsAttributes = currDependency.substring(0, currDependency.indexOf("->")).split(" ");
+            rhsAttributes = currDependency.substring(currDependency.indexOf("->") + 3).split(" ");
+
+            for (String lhsAttribute : lhsAttributes) {
+                dependencyToDelete.addLHSAttribute(lhsAttribute);
+            }
+
+            for (String rhsAttribute : rhsAttributes) {
+                dependencyToDelete.addRHSAttribute(rhsAttribute);
+            }
+
+            relation.removeFunctionalDependency(dependencyToDelete);
+        }
 	}
 
 	public static void addKey(Collection<IdentifiedRelation> relations, String relationID, String[] attributes) throws Exception{
@@ -473,9 +473,9 @@ public class RDBDHelper {
 
 		currKey = new Key();
 
-		for (int i=0; i<attributes.length; i++){
-			currKey.addAttribute(attributes[i]);
-		}
+        for (String attribute : attributes) {
+            currKey.addAttribute(attribute);
+        }
 
 		relation.addMinimalKey(currKey);
 	}
@@ -501,22 +501,22 @@ public class RDBDHelper {
 	public static void delKeys(Relation relation, String[] attributes, String[] keysToDelete) throws Exception {
 		Key keyToDelete;
 
-		for (int i=0; i<keysToDelete.length; i++){
-			RDBDHelper.getLogger().log(Level.INFO, "DELETING NEXT KEY");
+        for (String s : keysToDelete) {
+            RDBDHelper.getLogger().log(Level.INFO, "DELETING NEXT KEY");
 
-			keyToDelete = new Key();
-			attributes = keysToDelete[i].split(" ");					
-			for (int j=0; j<attributes.length; j++){
-				keyToDelete.addAttribute(attributes[j]);
-			}
+            keyToDelete = new Key();
+            attributes = s.split(" ");
+            for (String attribute : attributes) {
+                keyToDelete.addAttribute(attribute);
+            }
 
-			boolean removed = relation.removeMinimalKey(keyToDelete);
-			if (removed){
-				RDBDHelper.getLogger().log(Level.INFO, "REMOVED KEY '" + keyToDelete + "'.");						
-			} else {
-				RDBDHelper.getLogger().log(Level.INFO, "COULD NOT REMOVE KEY '" + keyToDelete + "'.");						
-			}
-		}
+            boolean removed = relation.removeMinimalKey(keyToDelete);
+            if (removed) {
+                RDBDHelper.getLogger().log(Level.INFO, "REMOVED KEY '" + keyToDelete + "'.");
+            } else {
+                RDBDHelper.getLogger().log(Level.INFO, "COULD NOT REMOVE KEY '" + keyToDelete + "'.");
+            }
+        }
 	}
 	
 	public static void checkRelations(Collection<Relation> relations) {
@@ -556,13 +556,13 @@ public class RDBDHelper {
 			return;
 		}
 		if (spec instanceof AttributeClosureSpecification) {
-			for (int i = 0; i < attributes.length; i++) {
-				((AttributeClosureSpecification)spec).addBaseAttribute(attributes[i]);
-			}
+            for (String attribute : attributes) {
+                ((AttributeClosureSpecification) spec).addBaseAttribute(attribute);
+            }
 		} else if (spec instanceof RBRSpecification) {
-			for (int i = 0; i < attributes.length; i++) {
-				((RBRSpecification)spec).addBaseAttribute(attributes[i]);
-			}
+            for (String attribute : attributes) {
+                ((RBRSpecification) spec).addBaseAttribute(attribute);
+            }
 		}
 	}
 	
@@ -586,31 +586,31 @@ public class RDBDHelper {
 		if (spec instanceof AttributeClosureSpecification) {
 			attributes = ((AttributeClosureSpecification)spec).getBaseAttributes();
 			((AttributeClosureSpecification)spec).setBaseAttributes(new Vector<>());
-			for (int i = 0; i < attributes.size(); i++) {
-				remove = false;
-				for (int j = 0; !remove && j < attributesToDelete.length; j++) {
-					if (attributesToDelete[j].equals(attributes.get(i))) {
-						remove = true;
-					}
-				}
-				if (!remove) {
-					((AttributeClosureSpecification)spec).addBaseAttribute(attributes.get(i));
-				}
-			}
+            for (String attribute : attributes) {
+                remove = false;
+                for (int j = 0; !remove && j < attributesToDelete.length; j++) {
+                    if (attributesToDelete[j].equals(attribute)) {
+                        remove = true;
+                    }
+                }
+                if (!remove) {
+                    ((AttributeClosureSpecification) spec).addBaseAttribute(attribute);
+                }
+            }
 		} else if (spec instanceof RBRSpecification) {
 			attributes = ((RBRSpecification)spec).getBaseAttributes();
 			((RBRSpecification)spec).setBaseAttributes(new Vector<>());
-			for (int i = 0; i < attributes.size(); i++) {
-				remove = false;
-				for (int j = 0; !remove && j < attributesToDelete.length; j++) {
-					if (attributesToDelete[j].equals(attributes.get(i))) {
-						remove = true;
-					}
-				}
-				if (!remove) {
-					((RBRSpecification)spec).addBaseAttribute(attributes.get(i));
-				}
-			}
+            for (String attribute : attributes) {
+                remove = false;
+                for (int j = 0; !remove && j < attributesToDelete.length; j++) {
+                    if (attributesToDelete[j].equals(attribute)) {
+                        remove = true;
+                    }
+                }
+                if (!remove) {
+                    ((RBRSpecification) spec).addBaseAttribute(attribute);
+                }
+            }
 		}
 	}
 	

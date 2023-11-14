@@ -449,39 +449,29 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String getNormalform(FunctionalDependency dependency, NormalformAnalysis analysis, Locale locale) {
-		NormalformViolation violation;
-		
-		Vector<? extends NormalformViolation> v = analysis.getFirstNormalformViolations();
-		for (int i = 0; i < v.size(); i++) {
-			violation = v.get(i);
-			if (violation.getFunctionalDependency().equals(dependency)) {
-				return "";
-			}
-		}
-		
-		v = analysis.getSecondNormalformViolations();
-		for (int i = 0; i < v.size(); i++) {
-			violation = v.get(i);
-			if (violation.getFunctionalDependency().equals(dependency)) {
-				return messageSource.getMessage("getnormalform.first", null, locale);
-			}
-		}
-		
-		v = analysis.getThirdNormalformViolations();
-		for (int i = 0; i < v.size(); i++) {
-			violation = v.get(i);
-			if (violation.getFunctionalDependency().equals(dependency)) {
-				return messageSource.getMessage("getnormalform.second", null, locale);
-			}
-		}
-		
-		v = analysis.getBoyceCoddNormalformViolations();
-		for (int i = 0; i < v.size(); i++) {
-			violation = v.get(i);
-			if (violation.getFunctionalDependency().equals(dependency)) {
-				return messageSource.getMessage("getnormalform.third", null, locale);
-			}
-		}
+        for (NormalformViolation violation : analysis.getFirstNormalformViolations()) {
+            if (violation.getFunctionalDependency().equals(dependency)) {
+                return "";
+            }
+        }
+
+        for (NormalformViolation violation : analysis.getSecondNormalformViolations()) {
+            if (violation.getFunctionalDependency().equals(dependency)) {
+                return messageSource.getMessage("getnormalform.first", null, locale);
+            }
+        }
+
+        for (NormalformViolation violation : analysis.getThirdNormalformViolations()) {
+            if (violation.getFunctionalDependency().equals(dependency)) {
+                return messageSource.getMessage("getnormalform.second", null, locale);
+            }
+        }
+
+        for (NormalformViolation violation : analysis.getBoyceCoddNormalformViolations()) {
+            if (violation.getFunctionalDependency().equals(dependency)) {
+                return messageSource.getMessage("getnormalform.third", null, locale);
+            }
+        }
 		
 		return messageSource.getMessage("getnormalform.boycecodd", null, locale);
 	}

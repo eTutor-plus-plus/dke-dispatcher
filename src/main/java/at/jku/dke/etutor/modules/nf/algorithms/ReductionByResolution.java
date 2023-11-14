@@ -251,11 +251,11 @@ public class ReductionByResolution {
         for (FunctionalDependency dependency : dependencies) {
             currDependency = dependency;
             if (currDependency.getLHSAttributes().contains(a)) {
-                for (int i = 0; i < containingDependencies.size(); i++) {
+                for (FunctionalDependency containingDependency : containingDependencies) {
                     FunctionalDependency resolvent = new FunctionalDependency();
                     resolvent.addAllLHSAttributes(currDependency.getLHSAttributes());
                     resolvent.removeLHSAttribute(a);
-                    resolvent.addAllLHSAttributes(containingDependencies.get(i).getLHSAttributes());
+                    resolvent.addAllLHSAttributes(containingDependency.getLHSAttributes());
                     resolvent.addAllRHSAttributes(currDependency.getRHSAttributes());
 
                     if (!resolvent.isTrivial()) {

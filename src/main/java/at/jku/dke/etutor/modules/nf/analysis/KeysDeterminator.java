@@ -11,21 +11,19 @@ public class KeysDeterminator {
 	public static TupleSet determineMinimalKeys(TupleSet tuples){
 		TupleSet keys = new TupleSet();
 		Vector<int[]> keyCandidates = calculateKeyCandidates(tuples.get(0).length);
-		 
-		for (int i=0; i<keyCandidates.size(); i++){
-			int[] key = keyCandidates.get(i);
-			
-			boolean isKey = true;
-			for (int j=0; j<tuples.size(); j++){
-				if (!holdsKey(key, tuples.get(j), tuples)){
-					isKey = false;
-				}
-			}
 
-			if (isKey){
-				keys.add(keyCandidates.get(i));
-			}
-		}
+        for (int[] key : keyCandidates) {
+            boolean isKey = true;
+            for (int j = 0; j < tuples.size(); j++) {
+                if (!holdsKey(key, tuples.get(j), tuples)) {
+                    isKey = false;
+                }
+            }
+
+            if (isKey) {
+                keys.add(key);
+            }
+        }
 		 
 		return keys;
 	}
@@ -131,8 +129,8 @@ public class KeysDeterminator {
                     int[] indices = generator.getNext();
                     Key partialKey = new Key();
                     if (indices.length != currKey.getAttributes().size()) {
-                        for (int j = 0; j < indices.length; j++) {
-                            partialKey.addAttribute((String) currKey.getAttributes().toArray()[indices[j]]);
+                        for (int index : indices) {
+                            partialKey.addAttribute((String) currKey.getAttributes().toArray()[index]);
                         }
                     }
                     if (!partialKey.getAttributes().isEmpty()) {
@@ -155,9 +153,9 @@ public class KeysDeterminator {
 				int[] indices = generator.getNext();
 				candidate.removeAllAttributes();
 				if (indices.length != key.getAttributes().size()) {
-					for (int j = 0; j < indices.length; j++) {
-						candidate.addAttribute((String)key.getAttributes().toArray()[indices[j]]);
-					}
+                    for (int index : indices) {
+                        candidate.addAttribute((String) key.getAttributes().toArray()[index]);
+                    }
 				}
 
 				Vector<String> attributes = new Vector<>();
@@ -203,9 +201,9 @@ public class KeysDeterminator {
 				while (generator.hasMore()) {
 					candidate.removeAllAttributes();
 					int[] indices = generator.getNext();
-					for (int j = 0; j < indices.length; j++) {
-						candidate.addAttribute((String)candidateAttributes.toArray()[indices[j]]);
-					}
+                    for (int index : indices) {
+                        candidate.addAttribute((String) candidateAttributes.toArray()[index]);
+                    }
 
 					candidate.addAllAttributes(constantAttributes);
 
