@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.modules.nf.exercises;
 
+import java.util.StringJoiner;
 import java.util.Vector;
 
 public class TuplesPrinter {
@@ -20,16 +21,13 @@ public class TuplesPrinter {
 	}
 
 	public static String toString(int[] tuple) {
-		String s = "";
+		StringJoiner s = new StringJoiner(" ");
 		
-		for (int i=0; i<tuple.length; i++){
-			s = s.concat(String.valueOf(tuple[i]));
-			if (!(i == tuple.length-1)){
-				s = s.concat(" ");
-			}
+		for (int i : tuple) {
+			s.add(String.valueOf(i));
 		}
 
-		return s;
+		return s.toString();
 	}
 
 	public static String toString(int[] tuple, Vector<String> prefixes) {
