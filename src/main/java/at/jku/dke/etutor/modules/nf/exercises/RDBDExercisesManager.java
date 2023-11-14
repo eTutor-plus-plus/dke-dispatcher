@@ -140,16 +140,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 
 			conn.commit();
 			return exerciseId;
-		} catch (SQLException e){
-			logger.log(Level.SEVERE, "", e);
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException ex){
-					logger.log(Level.SEVERE, "", ex);
-				}
-			}
-		} catch (IOException e) {
+		} catch (SQLException | IOException e){
 			logger.log(Level.SEVERE, "", e);
 			if (conn != null) {
 				try {
@@ -271,16 +262,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 
 			conn.commit();
 			return true;
-		} catch (SQLException e){
-			logger.log(Level.SEVERE, "", e);
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException ex){
-					logger.log(Level.SEVERE, "", ex);
-				}
-			}
-		} catch (IOException e) {
+		} catch (SQLException | IOException e){
 			logger.log(Level.SEVERE, "", e);
 			if (conn != null) {
 				try {

@@ -292,7 +292,7 @@ public class SpecificationParser implements Serializable {
 
 		buffer.append(qualifier).append(" {");
 		first = true;
-		Iterator it = items.iterator();
+		Iterator<?> it = items.iterator();
 		while (it.hasNext()) {
 			if (!first) {
 				buffer.append(delim);
@@ -351,32 +351,16 @@ public class SpecificationParser implements Serializable {
 	}
 	
 	public static SpecificationParser createParser(int rdbdType) {
-		switch (rdbdType) {
-			case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE): {
-				return new SpecificationParser("R", "A", "F");
-			}
-			case (RDBDConstants.TYPE_DECOMPOSE): {
-				return new SpecificationParser("R", null, "F");
-			}
-			case (RDBDConstants.TYPE_KEYS_DETERMINATION): {
-				return new SpecificationParser("R", null, "F");
-			}
-			case (RDBDConstants.TYPE_MINIMAL_COVER): {
-				return new SpecificationParser(null, null, "F");
-			}
-			case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION): {
-				return new SpecificationParser("R", null, "F");
-			}
-			case (RDBDConstants.TYPE_NORMALIZATION): {
-				return new SpecificationParser("R", null, "F");
-			}
-			case (RDBDConstants.TYPE_RBR): {
-				return new SpecificationParser("R", "S", "F");
-			}
-			default: {
-				return null;
-			}
-		}
+        return switch (rdbdType) {
+            case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) -> new SpecificationParser("R", "A", "F");
+            case (RDBDConstants.TYPE_DECOMPOSE) -> new SpecificationParser("R", null, "F");
+            case (RDBDConstants.TYPE_KEYS_DETERMINATION) -> new SpecificationParser("R", null, "F");
+            case (RDBDConstants.TYPE_MINIMAL_COVER) -> new SpecificationParser(null, null, "F");
+            case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION) -> new SpecificationParser("R", null, "F");
+            case (RDBDConstants.TYPE_NORMALIZATION) -> new SpecificationParser("R", null, "F");
+            case (RDBDConstants.TYPE_RBR) -> new SpecificationParser("R", "S", "F");
+            default -> null;
+        };
 	}
 
 	public static void main(String[] args){

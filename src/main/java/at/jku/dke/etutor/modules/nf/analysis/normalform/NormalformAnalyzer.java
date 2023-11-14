@@ -31,8 +31,8 @@ public class NormalformAnalyzer {
 			FunctionalDependency currDependency = dependenciesIterator.next();
 			RDBDHelper.getLogger().log(Level.INFO, "Check Dependency: " + currDependency);
 
-			if (satisfiesFirstNormalform(analysis, currDependency, config)){;
-				if (satisfiesSecondNormalform(analysis, currDependency, config)){
+			if (satisfiesFirstNormalform(analysis, currDependency, config)){
+                if (satisfiesSecondNormalform(analysis, currDependency, config)){
 					if (satisfiesThirdNormalform(analysis, currDependency, config)){
 						satisfiesBoyceCoddNormalform(analysis, currDependency, config);
 					}

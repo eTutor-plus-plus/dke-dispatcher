@@ -75,7 +75,7 @@ public class AttributeClosureReporter {
 			}
 
 			if (config.getDiagnoseLevel() == 2){
-				description.append(Integer.toString(missingAttributesCount));
+				description.append(missingAttributesCount);
 				if (missingAttributesCount == 1){
 					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeis", null, locale)).append(" ");
 				} else {
@@ -94,7 +94,7 @@ public class AttributeClosureReporter {
 				it = analysis.iterMissingAttributes();
 				while (it.hasNext()){
 					description.append("<tr><td>");
-					description.append(it.next().toString());
+					description.append(it.next());
 					description.append("</td></tr>");
 				}
 				description.append("</table>");
@@ -122,7 +122,7 @@ public class AttributeClosureReporter {
 			}
 
 			if (config.getDiagnoseLevel() == 2){
-				description.append(Integer.toString(additionalAttributesCount));
+				description.append(additionalAttributesCount);
 				if (missingAttributesCount == 1){
 					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeis", null, locale)).append(" ");
 				} else {
@@ -141,7 +141,7 @@ public class AttributeClosureReporter {
 				it = analysis.iterAdditionalAttributes();
 				while (it.hasNext()){
 					description.append("<tr><td>");
-					description.append(it.next().toString());
+					description.append(it.next());
 					description.append("</td></tr>");
 				}
 				description.append("</table>");

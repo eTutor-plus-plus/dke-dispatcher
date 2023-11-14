@@ -29,7 +29,7 @@ public class DecomposeAnalyzer {
 		analysis.setDecomposedRelations(config.getDecomposedRelations());
 
 		//INIT ALL RELATIONS SET
-		TreeSet<IdentifiedRelation> allRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
+		TreeSet<IdentifiedRelation> allRelations = new TreeSet<>(new IdentifiedRelationComparator());
 		allRelations.add(config.getBaseRelation());
 		allRelations.addAll(config.getDecomposedRelations());
 		
@@ -57,7 +57,7 @@ public class DecomposeAnalyzer {
 		}
 
 		//ANALYZE DEPENDENCIES PRESERVATION FOR LEAF-RELATIONS
-		TreeSet<IdentifiedRelation> leafRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
+		TreeSet<IdentifiedRelation> leafRelations = new TreeSet<>(new IdentifiedRelationComparator());
 		relationsIterator = allRelations.iterator();
 		while(relationsIterator.hasNext()){
 			relation = relationsIterator.next();

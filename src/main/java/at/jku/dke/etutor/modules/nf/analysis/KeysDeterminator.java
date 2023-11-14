@@ -31,9 +31,9 @@ public class KeysDeterminator {
 	}
 
 	public static Vector<int[]> calculateKeyCandidates(int valueNumber){
-		int[] keyAttributePositions = new int[valueNumber];;
+		int[] keyAttributePositions = new int[valueNumber];
 
-		Vector<int[]> keyCandidates = new Vector<>();
+        Vector<int[]> keyCandidates = new Vector<>();
 
 		//CALCULATE KEY ATTRIBUTE POSITIONS
 		for (int i=0; i<valueNumber; i++){
@@ -100,7 +100,7 @@ public class KeysDeterminator {
 	}
 
 	private static void determineMinimalKeys(Relation relation, KeysContainer container){
-		TreeSet<Key> keys = new TreeSet<Key>(new KeyComparator());
+		TreeSet<Key> keys = new TreeSet<>(new KeyComparator());
 		TreeSet<Key> superKeys = determineSuperKeys(relation);
 
 		Iterator<Key> superKeysIterator = superKeys.iterator();
@@ -123,7 +123,7 @@ public class KeysDeterminator {
 	}
 	
 	public static TreeSet<Key> determinePartialKeys(Collection<Key> minimalKeys) {
-		TreeSet<Key> partialKeys = new TreeSet<Key>(new KeyComparator());
+		TreeSet<Key> partialKeys = new TreeSet<>(new KeyComparator());
 
 		Iterator<Key> keysIterator = minimalKeys.iterator();
 		while (keysIterator.hasNext()) {
@@ -184,7 +184,7 @@ public class KeysDeterminator {
 	public static TreeSet<Key> determineSuperKeys(Relation relation) {
 		Key superKey;
 
-		TreeSet<Key> superKeys = new TreeSet<Key>(new KeyComparator());
+		TreeSet<Key> superKeys = new TreeSet<>(new KeyComparator());
 
 		//CALCULATING ATTRIBUTES THAT ARE PART OF EVERY KEY - RESTRICTING SET OF CANDIDATE ATTRIBUTES
         HashSet<String> constantAttributes = new HashSet<>(relation.getAttributes());

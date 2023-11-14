@@ -75,11 +75,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 	}
 
 	public KeysAnalysis getKeysAnalysis(String relationID){
-		if (this.keysAnalyses.containsKey(relationID)){
-			return this.keysAnalyses.get(relationID);
-		} else {
-			return null;			
-		}
+        return this.keysAnalyses.getOrDefault(relationID, null);
 	}
 
 	public void addRBRAnalysis(String relationID, RBRAnalysis analysis){
@@ -87,11 +83,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 	}
 	
 	public RBRAnalysis getRBRAnalysis(String relationID){
-		if (this.rbrAnalyses.containsKey(relationID)){
-			return this.rbrAnalyses.get(relationID);
-		} else {
-			return null;			
-		}
+        return this.rbrAnalyses.getOrDefault(relationID, null);
 	}
 
 	public void addNormalformAnalysis(String relationID, NormalformAnalysis analysis){
@@ -99,11 +91,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 	}
 	
 	public NormalformAnalysis getNormalformAnalysis(String relationID){
-		if (this.normalformAnalyses.containsKey(relationID)){
-			return this.normalformAnalyses.get(relationID);
-		} else {
-			return null;			
-		}
+        return this.normalformAnalyses.getOrDefault(relationID, null);
 	}
 	public NormalformLevel getDesiredNormalformLevel() {
 		return this.desiredNormalformLevel;

@@ -19,11 +19,11 @@ public class KeyComparator implements Comparator<Key>, Serializable{
 			return 0;
 		}
 
-		if ((o1 == null) && (o2 != null)) {
+		if (o1 == null) {
 			return 1;
 		}
 
-		if ((o1 != null) && (o2 == null)) {
+		if (o2 == null) {
 			return -1;
 		}
 

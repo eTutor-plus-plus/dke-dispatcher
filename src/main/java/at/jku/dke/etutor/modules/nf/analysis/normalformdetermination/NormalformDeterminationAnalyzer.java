@@ -23,15 +23,15 @@ public class NormalformDeterminationAnalyzer {
 		while (keysIterator.hasNext()){
 			temp.append(keysIterator.next()).append("; ");
 		}
-		RDBDHelper.getLogger().log(Level.INFO, "Correct Minimal Keys: " + temp.toString());
+		RDBDHelper.getLogger().log(Level.INFO, "Correct Minimal Keys: " + temp);
 		
 		//CHECK DEPENDENCIES
 		while (dependenciesIterator.hasNext()){
 			currDependency = dependenciesIterator.next();
 			//RDBDHelper.getLogger().log(Level.INFO, "Check Dependency: " + currDependency);
 
-			if (NormalformAnalyzer.satisfiesFirstNormalform(analysis, currDependency, config)){;
-				if (NormalformAnalyzer.satisfiesSecondNormalform(analysis, currDependency, config)){
+			if (NormalformAnalyzer.satisfiesFirstNormalform(analysis, currDependency, config)){
+                if (NormalformAnalyzer.satisfiesSecondNormalform(analysis, currDependency, config)){
 					if (NormalformAnalyzer.satisfiesThirdNormalform(analysis, currDependency, config)){
 						NormalformAnalyzer.satisfiesBoyceCoddNormalform(analysis, currDependency, config);
 					}

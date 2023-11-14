@@ -87,7 +87,7 @@ public class CombinationGenerator {
             for (int index : indices) {
                 combination.append(elements[index]).append(" ");
             }
-			System.out.println (combination.toString ());
+			System.out.println (combination);
 		}
 		
 		/*

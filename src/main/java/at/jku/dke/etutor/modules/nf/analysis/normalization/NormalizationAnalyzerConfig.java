@@ -21,7 +21,7 @@ public class NormalizationAnalyzerConfig {
 		this.baseRelation = null;
 		this.maxLostDependencies = 0;
 		this.desiredNormalformLevel = NormalformLevel.FIRST;
-		this.normalizedRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
+		this.normalizedRelations = new TreeSet<>(new IdentifiedRelationComparator());
 	}
 
 	public void setMaxLostDependencies(int maxLostDependencies){

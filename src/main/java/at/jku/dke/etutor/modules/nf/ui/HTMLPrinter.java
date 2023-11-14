@@ -1224,7 +1224,7 @@ public class HTMLPrinter implements MessageSourceAware {
 		key.addAttribute("D");
 		relation.addMinimalKey(key);
 
-		TreeSet<IdentifiedRelation> relations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
+		TreeSet<IdentifiedRelation> relations = new TreeSet<>(new IdentifiedRelationComparator());
 		relations.add(relation);
 
 		//CREATE RELATION 2

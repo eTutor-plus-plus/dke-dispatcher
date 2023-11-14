@@ -4,7 +4,6 @@ import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -46,10 +45,7 @@ public class RBRSpecification implements Serializable, Cloneable, RDBDSpecificat
 			}
 		}
 		this.baseAttributes = new Vector<>();
-		Iterator<String> it = attributeSet.iterator();
-		while (it.hasNext()) {
-			this.baseAttributes.add(it.next());
-		}
+		this.baseAttributes.addAll(attributeSet);
 	}
 
 	public void setBaseAttributes(Collection<String> attributeCombination) {

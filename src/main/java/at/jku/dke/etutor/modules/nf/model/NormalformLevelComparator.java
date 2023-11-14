@@ -10,33 +10,19 @@ public class NormalformLevelComparator implements Comparator<NormalformLevel>, S
 	}
 
 	public int compare(NormalformLevel o1, NormalformLevel o2) {
-		int nl1;
-		int nl2;
-
 		if ((o1 == null) && (o2 == null)) {
 			return 0;
-
 		} 
 		
-		if ((o1 == null) && (o2 != null)) {
+		if (o1 == null) {
 			return 1;
 		} 
 		
-		if ((o1 != null) && (o2 == null)) {
+		if (o2 == null) {
 			return -1;
 		}
 
-        nl1 = o1.hashCode();
-		nl2 = o2.hashCode();
+		return Integer.compare(o1.hashCode(), o2.hashCode());
 
-		if (nl1 > nl2){
-			return 1;			
-		}
-		
-		if (nl1 < nl2){
-			return -1;
-		}
-
-		return 0;
 	}
 }

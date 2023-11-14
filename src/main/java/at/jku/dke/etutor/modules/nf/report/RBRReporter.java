@@ -75,7 +75,7 @@ public class RBRReporter {
 			}
 
 			if (config.getDiagnoseLevel() == 2){
-				description.append(Integer.toString(missingDependenciesCount));
+				description.append(missingDependenciesCount);
 				if (missingDependenciesCount == 1){
 					description.append(" ").append(messageSource.getMessage("rbrreporter.dependencyis", null, locale)).append(" ");
 				} else {
@@ -122,7 +122,7 @@ public class RBRReporter {
 			}
 
 			if (config.getDiagnoseLevel() == 2){
-				description.append(Integer.toString(additionalDependenciesCount));
+				description.append(additionalDependenciesCount);
 				if (additionalDependenciesCount == 1){
 					description.append(" ").append(messageSource.getMessage("rbrreporter.dependencyis", null, locale)).append(" ");
 				} else {

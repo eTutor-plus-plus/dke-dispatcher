@@ -16,8 +16,8 @@ public class KeysAnalysis extends DefaultAnalysis implements Analysis {
 
 	public KeysAnalysis() {
 		super();
-		this.missingKeys = new TreeSet<Key>(new KeyComparator());
-		this.additionalKeys = new TreeSet<Key>(new KeyComparator());
+		this.missingKeys = new TreeSet<>(new KeyComparator());
+		this.additionalKeys = new TreeSet<>(new KeyComparator());
 	}
 
 	public void addMissingKey(Key key){

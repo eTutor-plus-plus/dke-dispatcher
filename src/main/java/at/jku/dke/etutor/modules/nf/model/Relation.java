@@ -25,9 +25,9 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		this.name = "";
 		this.subKeys = new HashSet<>();
 		this.dependencies = new HashSet<>();
-		this.superKeys = new TreeSet<Key>(new KeyComparator());
-		this.minimalKeys = new TreeSet<Key>(new KeyComparator());
-		this.attributes = new TreeSet<String>(new AttributeCollator());
+		this.superKeys = new TreeSet<>(new KeyComparator());
+		this.minimalKeys = new TreeSet<>(new KeyComparator());
+		this.attributes = new TreeSet<>(new AttributeCollator());
 	}
 
 	public Object clone() throws CloneNotSupportedException {
@@ -247,7 +247,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		Iterator<String> attributesIterator = this.attributes.iterator();
 
 		while (attributesIterator.hasNext()){
-			attributes[pos] = attributesIterator.next().toString();
+			attributes[pos] = attributesIterator.next();
 			pos = pos + 1;
 		}
 		

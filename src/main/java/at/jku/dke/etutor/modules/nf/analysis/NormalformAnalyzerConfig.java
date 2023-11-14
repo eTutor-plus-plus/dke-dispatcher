@@ -18,8 +18,8 @@ public class NormalformAnalyzerConfig {
 		super();
 		this.relation = new Relation();
 		this.desiredLevel = NormalformLevel.FIRST;
-		this.correctMinimalKeys = new TreeSet<Key>(new KeyComparator());
-		this.correctPartialKeys = new TreeSet<Key>(new KeyComparator());
+		this.correctMinimalKeys = new TreeSet<>(new KeyComparator());
+		this.correctPartialKeys = new TreeSet<>(new KeyComparator());
 	}
 
 	public void setDesiredNormalformLevel(NormalformLevel level){

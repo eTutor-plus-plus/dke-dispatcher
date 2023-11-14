@@ -145,18 +145,18 @@ public class NormalformReporter {
 
 	public static ErrorReport createNormalformErrorReport(NormalformAnalysis analysis, NormalformReporterConfig config, MessageSource messageSource, Locale locale){
 		boolean first;
-		boolean appendLineBreak = false;;
+		boolean appendLineBreak = false;
 
-		Iterator<String> it;
+        Iterator<String> it;
 		Iterator<? extends NormalformViolation> violations;
 
 		String currElemID;
 
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
-		NormalformLevelComparator comparator = new NormalformLevelComparator();;
-		
-		//SET ERROR
+		NormalformLevelComparator comparator = new NormalformLevelComparator();
+
+        //SET ERROR
 		report.setError(messageSource.getMessage("normalformreporter.insufficientnormalformlevel", new Object[]{normalformLevelToString(config.getDesiredNormalformLevel(), messageSource, locale),  normalformLevelToString(analysis.getOverallNormalformLevel(), messageSource, locale)}, locale));
 		
 		//SET HINT
@@ -236,7 +236,7 @@ public class NormalformReporter {
 					it = secondNFViolation.iterNonPrimRHSAttributes();
 					while (it.hasNext()){
 						description.append("<tr><td>");
-						description.append(it.next().toString());
+						description.append(it.next());
 						description.append("</td></tr>");
 					}
 					description.append("</table>");
@@ -311,7 +311,7 @@ public class NormalformReporter {
 					it = thirdNFViolation.iterNonPrimRHSAttributes();
 					while (it.hasNext()){
 						description.append("<tr><td>");
-						description.append(it.next().toString());
+						description.append(it.next());
 						description.append("</td></tr>");
 					}
 					description.append("</table>");

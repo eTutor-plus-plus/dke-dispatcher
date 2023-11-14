@@ -4,6 +4,6 @@ import java.io.Serializable;
 
 public interface RDBDSpecification extends Serializable {
 
-	public boolean semanticallyEquals(Object obj);
+	boolean semanticallyEquals(Object obj);
 
 }

@@ -35,7 +35,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 			HashMap<String, Object> passedAttributes,
 			HashMap<String, Object> passedParameters, Resource[] resources)
 			throws Exception {
-		HashMap<String, Object> sessionAttributes = new HashMap<String, Object>();
+		HashMap<String, Object> sessionAttributes = new HashMap<>();
 
 		String command = "";
 		String relationID = null;
@@ -282,7 +282,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 			HashMap<String, Object> passedAttributes,
 			HashMap<String, Object> passedParameters, Resource[] resources,
 			Serializable exerciseInfo) throws Exception {
-		HashMap<String, Object> sessionAttributes = new HashMap<String, Object>();
+		HashMap<String, Object> sessionAttributes = new HashMap<>();
 
 		SpecificationEditor rdbdExerciseBean;
 		SpecificationParser parser;
@@ -426,7 +426,7 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 	@Override
 	public HashMap<String, Object> initPerformTask(int exerciseId)
 			throws Exception {
-		HashMap<String, Object> sessionAttributes = new HashMap<String, Object>();
+		HashMap<String, Object> sessionAttributes = new HashMap<>();
 
 		Serializable specification = RDBDExercisesManager
 				.fetchSpecification(exerciseId);
@@ -439,14 +439,14 @@ public class RDBDEditor  implements MessageSourceAware, Editor {
 		IdentifiedRelation relation = null;
 
 		if (rdbdType == RDBDConstants.TYPE_NORMALIZATION) {
-			submission = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
+			submission = new TreeSet<>(new IdentifiedRelationComparator());
 
 			relation = new IdentifiedRelation();
 			relation.setID("1");
 			relation.setName("R1");
 			((Collection<IdentifiedRelation>) submission).add(relation);
 		} else if (rdbdType == RDBDConstants.TYPE_DECOMPOSE) {
-			submission = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
+			submission = new TreeSet<>(new IdentifiedRelationComparator());
 		} else if (rdbdType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
 			int lastID = 1;
 			Iterator<FunctionalDependency> dependenciesIterator;

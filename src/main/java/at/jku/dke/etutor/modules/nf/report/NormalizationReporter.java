@@ -168,7 +168,7 @@ public class NormalizationReporter {
 		}
 		
 		if (config.getDiagnoseLevel() == 1){
-			description.append(String.valueOf(numberOfLostDependencies));
+			description.append(numberOfLostDependencies);
 			if (numberOfLostDependencies == 1){
 				description.append(" ").append(messageSource.getMessage("normalizationreporter.dependencybaserelation", null, locale)).append(" ");
 			} else {
@@ -236,9 +236,9 @@ public class NormalizationReporter {
 		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
-		int numberOfMissingAttributes = analysis.getMissingAttributes().size();;		
+		int numberOfMissingAttributes = analysis.getMissingAttributes().size();
 
-		//SET ERROR
+        //SET ERROR
 		report.setError(messageSource.getMessage("normalizationreporter.invaliddecomposition", null, locale));
 
 		//SET HINT
@@ -249,7 +249,7 @@ public class NormalizationReporter {
 		}
 		
 		if (config.getDiagnoseLevel() == 1){
-			description.append(String.valueOf(numberOfMissingAttributes));
+			description.append(numberOfMissingAttributes);
 			if (numberOfMissingAttributes == 1){
 				description.append(" ").append(messageSource.getMessage("normalizationreporter.attributeis", null, locale)).append(" ");
 			} else {
@@ -268,7 +268,7 @@ public class NormalizationReporter {
 			Iterator<String> it = analysis.iterMissingAttributes();
 			while (it.hasNext()){
 				description.append("<tr><td>");
-				description.append(it.next().toString());
+				description.append(it.next());
 				description.append("</td></tr>");
 			}
 			description.append("</table>");

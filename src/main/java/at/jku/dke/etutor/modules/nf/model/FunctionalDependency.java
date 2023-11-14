@@ -13,8 +13,8 @@ public class FunctionalDependency implements Serializable{
 
 	public FunctionalDependency() {
 		super();
-		this.lhs = new TreeSet<String>(new AttributeCollator());
-		this.rhs = new TreeSet<String>(new AttributeCollator());
+		this.lhs = new TreeSet<>(new AttributeCollator());
+		this.rhs = new TreeSet<>(new AttributeCollator());
 	}
 
 	public FunctionalDependency(Collection<String> lhs, Collection<String> rhs) {
@@ -103,7 +103,7 @@ public class FunctionalDependency implements Serializable{
 			} else {
 				toString = toString.concat(" ");
 			}
-			toString = toString.concat(attributesIterator.next().toString());
+			toString = toString.concat(attributesIterator.next());
 		}
 
 		toString = toString.concat(" -> ");
@@ -116,7 +116,7 @@ public class FunctionalDependency implements Serializable{
 			} else {
 				toString = toString.concat(" ");
 			}
-			toString = toString.concat(attributesIterator.next().toString());
+			toString = toString.concat(attributesIterator.next());
 		}
 
 		return toString;

@@ -16,7 +16,7 @@ public class NormalizationReporterConfig extends ReporterConfig {
 	public NormalizationReporterConfig() {
 		super();
 		this.desiredNormalformLevel = NormalformLevel.FIRST;
-		this.decomposedRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
+		this.decomposedRelations = new TreeSet<>(new IdentifiedRelationComparator());
 	}
 	
 	public void setDesiredNormalformLevel(NormalformLevel level){

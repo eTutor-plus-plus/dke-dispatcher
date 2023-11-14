@@ -30,7 +30,7 @@ public class RDBDExerciseSettingView extends DefaultPrintView implements Exercis
 
 	private String generateXhtml(Locale locale, Serializable exerciseBean) {
 		StringBuilder xhtml = new StringBuilder();
-		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> model = new HashMap<>();
 		model.put("rdbdExerciseBean", exerciseBean);
 		RDBDSpecification specification = ((SpecificationEditor) exerciseBean).getSpecTmp();
 		model.put("specification", specification);

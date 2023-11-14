@@ -26,7 +26,7 @@ public class DecomposeAnalysis extends DefaultAnalysis implements Serializable, 
 		this.overallDepPresAnalysis = null;
 		this.targetLevel = NormalformLevel.FIRST;
 		this.decomposeStepAnalyses = new HashMap<>();
-		this.decomposedRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
+		this.decomposedRelations = new TreeSet<>(new IdentifiedRelationComparator());
 	}
 	
 	public void setDecomposedRelations(Collection<IdentifiedRelation> decomposedRelations){

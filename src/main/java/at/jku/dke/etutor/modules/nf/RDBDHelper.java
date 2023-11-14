@@ -4,12 +4,15 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
-import at.jku.dke.etutor.modules.nf.ui.*;
+import at.jku.dke.etutor.modules.nf.ui.HTMLPrinter;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
+import at.jku.dke.etutor.modules.nf.ui.MalformedRelationIDException;
+import at.jku.dke.etutor.modules.nf.ui.SpecificationParser;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.Id;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.Serializable;
@@ -17,7 +20,12 @@ import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.TreeSet;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -134,7 +142,7 @@ public class RDBDHelper {
 	public static TreeSet<IdentifiedRelation> findSubRelations(String relationID, TreeSet<IdentifiedRelation> relations){
 		IdentifiedRelation currRelation;
 		Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
-		TreeSet<IdentifiedRelation> subRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
+		TreeSet<IdentifiedRelation> subRelations = new TreeSet<>(new IdentifiedRelationComparator());
 		
 		while (relationsIterator.hasNext()){
 			currRelation = relationsIterator.next();
@@ -616,63 +624,36 @@ public class RDBDHelper {
 	}
 	
 	public static Relation getRelation(RDBDSpecification spec, int rdbdType) {
-		switch (rdbdType) {
-			case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION): {
-				return (Relation)spec;
-			}
-			case (RDBDConstants.TYPE_KEYS_DETERMINATION): {
-				return (IdentifiedRelation)spec;
-			}
-			case (RDBDConstants.TYPE_MINIMAL_COVER): {
-				return (IdentifiedRelation)spec;
-			}
-			case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE): {
-				return ((AttributeClosureSpecification)spec).getBaseRelation();
-			}
-			case (RDBDConstants.TYPE_RBR): {
-				return ((RBRSpecification)spec).getBaseRelation();
-			}
-			case (RDBDConstants.TYPE_NORMALIZATION): {
-				return ((NormalizationSpecification)spec).getBaseRelation();
-			}
-			case (RDBDConstants.TYPE_DECOMPOSE): {
-				return ((DecomposeSpecification)spec).getBaseRelation();
-			}
-			default: {
-				throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
-			}
-		}
+        return switch (rdbdType) {
+            case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION) -> (Relation) spec;
+            case (RDBDConstants.TYPE_KEYS_DETERMINATION) -> (IdentifiedRelation) spec;
+            case (RDBDConstants.TYPE_MINIMAL_COVER) -> (IdentifiedRelation) spec;
+            case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) -> ((AttributeClosureSpecification) spec).getBaseRelation();
+            case (RDBDConstants.TYPE_RBR) -> ((RBRSpecification) spec).getBaseRelation();
+            case (RDBDConstants.TYPE_NORMALIZATION) -> ((NormalizationSpecification) spec).getBaseRelation();
+            case (RDBDConstants.TYPE_DECOMPOSE) -> ((DecomposeSpecification) spec).getBaseRelation();
+            default -> throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
+        };
 	}
 
 	public static RDBDSpecification clone(RDBDSpecification specToClone, int rdbdType) throws MalformedRelationIDException {
 		//TODO: add clone() to interface RDBDSpecification (compatible with serialized specifications?)
 		try {
-			switch (rdbdType) {
-				case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION): {
-					return (Relation)((Relation)specToClone).clone();
-				}
-				case (RDBDConstants.TYPE_KEYS_DETERMINATION): {
-					return (IdentifiedRelation)((IdentifiedRelation)specToClone).clone();
-				}
-				case (RDBDConstants.TYPE_MINIMAL_COVER): {
-					return (IdentifiedRelation)((IdentifiedRelation)specToClone).clone();
-				}
-				case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE): {
-					return (AttributeClosureSpecification)((AttributeClosureSpecification)specToClone).clone();
-				}
-				case (RDBDConstants.TYPE_RBR): {
-					return (RBRSpecification)((RBRSpecification)specToClone).clone();
-				}
-				case (RDBDConstants.TYPE_NORMALIZATION): {
-					return (NormalizationSpecification)((NormalizationSpecification)specToClone).clone();
-				}
-				case (RDBDConstants.TYPE_DECOMPOSE): {
-					return (DecomposeSpecification)((DecomposeSpecification)specToClone).clone();
-				}
-				default: {
-					throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
-				}
-			}
+            return switch (rdbdType) {
+                case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION) -> (Relation) ((Relation) specToClone).clone();
+                case (RDBDConstants.TYPE_KEYS_DETERMINATION) ->
+                        (IdentifiedRelation) ((IdentifiedRelation) specToClone).clone();
+                case (RDBDConstants.TYPE_MINIMAL_COVER) ->
+                        (IdentifiedRelation) ((IdentifiedRelation) specToClone).clone();
+                case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) ->
+                        (AttributeClosureSpecification) ((AttributeClosureSpecification) specToClone).clone();
+                case (RDBDConstants.TYPE_RBR) -> (RBRSpecification) ((RBRSpecification) specToClone).clone();
+                case (RDBDConstants.TYPE_NORMALIZATION) ->
+                        (NormalizationSpecification) ((NormalizationSpecification) specToClone).clone();
+                case (RDBDConstants.TYPE_DECOMPOSE) ->
+                        (DecomposeSpecification) ((DecomposeSpecification) specToClone).clone();
+                default -> throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
+            };
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e);
 		}
@@ -747,64 +728,32 @@ public class RDBDHelper {
 
 	
 	public static SpecificationParser initParser(int rdbdType) {
-		switch (rdbdType) {
-			case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION): {
-				return new SpecificationParser("R", null, "F");
-			}
-			case (RDBDConstants.TYPE_KEYS_DETERMINATION): {
-				return new SpecificationParser("R", null, "F");
-			}
-			case (RDBDConstants.TYPE_MINIMAL_COVER): {
-				return new SpecificationParser("R", null, "F");
-			}
-			case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE): {
-				return new SpecificationParser("R", "A", "F");
-			}
-			case (RDBDConstants.TYPE_RBR): {
-				return new SpecificationParser("R", "S", "F");
-			}
-			case (RDBDConstants.TYPE_NORMALIZATION): {
-				return new SpecificationParser("R", null, "F");
-			}
-			case (RDBDConstants.TYPE_DECOMPOSE): {
-				return new SpecificationParser("R", null, "F");
-			}
-			default: {
-				throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
-			}
-		}
+        return switch (rdbdType) {
+            case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION) -> new SpecificationParser("R", null, "F");
+            case (RDBDConstants.TYPE_KEYS_DETERMINATION) -> new SpecificationParser("R", null, "F");
+            case (RDBDConstants.TYPE_MINIMAL_COVER) -> new SpecificationParser("R", null, "F");
+            case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) -> new SpecificationParser("R", "A", "F");
+            case (RDBDConstants.TYPE_RBR) -> new SpecificationParser("R", "S", "F");
+            case (RDBDConstants.TYPE_NORMALIZATION) -> new SpecificationParser("R", null, "F");
+            case (RDBDConstants.TYPE_DECOMPOSE) -> new SpecificationParser("R", null, "F");
+            default -> throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
+        };
 	}
 
 	public static boolean isOfRdbdType(RDBDSpecification spec, int rdbdType) {
 		if (spec == null) {
 			return true;
 		}
-		switch (rdbdType) {
-			case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION): {
-				return spec instanceof Relation;
-			}
-			case (RDBDConstants.TYPE_KEYS_DETERMINATION): {
-				return spec instanceof IdentifiedRelation;
-			}
-			case (RDBDConstants.TYPE_MINIMAL_COVER): {
-				return spec instanceof IdentifiedRelation;
-			}
-			case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE): {
-				return spec instanceof AttributeClosureSpecification;
-			}
-			case (RDBDConstants.TYPE_RBR): {
-				return spec instanceof RBRSpecification;
-			}
-			case (RDBDConstants.TYPE_NORMALIZATION): {
-				return spec instanceof NormalizationSpecification;
-			}
-			case (RDBDConstants.TYPE_DECOMPOSE): {
-				return spec instanceof DecomposeSpecification;
-			}
-			default: {
-				throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
-			}
-		}
+        return switch (rdbdType) {
+            case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION) -> spec instanceof Relation;
+            case (RDBDConstants.TYPE_KEYS_DETERMINATION) -> spec instanceof IdentifiedRelation;
+            case (RDBDConstants.TYPE_MINIMAL_COVER) -> spec instanceof IdentifiedRelation;
+            case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) -> spec instanceof AttributeClosureSpecification;
+            case (RDBDConstants.TYPE_RBR) -> spec instanceof RBRSpecification;
+            case (RDBDConstants.TYPE_NORMALIZATION) -> spec instanceof NormalizationSpecification;
+            case (RDBDConstants.TYPE_DECOMPOSE) -> spec instanceof DecomposeSpecification;
+            default -> throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
+        };
 	}
 	
 	public static String getAssignmentText(RDBDSpecification specTmp, int indent, Locale locale, int rdbdType) throws IOException {

@@ -2,7 +2,9 @@ package at.jku.dke.etutor.modules.nf.analysis.normalization;
 
 import at.jku.dke.etutor.modules.nf.algorithms.Closure;
 import at.jku.dke.etutor.modules.nf.algorithms.Member;
-import at.jku.dke.etutor.modules.nf.analysis.*;
+import at.jku.dke.etutor.modules.nf.analysis.DependenciesPreservationAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.KeysDeterminator;
+import at.jku.dke.etutor.modules.nf.analysis.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.decompose.DecompositionAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzerConfig;
@@ -10,12 +12,15 @@ import at.jku.dke.etutor.modules.nf.analysis.minimalcover.MinimalCoverAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalyzer;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
-import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.KeysContainer;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 
 public class NormalizationAnalyzer {

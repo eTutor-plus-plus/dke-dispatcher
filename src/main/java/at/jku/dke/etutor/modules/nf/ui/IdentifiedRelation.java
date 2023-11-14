@@ -8,7 +8,6 @@ import at.jku.dke.etutor.modules.nf.model.Relation;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Vector;
 
 public class IdentifiedRelation extends Relation implements Serializable, Cloneable, RDBDSpecification {
 
@@ -53,7 +52,7 @@ public class IdentifiedRelation extends Relation implements Serializable, Clonea
 		toString = toString.concat("Attributes: \n");
 		Iterator<String> attributesIter = this.iterAttributes();
 		while (attributesIter.hasNext()){
-			toString = toString.concat(attributesIter.next().toString() + "; ");
+			toString = toString.concat(attributesIter.next() + "; ");
 		}
 		toString = toString.concat("\n");
 

@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.modules.nf;
 
-import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformViolation;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 

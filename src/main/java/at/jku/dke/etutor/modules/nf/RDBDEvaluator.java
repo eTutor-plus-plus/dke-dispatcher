@@ -50,6 +50,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 	 *   may contain multiple values)
 	 *  This must be adapted to match the interface's Map<String, String> in both cases (Gerald Wimmer, 2023-11-12).
 	 */
+	@Override
 	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
 		Analysis analysis;
 
@@ -118,7 +119,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			DecomposeAnalyzerConfig decomposeAnalyzerConfig = new DecomposeAnalyzerConfig();
 			DecomposeSpecification decomposeSpecification = (DecomposeSpecification)specification;
 
-			TreeSet<IdentifiedRelation> allRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
+			TreeSet<IdentifiedRelation> allRelations = new TreeSet<>(new IdentifiedRelationComparator());
 			allRelations.add(decomposeSpecification.getBaseRelation());
 			/*
 			 * TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
@@ -255,7 +256,8 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		return analysis;
 	}
 
-	public Grading grade(Analysis analysis, int taskID, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception{
+	@Override
+	public Grading grade(Analysis analysis, int taskID, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
 		DefaultGrading grading = new DefaultGrading();
 		grading.setMaxPoints(1);
 		if (analysis.submissionSuitsSolution()){
@@ -278,6 +280,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 	 *  String, anyway)
 	 *  (Gerald Wimmer, 2023-11-12)
 	 */
+	@Override
 	public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
 		ReporterConfig config;
 		

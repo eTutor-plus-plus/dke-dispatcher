@@ -19,7 +19,7 @@ public class RDBDPrintReportView extends DefaultPrintView implements PrintReport
 	
 	private String generateXhtml(Report report, Locale locale) {
 		StringBuilder xhtml = new StringBuilder();
-		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> model = new HashMap<>();
 		model.put("HTMLPrinter", HTMLPrinter.class);
 		model.put("report", report);
 		model.put("locale", locale);

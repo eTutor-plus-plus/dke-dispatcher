@@ -1,7 +1,5 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
-import at.jku.dke.etutor.modules.nf.model.Relation;
-
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -26,11 +24,11 @@ public class IdentifiedRelationComparator  implements Comparator<IdentifiedRelat
 			return 0;
 		}
 
-		if ((o1 == null) && (o2 != null)){
+		if (o1 == null){
 			return 1;
 		}
 
-		if ((o1 != null) && (o2 == null)){
+		if (o2 == null){
 			return -1;
 		}
 
@@ -51,20 +49,13 @@ public class IdentifiedRelationComparator  implements Comparator<IdentifiedRelat
 				return -1;
 			}
 		}
-		
-		if (id1.length > id2.length){
-			return 1;
-		}
 
-		if (id1.length < id2.length){
-			return -1;
-		}
-		
-		return 0;
+		return Integer.compare(id1.length, id2.length);
+
 	}
 	
 	public static void main(String[] args){
-		TreeSet<IdentifiedRelation> s = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
+		TreeSet<IdentifiedRelation> s = new TreeSet<>(new IdentifiedRelationComparator());
 		IdentifiedRelation relation;
 		
 		try{

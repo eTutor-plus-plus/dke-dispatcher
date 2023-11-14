@@ -28,12 +28,12 @@ public class RandomCyphersGenerator {
 		int nextCypher;
 		String currentTimeMillis;
 
-		currentTimeMillis = new Long(System.currentTimeMillis()).toString();
+		currentTimeMillis = Long.toString(System.currentTimeMillis());
 		nextCypher = Integer.parseInt(currentTimeMillis.substring(currentTimeMillis.length()-1));
 
 		if (!this.directDuplicates){
 			while ((nextCypher == this.lastCypher) || (nextCypher > this.maxCypher) || (nextCypher < this.minCypher)){
-				currentTimeMillis = new Long(System.currentTimeMillis()).toString();
+				currentTimeMillis = Long.toString(System.currentTimeMillis());
 				nextCypher = Integer.parseInt(currentTimeMillis.substring(currentTimeMillis.length()-1));
 			}
 			this.lastCypher = nextCypher;

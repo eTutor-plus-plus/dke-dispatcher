@@ -238,9 +238,9 @@ public class MinimalCoverReporter {
 		int count = 0;
 
 		ErrorReport report = new ErrorReport();
-		StringBuilder description = new StringBuilder();;
-		
-		//COUNT BAD DEPENDECIES		
+		StringBuilder description = new StringBuilder();
+
+        //COUNT BAD DEPENDECIES
 		Iterator<FunctionalDependency> badDependenciesIterator = analysis.getExtraneousAttributes().keySet().iterator();
 		while (badDependenciesIterator.hasNext()){
 			count = count + analysis.getExtraneousAttributes(badDependenciesIterator.next()).size();
@@ -291,7 +291,7 @@ public class MinimalCoverReporter {
 						first = false;
 					} else {
 						description.append(" ");
-						description.append(extraneousAttributesIterator.next().toString());
+						description.append(extraneousAttributesIterator.next());
 					}
 				}
 				description.append("</td></tr>");
@@ -332,9 +332,9 @@ public class MinimalCoverReporter {
 	public static ErrorReport createRedundandDependenciesErrorReport(RedundantDependenciesAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
-		int count = analysis.getRedundantDependencies().size();;
-		
-		//SET ERROR
+		int count = analysis.getRedundantDependencies().size();
+
+        //SET ERROR
 		report.setError(messageSource.getMessage("minimalcoverreporter.redundanddependency", null, locale));
 
 		//SET HINT
@@ -545,7 +545,7 @@ public class MinimalCoverReporter {
 			} else {
 				s = s.concat(" ");
 			}
-			s = s.concat(attributesIterator.next().toString());
+			s = s.concat(attributesIterator.next());
 		}
 
 		s = s.concat(" &rarr; ");
@@ -558,7 +558,7 @@ public class MinimalCoverReporter {
 			} else {
 				s = s.concat(" ");
 			}
-			s = s.concat(attributesIterator.next().toString());
+			s = s.concat(attributesIterator.next());
 		}
 		
 		return s;

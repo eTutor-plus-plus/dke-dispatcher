@@ -21,7 +21,7 @@ public class DecomposeAnalyzerConfig implements Serializable {
 		this.baseRelation = null;
 		this.maxLostDependencies = 0;
 		this.desiredNormalformLevel = NormalformLevel.FIRST;
-		this.decomposedRelations = new TreeSet<IdentifiedRelation>(new IdentifiedRelationComparator());
+		this.decomposedRelations = new TreeSet<>(new IdentifiedRelationComparator());
 	}
 
 	public void setBaseRelation(IdentifiedRelation baseRelation){

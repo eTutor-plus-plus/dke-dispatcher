@@ -11,7 +11,7 @@ public class Key implements Serializable{
 
 	public Key() {
 		super();
-		this.attributes = new TreeSet<String>(new AttributeCollator());
+		this.attributes = new TreeSet<>(new AttributeCollator());
 	}
 	
 	public boolean equals(Object obj) {
