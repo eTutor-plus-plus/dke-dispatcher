@@ -2,7 +2,7 @@ package at.jku.dke.etutor.modules.nf.exercises;
 
 import java.util.TreeSet;
 
-// TODO: Now that we have generics, do we even need (most of) this? (Gerald Wimmer, 2023-11-13)
+// TODO: Now that we have generics, do we even need this? (Gerald Wimmer, 2023-11-13)
 public class TupleSet extends TreeSet<int[]> {
 
 	public TupleSet() {
