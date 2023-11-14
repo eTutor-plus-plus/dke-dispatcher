@@ -35,7 +35,7 @@ public class DecomposeStepAnalyzer {
 		while(decomposedRelationsIterator.hasNext()){
 			temp.append("Relation '").append(decomposedRelationsIterator.next().getID()).append("' ");
 		}
-		RDBDHelper.getLogger().log(Level.INFO, "With Sub-Relations: " + temp.toString() + ".");
+		RDBDHelper.getLogger().log(Level.INFO, "With Sub-Relations: " + temp + ".");
 		
 		
 		//ANALYZE DECOMPOSITION

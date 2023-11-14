@@ -110,10 +110,10 @@ public class RDBDConstants {
 	public static final String PARAM_SPEC_TXT = "specTxt";
 	
 	//TASK SPECIFIC USER INTERFACE RDBD-CONSTANTS
-	public static final String calcSubmissionIDFor(int exerciseId){
+	public static String calcSubmissionIDFor(int exerciseId){
 		return PREFIX_SUBMISSION_ATT + exerciseId;
 	}
-	public static final String calcSpecificationIDFor(int exerciseId){
+	public static String calcSpecificationIDFor(int exerciseId){
 		return PREFIX_SPECIFICATION_ATT + exerciseId;
 	}
 }
