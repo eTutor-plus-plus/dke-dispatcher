@@ -99,7 +99,7 @@ public class DDLResourceService {
         }
 
         logger.debug("Updating solution of exercise {}", id);
-        try(Connection con = DriverManager.getConnection(DDL_DATABASE_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
+        try(Connection con = DriverManager.getConnection(DDL_DATABASE_URL, CONN_DDL_SYSTEM_USER, CONN_DDL_SYSTEM_PWD)){
             con.setAutoCommit(false);
 
             // Update the exercise solution
@@ -112,6 +112,21 @@ public class DDLResourceService {
 
     }
 
+    /**
+     * Function to get the solution of an exercise
+     * @param id Specifies the exercise
+     * @return Returns the solution as a string
+     */
+    public String getSolution(int id) throws DatabaseException {
+        try(Connection con = DriverManager.getConnection(DDL_DATABASE_URL, CONN_DDL_SYSTEM_USER, CONN_DDL_SYSTEM_PWD);){
+            con.setAutoCommit(false);
+            return getSolutionUtil(con, id);
+        }catch(SQLException throwables){
+            throwables.printStackTrace();
+        }
+        return "";
+    }
+
     //region Private Methods
 
     /**
@@ -120,7 +135,7 @@ public class DDLResourceService {
      * @throws DatabaseException if an SQLException occurs
      */
     private int getAvailableExerciseId() throws DatabaseException {
-        try(Connection con = DriverManager.getConnection(DDL_DATABASE_URL, CONN_SUPER_USER, CONN_SUPER_PWD)){
+        try(Connection con = DriverManager.getConnection(DDL_DATABASE_URL, CONN_DDL_SYSTEM_USER, CONN_DDL_SYSTEM_PWD)){
             con.setAutoCommit(false);
             return getAvailableExerciseIdUtil(con);
         }catch(SQLException throwables){
@@ -216,7 +231,7 @@ public class DDLResourceService {
             String schemaName = rs.getString("schemaName");
 
             // Drop schema with all tables
-            PreparedStatement dropStmt = con.prepareStatement("DROP SCHEMA ? CASCADE;");
+            PreparedStatement dropStmt = con.prepareStatement("DROP SCHEMA IF EXISTS ? CASCADE;");
             dropStmt.setString(1, schemaName);
             dropStmt.execute();
 
@@ -245,7 +260,7 @@ public class DDLResourceService {
             String schemaName = rs.getString("schemaName");
 
             // Reset schema
-            PreparedStatement dropStmt = con.prepareStatement("DROP SCHEMA ? CASCADE;");
+            PreparedStatement dropStmt = con.prepareStatement("DROP SCHEMA IF EXISTS ? CASCADE;");
             dropStmt.setString(1, schemaName);
             dropStmt.execute();
 
@@ -283,6 +298,28 @@ public class DDLResourceService {
         }catch(SQLException throwables){
             handleThrowables(con, "Could not update solution", throwables);
         }
+    }
+
+    /**
+     * Utility method for fetching the solution of a given exercise
+     * @param con the Connection
+     * @param id the id
+     * @return the solution
+     * @throws DatabaseException if no solution found or SQlException gets thrown
+     */
+    private String getSolutionUtil(Connection con, int id) throws DatabaseException {
+        String query = "SELECT solution FROM exercises where id = "+id;
+        try(PreparedStatement stmt = con.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery()){
+            if(rs.next()){
+                logger.debug("Solution found: ");
+                logger.debug(rs.getString("solution"));
+                return rs.getString("solution");
+            }
+        } catch (SQLException throwables) {
+            handleThrowables(con, "Could not execute query "+query, throwables);
+        }
+        return "";
     }
 
     /**

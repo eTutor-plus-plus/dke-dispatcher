@@ -6,6 +6,7 @@ import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.objects.dispatcher.ddl.DDLExerciseDTO;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,9 +31,21 @@ public class ETutorDDLController {
      * @return
      */
     @GetMapping("/exercise/{id}/solution")
-    public ResponseEntity<String> getSolution(@PathVariable int id) {
+    public ResponseEntity<String> getSolution(@PathVariable int id) throws ApiException {
         logger.info("Enter: getSolution(): {}", id);
-        return ResponseEntity.ok("");
+        try{
+            String solution = resourceService.getSolution(id);
+            if(!solution.equals("")){
+                logger.info("Exit: getSolution() with status 200");
+                return ResponseEntity.ok(solution);
+            }else{
+                logger.info("Exit: getSolution() with status 404");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find solution for exercise "+id);
+            }
+        }catch(DatabaseException e){
+            logger.error("Exit: getSolution() with status 500", e);
+            throw new ApiException(500, e.toString(), null);
+        }
     }
 
     // Function to create a new exercise
