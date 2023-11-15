@@ -64,7 +64,7 @@ public class DDLResourceService {
             int exerciseId = getAvailableExerciseId();
 
             // Create exercise and commit in database
-            createExerciseUtil(con, exerciseId, exerciseDTO.getSolution());
+            createExerciseUtil(con, exerciseId, exerciseDTO);
             con.commit();
 
             logger.debug("Exercise created");
@@ -165,18 +165,26 @@ public class DDLResourceService {
      * Persists the exercise
      * @param con the Connection
      * @param id the exercise id
-     * @param solution the solution for the exercise
+     * @param exerciseDTO Specifies the exercise
      * @throws DatabaseException if an error occurs
      */
-    private void createExerciseUtil(Connection con, int id, String solution) throws DatabaseException {
+    private void createExerciseUtil(Connection con, int id, DDLExerciseDTO exerciseDTO) throws DatabaseException {
         logger.debug("Creating exercise");
 
-        try(PreparedStatement createExerciseStmt = con.prepareStatement("INSERT INTO EXERCISES VALUES(?,?,?,?);")){
+        try(PreparedStatement createExerciseStmt = con.prepareStatement("INSERT INTO EXERCISES VALUES(?,?,?,?,?,?,?,?,?,?);")){
+            //todo Create schema
+            String schemaName = "ddl_schema_" + id;
+
             createExerciseStmt.setInt(1, id);
-            //todo Check this
-            createExerciseStmt.setInt(2, -1);
-            createExerciseStmt.setInt(3, -1);
-            createExerciseStmt.setString(4, solution);
+            createExerciseStmt.setString(2, schemaName);
+            createExerciseStmt.setString(3, exerciseDTO.getSolution());
+            createExerciseStmt.setString(4, exerciseDTO.getInsertStatements());
+            createExerciseStmt.setInt(5, Integer.parseInt(exerciseDTO.getMaxPoints()));
+            createExerciseStmt.setInt(6, Integer.parseInt(exerciseDTO.getTablePoints()));
+            createExerciseStmt.setInt(7, Integer.parseInt(exerciseDTO.getColumnPoints()));
+            createExerciseStmt.setInt(8, Integer.parseInt(exerciseDTO.getPrimaryKeyPoints()));
+            createExerciseStmt.setInt(9, Integer.parseInt(exerciseDTO.getForeignKeyPoints()));
+            createExerciseStmt.setInt(10, Integer.parseInt(exerciseDTO.getConstraintPoints()));
             logger.debug("Statement for creating exercise: {} ", createExerciseStmt);
             createExerciseStmt.executeUpdate();
         }catch(SQLException throwables){
