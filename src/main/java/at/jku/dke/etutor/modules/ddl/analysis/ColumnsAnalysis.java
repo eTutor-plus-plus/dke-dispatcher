@@ -8,11 +8,11 @@ import java.util.List;
 
 public class ColumnsAnalysis extends AbstractDDLCriterionAnalysis implements DDLCriterionAnalysis{
     //region Fields
-    private List<String> missingColumns;
-    private List<String> surplusColumns;
-    private List<String> wrongDatatypeColumns;
-    private List<String> wrongDefaultColumns;
-    private List<String> wrongNullColumns;
+    private List<ErrorTupel> missingColumns;
+    private List<ErrorTupel> surplusColumns;
+    private List<ErrorTupel> wrongDatatypeColumns;
+    private List<ErrorTupel> wrongDefaultColumns;
+    private List<ErrorTupel> wrongNullColumns;
     //endregion
 
     public ColumnsAnalysis() {
@@ -43,23 +43,23 @@ public class ColumnsAnalysis extends AbstractDDLCriterionAnalysis implements DDL
         return this.wrongNullColumns.isEmpty();
     }
 
-    public Iterator<String> iterMissingColumns() {
+    public Iterator<ErrorTupel> iterMissingColumns() {
         return this.missingColumns.iterator();
     }
 
-    public Iterator<String> iterSurplusColumns() {
+    public Iterator<ErrorTupel> iterSurplusColumns() {
         return this.surplusColumns.iterator();
     }
 
-    public Iterator<String> iterWrongDatatypeColumns() {
+    public Iterator<ErrorTupel> iterWrongDatatypeColumns() {
         return this.wrongDatatypeColumns.iterator();
     }
 
-    public Iterator<String> iterWrongDefaultColumns() {
+    public Iterator<ErrorTupel> iterWrongDefaultColumns() {
         return this.wrongDefaultColumns.iterator();
     }
 
-    public Iterator<String> iterWrongNullColumns() {
+    public Iterator<ErrorTupel> iterWrongNullColumns() {
         return this.wrongNullColumns.iterator();
     }
 
@@ -69,71 +69,71 @@ public class ColumnsAnalysis extends AbstractDDLCriterionAnalysis implements DDL
     }
 
     //region Getter/Setter
-    public List<String> getMissingColumns() {
+    public List<ErrorTupel> getMissingColumns() {
         return missingColumns;
     }
 
-    public void setMissingColumns(List<String> missingColumns) {
+    public void setMissingColumns(List<ErrorTupel> missingColumns) {
         this.missingColumns = missingColumns;
     }
 
-    public void removeMissingColumns(List<String> columns) {
+    public void removeMissingColumns(List<ErrorTupel> columns) {
         this.missingColumns.remove(columns);
     }
 
-    public void addMissingColumn(String column) {
+    public void addMissingColumn(ErrorTupel column) {
         this.missingColumns.add(column);
     }
 
-    public List<String> getSurplusColumns() {
+    public List<ErrorTupel> getSurplusColumns() {
         return surplusColumns;
     }
 
-    public void setSurplusColumns(List<String> surplusColumns) {
+    public void setSurplusColumns(List<ErrorTupel> surplusColumns) {
         this.surplusColumns = surplusColumns;
     }
 
-    public void removeSurplusColumns(List<String> columns) {
+    public void removeSurplusColumns(List<ErrorTupel> columns) {
         this.surplusColumns.remove(columns);
     }
 
-    public void addSurplusColumn(String column) {
+    public void addSurplusColumn(ErrorTupel column) {
         this.surplusColumns.add(column);
     }
 
-    public List<String> getWrongDatatypeColumns() {
+    public List<ErrorTupel> getWrongDatatypeColumns() {
         return wrongDatatypeColumns;
     }
 
-    public void setWrongDatatypeColumns(List<String> wrongDatatypeColumns) {
+    public void setWrongDatatypeColumns(List<ErrorTupel> wrongDatatypeColumns) {
         this.wrongDatatypeColumns = wrongDatatypeColumns;
     }
 
-    public void addWrongDatatypeColumn(String column) {
+    public void addWrongDatatypeColumn(ErrorTupel column) {
         this.wrongDatatypeColumns.add(column);
     }
 
-    public List<String> getWrongDefaultColumns() {
+    public List<ErrorTupel> getWrongDefaultColumns() {
         return wrongDefaultColumns;
     }
 
-    public void setWrongDefaultColumns(List<String> wrongDefaultColumns) {
+    public void setWrongDefaultColumns(List<ErrorTupel> wrongDefaultColumns) {
         this.wrongDefaultColumns = wrongDefaultColumns;
     }
 
-    public void addWrongDefaultColumn(String column) {
+    public void addWrongDefaultColumn(ErrorTupel column) {
         this.wrongDefaultColumns.add(column);
     }
 
-    public List<String> getWrongNullColumns() {
+    public List<ErrorTupel> getWrongNullColumns() {
         return wrongNullColumns;
     }
 
-    public void setWrongNullColumns(List<String> wrongNullColumns) {
+    public void setWrongNullColumns(List<ErrorTupel> wrongNullColumns) {
         this.wrongNullColumns = wrongNullColumns;
     }
 
-    public void addWrongNullColumn(String column) {
+    public void addWrongNullColumn(ErrorTupel column) {
         this.wrongNullColumns.add(column);
     }
     //endregion

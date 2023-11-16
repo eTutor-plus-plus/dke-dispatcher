@@ -8,8 +8,8 @@ import java.util.List;
 
 public class PrimaryKeysAnalysis extends AbstractDDLCriterionAnalysis implements DDLCriterionAnalysis {
     //region Fields
-    private List<String> missingPrimaryKeys;
-    private List<String> surplusPrimaryKeys;
+    private List<ErrorTupel> missingPrimaryKeys;
+    private List<ErrorTupel> surplusPrimaryKeys;
     //endregion
 
     public PrimaryKeysAnalysis() {
@@ -25,11 +25,11 @@ public class PrimaryKeysAnalysis extends AbstractDDLCriterionAnalysis implements
         return this.surplusPrimaryKeys.isEmpty();
     }
 
-    public Iterator<String> iterMissingPrimaryKeys() {
+    public Iterator<ErrorTupel> iterMissingPrimaryKeys() {
         return this.missingPrimaryKeys.iterator();
     }
 
-    public Iterator<String> iterSurplusPrimaryKeys() {
+    public Iterator<ErrorTupel> iterSurplusPrimaryKeys() {
         return this.surplusPrimaryKeys.iterator();
     }
 
@@ -39,27 +39,27 @@ public class PrimaryKeysAnalysis extends AbstractDDLCriterionAnalysis implements
     }
 
     //region Getter/Setter
-    public List<String> getMissingPrimaryKeys() {
+    public List<ErrorTupel> getMissingPrimaryKeys() {
         return missingPrimaryKeys;
     }
 
-    public void setMissingPrimaryKeys(List<String> missingPrimaryKeys) {
+    public void setMissingPrimaryKeys(List<ErrorTupel> missingPrimaryKeys) {
         this.missingPrimaryKeys = missingPrimaryKeys;
     }
 
-    public void addMissingPrimaryKey(String missingPrimaryKey) {
+    public void addMissingPrimaryKey(ErrorTupel missingPrimaryKey) {
         this.missingPrimaryKeys.add(missingPrimaryKey);
     }
 
-    public List<String> getSurplusPrimaryKeys() {
+    public List<ErrorTupel> getSurplusPrimaryKeys() {
         return surplusPrimaryKeys;
     }
 
-    public void setSurplusPrimaryKeys(List<String> surplusPrimaryKeys) {
+    public void setSurplusPrimaryKeys(List<ErrorTupel> surplusPrimaryKeys) {
         this.surplusPrimaryKeys = surplusPrimaryKeys;
     }
 
-    public void addSurplusPrimaryKey(String surplusPrimaryKey) {
+    public void addSurplusPrimaryKey(ErrorTupel surplusPrimaryKey) {
         this.surplusPrimaryKeys.add(surplusPrimaryKey);
     }
     //endregion

@@ -163,7 +163,6 @@ public class DDLReporter {
                     }
                 }
 
-                //todo Check for corresponding tables in diagnose level 3
                 if(criterionAnalysis instanceof ColumnsAnalysis) {
                     columnsAnalysis = (ColumnsAnalysis) criterionAnalysis;
 
@@ -289,11 +288,10 @@ public class DDLReporter {
                     }
 
                     if(config.getDiagnoseLevel() == 3) {
-                        //todo implement
+                        //todo implement diagnose level 3 for columns
                     }
                 }
 
-                //todo Check for corresponding tables in diagnose level 3
                 if(criterionAnalysis instanceof PrimaryKeysAnalysis) {
                     primaryKeysAnalysis = (PrimaryKeysAnalysis) criterionAnalysis;
 
@@ -354,11 +352,10 @@ public class DDLReporter {
                     }
 
                     if(config.getDiagnoseLevel() == 3) {
-                        //todo implement
+                        //todo implement diagnose level 3 for primary keys
                     }
                 }
 
-                //todo Check for corresponding tables in diagnose level 3
                 if(criterionAnalysis instanceof ForeignKeysAnalysis) {
                     foreignKeysAnalysis = (ForeignKeysAnalysis) criterionAnalysis;
 
@@ -419,11 +416,10 @@ public class DDLReporter {
                     }
 
                     if(config.getDiagnoseLevel() == 3) {
-                        //todo implement
+                        //todo implement diagnose level 3 for foreign keys
                     }
                 }
 
-                //todo Check for corresponding tables in diagnose level 3
                 if(criterionAnalysis instanceof ConstraintsAnalysis) {
                     constraintsAnalysis = (ConstraintsAnalysis) criterionAnalysis;
 
@@ -484,7 +480,7 @@ public class DDLReporter {
                     }
 
                     if(config.getDiagnoseLevel() == 3) {
-                        //todo implement
+                        //todo implement diagnose level 3 for constraints
                     }
                 }
             }

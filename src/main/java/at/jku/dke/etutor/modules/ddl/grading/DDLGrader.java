@@ -22,15 +22,11 @@ public class DDLGrader {
         }
     }
 
-    //todo Check function
-    public DefaultGrading grade(DDLAnalysis analysis, DDLGraderConfig graderConfig) throws MissingGradingCriterionConfigException {
+    public DefaultGrading grade(DDLAnalysis analysis, DDLGraderConfig graderConfig) {
         String msg;
         int points = 0;
-        boolean everyCriterionOk = true;
         Iterator<DDLEvaluationCriterion> evaluationCriterionIterator = graderConfig.iterCriterionsToGrade();
-        Iterator<DDLCriterionAnalysis> criterionAnalysisIterator = analysis.iterCriterionAnalysis();
         DDLEvaluationCriterion criterion;
-        DDLCriterionGradingConfig criterionGradingConfig;
         DDLCriterionAnalysis criterionAnalysis;
         DefaultGrading grading = new DefaultGrading();
 
@@ -39,56 +35,46 @@ public class DDLGrader {
 
         while (evaluationCriterionIterator.hasNext()) {
             criterion = evaluationCriterionIterator.next();
-            criterionGradingConfig = graderConfig.getCriterionGradingConfig(criterion);
 
-            if(criterionGradingConfig != null) {
-                if(analysis.isCriterionAnalyzed(criterion)) {
-                    criterionAnalysis = analysis.getCriterionAnalysis(criterion);
+            if(analysis.isCriterionAnalyzed(criterion)) {
+                criterionAnalysis = analysis.getCriterionAnalysis(criterion);
 
-                    // Check if there was an exception analysing the criterion
-                    if(criterionAnalysis.getAnalysisException() == null) {
-                        // Check if the criterion is satisfied
-                        if(criterionAnalysis.isCriterionSatisfied()) {
-                            points += criterionGradingConfig.getPositivePoints();
-                        } else {
-                            points -= criterionGradingConfig.getNegativePoints();
-                        }
-                    } else  {
-                        //todo Implment exception handling?
+                // Check that there was no exception analysing the criterion and also the criterion is satisfied
+                if(criterionAnalysis.getAnalysisException() == null && criterionAnalysis.isCriterionSatisfied()) {
+                  // Add the points for this criterion to the total points
+                  if(criterion.equals(DDLEvaluationCriterion.CORRECT_TABLES)) {
+                      points += graderConfig.getTablePoints();
+                  } else if(criterion.equals(DDLEvaluationCriterion.CORRECT_COLUMNS)) {
+                      points += graderConfig.getColumnPoints();
+                  } else if(criterion.equals(DDLEvaluationCriterion.CORRECT_PRIMARY_KEYS)) {
+                      points += graderConfig.getPrimaryKeyPoints();
+                  } else if(criterion.equals(DDLEvaluationCriterion.CORRECT_FOREIGN_KEYS)) {
+                      points += graderConfig.getForeignKeyPoints();
+                  } else if(criterion.equals(DDLEvaluationCriterion.CORRECT_CONSTRAINTS)) {
+                      points += graderConfig.getConstraintPoints();
+                  }
+                } else  {
+                    // Check if the criterion is Syntax -> return with 0 points and log
+                    if(criterion.equals(DDLEvaluationCriterion.CORRECT_SYNTAX)) {
+                        msg = "SQL DDL Syntax not correct.";
+                        this.logger.info(msg);
+
+                        grading.setPoints(0);
+                        return grading;
                     }
-                } else {
-                    msg = "";
-                    msg = msg.concat("Could not grade criterion '"  + criterion +  "'. ");
-
-                    this.logger.info(msg);
-                    return grading;
                 }
             } else {
                 msg = "";
-                msg = msg.concat("Stopped grading due to errors. ");
-                msg = msg.concat("No config for grading criterion' " + criterion + "' available. ");
-                msg = msg.concat("This is an internal system error. ");
-                msg = msg.concat("Please inform the system administrator.");
+                msg = msg.concat("Could not grade criterion '"  + criterion +  "'. ");
+                this.logger.info(msg);
 
-                this.logger.error(msg);
-                throw new MissingGradingCriterionConfigException(criterion, msg);
+                grading.setPoints(0);
+                return grading;
             }
         }
 
-        // Check if every criterion is satisfied
-        while (criterionAnalysisIterator.hasNext()) {
-            criterionAnalysis = criterionAnalysisIterator.next();
-            if(criterionAnalysis != null && !criterionAnalysis.isCriterionSatisfied()) {
-                everyCriterionOk = false;
-            }
-        }
-
-        // If every criterion is satisfied = full points; otherwise no points
-        if(everyCriterionOk) {
-            grading.setPoints(grading.getMaxPoints());
-        } else {
-            grading.setPoints(0);
-        }
+        // Set the reached points
+        grading.setPoints(points);
 
         return grading;
     }

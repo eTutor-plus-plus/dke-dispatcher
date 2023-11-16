@@ -2,6 +2,7 @@ package at.jku.dke.etutor.modules.ddl.grading;
 
 import at.jku.dke.etutor.modules.ddl.DDLEvaluationCriterion;
 
+//todo Necessary??
 public class MissingGradingCriterionConfigException extends Exception {
     //region Fields
     private DDLEvaluationCriterion criterion;

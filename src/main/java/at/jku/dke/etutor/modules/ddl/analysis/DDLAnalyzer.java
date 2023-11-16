@@ -316,7 +316,7 @@ public class DDLAnalyzer {
                                 String sd = systemColumns.getString("TYPE_NAME");
                                 String ud = userColumns.getString("TYPE_NAME");
                                 if(!(sd.toLowerCase().contains(VARCHAR) && ud.toLowerCase().contains(VARCHAR))) {
-                                    columnsAnalysis.addWrongDatatypeColumn(systemColumn);
+                                    columnsAnalysis.addWrongDatatypeColumn(new ErrorTupel(tableName, systemColumn));
                                 }
                             }
 
@@ -325,7 +325,7 @@ public class DDLAnalyzer {
                             int userNullable = userColumns.getInt("NULLABLE");
 
                             if(systemNullable != userNullable) {
-                                columnsAnalysis.addWrongNullColumn(systemColumn);
+                                columnsAnalysis.addWrongNullColumn(new ErrorTupel(tableName, systemColumn));
                             }
 
                             // Check default value
@@ -333,7 +333,7 @@ public class DDLAnalyzer {
                             String userDefault = userColumns.getString("COLUMN_DEF");
 
                             if(!systemDefault.equals(userDefault)) {
-                                columnsAnalysis.addWrongDefaultColumn(systemColumn);
+                                columnsAnalysis.addWrongDefaultColumn(new ErrorTupel(tableName, systemColumn));
                             }
 
                             break;
@@ -342,7 +342,7 @@ public class DDLAnalyzer {
 
                     // Check if the column exists
                     if(!exists) {
-                        columnsAnalysis.addMissingColumn(systemColumn);
+                        columnsAnalysis.addMissingColumn(new ErrorTupel(tableName, systemColumn));
                     }
 
                     // Reset variables
@@ -365,7 +365,7 @@ public class DDLAnalyzer {
 
                     // Check if the column exists
                     if(!exists) {
-                        columnsAnalysis.addSurplusColumn(userColumn);
+                        columnsAnalysis.addSurplusColumn(new ErrorTupel(tableName, userColumn));
                     }
 
                     // Reset variables
@@ -425,7 +425,7 @@ public class DDLAnalyzer {
 
                     // Check if the primary key exists
                     if(!exists) {
-                        primaryKeysAnalysis.addMissingPrimaryKey(systemColumn);
+                        primaryKeysAnalysis.addMissingPrimaryKey(new ErrorTupel(tableName, systemColumn));
                     }
 
                     // Reset variables
@@ -448,7 +448,7 @@ public class DDLAnalyzer {
 
                     // Check if the primary key exists
                     if(!exists) {
-                        primaryKeysAnalysis.addSurplusPrimaryKey(userColumn);
+                        primaryKeysAnalysis.addSurplusPrimaryKey(new ErrorTupel(tableName, userColumn));
                     }
 
                     // Reset variables
@@ -514,7 +514,7 @@ public class DDLAnalyzer {
 
                     // Check if the foreign key exists
                     if(!exists) {
-                        foreignKeysAnalysis.addMissingForeignKey(systemColumn);
+                        foreignKeysAnalysis.addMissingForeignKey(new ErrorTupel(tableName, systemColumn));
                     }
 
                     // Reset variables
@@ -537,7 +537,7 @@ public class DDLAnalyzer {
 
                     // Check if the foreign key exists
                     if(!exists) {
-                        foreignKeysAnalysis.addSurplusForeignKey(userColumn);
+                        foreignKeysAnalysis.addSurplusForeignKey(new ErrorTupel(tableName, userColumn));
                     }
 
                     // Reset variables
@@ -601,7 +601,7 @@ public class DDLAnalyzer {
 
                     // Check if the table exists
                     if(!exists) {
-                        constraintsAnalysis.addMissingConstraint(systemColumn);
+                        constraintsAnalysis.addMissingConstraint(new ErrorTupel(tableName, systemColumn));
                     }
 
                     // Reset variables
@@ -624,7 +624,7 @@ public class DDLAnalyzer {
 
                     // Check if the table exists
                     if(!exists) {
-                        constraintsAnalysis.addSurplusConstraint(userColumn);
+                        constraintsAnalysis.addSurplusConstraint(new ErrorTupel(tableName, userColumn));
                     }
 
                     // Reset variables

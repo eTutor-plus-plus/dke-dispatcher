@@ -8,8 +8,8 @@ import java.util.List;
 
 public class ConstraintsAnalysis extends AbstractDDLCriterionAnalysis implements DDLCriterionAnalysis {
     //region Fields
-    private List<String> missingConstraints;
-    private List<String> surplusConstraints;
+    private List<ErrorTupel> missingConstraints;
+    private List<ErrorTupel> surplusConstraints;
     private List<String> dmlStatementsWithMistakes;
     //endregion
 
@@ -31,11 +31,11 @@ public class ConstraintsAnalysis extends AbstractDDLCriterionAnalysis implements
         return this.dmlStatementsWithMistakes.isEmpty();
     }
 
-    public Iterator<String> iterMissingConstraints() {
+    public Iterator<ErrorTupel> iterMissingConstraints() {
         return this.missingConstraints.iterator();
     }
 
-    public Iterator<String> iterSurplusConstraints() {
+    public Iterator<ErrorTupel> iterSurplusConstraints() {
         return this.surplusConstraints.iterator();
     }
 
@@ -49,27 +49,27 @@ public class ConstraintsAnalysis extends AbstractDDLCriterionAnalysis implements
     }
 
     //region Getter/Setter
-    public List<String> getMissingConstraints() {
+    public List<ErrorTupel> getMissingConstraints() {
         return missingConstraints;
     }
 
-    public void setMissingConstraints(List<String> missingConstraints) {
+    public void setMissingConstraints(List<ErrorTupel> missingConstraints) {
         this.missingConstraints = missingConstraints;
     }
 
-    public void addMissingConstraint(String missingConstraint) {
+    public void addMissingConstraint(ErrorTupel missingConstraint) {
         this.missingConstraints.add(missingConstraint);
     }
 
-    public List<String> getSurplusConstraints() {
+    public List<ErrorTupel> getSurplusConstraints() {
         return surplusConstraints;
     }
 
-    public void setSurplusConstraints(List<String> surplusConstraints) {
+    public void setSurplusConstraints(List<ErrorTupel> surplusConstraints) {
         this.surplusConstraints = surplusConstraints;
     }
 
-    public void addSurplusConstraint(String surplusConstraint) {
+    public void addSurplusConstraint(ErrorTupel surplusConstraint) {
         this.surplusConstraints.add(surplusConstraint);
     }
 

@@ -18,8 +18,6 @@ public class DDLResourceService {
     private final String DDL_DATABASE_URL;
     private final String CONN_DDL_SYSTEM_USER;
     private final String CONN_DDL_SYSTEM_PWD;
-    private final String CONN_SUPER_USER;
-    private final String CONN_SUPER_PWD;
     //endregion
 
     //region Fields
@@ -41,8 +39,6 @@ public class DDLResourceService {
         this.DDL_DATABASE_URL = this.DDL_BASE_URL + properties.getDdl().getConnUrl();
         this.CONN_DDL_SYSTEM_USER = properties.getDdl().getSystemConnUser();
         this.CONN_DDL_SYSTEM_PWD = properties.getDdl().getSystemConnPwd();
-        this.CONN_SUPER_USER = properties.getGrading().getConnSuperUser();
-        this.CONN_SUPER_PWD = properties.getGrading().getConnSuperPwd();
     }
 
     /**
@@ -118,7 +114,7 @@ public class DDLResourceService {
      * @return Returns the solution as a string
      */
     public String getSolution(int id) throws DatabaseException {
-        try(Connection con = DriverManager.getConnection(DDL_DATABASE_URL, CONN_DDL_SYSTEM_USER, CONN_DDL_SYSTEM_PWD);){
+        try(Connection con = DriverManager.getConnection(DDL_DATABASE_URL, CONN_DDL_SYSTEM_USER, CONN_DDL_SYSTEM_PWD)){
             con.setAutoCommit(false);
             return getSolutionUtil(con, id);
         }catch(SQLException throwables){
