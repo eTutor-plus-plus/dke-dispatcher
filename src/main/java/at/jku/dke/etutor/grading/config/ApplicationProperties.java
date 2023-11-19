@@ -24,6 +24,17 @@ public class ApplicationProperties {
 
     private Rt rt = new Rt();
 
+    private Drools drools = new Drools();
+
+
+    public Drools getDrools() {
+        return drools;
+    }
+
+    public void setDrools(Drools drools) {
+        this.drools = drools;
+    }
+
     public Rt getRt() {
         return rt;
     }
@@ -94,6 +105,40 @@ public class ApplicationProperties {
 
     public void setDatalog(Datalog datalog) {
         this.datalog = datalog;
+    }
+
+    /**
+     * Properties for the Drools module
+     */
+
+    public static class Drools{
+        private String connPwd;
+        private String connUser;
+        private String connUrl;
+
+        public String getConnPwd() {
+            return connPwd;
+        }
+
+        public void setConnPwd(String connPwd) {
+            this.connPwd = connPwd;
+        }
+
+        public String getConnUser() {
+            return connUser;
+        }
+
+        public void setConnUser(String connUser) {
+            this.connUser = connUser;
+        }
+
+        public String getConnUrl() {
+            return connUrl;
+        }
+
+        public void setConnUrl(String connUrl) {
+            this.connUrl = connUrl;
+        }
     }
 
     /**
