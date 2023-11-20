@@ -357,7 +357,7 @@ public class MinimalCoverReporter {
 			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.redundanddependencies", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
-			Iterator<FunctionalDependency> it = analysis.iterRedundandDependencies();
+			Iterator<FunctionalDependency> it = analysis.iterRedundantDependencies();
 			while (it.hasNext()){
 				description.append("<tr><td>");
 				description.append(printDependency(it.next()));

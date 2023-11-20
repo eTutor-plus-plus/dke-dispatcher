@@ -428,7 +428,7 @@ public class RDBDHelper {
 		}
 	}
 	
-	public static void delDependencies(Relation relation, String[] rhsAttributes, String[] lhsAttributes, String[] dependenciesToDelete) throws Exception{
+	public static void delDependencies(Relation relation, String[] rhsAttributes, String[] lhsAttributes, String[] dependenciesToDelete) throws Exception {
 		String currDependency;
 		FunctionalDependency dependencyToDelete;
 

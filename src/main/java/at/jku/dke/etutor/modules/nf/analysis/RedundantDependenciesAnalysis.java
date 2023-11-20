@@ -22,7 +22,7 @@ public class RedundantDependenciesAnalysis extends DefaultAnalysis implements An
 		this.redundantDependencies.addAll(redundantDependencies);
 	}
 
-	public void addRedundandDependency(FunctionalDependency dependency){
+	public void addRedundantDependency(FunctionalDependency dependency){
 		this.redundantDependencies.add(dependency);
 	}
 
@@ -30,7 +30,7 @@ public class RedundantDependenciesAnalysis extends DefaultAnalysis implements An
 		return (HashSet<FunctionalDependency>)this.redundantDependencies.clone();
 	}
 	
-	public Iterator<FunctionalDependency> iterRedundandDependencies(){
+	public Iterator<FunctionalDependency> iterRedundantDependencies(){
 		return this.redundantDependencies.iterator();
 	}
 }

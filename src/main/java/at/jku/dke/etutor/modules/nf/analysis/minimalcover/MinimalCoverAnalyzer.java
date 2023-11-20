@@ -125,7 +125,7 @@ public class MinimalCoverAnalyzer {
 
 			if (Cover.execute(tempDependencies, dependencies)){
 				RDBDHelper.getLogger().log(Level.INFO, "Found redundand functional dependency.");
-				analysis.addRedundandDependency(currDependency);
+				analysis.addRedundantDependency(currDependency);
 				analysis.setSubmissionSuitsSolution(false);
 			}
 		}

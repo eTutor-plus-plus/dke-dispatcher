@@ -29,11 +29,11 @@ public class SpecificationParser implements Serializable {
 	
 	private static final long serialVersionUID = 3835519487979543103L;
 	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
-	
-	public final static String QUALIFIER_DEPENDENCIES = "1";
-	public final static String QUALIFIER_ATTRIBUTES_BASE = "2";
-	public final static String QUALIFIER_ATTRIBUTES_RELATION = "3";
-	public final static String PATTERN_ATTRIBUTE = "\\s*\\w*\\s*";
+
+	public static final String QUALIFIER_DEPENDENCIES = "1";
+	public static final String QUALIFIER_ATTRIBUTES_BASE = "2";
+	public static final String QUALIFIER_ATTRIBUTES_RELATION = "3";
+	public static final String PATTERN_ATTRIBUTE = "\\s*\\w*\\s*";
 
 	private final Map<String, String> qualifiers;
 	private Set<String> baseAttributes;
@@ -281,7 +281,7 @@ public class SpecificationParser implements Serializable {
 		return relationAttributes;
 	}
 	
-	private static void print(Collection<?> items, String qualifier, String delim, StringBuffer buffer) {
+	private static void print(Collection<?> items, String qualifier, String delim, StringBuilder buffer) {
 		boolean first;
 
 		buffer.append(qualifier).append(" {");
