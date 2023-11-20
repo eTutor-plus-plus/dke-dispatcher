@@ -39,11 +39,12 @@ public class RTAnalysis extends DefaultAnalysis {
 
     private boolean hasSemantikError = false;
 
+    private String errorLogSyntax="";
+
     public RTAnalysis(int id, String inputSolution, ApplicationProperties applicationProperties) throws SQLException {
         super();
         this.id = id;
         this.inputSolution = inputSolution;
-        this.applicationProperties = applicationProperties;
         setDataBaseProperties();
         setSolutionStudent();
         this.rtSemanticsAnalysis = new RTSemanticsAnalysis(solutionStudent, solution);
@@ -63,29 +64,29 @@ public class RTAnalysis extends DefaultAnalysis {
                     parser.addErrorListener(errorListener);
                     ParseTree tree = parser.start();
                 } catch (Exception e) {
+                    this.errorLogSyntax = errorLogSyntax.concat("<br>" + str + ": " +  e.getMessage());
                     checkSuccess = false;
                     hasSyntaxError = true;
                 }
             }
         }
-        return checkSuccess;
-    }
-
-    public boolean checkSemantik() {
-        boolean checkSuccess = false;
-        if (this.getSolutionStudent().equals(this.solution)){
-        checkSuccess = true;
+        if (!this.rtSemanticsAnalysis.getErrorLogSyntax().isEmpty() || !this.rtSemanticsAnalysis.getErrorLogSyntax().isBlank()){
+            checkSuccess = false;
+            hasSyntaxError = true;
         }
         return checkSuccess;
     }
 
     @Override
     public boolean submissionSuitsSolution() {
-        if (this.checkSemantik()){
-            return true;
+        if (this.hasSyntaxError){
+            return false;
         }
-        this.hasSemantikError = true;
-        return false;
+        if (!this.rtSemanticsAnalysis.getErrorLogSemantik().isEmpty() || !this.rtSemanticsAnalysis.getErrorLogSemantik().isBlank()){
+            this.hasSemantikError = true;
+            return false;
+        }
+        return true;
     }
 
     public void setDataBaseProperties() throws SQLException {
@@ -151,5 +152,13 @@ public class RTAnalysis extends DefaultAnalysis {
 
     public boolean getHasSemantikError() {
         return hasSemantikError;
+    }
+
+    public RTSemanticsAnalysis getRtSemanticsAnalysis() {
+        return rtSemanticsAnalysis;
+    }
+
+    public String getErrorLogSyntax() {
+        return errorLogSyntax;
     }
 }

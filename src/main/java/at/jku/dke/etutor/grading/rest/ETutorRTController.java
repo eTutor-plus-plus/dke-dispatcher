@@ -54,7 +54,6 @@ public class ETutorRTController {
 
     @GetMapping("/task/getTask/{id}")
     public RTObject getTask(@PathVariable Integer id) throws SQLException {
-        System.out.println("Yes");
         return resourceService.getTask(id);
     }
 

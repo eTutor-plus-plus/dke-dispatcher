@@ -1,19 +1,23 @@
 package at.jku.dke.etutor.modules.rt.analysis;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RTSemanticsAnalysis {
     List<String> studentSolution;
     List<String> solution;
     List<String> relationsStudent = new ArrayList();
     List<String> relations = new ArrayList<>();
-    List<String> pkStudent = new ArrayList<>();
-    List<String> pk = new ArrayList<>();
-    List<String> attributes = new ArrayList<>();
-    List<String> attributesStudent = new ArrayList<>();
-    List<String> dependencies = new ArrayList<>();
-    List<String> dependenciesStudent = new ArrayList<>();
+    Map<String,String> pkStudent = new HashMap<String,String>();
+    Map<String,String> pk = new HashMap<String,String>();
+    Map<String,String> attributes = new HashMap<String,String>();
+    Map<String,String>attributesStudent = new HashMap<String,String>();
+    Map<String,String> dependencies = new HashMap<String,String>();
+    Map<String,String> dependenciesStudent = new HashMap<String,String>();
+    String errorLogSemantik = "";
+    String errorLogSyntax = "";
 
 
     public RTSemanticsAnalysis(List<String> studentSolution, List<String> solution) {
@@ -23,6 +27,9 @@ public class RTSemanticsAnalysis {
         this.clacPrimaryKey();
         this.clacAttributes();
         this.clacDependendcies();
+        this.checkPrimaryKey();
+        this.checkAttributes();
+        this.checkDependendcies();
     }
 
     private void calcRelations() {
@@ -43,14 +50,25 @@ public class RTSemanticsAnalysis {
         }
     }
 
+    public String getRelation(String input) {
+        String relation = "";
+        int indexOfOpeningParenthesis = input.indexOf('(');
+        if (indexOfOpeningParenthesis != -1) {
+            relation = input.substring(0, indexOfOpeningParenthesis);
+        }
+        return relation;
+    }
+
     public boolean checkRelation(){
         for(String str : this.relationsStudent){
             if(!this.relations.contains(str)){
+                this.errorLogSyntax = this.errorLogSyntax.concat("<br>Falsche Relation: " + str);
                 return false;
             }
         }
 
         if(this.relations.size() != this.relationsStudent.size()){
+            this.errorLogSyntax = this.errorLogSyntax.concat("<br>Fehlende oder redundante Relationen!");
             return false;
         }
 
@@ -58,31 +76,42 @@ public class RTSemanticsAnalysis {
     }
 
     public boolean checkPrimaryKey(){
-        for(String str : this.pkStudent){
-            if(!this.pk.contains(str)){
-                return false;
+        boolean check = true;
+        for (Map.Entry<String,String> entry : this.pk.entrySet()){
+            String solution = entry.getValue();
+            String student = this.pkStudent.get(entry.getKey());
+            if (!solution.equals(student)) {
+                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falscher Primärschlüssel: " + student);
+                check = false;
             }
         }
-        return true;
+        return check;
     }
 
     public boolean checkAttributes(){
-        for(String str : this.attributesStudent){
-            if(!this.attributes.contains(str)){
-                return false;
+        boolean check = true;
+        for (Map.Entry<String,String> entry : this.attributes.entrySet()){
+            String solution = entry.getValue();
+            String student = this.attributesStudent.get(entry.getKey());
+            if (!solution.equals(student)) {
+                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falsche/s, redundante/s oder fehlende/s Attributt/e: " + student);
+                check = false;
             }
         }
-        return true;
+        return check;
     }
 
     public boolean checkDependendcies(){
-        for(String str : this.dependenciesStudent){
-            if(!this.dependencies.contains(str)){
-                System.out.println("Error in Attributes: " + str);
-                return false;
+        boolean check = true;
+        for (Map.Entry<String,String> entry : this.dependencies.entrySet()){
+            String solution = entry.getValue();
+            String student = this.dependenciesStudent.get(entry.getKey());
+            if (!solution.equals(student)) {
+                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falsche, redundante oder fehlende Inklusions-Abhängigkeit/en: " + student);
+                check = false;
             }
         }
-        return true;
+        return check;
     }
 
     public void clacPrimaryKey(){
@@ -91,7 +120,8 @@ public class RTSemanticsAnalysis {
             int indexOfLastPipe = str.lastIndexOf('|');
             if (indexOfFirstPipe != -1 && indexOfLastPipe != -1 && indexOfFirstPipe < indexOfLastPipe) {
                 String extractedText = str.substring(indexOfFirstPipe + 1, indexOfLastPipe);
-                this.pk.add(extractedText);
+                String key = this.getRelation(str);
+                this.pk.put(key,extractedText);
             }
         }
 
@@ -100,7 +130,8 @@ public class RTSemanticsAnalysis {
             int indexOfLastPipe = str.lastIndexOf('|');
             if (indexOfFirstPipe != -1 && indexOfLastPipe != -1 && indexOfFirstPipe < indexOfLastPipe) {
                 String extractedText = str.substring(indexOfFirstPipe + 1, indexOfLastPipe);
-                this.pkStudent.add(extractedText);
+                String key = this.getRelation(str);
+                this.pkStudent.put(key,extractedText);
             }
         }
     }
@@ -111,7 +142,8 @@ public class RTSemanticsAnalysis {
             int indexOfLastPipe = str.indexOf(')');
             if (indexOfFirstPipe != -1 && indexOfLastPipe != -1 && indexOfFirstPipe < indexOfLastPipe) {
                 String extractedText = str.substring(indexOfFirstPipe + 1, indexOfLastPipe);
-                this.attributes.add(extractedText);
+                String key = this.getRelation(str);
+                this.attributes.put(key,extractedText);
             }
         }
 
@@ -120,7 +152,8 @@ public class RTSemanticsAnalysis {
             int indexOfLastPipe = str.indexOf(')');
             if (indexOfFirstPipe != -1 && indexOfLastPipe != -1 && indexOfFirstPipe < indexOfLastPipe) {
                 String extractedText = str.substring(indexOfFirstPipe + 1, indexOfLastPipe);
-                this.attributesStudent.add(extractedText);
+                String key = this.getRelation(str);
+                this.attributesStudent.put(key,extractedText);
             }
         }
     }
@@ -131,7 +164,8 @@ public class RTSemanticsAnalysis {
             int indexOfLastPipe = str.length();
             if (indexOfFirstPipe != -1 && indexOfLastPipe != -1 && indexOfFirstPipe < indexOfLastPipe) {
                 String extractedText = str.substring(indexOfFirstPipe + 1, indexOfLastPipe);
-                this.dependencies.add(extractedText);
+                String key = this.getRelation(str);
+                this.dependencies.put(key,extractedText);
             }
         }
 
@@ -140,7 +174,8 @@ public class RTSemanticsAnalysis {
             int indexOfLastPipe = str.length();
             if (indexOfFirstPipe != -1 && indexOfLastPipe != -1 && indexOfFirstPipe < indexOfLastPipe) {
                 String extractedText = str.substring(indexOfFirstPipe + 1, indexOfLastPipe);
-                this.dependenciesStudent.add(extractedText);
+                String key = this.getRelation(str);
+                this.dependenciesStudent.put(key,extractedText);
             }
         }
     }
@@ -161,28 +196,35 @@ public class RTSemanticsAnalysis {
         return relations;
     }
 
-    public List<String> getPk() {
+    public Map<String,String> getPk() {
         return pk;
     }
 
-    public List<String> getPkStudent() {
+    public Map<String, String> getPkStudent() {
         return pkStudent;
     }
 
-    public List<String> getAttributes() {
+    public Map<String,String> getAttributes() {
         return attributes;
     }
 
-    public List<String> getAttributesStudent() {
+    public Map<String,String> getAttributesStudent() {
         return attributesStudent;
     }
 
-    public List<String> getDependencies() {
+    public Map<String,String> getDependencies() {
         return dependencies;
     }
 
-    public List<String> getDependenciesStudent() {
+    public Map<String,String> getDependenciesStudent() {
         return dependenciesStudent;
     }
 
+    public String getErrorLogSemantik() {
+        return errorLogSemantik;
+    }
+
+    public String getErrorLogSyntax() {
+        return errorLogSyntax;
+    }
 }

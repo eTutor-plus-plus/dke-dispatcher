@@ -23,6 +23,8 @@ public class RTEvaluator implements Evaluator {
     @Override
     public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
         RTAnalysis rtAnalysis = new RTAnalysis(exerciseID,passedAttributes.get("submission"),this.applicationProperties);
+        //System.out.println(rtAnalysis.getRtSemanticsAnalysis().getErrorLogSyntax());
+        //System.out.println(rtAnalysis.getRtSemanticsAnalysis().getErrorLogSemantik());
         return rtAnalysis;
     }
 
@@ -40,8 +42,9 @@ public class RTEvaluator implements Evaluator {
 
     @Override
     public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
+        System.out.println(passedAttributes.toString());
         RTAnalysis rtAnalysis = (RTAnalysis) analysis;
-        rtReport rtReport = new rtReport(rtAnalysis);
+        rtReport rtReport = new rtReport(rtAnalysis, passedAttributes);
         rtReport.getReport();
         return rtReport;
     }
