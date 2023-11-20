@@ -30,6 +30,7 @@ public class RTSemanticsAnalysis {
         this.checkPrimaryKey();
         this.checkAttributes();
         this.checkDependendcies();
+        this.checkRelation();
     }
 
     private void calcRelations() {
