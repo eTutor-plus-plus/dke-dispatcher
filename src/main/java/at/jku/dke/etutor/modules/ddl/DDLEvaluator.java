@@ -5,10 +5,7 @@ import at.jku.dke.etutor.core.evaluation.Evaluator;
 import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.core.evaluation.Report;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.modules.ddl.analysis.DDLAnalysis;
-import at.jku.dke.etutor.modules.ddl.analysis.DDLAnalyzer;
-import at.jku.dke.etutor.modules.ddl.analysis.DDLAnalyzerConfig;
-import at.jku.dke.etutor.modules.ddl.analysis.DDLCriterionAnalysis;
+import at.jku.dke.etutor.modules.ddl.analysis.*;
 import at.jku.dke.etutor.modules.ddl.grading.DDLCriterionGradingConfig;
 import at.jku.dke.etutor.modules.ddl.grading.DDLGrader;
 import at.jku.dke.etutor.modules.ddl.grading.DDLGraderConfig;
@@ -315,8 +312,6 @@ public class DDLEvaluator implements Evaluator {
         // Log analysis and max points
         logger.info("analysis: {}" , analysis);
         logger.info("grading: {}" ,  grading);
-        // Log the passed attributes and parameters
-        logPassedAttributes(passedAttributes, passedParameters);
 
         // Initialize variables
         DDLReporter reporter = new DDLReporter();
@@ -360,8 +355,21 @@ public class DDLEvaluator implements Evaluator {
         if(analysis instanceof DDLAnalysis) {
             // Initialize variables
             StringBuilder result = new StringBuilder();
+            DDLAnalysis ddlAnalysis = (DDLAnalysis)analysis;
 
-            //todo Create HTML result
+
+            // Add syntax exception if there is one
+            SyntaxAnalysis correctSyntaxCriterion = (SyntaxAnalysis) ddlAnalysis.getCriterionAnalysis(DDLEvaluationCriterion.CORRECT_SYNTAX);
+            if(!correctSyntaxCriterion.isCriterionSatisfied()) {
+                result.append("<br><strong>").append(correctSyntaxCriterion.getErrorDescription()).append("</strong>").append("<br>");
+                return result.toString();
+            }
+
+            if(locale == Locale.GERMAN) {
+                result.append("<strong>Query erfolgreich ausgeführt!</strong>");
+            } else {
+                result.append("<strong>Query successfully executed!</strong>");
+            }
 
             return result.toString();
         }
