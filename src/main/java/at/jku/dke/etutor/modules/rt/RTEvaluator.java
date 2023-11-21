@@ -23,8 +23,7 @@ public class RTEvaluator implements Evaluator {
     @Override
     public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
         RTAnalysis rtAnalysis = new RTAnalysis(exerciseID,passedAttributes.get("submission"),this.applicationProperties);
-        //System.out.println(rtAnalysis.getRtSemanticsAnalysis().getErrorLogSyntax());
-        //System.out.println(rtAnalysis.getRtSemanticsAnalysis().getErrorLogSemantik());
+        System.out.println(rtAnalysis.getSolution().get(1).getGewichtungLoesung());
         return rtAnalysis;
     }
 

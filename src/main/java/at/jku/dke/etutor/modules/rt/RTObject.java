@@ -16,10 +16,7 @@ public class RTObject {
     @JsonProperty("id")
     private String id;
 
-    private String dbSolution;
-
-    private List<String> solutionRows;
-
+    private List<RTSolution> dbSolution;
 
     public JsonString getSolution() {
         return solution;
@@ -45,19 +42,14 @@ public class RTObject {
         this.id = id;
     }
 
-    public String getDbSolution() {
+    public List<RTSolution> getDbSolution() {
         return dbSolution;
     }
 
-    public void setDbSolution(String dbSolution) {
-        this.dbSolution = dbSolution;
-        String[] array = dbSolution.split("\r\n");
-        this.solutionRows = Arrays.stream(array).toList();
+    public void setDbSolution(List<RTSolution> dbSolution) {
+       this.dbSolution = dbSolution;
     }
 
-    public List<String> getSolutionRows() {
-        return solutionRows;
-    }
 
     @Override
     public String toString() {

@@ -6,6 +6,7 @@ import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.ETutorRTController;
 import at.jku.dke.etutor.grading.service.RTResourceService;
 import at.jku.dke.etutor.modules.rt.RTObject;
+import at.jku.dke.etutor.modules.rt.RTSolution;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.parser.ParseException;
@@ -29,7 +30,7 @@ import java.util.List;
 public class RTAnalysis extends DefaultAnalysis {
     private int id;
     private String inputSolution;
-    private List<String> solution;
+    private List<RTSolution> solution;
     private List<String> solutionStudent;
     private ApplicationProperties applicationProperties;
     private RTSemanticsAnalysis rtSemanticsAnalysis;
@@ -47,7 +48,7 @@ public class RTAnalysis extends DefaultAnalysis {
         this.inputSolution = inputSolution;
         setDataBaseProperties();
         setSolutionStudent();
-        this.rtSemanticsAnalysis = new RTSemanticsAnalysis(solutionStudent, solution);
+        this.rtSemanticsAnalysis = new RTSemanticsAnalysis(solutionStudent, Arrays.stream(solution.get(0).getSolution()).toList());
     }
 
     public boolean checkSyntax() {
@@ -99,7 +100,7 @@ public class RTAnalysis extends DefaultAnalysis {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             RTObject rtObject = getRTObject(response.body());
-            this.solution = stringFormater(rtObject.getDbSolution());
+            this.solution = rtObject.getDbSolution();
             this.maxPoints = rtObject.getMaxPoints();
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,7 +125,7 @@ public class RTAnalysis extends DefaultAnalysis {
         return inputSolution;
     }
 
-    public List<String> getSolution() {
+    public List<RTSolution> getSolution() {
         return solution;
     }
 
