@@ -8,6 +8,10 @@ import java.util.Locale;
 public class DDLReporter {
     //region Constants
     private final String LS = "<br>";
+    private final String TABELLE = "Tabelle";
+    private final String SPALTE = "Spalte";
+    private final String TABLE = "Table";
+    private final String COLUMN = "Column";
     //endregion
 
     public DDLReporter() {
@@ -28,17 +32,17 @@ public class DDLReporter {
         ConstraintsAnalysis constraintsAnalysis;
 
         Iterator<String> tablesIterator;
-        Iterator<String> columnsIterator;
-        Iterator<String> primaryKeysIterator;
-        Iterator<String> foreignKeysIterator;
-        Iterator<String> constraintsIterator;
+        Iterator<ErrorTupel> columnsIterator;
+        Iterator<ErrorTupel> primaryKeysIterator;
+        Iterator<ErrorTupel> foreignKeysIterator;
+        Iterator<ErrorTupel> constraintsIterator;
+        Iterator<String> checkConstraintsIterator;
         Iterator<DDLCriterionAnalysis> criterionAnalysisIterator;
 
         StringBuilder description;
         StringBuilder error;
-
-        //todo Check if this is necessary
-        // Set query results
+        String header1;
+        String header2;
 
         // If diagnose level == 0 -> no feedback
         if(config.getDiagnoseLevel() == 0) {
@@ -58,7 +62,7 @@ public class DDLReporter {
 
                 // Check on criterion type
                 if(criterionAnalysis instanceof SyntaxAnalysis) {
-                    description.append(((at.jku.dke.etutor.modules.sql.analysis.SyntaxAnalysis) criterionAnalysis).getSyntaxErrorDescription());
+                    description.append(((SyntaxAnalysis) criterionAnalysis).getErrorDescription());
                 }
 
                 if(criterionAnalysis instanceof TablesAnalysis) {
@@ -288,7 +292,121 @@ public class DDLReporter {
                     }
 
                     if(config.getDiagnoseLevel() == 3) {
-                        //todo implement diagnose level 3 for columns
+                        // Check for missing/surplus columns
+                        if(!columnsAnalysis.isMissingColumnsEmpty()) {
+                            if(isGermanLocale(locale)) {
+                                description.append("Die folgenden ").append(missingColumnsCount).append(" Spalten fehlen: ").append(LS);
+                                header1 = TABELLE;
+                                header2 = SPALTE;
+                            } else {
+                                description.append("The following ").append(missingColumnsCount).append(" columns are missing: ").append(LS);
+                                header1 = TABLE;
+                                header2 = COLUMN;
+                            }
+
+                            report.setMissingColumns(columnsAnalysis.getMissingColumns());
+
+                            columnsIterator = columnsAnalysis.iterMissingColumns();
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
+                            while(columnsIterator.hasNext()) {
+                                description.append("<tr>").append("<td>").append(columnsIterator.next().getSource()).append("</td><td>").append(columnsIterator.next().getError()).append("</td></tr>");
+                            }
+                            description.append("</table>");
+                        }
+
+                        if(!columnsAnalysis.isMissingColumnsEmpty() && !columnsAnalysis.isSurplusColumnsEmpty()) {
+                            description.append(LS).append(LS);
+                        }
+
+                        if(!columnsAnalysis.isSurplusColumnsEmpty()) {
+                            if(isGermanLocale(locale)) {
+                                description.append("Die folgenden ").append(surplusColumnsCount).append(" Spalten sind zu viel: ").append(LS);
+                                header1 = TABELLE;
+                                header2 = SPALTE;
+                            } else {
+                                description.append("The following ").append(surplusColumnsCount).append(" columns are too much: ").append(LS);
+                                header1 = TABLE;
+                                header2 = COLUMN;
+                            }
+
+                            report.setSurplusColumns(columnsAnalysis.getSurplusColumns());
+
+                            columnsIterator = columnsAnalysis.iterSurplusColumns();
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
+                            while(columnsIterator.hasNext()) {
+                                description.append("<tr>").append("<td>").append(columnsIterator.next().getSource()).append("</td><td>").append(columnsIterator.next().getError()).append("</td></tr>");
+                            }
+                            description.append("</table>");
+                        }
+
+                        // Check for datatypes
+                        if(!columnsAnalysis.isWrongDatatypeColumnsEmpty()) {
+                            description.append(LS);
+                            if(isGermanLocale(locale)) {
+                                description.append("Die folgenden ").append(datatypeCount).append(" Spalten haben einen falschen Datentyp: ").append(LS);
+                                header1 = TABELLE;
+                                header2 = SPALTE;
+                            } else {
+                                description.append("The following ").append(datatypeCount).append(" columns have a wrong datatype: ").append(LS);
+                                header1 = TABLE;
+                                header2 = COLUMN;
+                            }
+
+                            report.addWrongColumns(columnsAnalysis.getWrongDatatypeColumns());
+
+                            columnsIterator = columnsAnalysis.iterWrongDatatypeColumns();
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
+                            while(columnsIterator.hasNext()) {
+                                description.append("<tr>").append("<td>").append(columnsIterator.next().getSource()).append("</td><td>").append(columnsIterator.next().getError()).append("</td></tr>");
+                            }
+                            description.append("</table>");
+                        }
+
+                        // Check for nullable
+                        if(!columnsAnalysis.isWrongNullColumnsEmpty()) {
+                            description.append(LS);
+                            if(isGermanLocale(locale)) {
+                                description.append("Die folgenden ").append(nullCount).append(" Spalten haben einen falschen Null-Ausdruck: ").append(LS);
+                                header1 = TABELLE;
+                                header2 = SPALTE;
+                            } else {
+                                description.append("The following ").append(nullCount).append(" columns have a wrong null-statement: ").append(LS);
+                                header1 = TABLE;
+                                header2 = COLUMN;
+                            }
+
+                            report.addWrongColumns(columnsAnalysis.getWrongNullColumns());
+
+                            columnsIterator = columnsAnalysis.iterWrongNullColumns();
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
+                            while(columnsIterator.hasNext()) {
+                                description.append("<tr>").append("<td>").append(columnsIterator.next().getSource()).append("</td><td>").append(columnsIterator.next().getError()).append("</td></tr>");
+                            }
+                            description.append("</table>");
+                        }
+
+                        // Check for default values
+                        if(!columnsAnalysis.isWrongDefaultColumnsEmpty()) {
+                            description.append(LS);
+                            if(isGermanLocale(locale)) {
+                                description.append("Die folgenden ").append(defaultCount).append(" Spalten haben einen falschen Defaultwert: ").append(LS);
+                                header1 = TABELLE;
+                                header2 = SPALTE;
+                            } else {
+                                description.append("The following ").append(defaultCount).append(" columns have a wrong default value: ").append(LS);
+                                header1 = TABLE;
+                                header2 = COLUMN;
+                            }
+
+                            report.addWrongColumns(columnsAnalysis.getWrongDefaultColumns());
+
+                            columnsIterator = columnsAnalysis.iterWrongDefaultColumns();
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
+                            while(columnsIterator.hasNext()) {
+                                description.append("<tr>").append("<td>").append(columnsIterator.next().getSource()).append("</td><td>").append(columnsIterator.next().getError()).append("</td></tr>");
+                            }
+                            description.append("</table>");
+                        }
                     }
                 }
 
@@ -352,7 +470,51 @@ public class DDLReporter {
                     }
 
                     if(config.getDiagnoseLevel() == 3) {
-                        //todo implement diagnose level 3 for primary keys
+                        if(!primaryKeysAnalysis.isMissingPrimaryKeysEmpty()) {
+                            if(isGermanLocale(locale)) {
+                                description.append("Die folgenden ").append(missingPrimaryKeysCount).append(" Primärschlüssel fehlen: ").append(LS);
+                                header1 = TABELLE;
+                                header2 = SPALTE;
+                            } else {
+                                description.append("The following ").append(missingPrimaryKeysCount).append(" primary keys are missing: ").append(LS);
+                                header1 = TABLE;
+                                header2 = COLUMN;
+                            }
+
+                            report.setMissingPrimaryKeys(primaryKeysAnalysis.getMissingPrimaryKeys());
+
+                            primaryKeysIterator = primaryKeysAnalysis.iterMissingPrimaryKeys();
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
+                            while(primaryKeysIterator.hasNext()) {
+                                description.append("<tr>").append("<td>").append(primaryKeysIterator.next().getSource()).append("</td><td>").append(primaryKeysIterator.next().getError()).append("</td></tr>");
+                            }
+                            description.append("</table>");
+                        }
+
+                        if(!primaryKeysAnalysis.isMissingPrimaryKeysEmpty() && !primaryKeysAnalysis.isSurplusPrimaryKeysEmpty()) {
+                            description.append(LS).append(LS);
+                        }
+
+                        if(!primaryKeysAnalysis.isSurplusPrimaryKeysEmpty()) {
+                            if(isGermanLocale(locale)) {
+                                description.append("Die folgenden ").append(surplusPrimaryKeysCount).append(" Primärschlüssel sind zu viel: ").append(LS);
+                                header1 = TABELLE;
+                                header2 = SPALTE;
+                            } else {
+                                description.append("The following ").append(surplusPrimaryKeysCount).append(" primary keys are too much: ").append(LS);
+                                header1 = TABLE;
+                                header2 = COLUMN;
+                            }
+
+                            report.setSurplusPrimaryKeys(primaryKeysAnalysis.getSurplusPrimaryKeys());
+
+                            primaryKeysIterator = primaryKeysAnalysis.iterSurplusPrimaryKeys();
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
+                            while(primaryKeysIterator.hasNext()) {
+                                description.append("<tr>").append("<td>").append(primaryKeysIterator.next().getSource()).append("</td><td>").append(primaryKeysIterator.next().getError()).append("</td></tr>");
+                            }
+                            description.append("</table>");
+                        }
                     }
                 }
 
@@ -416,7 +578,51 @@ public class DDLReporter {
                     }
 
                     if(config.getDiagnoseLevel() == 3) {
-                        //todo implement diagnose level 3 for foreign keys
+                        if(!foreignKeysAnalysis.isMissingForeignKeysEmpty()) {
+                            if(isGermanLocale(locale)) {
+                                description.append("Die folgenden ").append(missingForeignKeysCount).append(" Fremdschlüssel fehlen: ").append(LS);
+                                header1 = TABELLE;
+                                header2 = SPALTE;
+                            } else {
+                                description.append("The following ").append(missingForeignKeysCount).append(" foreign keys are missing: ").append(LS);
+                                header1 = TABLE;
+                                header2 = COLUMN;
+                            }
+
+                            report.setMissingForeignKeys(foreignKeysAnalysis.getMissingForeignKeys());
+
+                            foreignKeysIterator = foreignKeysAnalysis.iterMissingForeignKeys();
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
+                            while(foreignKeysIterator.hasNext()) {
+                                description.append("<tr>").append("<td>").append(foreignKeysIterator.next().getSource()).append("</td><td>").append(foreignKeysIterator.next().getError()).append("</td></tr>");
+                            }
+                            description.append("</table>");
+                        }
+
+                        if(!foreignKeysAnalysis.isMissingForeignKeysEmpty() && !foreignKeysAnalysis.isSurplusForeignKeysEmpty()) {
+                            description.append(LS).append(LS);
+                        }
+
+                        if(!foreignKeysAnalysis.isSurplusForeignKeysEmpty()) {
+                            if(isGermanLocale(locale)) {
+                                description.append("Die folgenden ").append(surplusForeignKeysCount).append(" Fremdschlüssel sind zu viel: ").append(LS);
+                                header1 = TABELLE;
+                                header2 = SPALTE;
+                            } else {
+                                description.append("The following ").append(surplusForeignKeysCount).append(" foreign keys are too much: ").append(LS);
+                                header1 = TABLE;
+                                header2 = COLUMN;
+                            }
+
+                            report.setSurplusForeignKeys(foreignKeysAnalysis.getSurplusForeignKeys());
+
+                            foreignKeysIterator = foreignKeysAnalysis.iterSurplusForeignKeys();
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
+                            while(foreignKeysIterator.hasNext()) {
+                                description.append("<tr>").append("<td>").append(foreignKeysIterator.next().getSource()).append("</td><td>").append(foreignKeysIterator.next().getError()).append("</td></tr>");
+                            }
+                            description.append("</table>");
+                        }
                     }
                 }
 
@@ -436,6 +642,7 @@ public class DDLReporter {
 
                     // Check on diagnose level
                     if(config.getDiagnoseLevel() == 1) {
+                        // Check for unique constraints
                         if(!constraintsAnalysis.isMissingConstraintsEmpty()) {
                             if(isGermanLocale(locale)) {
                                 description.append("Es fehlen unique Constraints in den Tabellen.");
@@ -455,9 +662,20 @@ public class DDLReporter {
                                 description.append("There are too much unique constraints in the tables.");
                             }
                         }
+
+                        // Check for check constraints
+                        if(!constraintsAnalysis.isDmlStatementsWithMistakesEmpty()) {
+                            description.append(LS);
+                            if(isGermanLocale(locale)) {
+                                description.append("Es gibt Fehler bei den check Constraints in den Tabellen.");
+                            } else {
+                                description.append("There are errors with check constraints in the tables.");
+                            }
+                        }
                     }
 
                     if(config.getDiagnoseLevel() == 2) {
+                        // Check for unique constraints
                         if(!constraintsAnalysis.isMissingConstraintsEmpty()) {
                             if(isGermanLocale(locale)) {
                                 description.append("Es fehlen ").append(missingConstraintsCount).append(" unique Constraints in den Tabellen.");
@@ -477,18 +695,104 @@ public class DDLReporter {
                                 description.append("There are ").append(surplusConstraintsCount).append(" unique Constraints too much in the tables.");
                             }
                         }
+
+                        // Check for check constraints
+                        if(!constraintsAnalysis.isDmlStatementsWithMistakesEmpty()) {
+                            description.append(LS);
+                            if(isGermanLocale(locale)) {
+                                description.append("Es gibt Fehler bei den check Constraints in den Tabellen.");
+                            } else {
+                                description.append("There are errors with check constraints in the tables.");
+                            }
+                        }
                     }
 
                     if(config.getDiagnoseLevel() == 3) {
-                        //todo implement diagnose level 3 for constraints
+                        // Check for unique constraints
+                        if(!constraintsAnalysis.isMissingConstraintsEmpty()) {
+                            if(isGermanLocale(locale)) {
+                                description.append("Die folgenden ").append(missingConstraintsCount).append(" unique Constraints sind zu viel: ").append(LS);
+                                header1 = TABELLE;
+                                header2 = SPALTE;
+                            } else {
+                                description.append("The following ").append(missingConstraintsCount).append(" missing unique constraints are missing: ").append(LS);
+                                header1 = TABLE;
+                                header2 = COLUMN;
+                            }
+
+                            report.setMissingUniqueConstraints(constraintsAnalysis.getMissingConstraints());
+
+                            constraintsIterator = constraintsAnalysis.iterMissingConstraints();
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
+                            while(constraintsIterator.hasNext()) {
+                                description.append("<tr>").append("<td>").append(constraintsIterator.next().getSource()).append("</td><td>").append(constraintsIterator.next().getError()).append("</td></tr>");
+                            }
+                            description.append("</table>");
+                        }
+
+                        if(!constraintsAnalysis.isMissingConstraintsEmpty() && !constraintsAnalysis.isSurplusConstraintsEmpty()) {
+                            description.append(LS).append(LS);
+                        }
+
+                        if(!constraintsAnalysis.isSurplusConstraintsEmpty()) {
+                            if(isGermanLocale(locale)) {
+                                description.append("Die folgenden ").append(surplusConstraintsCount).append(" unique Constraints sind zu viel: ").append(LS);
+                                header1 = TABELLE;
+                                header2 = SPALTE;
+                            } else {
+                                description.append("The following ").append(surplusConstraintsCount).append(" unique Constraints are too much: ").append(LS);
+                                header1 = TABLE;
+                                header2 = COLUMN;
+                            }
+
+                            report.setSurplusUniqueConstraints(constraintsAnalysis.getSurplusConstraints());
+
+                            constraintsIterator = constraintsAnalysis.iterSurplusConstraints();
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
+                            while(constraintsIterator.hasNext()) {
+                                description.append("<tr>").append("<td>").append(constraintsIterator.next().getSource()).append("</td><td>").append(constraintsIterator.next().getError()).append("</td></tr>");
+                            }
+                            description.append("</table>");
+                        }
+
+                        // Check for check constraints
+                        if(!constraintsAnalysis.isDmlStatementsWithMistakesEmpty()) {
+                            description.append(LS);
+                            if(isGermanLocale(locale)) {
+                                description.append("Es gibt Fehler bei den check Constraints in den Tabellen bei den folgenden Insert-Statements: ").append(LS);
+                            } else {
+                                description.append("There are errors with check constraints in the tables with the following insert statements: ").append(LS);
+                            }
+
+                            report.setWrongInsertStatements(constraintsAnalysis.getDmlStatementsWithMistakes());
+
+                            checkConstraintsIterator = constraintsAnalysis.iterDmlStatementsWithMistakes();
+                            while(checkConstraintsIterator.hasNext()) {
+                                description.append(checkConstraintsIterator.next()).append(LS);
+                            }
+                        }
                     }
+                }
+
+                if ((error.toString().length() != 0) || (description.toString().length() != 0)) {
+                    errorReport.setError(error.toString());
+                    errorReport.setDescription(description.toString());
+
+                    String tempDesc = report.getDescription();
+                    tempDesc = tempDesc + description + LS;
+                    report.setDescription(tempDesc);
+
+                    String tempErr = report.getError();
+                    tempErr = tempErr + error + LS;
+                    report.setError(tempErr);
+
+                    report.addErrorReport(errorReport);
                 }
             }
         }
 
         // Configure displayed information
         report.setShowErrorReports(true);
-        report.setShowQueryResult(true);
 
         if (config.getDiagnoseLevel() >= 1) {
             report.setShowErrorDescriptions(true);

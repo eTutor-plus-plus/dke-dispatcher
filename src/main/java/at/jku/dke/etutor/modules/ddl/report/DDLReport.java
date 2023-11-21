@@ -2,6 +2,7 @@ package at.jku.dke.etutor.modules.ddl.report;
 
 import at.jku.dke.etutor.core.evaluation.DefaultReport;
 import at.jku.dke.etutor.core.evaluation.Report;
+import at.jku.dke.etutor.modules.ddl.analysis.ErrorTupel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,15 +13,16 @@ public class DDLReport extends DefaultReport implements Report, Serializable {
     private List<DDLErrorReport> errorReports;
     private List<String> missingTables;
     private List<String> surplusTables;
-    private List<String> missingColumns;
-    private List<String> surplusColumns;
-    private List<String> wrongColumns;
-    private List<String> missingUniqueConstraints;
-    private List<String> surplusUniqueConstraints;
-    private List<String> missingPrimaryKeys;
-    private List<String> surplusPrimaryKeys;
-    private List<String> missingForeignKeys;
-    private List<String> surplusForeignKeys;
+    private List<ErrorTupel> missingColumns;
+    private List<ErrorTupel> surplusColumns;
+    private List<ErrorTupel> wrongColumns;
+    private List<ErrorTupel> missingUniqueConstraints;
+    private List<ErrorTupel> surplusUniqueConstraints;
+    private List<String> wrongInsertStatements;
+    private List<ErrorTupel> missingPrimaryKeys;
+    private List<ErrorTupel> surplusPrimaryKeys;
+    private List<ErrorTupel> missingForeignKeys;
+    private List<ErrorTupel> surplusForeignKeys;
 
 
     private String prologue;
@@ -46,6 +48,7 @@ public class DDLReport extends DefaultReport implements Report, Serializable {
         this.exceptionText = "";
 
         this.errorReports = new ArrayList<>();
+        this.wrongColumns = new ArrayList<>();
     }
 
     //region Getter/Setter
@@ -55,6 +58,10 @@ public class DDLReport extends DefaultReport implements Report, Serializable {
 
     public void setErrorReports(List<DDLErrorReport> errorReports) {
         this.errorReports = errorReports;
+    }
+
+    public void addErrorReport(DDLErrorReport errorReport) {
+        this.errorReports.add(errorReport);
     }
 
     public List<String> getMissingTables() {
@@ -73,75 +80,87 @@ public class DDLReport extends DefaultReport implements Report, Serializable {
         this.surplusTables = surplusTables;
     }
 
-    public List<String> getMissingColumns() {
+    public List<ErrorTupel> getMissingColumns() {
         return missingColumns;
     }
 
-    public void setMissingColumns(List<String> missingColumns) {
+    public void setMissingColumns(List<ErrorTupel> missingColumns) {
         this.missingColumns = missingColumns;
     }
 
-    public List<String> getSurplusColumns() {
+    public List<ErrorTupel> getSurplusColumns() {
         return surplusColumns;
     }
 
-    public void setSurplusColumns(List<String> surplusColumns) {
+    public void setSurplusColumns(List<ErrorTupel> surplusColumns) {
         this.surplusColumns = surplusColumns;
     }
 
-    public List<String> getWrongColumns() {
+    public List<ErrorTupel> getWrongColumns() {
         return wrongColumns;
     }
 
-    public void setWrongColumns(List<String> wrongColumns) {
+    public void setWrongColumns(List<ErrorTupel> wrongColumns) {
         this.wrongColumns = wrongColumns;
     }
 
-    public List<String> getMissingUniqueConstraints() {
+    public void addWrongColumns(List<ErrorTupel> wrongColumns) {
+        this.wrongColumns.addAll(wrongColumns);
+    }
+
+    public List<ErrorTupel> getMissingUniqueConstraints() {
         return missingUniqueConstraints;
     }
 
-    public void setMissingUniqueConstraints(List<String> missingUniqueConstraints) {
+    public void setMissingUniqueConstraints(List<ErrorTupel> missingUniqueConstraints) {
         this.missingUniqueConstraints = missingUniqueConstraints;
     }
 
-    public List<String> getSurplusUniqueConstraints() {
+    public List<ErrorTupel> getSurplusUniqueConstraints() {
         return surplusUniqueConstraints;
     }
 
-    public void setSurplusUniqueConstraints(List<String> surplusUniqueConstraints) {
+    public void setSurplusUniqueConstraints(List<ErrorTupel> surplusUniqueConstraints) {
         this.surplusUniqueConstraints = surplusUniqueConstraints;
     }
 
-    public List<String> getMissingPrimaryKeys() {
+    public List<String> getWrongInsertStatements() {
+        return wrongInsertStatements;
+    }
+
+    public void setWrongInsertStatements(List<String> wrongInsertStatements) {
+        this.wrongInsertStatements = wrongInsertStatements;
+    }
+
+    public List<ErrorTupel> getMissingPrimaryKeys() {
         return missingPrimaryKeys;
     }
 
-    public void setMissingPrimaryKeys(List<String> missingPrimaryKeys) {
+    public void setMissingPrimaryKeys(List<ErrorTupel> missingPrimaryKeys) {
         this.missingPrimaryKeys = missingPrimaryKeys;
     }
 
-    public List<String> getSurplusPrimaryKeys() {
+    public List<ErrorTupel> getSurplusPrimaryKeys() {
         return surplusPrimaryKeys;
     }
 
-    public void setSurplusPrimaryKeys(List<String> surplusPrimaryKeys) {
+    public void setSurplusPrimaryKeys(List<ErrorTupel> surplusPrimaryKeys) {
         this.surplusPrimaryKeys = surplusPrimaryKeys;
     }
 
-    public List<String> getMissingForeignKeys() {
+    public List<ErrorTupel> getMissingForeignKeys() {
         return missingForeignKeys;
     }
 
-    public void setMissingForeignKeys(List<String> missingForeignKeys) {
+    public void setMissingForeignKeys(List<ErrorTupel> missingForeignKeys) {
         this.missingForeignKeys = missingForeignKeys;
     }
 
-    public List<String> getSurplusForeignKeys() {
+    public List<ErrorTupel> getSurplusForeignKeys() {
         return surplusForeignKeys;
     }
 
-    public void setSurplusForeignKeys(List<String> surplusForeignKeys) {
+    public void setSurplusForeignKeys(List<ErrorTupel> surplusForeignKeys) {
         this.surplusForeignKeys = surplusForeignKeys;
     }
 
