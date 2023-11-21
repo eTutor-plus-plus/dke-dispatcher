@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.modules.nf;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import at.jku.dke.etutor.grading.config.DataSourceConfiguration;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,6 @@ public class NFDataSource {
         return ds.getConnection();
     }
 
-    // TODO: Change all the SQL-Specific stuff (i.e., the stuff that uses properties.getSql()) to nf-specific stuff.
     public NFDataSource(ApplicationProperties properties){
         config.setDriverClassName(properties.getDatasource().getDriverClassName());
         config.setJdbcUrl(properties.getDatasource().getUrl() + properties.getSql().getConnUrl());
