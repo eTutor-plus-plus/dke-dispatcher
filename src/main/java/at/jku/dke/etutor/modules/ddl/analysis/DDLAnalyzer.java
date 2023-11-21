@@ -2,13 +2,12 @@ package at.jku.dke.etutor.modules.ddl.analysis;
 
 
 import at.jku.dke.etutor.modules.ddl.DDLEvaluationCriterion;
-import at.jku.dke.etutor.modules.ddl.serverAdministration.DBHelper;
-import at.jku.dke.etutor.modules.ddl.serverAdministration.DBUserAdmin;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.sql.*;
+import java.util.List;
 
 public class DDLAnalyzer {
     //region Constants
@@ -19,9 +18,10 @@ public class DDLAnalyzer {
 
     //region Fields
     private Logger logger;
-    private Connection systemConn;
+    private Connection exerciseConn;
+    private Connection userConn;
     private DatabaseMetaData userMetadata;
-    private DatabaseMetaData systemMetadata;
+    private DatabaseMetaData exerciseMetadata;
     //endregion
 
     public DDLAnalyzer() {
@@ -41,9 +41,9 @@ public class DDLAnalyzer {
     public DDLAnalysis analyze(Serializable submission, DDLAnalyzerConfig config) throws SQLException {
         String msg;
         String submittedQuery;
+        List<String> submittedStatements;
         DDLAnalysis analysis = new DDLAnalysis();
         DDLCriterionAnalysis criterionAnalysis;
-        DBUserAdmin admin = DBUserAdmin.getAdmin();
 
         // Check if submission is null
         if(submission == null) {
@@ -73,6 +73,9 @@ public class DDLAnalyzer {
             return analysis;
         }
 
+        // Get the DDL statements
+        submittedStatements = List.of(submittedQuery.replace("\n", "").split(";"));
+
         // Check if the configuration is null
         if (config == null) {
             msg = "";
@@ -86,15 +89,14 @@ public class DDLAnalyzer {
             return analysis;
         }
 
-        //todo Manage databases
-
         // Get connections
-        systemConn = DBHelper.getSystemConnection();
+        exerciseConn = config.getExerciseConn();
+        userConn = config.getUserConn();
 
         // Execute query
         // Check correct syntax
         if (config.isCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_SYNTAX)) {
-            criterionAnalysis = this.analyzeSyntax(config, submittedQuery);
+            criterionAnalysis = this.analyzeSyntax(submittedStatements);
             analysis.addCriterionAnalysis(DDLEvaluationCriterion.CORRECT_SYNTAX, criterionAnalysis);
             if(criterionAnalysis.getAnalysisException() != null && !criterionAnalysis.isCriterionSatisfied()) {
                 analysis.setAnalysisException(criterionAnalysis.getAnalysisException());
@@ -104,8 +106,8 @@ public class DDLAnalyzer {
 
         // Get metadata
         try {
-            systemMetadata = systemConn.getMetaData();
-            userMetadata = config.getConn().getMetaData();
+            exerciseMetadata = exerciseConn.getMetaData();
+            userMetadata = userConn.getMetaData();
         } catch (SQLException ex) {
             msg = "";
             msg = msg.concat("Error encounted while getting metadata. ");
@@ -119,7 +121,7 @@ public class DDLAnalyzer {
 
         // Check tables
         if(config.isCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_TABLES)) {
-            criterionAnalysis = this.analyzeTables(config, submittedQuery);
+            criterionAnalysis = this.analyzeTables();
             analysis.addCriterionAnalysis(DDLEvaluationCriterion.CORRECT_TABLES, criterionAnalysis);
             if(criterionAnalysis.getAnalysisException() != null && !criterionAnalysis.isCriterionSatisfied()) {
                 analysis.setAnalysisException(criterionAnalysis.getAnalysisException());
@@ -129,7 +131,7 @@ public class DDLAnalyzer {
 
         // Check columns
         if(config.isCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_COLUMNS)) {
-            criterionAnalysis = this.analyzeColumns(config, submittedQuery);
+            criterionAnalysis = this.analyzeColumns();
             analysis.addCriterionAnalysis(DDLEvaluationCriterion.CORRECT_COLUMNS, criterionAnalysis);
             if(criterionAnalysis.getAnalysisException() != null && !criterionAnalysis.isCriterionSatisfied()) {
                 analysis.setAnalysisException(criterionAnalysis.getAnalysisException());
@@ -139,7 +141,7 @@ public class DDLAnalyzer {
 
         // Check primary keys
         if(config.isCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_PRIMARY_KEYS)) {
-            criterionAnalysis = this.analyzePrimaryKeys(config, submittedQuery);
+            criterionAnalysis = this.analyzePrimaryKeys();
             analysis.addCriterionAnalysis(DDLEvaluationCriterion.CORRECT_PRIMARY_KEYS, criterionAnalysis);
             if(criterionAnalysis.getAnalysisException() != null && !criterionAnalysis.isCriterionSatisfied()) {
                 analysis.setAnalysisException(criterionAnalysis.getAnalysisException());
@@ -149,7 +151,7 @@ public class DDLAnalyzer {
 
         // Check foreign keys
         if(config.isCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_FOREIGN_KEYS)) {
-            criterionAnalysis = this.analyzeForeignKeys(config, submittedQuery);
+            criterionAnalysis = this.analyzeForeignKeys();
             analysis.addCriterionAnalysis(DDLEvaluationCriterion.CORRECT_FOREIGN_KEYS, criterionAnalysis);
             if(criterionAnalysis.getAnalysisException() != null && !criterionAnalysis.isCriterionSatisfied()) {
                 analysis.setAnalysisException(criterionAnalysis.getAnalysisException());
@@ -159,7 +161,7 @@ public class DDLAnalyzer {
 
         // Check constraints
         if(config.isCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_CONSTRAINTS)) {
-            criterionAnalysis = this.analyzeConstraints(config, submittedQuery);
+            criterionAnalysis = this.analyzeConstraints(config);
             analysis.addCriterionAnalysis(DDLEvaluationCriterion.CORRECT_CONSTRAINTS, criterionAnalysis);
             if(criterionAnalysis.getAnalysisException() != null && !criterionAnalysis.isCriterionSatisfied()) {
                 analysis.setAnalysisException(criterionAnalysis.getAnalysisException());
@@ -174,19 +176,20 @@ public class DDLAnalyzer {
 
     /**
      * Function to check the correctness of the syntax
-     * @param config Specifies the configuration
-     * @param submittedQuery Specifies the submitted ddl statement
+     * @param submittedStatements Specifies the submitted ddl statements
      * @return Returns a criterion analysis object
      */
-    private DDLCriterionAnalysis analyzeSyntax(DDLAnalyzerConfig config, String submittedQuery) {
+    private DDLCriterionAnalysis analyzeSyntax(List<String> submittedStatements) {
         this.logger.info("Analyze syntax");
 
         SyntaxAnalysis syntaxAnalysis = new SyntaxAnalysis();
 
         try {
-            // Execute query to check the correctness of the query
-            Statement stmt = config.getConn().createStatement();
-            stmt.executeQuery(submittedQuery);
+            // Execute every query to check the correctness of the query
+            for(String ddl : submittedStatements) {
+                Statement stmt = userConn.createStatement();
+                stmt.executeQuery(ddl);
+            }
         } catch (SQLException ex) {
             syntaxAnalysis.setFoundError(true);
             syntaxAnalysis.setCriterionIsSatisfied(false);
@@ -198,11 +201,9 @@ public class DDLAnalyzer {
 
     /**
      * Function to check the correctness of the tables
-     * @param config Specifies the configuration
-     * @param submittedQuery Specifies the submitted ddl statement
      * @return Returns a criterion analysis object
      */
-    private DDLCriterionAnalysis analyzeTables(DDLAnalyzerConfig config, String submittedQuery) {
+    private DDLCriterionAnalysis analyzeTables() {
         this.logger.info("Analyze tables");
 
         TablesAnalysis tablesAnalysis = new TablesAnalysis();
@@ -211,7 +212,7 @@ public class DDLAnalyzer {
 
         try {
             ResultSet userRs = userMetadata.getTables(null, null, null, new String[]{"TABLE"});
-            ResultSet systemRS = systemMetadata.getTables(null, null, null, new String[]{"TABLE"});
+            ResultSet systemRS = exerciseMetadata.getTables(null, null, null, new String[]{"TABLE"});
 
             // Search for missing tables
             while (systemRS.next()) {
@@ -276,11 +277,9 @@ public class DDLAnalyzer {
 
     /**
      * Function to check the correctness of the columns
-     * @param config Specifies the configuration
-     * @param submittedQuery Specifies the submitted ddl statement
      * @return Returns a criterion analysis object
      */
-    private DDLCriterionAnalysis analyzeColumns(DDLAnalyzerConfig config, String submittedQuery) {
+    private DDLCriterionAnalysis analyzeColumns() {
         this.logger.info("Analyze columns");
 
         ColumnsAnalysis columnsAnalysis = new ColumnsAnalysis();
@@ -294,7 +293,7 @@ public class DDLAnalyzer {
                 String tableName = userTables.getString("TABLE_NAME");
 
                 ResultSet userColumns = userMetadata.getColumns(null, null, tableName, null);
-                ResultSet systemColumns = systemMetadata.getColumns(null, null, tableName, null);
+                ResultSet systemColumns = exerciseMetadata.getColumns(null, null, tableName, null);
 
                 // Search for missing columns
                 while (systemColumns.next()) {
@@ -390,11 +389,9 @@ public class DDLAnalyzer {
 
     /**
      * Function to check the correctness of the primary keys
-     * @param config Specifies the configuration
-     * @param submittedQuery Specifies the submitted ddl statement
      * @return Returns a criterion analysis object
      */
-    private DDLCriterionAnalysis analyzePrimaryKeys(DDLAnalyzerConfig config, String submittedQuery) {
+    private DDLCriterionAnalysis analyzePrimaryKeys() {
         this.logger.info("Analyze primary keys");
 
         PrimaryKeysAnalysis primaryKeysAnalysis = new PrimaryKeysAnalysis();
@@ -408,7 +405,7 @@ public class DDLAnalyzer {
                 String tableName = userTables.getString("TABLE_NAME");
 
                 ResultSet userPrimaryKeys = userMetadata.getPrimaryKeys(null, null, tableName);
-                ResultSet systemPrimaryKeys = systemMetadata.getPrimaryKeys(null, null, tableName);
+                ResultSet systemPrimaryKeys = exerciseMetadata.getPrimaryKeys(null, null, tableName);
 
                 // Search for missing primary keys
                 while (systemPrimaryKeys.next()) {
@@ -473,11 +470,9 @@ public class DDLAnalyzer {
 
     /**
      * Function to check the correctness of the foreign keys
-     * @param config Specifies the configuration
-     * @param submittedQuery Specifies the submitted ddl statement
      * @return Returns a criterion analysis object
      */
-    private DDLCriterionAnalysis analyzeForeignKeys(DDLAnalyzerConfig config, String submittedQuery) {
+    private DDLCriterionAnalysis analyzeForeignKeys() {
         this.logger.info("Analyze foreign keys");
 
         ForeignKeysAnalysis foreignKeysAnalysis = new ForeignKeysAnalysis();
@@ -491,7 +486,7 @@ public class DDLAnalyzer {
                 String tableName = userTables.getString("TABLE_NAME");
 
                 ResultSet userForeignKeys = userMetadata.getImportedKeys(null, null, tableName);
-                ResultSet systemForeignKeys = systemMetadata.getImportedKeys(null, null, tableName);
+                ResultSet systemForeignKeys = exerciseMetadata.getImportedKeys(null, null, tableName);
 
                 // Search for missing foreign keys
                 while (systemForeignKeys.next()) {
@@ -563,10 +558,9 @@ public class DDLAnalyzer {
     /**
      * Function to check the correctness of the constraints
      * @param config Specifies the configuration
-     * @param submittedQuery Specifies the submitted ddl statement
      * @return Returns a criterion analysis object
      */
-    private DDLCriterionAnalysis analyzeConstraints(DDLAnalyzerConfig config, String submittedQuery) {
+    private DDLCriterionAnalysis analyzeConstraints(DDLAnalyzerConfig config) {
         this.logger.info("Analyze constraints");
 
         ConstraintsAnalysis constraintsAnalysis = new ConstraintsAnalysis();
@@ -584,7 +578,7 @@ public class DDLAnalyzer {
                 String tableName = userTables.getString("TABLE_NAME");
 
                 ResultSet userConstraints = userMetadata.getIndexInfo(null, null, tableName, true, true);
-                ResultSet systemConstraints = systemMetadata.getIndexInfo(null, null, tableName, true, true);
+                ResultSet systemConstraints = exerciseMetadata.getIndexInfo(null, null, tableName, true, true);
 
                 // Search for missing unique constraints
                 while (systemConstraints.next()) {
@@ -636,10 +630,10 @@ public class DDLAnalyzer {
             // Analyze check constraints
             for(String stmt : config.getDmlStatements()) {
                 // Execute the DML statements
-                systemStmt = systemConn.createStatement();
+                systemStmt = exerciseConn.createStatement();
                 int systemAffects = systemStmt.executeUpdate(stmt);
 
-                userStmt = config.getConn().createStatement();
+                userStmt = userConn.createStatement();
                 int userAffects = userStmt.executeUpdate(stmt);
 
                 // Check if the row count for the affected rows is the same

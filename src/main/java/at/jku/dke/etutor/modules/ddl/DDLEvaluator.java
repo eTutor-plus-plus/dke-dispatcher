@@ -15,13 +15,12 @@ import at.jku.dke.etutor.modules.ddl.grading.DDLGraderConfig;
 import at.jku.dke.etutor.modules.ddl.report.DDLReporter;
 import at.jku.dke.etutor.modules.ddl.report.DDLReporterConfig;
 import at.jku.dke.etutor.modules.ddl.serverAdministration.DBHelper;
+import at.jku.dke.etutor.modules.ddl.serverAdministration.DBUserAdmin;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 // Implementation of the Evaluator interface for SQL DDL assignments
 public class DDLEvaluator implements Evaluator {
@@ -58,14 +57,16 @@ public class DDLEvaluator implements Evaluator {
         // Log the passed attributes and parameters
         logPassedAttributes(passedAttributes, passedParameters);
 
-        // Intialize variables
+        // Initialize variables
         DDLAnalysis analysis = new DDLAnalysis();
         DDLAnalyzerConfig analyzerConfig = new DDLAnalyzerConfig();
         DDLAnalyzer analyzer = new DDLAnalyzer();
         Iterator<DDLCriterionAnalysis> criterionAnalysisIterator;
         DDLCriterionAnalysis criterionAnalysis;
 
-        String solution;
+        String solutionSchema;
+        String tempDMLStatements;
+        List<String> dmlStatements;
         String query;
         Statement stmt;
         ResultSet rs;
@@ -74,7 +75,13 @@ public class DDLEvaluator implements Evaluator {
         String submission;
         int diagnoseLevel;
 
+        String user;
+        String userPwd;
+        String userSchema;
+
+        DBUserAdmin admin;
         Connection systemConn;
+        Connection exerciseConnection;
         Connection userConn;
 
         // Get the passed values
@@ -83,22 +90,22 @@ public class DDLEvaluator implements Evaluator {
         diagnoseLevel = Integer.parseInt(passedAttributes.get("diagnoseLevel"));
 
         // Set the submission
-        analysis.setSubmission(submission.replace(";", ""));
+        analysis.setSubmission(submission);
 
         try {
+            // Get the system connection
             systemConn = DBHelper.getSystemConnection();
 
             // Check if the connection is successfully up
             if(systemConn == null)
                 return null;
 
-            //todo Check database management
-            userConn = null;
-            solution = "";
+            // Get the schema with the solution for the exercise
+            solutionSchema = "";
+            tempDMLStatements = "";
 
-            // Get the solution
             query = "";
-            query = query.concat("SELECT	solution " + LINE_SEP);
+            query = query.concat("SELECT	schema_name, insert_statements " + LINE_SEP);
             query = query.concat("FROM 		exercises " + LINE_SEP);
             query = query.concat("WHERE 	id = " + exerciseID + LINE_SEP);
 
@@ -106,8 +113,38 @@ public class DDLEvaluator implements Evaluator {
             rs = stmt.executeQuery(query);
             if (rs.next()){
                 // note: this is the correct query for the exercise
-                solution = rs.getString("solution");
+                solutionSchema = rs.getString("schema_name");
+                tempDMLStatements = rs.getString("insert_statements");
             }
+
+            // Get the system connection with the schema of the exercise solution
+            exerciseConnection = DBHelper.getSystemConnectionWithSchema(solutionSchema);
+
+            // Check if the exercise connection is successfully up
+            if(exerciseConnection == null)
+                return null;
+
+            // Set the exercise connection
+            analyzerConfig.setExerciseConn(exerciseConnection);
+
+            // Set the dml statements for the check constraints
+            dmlStatements = List.of(tempDMLStatements.replace("\n", "").split(";"));
+            analyzerConfig.setDmlStatements(dmlStatements);
+
+            // Get user connection
+            admin = DBUserAdmin.getAdmin();
+            user = admin.getUser();
+            userPwd = admin.getPwd(user);
+            userSchema = admin.getSchema(user);
+
+            userConn = DBHelper.getUserConnection(user, userPwd, userSchema);
+
+            // Check if the user connection is successfully up
+            if(userConn == null)
+                return null;
+
+            // Set the user connection
+            analyzerConfig.setUserConn(userConn);
 
             // Configure analyzer
             if(action.equalsIgnoreCase(DDLEvaluationAction.RUN.toString())) {
@@ -128,11 +165,6 @@ public class DDLEvaluator implements Evaluator {
                 }
             }
 
-            // Analyze the submission
-            //todo Assign right value
-            analyzerConfig.setConn(userConn);
-            analyzerConfig.setSolution(solution);
-
             // Execute analysis
             analysis = analyzer.analyze(analysis.getSubmission(), analyzerConfig);
 
@@ -145,8 +177,13 @@ public class DDLEvaluator implements Evaluator {
                 }
             }
 
+            // Reset user schema and release user
+            DBHelper.resetUserConnection(userConn);
+            admin.releaseUser(user);
+
             return analysis;
         } finally {
+            DBHelper.closeSystemConnectionWithSchema();
             DBHelper.closeSystemConnection();
         }
     }

@@ -50,11 +50,15 @@ public class DBUserAdmin {
         // Get all available users and add them as free users
         try {
             conn = DBHelper.getSystemConnection();
+            if(conn == null) {
+                DBHelper.getLogger().error("Connection is null.");
+                return;
+            }
+
             stmt = conn.createStatement();
-            //todo Make changes in database
-            rs = stmt.executeQuery("SELECT username, password FROM dbusers");
+            rs = stmt.executeQuery("SELECT conn_user, conn_pwd, schema_name FROM connections");
             while (rs.next()) {
-                info = new String[] { rs.getString("username"), rs.getString("password") };
+                info = new String[] { rs.getString("conn_user"), rs.getString("conn_pwd"), rs.getString("schema_name") };
                 freeUsers.add(info);
             }
         } finally {
@@ -130,6 +134,27 @@ public class DBUserAdmin {
             info = (String[]) busyUser;
             if (user != null && user.equals(info[0])) {
                 return info[1];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Function to get the schema for a specified user
+     * @param user Specifies the user
+     * @return Returns the schema for the user or null if the user is not in the busyUsers vector
+     * @throws IllegalStateException if not initialized
+     */
+    public String getSchema(String user) throws IllegalStateException {
+        if (!initialized)
+            throw new IllegalStateException("Connection information not initialized!");
+
+        String[] info;
+
+        for (Object busyUser : busyUsers) {
+            info = (String[]) busyUser;
+            if (user != null && user.equals(info[0])) {
+                return info[2];
             }
         }
         return null;

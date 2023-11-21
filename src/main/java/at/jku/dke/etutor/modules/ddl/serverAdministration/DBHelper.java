@@ -15,8 +15,6 @@ import java.util.Properties;
 public class DBHelper {
     //region Constants
     private static final String driverClassName;
-    //todo Check if this is necessary
-    //private static final String baseUrl;
     private static final String connUrl;
     private static final String connPwd;
     private static final String connUser;
@@ -27,6 +25,7 @@ public class DBHelper {
     //region Fields
     private static Logger logger = null;
     private static Connection conn = null;
+    private static Connection connWithSchema = null;
     private static Properties properties = null;
     private static HikariConfig config = null;
     private static HikariDataSource dataSource;
@@ -50,9 +49,9 @@ public class DBHelper {
 
         // Initialize connections constants
         driverClassName = properties.getProperty("application.datasource.driverClassName");
-        connUrl = properties.getProperty("application.datasource.url");
-        connUser = properties.getProperty("application.datasource.username");
-        connPwd = properties.getProperty("application.datasource.password");
+        connUrl = properties.getProperty("application.datasource.url") + properties.getProperty("application.ddl.connUrl");
+        connUser = properties.getProperty("application.ddl.systemConnUser");
+        connPwd = properties.getProperty("application.ddl.systemConnPwd");
         maxLifetime = properties.getProperty("application.datasource.maxLifetime");
         maxPoolSize = properties.getProperty("application.datasource.maxPoolSize");
 
@@ -83,7 +82,29 @@ public class DBHelper {
 
         try {
             conn = dataSource.getConnection();
+            conn.setAutoCommit(false);
             return conn;
+        } catch (SQLException ex) {
+            logger.error("Error when opening module connection.", ex);
+        }
+        return null;
+    }
+
+    /**
+     * Function to get the system connection
+     * @return Returns the Connection object for the system connection
+     * @throws SQLException if an error occurs while opening the connection
+     */
+    public static synchronized Connection getSystemConnectionWithSchema(String schema) throws SQLException {
+        // Check if the connection is already up
+        if(connWithSchema != null && !connWithSchema.isClosed())
+            return connWithSchema;
+
+        try {
+            connWithSchema = dataSource.getConnection();
+            connWithSchema.setAutoCommit(false);
+            connWithSchema.setSchema(schema);
+            return connWithSchema;
         } catch (SQLException ex) {
             logger.error("Error when opening module connection.", ex);
         }
@@ -105,22 +126,55 @@ public class DBHelper {
     }
 
     /**
-     *  Function to get the conncetion for a specified user
+     * Function to close the system connection
+     * @throws SQLException if an error occurs in the closing process
+     */
+    public static synchronized void closeSystemConnectionWithSchema() {
+        if(connWithSchema != null) {
+            try {
+                connWithSchema.close();
+            } catch (SQLException ex) {
+                logger.error("Error when closing module connection.", ex);
+            }
+        }
+    }
+
+    /**
+     * Function to get the conncetion for a specified user
      * @param user Specifies the username
      * @param pwd Specifies the password
      * @return Returns the established connection
      */
-    public static Connection getUserConnection(String user, String pwd) {
+    public static Connection getUserConnection(String user, String pwd, String schema) {
         if(user == null || pwd == null)
             return null;
 
         try {
-            return dataSource.getConnection(user, pwd);
+            Connection userConn = dataSource.getConnection(user, pwd);
+            userConn.setSchema(schema);
+            userConn.setAutoCommit(false);
+            return userConn;
         } catch (SQLException ex) {
             logger.error("Error when creating user connection.", ex);
         }
 
         return null;
+    }
+
+    /**
+     * Funciton to reset the schema for a specified connection and close it
+     * @param userConn Specifies the connection
+     */
+    public static void resetUserConnection(Connection userConn) {
+        try {
+            if(userConn == null || userConn.isClosed())
+                return;
+
+            userConn.rollback();
+            userConn.close();
+        } catch (SQLException ex) {
+            logger.error("Error when reseting user connection.", ex);
+        }
     }
 
     public static Logger getLogger() {

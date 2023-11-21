@@ -174,10 +174,10 @@ public class DDLResourceService {
      * @throws DatabaseException if an error occurs
      */
     private void createExerciseUtil(Connection con, int id, DDLExerciseDTO exerciseDTO) throws DatabaseException {
-        try(PreparedStatement createExerciseStmt = con.prepareStatement("INSERT INTO EXERCISES VALUES(?,?,?,?,?,?,?,?,?,?);")){
+        try(PreparedStatement createExerciseStmt = con.prepareStatement("INSERT INTO EXERCISES VALUES(?,?,?,?,?,?,?,?,?,?)")){
             // Create exercise schema
             String schemaName = "ddl_schema_" + id;
-            PreparedStatement createSchemaStmt = con.prepareStatement("CREATE SCHEMA ? IF NOT EXISTS AUTHORIZATION ?;");
+            PreparedStatement createSchemaStmt = con.prepareStatement("CREATE SCHEMA ? IF NOT EXISTS AUTHORIZATION ?");
             createSchemaStmt.setString(1, schemaName);
             createSchemaStmt.setString(2, CONN_DDL_SYSTEM_USER);
             logger.debug("Statement for creating exercise schema: {} ", createSchemaStmt);
@@ -220,19 +220,19 @@ public class DDLResourceService {
      * @throws DatabaseException if an SQLException occurs
      */
     private void deleteExerciseUtil(Connection con, int id) throws DatabaseException {
-        try (PreparedStatement exerciseStmt = con.prepareStatement("SELECT e.SCHEMA_NAME as schemaName FROM EXERCISES e WHERE e.ID = ?;")){
+        try (PreparedStatement exerciseStmt = con.prepareStatement("SELECT e.SCHEMA_NAME as schemaName FROM EXERCISES e WHERE e.ID = ?")){
             // Get the schema name
             exerciseStmt.setInt(1, id);
             ResultSet rs = exerciseStmt.executeQuery();
             String schemaName = rs.getString("schemaName");
 
             // Drop schema with all tables
-            PreparedStatement dropStmt = con.prepareStatement("DROP SCHEMA IF EXISTS ? CASCADE;");
+            PreparedStatement dropStmt = con.prepareStatement("DROP SCHEMA IF EXISTS ? CASCADE");
             dropStmt.setString(1, schemaName);
             dropStmt.execute();
 
             // Delete exercise from exercises table
-            PreparedStatement deleteStmt = con.prepareStatement("DElETE FROM EXERCISES WHERE ID = ?;");
+            PreparedStatement deleteStmt = con.prepareStatement("DElETE FROM EXERCISES WHERE ID = ?");
             deleteStmt.setInt(1, id);
             deleteStmt.executeUpdate();
             con.commit();
@@ -249,18 +249,18 @@ public class DDLResourceService {
      * @throws DatabaseException if an error occurs
      */
     private void updateExerciseUtil(Connection con, int id, DDLExerciseDTO exerciseDTO) throws DatabaseException {
-        try(PreparedStatement exerciseStmt = con.prepareStatement("SELECT e.SCHEMA_NAME as schemaName FROM EXERCISES e WHERE e.ID = ?;")){
+        try(PreparedStatement exerciseStmt = con.prepareStatement("SELECT e.SCHEMA_NAME as schemaName FROM EXERCISES e WHERE e.ID = ?")){
             // Get the schema name
             exerciseStmt.setInt(1, id);
             ResultSet rs = exerciseStmt.executeQuery();
             String schemaName = rs.getString("schemaName");
 
             // Reset schema
-            PreparedStatement dropStmt = con.prepareStatement("DROP SCHEMA IF EXISTS ? CASCADE;");
+            PreparedStatement dropStmt = con.prepareStatement("DROP SCHEMA IF EXISTS ? CASCADE");
             dropStmt.setString(1, schemaName);
             dropStmt.execute();
 
-            PreparedStatement createSchemaStmt = con.prepareStatement("CREATE SCHEMA ? IF NOT EXISTS AUTHORIZATION ?;");
+            PreparedStatement createSchemaStmt = con.prepareStatement("CREATE SCHEMA ? IF NOT EXISTS AUTHORIZATION ?");
             createSchemaStmt.setString(1, schemaName);
             createSchemaStmt.setString(2, CONN_DDL_SYSTEM_USER);
             createSchemaStmt.execute();
@@ -278,7 +278,7 @@ public class DDLResourceService {
             switchSchemaStmt.execute("SET search_path TO public");
 
             // Update exercise in exercise table
-            PreparedStatement updateStatement = con.prepareStatement("UPDATE EXERCISES SET (schema_name,solution,insert_statements,max_points,table_points,column_points,primarykey_points,foreignkey_points,constraint_points) = (?,?,?,?,?,?,?,?,?,?) WHERE ID = ?;");
+            PreparedStatement updateStatement = con.prepareStatement("UPDATE EXERCISES SET (schema_name,solution,insert_statements,max_points,table_points,column_points,primarykey_points,foreignkey_points,constraint_points) = (?,?,?,?,?,?,?,?,?,?) WHERE ID = ?");
             updateStatement.setString(1, schemaName);
             updateStatement.setString(2, exerciseDTO.getSolution());
             updateStatement.setString(3, exerciseDTO.getInsertStatements());
