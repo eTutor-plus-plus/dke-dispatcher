@@ -195,9 +195,9 @@ public class TuplesGenerator{
 		return !(keys.size() == expectedKeys.size());
 	}
 	
-	private static boolean holdsAllKeys(Vector<Key> keys, TupleSet tuples, int[] tuple){
-        for (Key key : keys) {
-            if (!KeysDeterminator.holdsKey((int[]) key, tuple, tuples)) {
+	private static boolean holdsAllKeys(Vector<int[]> keys, TupleSet tuples, int[] tuple){
+        for (int[] key : keys) {
+            if (!KeysDeterminator.holdsKey(key, tuple, tuples)) {
                 return false;
             }
         }

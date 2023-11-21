@@ -1,18 +1,18 @@
 package at.jku.dke.etutor.modules.nf.exercises;
 
-import at.jku.dke.etutor.core.manager.ModuleExerciseManager;
-import at.jku.dke.etutor.core.utils.JDBCAdapter;
 import at.jku.dke.etutor.modules.nf.DecomposeSpecification;
 import at.jku.dke.etutor.modules.nf.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.RDBDSpecification;
 import at.jku.dke.etutor.modules.nf.ui.SpecificationEditor;
+import oracle.jdbc.OracleResultSet;
 import oracle.sql.BLOB;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.Locale;
 import java.util.Map;
@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  * @author Georg Nitsche (12.12.2005)
  *
  */
-public class RDBDExercisesManager implements ModuleExerciseManager {
+public class RDBDExercisesManager {
 
 	protected Logger logger;
 	protected int rdbdType;
@@ -125,7 +125,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 
 			if (rset.next()) {
 				//TODO: resolve dependency on eTutor core classes
-				blob = JDBCAdapter.getOracleBlob(rset, 1);
+				blob = getOracleBlob(rset, 1);
 				//blob = ((oracle.jdbc.OracleResultSet)rset).getBLOB(1);
 			}
 
@@ -247,7 +247,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 
 			if (rset.next()) {
 				//TODO: resolve dependency on eTutor core classes
-				blob = JDBCAdapter.getOracleBlob(rset, 1);
+				blob = getOracleBlob(rset, 1);
 				//blob =((oracle.jdbc.OracleResultSet)rset).getBLOB(1);
 			}
 
@@ -377,7 +377,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 	
 			if (rset.next()) {
 				//TODO: resolve dependency on eTutor core classes
-				blob = JDBCAdapter.getOracleBlob(rset, 1);
+				blob = getOracleBlob(rset, 1);
 				//blob = ((oracle.jdbc.OracleResultSet)rset).getBLOB("specification");
 				if(blob!=null){
 					System.out.println("Found entry ...");
@@ -493,7 +493,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 	
 			while ((rset.next()) && (duplicateExerciseID == -1)) {
 				//TODO: resolve dependency on eTutor core classes
-				blob = JDBCAdapter.getOracleBlob(rset, 2);
+				blob = getOracleBlob(rset, 2);
 				//blob =((oracle.jdbc.OracleResultSet)rset).getBLOB("specification");
 				if(blob != null){
 					in = new ObjectInputStream(blob.getBinaryStream());
@@ -563,7 +563,7 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 	
 			if (rset.next()) {
 				//TODO: resolve dependency on eTutor core classes
-				blob = JDBCAdapter.getOracleBlob(rset, 1);
+				blob = getOracleBlob(rset, 1);
 				//blob =((oracle.jdbc.OracleResultSet)rset).getBLOB("specification");
 				if(blob!=null){
 					in = new ObjectInputStream(blob.getBinaryStream());
@@ -691,5 +691,117 @@ public class RDBDExercisesManager implements ModuleExerciseManager {
 		}
 		
 		return null;
+	}
+
+	/*
+	 * Note: The following methods were copied from the old eTutor class JDBCAdapter (Gerald Wimmer, 2023-11-21)
+	 */
+	/**
+	 * The following steps are performed: First the passed <code>ResultSet</code> is
+	 * unwrapped using the {@link #getNativeResultSet(ResultSet)} method. If the passed
+	 * <code>ResultSet</code> is a wrapper, the underlying <code>ResultSet</code> is
+	 * retrieved that way (e.g. when the <code>ResultSet</code> comes from a connection
+	 * pooling framework). If possible, the <code>ResultSet</code> is then cast to
+	 * the Oracle implementation and the proprietary <code>BLOB</code> object at the
+	 * specified index returned.
+	 *
+	 * @param rset A <code>ResultSet</code>, which might be a wrapper from a connection pooling
+	 * framework, an Oracle implementation or any other imlementation.
+	 * @param index The column index in the <code>ResultSet</code>, which holds the blob result.
+	 * @return The Oracle <code>BLOB</code> or <ocde>null</code>, if the passed
+	 * <code>ResultSet</code> is no Oracle implementation of the expected JDBC driver.
+	 * @throws SQLException if an exception occured when trying to get the native <code>ResultSet</code>
+	 * (the passed object may be a wrapper) or when trying to get the BLOB from the Oracle
+	 * <code>ResultSet</code>.
+	 */
+	public static BLOB getOracleBlob(ResultSet rset, int index) throws SQLException {
+		BLOB blob = null;
+
+		ResultSet nativeRset = getNativeResultSet(rset);
+		if (nativeRset instanceof OracleResultSet) {
+			blob = ((OracleResultSet)nativeRset).getBLOB(index);
+		}
+		return blob;
+	}
+
+	/**
+	 * Returns a wrapped <code>ResultSet</code> object, if it is wrapped by the passed
+	 * <code>ResultSet</code> object.
+	 *
+	 * @param stmt Any <code>ResultSet</code>.
+	 * @return The underlying statement if the passed <code>ResultSet</code>
+	 * 			object is of the expected type and is a wrapper of it.
+	 * 			Otherwise the passed <code>ResultSet</code> is returned again.
+	 * @throws SQLException
+	 */
+	public static ResultSet getNativeResultSet(ResultSet rset) throws SQLException {
+		Object delegate = getNativeSQLObject(rset);
+		if (delegate instanceof ResultSet) {
+			return (ResultSet)delegate;
+		} else {
+			return rset;
+		}
+	}
+
+	/**
+	 * Assumes that the passed object is a wrapper object from the DBCP project and
+	 * tries to return the underlying <code>Connection</code>, <code>Statement</code>,
+	 * <code>PreparedStatement</code>, <code>CallableStatement</code> or <code>ResultSet</code>.
+	 * (see http://jakarta.apache.org/commons/dbcp/apidocs/index.html)
+	 *
+	 * @param sqlObject
+	 * @return
+	 */
+	private static Object getNativeSQLObject(Object sqlObject) {
+		Object delegate = sqlObject;
+		Method method;
+		String methodName;
+
+		try {
+			if (delegate instanceof Connection) {
+				methodName = "getDelegate";
+			} else if (delegate instanceof CallableStatement) {
+				methodName = "getDelegate";
+			} else if (delegate instanceof PreparedStatement) {
+				methodName = "getDelegate";
+			} else if (delegate instanceof Statement) {
+				methodName = "getDelegate";
+			} else if (delegate instanceof ResultSet) {
+				methodName = "getDelegate";
+			} else {
+				return null;
+			}
+			method = sqlObject.getClass().getMethod(methodName, null);
+			delegate = method.invoke(sqlObject, null);
+		} catch (Exception e) {
+			// TODO: Replace with alternative logging
+			/*String msg = "Exception was thrown when trying to call method " + methodName;
+			msg += " from object " + sqlObject;
+			msg += ", which is expected to be a wrapper object. " + e.getMessage();
+			try {
+				CoreManager.getCML().log(Level.WARNING, msg);
+			} catch (InternalConfigurationException e1) {
+				e1.printStackTrace();
+				System.out.println(msg);
+			}*/
+		}
+		if (delegate != null &&
+				!(delegate instanceof Connection ||
+						delegate instanceof Statement ||
+						delegate instanceof ResultSet)) {
+			// TODO: Replace with alternative logging
+			/*String msg = "Calling method " + methodName + " by reflection on object " + sqlObject;
+			msg += " was expected to return a Connection, Statement or ResultSet object. In fact, a ";
+			msg += delegate.getClass().getName() + " object was returned.";
+			try {
+				// CoreManager.getCML().log(Level.WARNING, msg);
+			} catch (InternalConfigurationException e1) {
+				e1.printStackTrace();
+				System.out.println(msg);
+			}*/
+			delegate = null;
+		}
+
+		return delegate;
 	}
 }

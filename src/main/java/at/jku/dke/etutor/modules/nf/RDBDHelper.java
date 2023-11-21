@@ -519,7 +519,7 @@ public class RDBDHelper {
         }
 	}
 	
-	public static void checkRelations(Collection<Relation> relations) {
+	public static void checkRelations(Collection<? extends Relation> relations) {
 		Relation relation;
 
         for (Relation value : relations) {
