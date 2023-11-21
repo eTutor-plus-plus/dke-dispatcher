@@ -9,13 +9,25 @@ import java.util.Iterator;
 
 public class DDLAnalysis extends DefaultAnalysis implements Analysis {
     //region Fields
+    private int exerciseId;
     private AnalysisException exception;
     private HashMap<DDLEvaluationCriterion, DDLCriterionAnalysis> criterionAnalysis;
     //endregion
 
     public DDLAnalysis() {
+        this.exerciseId = 0;
         this.exception = null;
         this.criterionAnalysis = new HashMap<>();
+    }
+
+    //region Getter/Setter
+
+    public int getExerciseId() {
+        return exerciseId;
+    }
+
+    public void setExerciseId(int exerciseId) {
+        this.exerciseId = exerciseId;
     }
 
     /**
@@ -60,4 +72,5 @@ public class DDLAnalysis extends DefaultAnalysis implements Analysis {
     public DDLCriterionAnalysis getCriterionAnalysis(DDLEvaluationCriterion criterion) {
         return this.criterionAnalysis.get(criterion);
     }
+    //endregion
 }

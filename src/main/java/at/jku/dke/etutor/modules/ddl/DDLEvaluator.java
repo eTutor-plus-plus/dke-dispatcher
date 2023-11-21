@@ -54,8 +54,6 @@ public class DDLEvaluator implements Evaluator {
     public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
         // Log the exercise id
         logger.info("exerciseID: {}", exerciseID);
-        // Log the passed attributes and parameters
-        logPassedAttributes(passedAttributes, passedParameters);
 
         // Initialize variables
         DDLAnalysis analysis = new DDLAnalysis();
@@ -181,6 +179,9 @@ public class DDLEvaluator implements Evaluator {
             DBHelper.resetUserConnection(userConn);
             admin.releaseUser(user);
 
+            // Set the exercise id in the analysis object
+            analysis.setExerciseId(exerciseID);
+
             return analysis;
         } finally {
             DBHelper.closeSystemConnectionWithSchema();
@@ -201,60 +202,102 @@ public class DDLEvaluator implements Evaluator {
     public Grading grade(Analysis analysis, int maxPoints, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
         // Log analysis and max points
         logger.info("analysis: {}" , analysis);
-        logger.info("maxPoints: {}" ,  maxPoints);
-        // Log the passed attributes and parameters
-        logPassedAttributes(passedAttributes, passedParameters);
 
         // Initialize variables
+        Connection systemConn;
         DDLGrader grader = new DDLGrader();
         DDLGraderConfig graderConfig = new DDLGraderConfig();
         DDLCriterionGradingConfig criterionGradingConfig;
+        DDLAnalysis ddlAnalysis;
+
+        Statement stmt;
+        ResultSet rs;
+
+        String query;
+        int totalPoints = 0;
+        int tablePoints = 0;
+        int columnPoints = 0;
+        int primaryKeyPoints = 0;
+        int foreignKeyPoints = 0;
+        int constraintPoints = 0;
 
         String action = passedAttributes.get("action");
 
-        // Set max points
-        graderConfig.setMaxPoints(maxPoints);
+        try {
+            // Get the system connection
+            systemConn = DBHelper.getSystemConnection();
 
-        // Grade syntax
-        criterionGradingConfig = new DDLCriterionGradingConfig();
-        criterionGradingConfig.setPositivePoints(1);
-        criterionGradingConfig.setNegativePoints(0);
-        graderConfig.addCriteriaGradingConfig(DDLEvaluationCriterion.CORRECT_SYNTAX, criterionGradingConfig);
+            // Get the analysis object
+            ddlAnalysis = (DDLAnalysis)analysis;
 
-        // Check if the action is not run (run only tests syntax)
-        if(!action.equalsIgnoreCase(DDLEvaluationAction.RUN.toString())) {
-            // Grade tables
+            query = "";
+            query = query.concat("SELECT	max_points, table_points, column_points, primarykey_points, foreignkey_points, constraint_points " + LINE_SEP);
+            query = query.concat("FROM 		exercises " + LINE_SEP);
+            query = query.concat("WHERE 	id = " + ddlAnalysis.getExerciseId() + LINE_SEP);
+
+            stmt = systemConn.createStatement();
+            rs = stmt.executeQuery(query);
+            if (rs.next()){
+                // note: this is the correct query for the exercise
+                totalPoints = rs.getInt("max_points");
+                tablePoints = rs.getInt("table_points");
+                columnPoints = rs.getInt("column_points");
+                primaryKeyPoints = rs.getInt("primarykey_points");
+                foreignKeyPoints = rs.getInt("foreignkey_points");
+                constraintPoints = rs.getInt("constraint_points");
+            }
+
+            // Set max points
+            graderConfig.setMaxPoints(totalPoints);
+            graderConfig.setTablePoints(tablePoints);
+            graderConfig.setColumnPoints(columnPoints);
+            graderConfig.setPrimaryKeyPoints(primaryKeyPoints);
+            graderConfig.setForeignKeyPoints(foreignKeyPoints);
+            graderConfig.setConstraintPoints(constraintPoints);
+
+            // Grade syntax
             criterionGradingConfig = new DDLCriterionGradingConfig();
-            criterionGradingConfig.setPositivePoints(1);
+            criterionGradingConfig.setPositivePoints(0);
             criterionGradingConfig.setNegativePoints(0);
-            graderConfig.addCriteriaGradingConfig(DDLEvaluationCriterion.CORRECT_TABLES, criterionGradingConfig);
+            graderConfig.addCriteriaGradingConfig(DDLEvaluationCriterion.CORRECT_SYNTAX, criterionGradingConfig);
 
-            // Grade columns
-            criterionGradingConfig = new DDLCriterionGradingConfig();
-            criterionGradingConfig.setPositivePoints(1);
-            criterionGradingConfig.setNegativePoints(0);
-            graderConfig.addCriteriaGradingConfig(DDLEvaluationCriterion.CORRECT_COLUMNS, criterionGradingConfig);
+            // Check if the action is not run (run only tests syntax)
+            if(!action.equalsIgnoreCase(DDLEvaluationAction.RUN.toString())) {
+                // Grade tables
+                criterionGradingConfig = new DDLCriterionGradingConfig();
+                criterionGradingConfig.setPositivePoints(tablePoints);
+                criterionGradingConfig.setNegativePoints(0);
+                graderConfig.addCriteriaGradingConfig(DDLEvaluationCriterion.CORRECT_TABLES, criterionGradingConfig);
 
-            // Grade primary keys
-            criterionGradingConfig = new DDLCriterionGradingConfig();
-            criterionGradingConfig.setPositivePoints(1);
-            criterionGradingConfig.setNegativePoints(0);
-            graderConfig.addCriteriaGradingConfig(DDLEvaluationCriterion.CORRECT_PRIMARY_KEYS, criterionGradingConfig);
+                // Grade columns
+                criterionGradingConfig = new DDLCriterionGradingConfig();
+                criterionGradingConfig.setPositivePoints(columnPoints);
+                criterionGradingConfig.setNegativePoints(0);
+                graderConfig.addCriteriaGradingConfig(DDLEvaluationCriterion.CORRECT_COLUMNS, criterionGradingConfig);
 
-            // Grade foreign keys
-            criterionGradingConfig = new DDLCriterionGradingConfig();
-            criterionGradingConfig.setPositivePoints(1);
-            criterionGradingConfig.setNegativePoints(0);
-            graderConfig.addCriteriaGradingConfig(DDLEvaluationCriterion.CORRECT_FOREIGN_KEYS, criterionGradingConfig);
+                // Grade primary keys
+                criterionGradingConfig = new DDLCriterionGradingConfig();
+                criterionGradingConfig.setPositivePoints(primaryKeyPoints);
+                criterionGradingConfig.setNegativePoints(0);
+                graderConfig.addCriteriaGradingConfig(DDLEvaluationCriterion.CORRECT_PRIMARY_KEYS, criterionGradingConfig);
 
-            // Grade constraints
-            criterionGradingConfig = new DDLCriterionGradingConfig();
-            criterionGradingConfig.setPositivePoints(1);
-            criterionGradingConfig.setNegativePoints(0);
-            graderConfig.addCriteriaGradingConfig(DDLEvaluationCriterion.CORRECT_CONSTRAINTS, criterionGradingConfig);
+                // Grade foreign keys
+                criterionGradingConfig = new DDLCriterionGradingConfig();
+                criterionGradingConfig.setPositivePoints(foreignKeyPoints);
+                criterionGradingConfig.setNegativePoints(0);
+                graderConfig.addCriteriaGradingConfig(DDLEvaluationCriterion.CORRECT_FOREIGN_KEYS, criterionGradingConfig);
+
+                // Grade constraints
+                criterionGradingConfig = new DDLCriterionGradingConfig();
+                criterionGradingConfig.setPositivePoints(constraintPoints);
+                criterionGradingConfig.setNegativePoints(0);
+                graderConfig.addCriteriaGradingConfig(DDLEvaluationCriterion.CORRECT_CONSTRAINTS, criterionGradingConfig);
+            }
+
+            return grader.grade(ddlAnalysis, graderConfig);
+        } finally {
+            DBHelper.closeSystemConnection();
         }
-
-        return grader.grade((DDLAnalysis) analysis, graderConfig);
     }
 
     /**
