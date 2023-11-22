@@ -48,7 +48,12 @@ public class ETutorDDLController {
         }
     }
 
-    // Function to create a new exercise
+    /**
+     * Function to create a new exercise
+     * @param exerciseDTO Specifies the {@link DDLExerciseDTO} wrapping the schema-name and solution
+     * @return
+     * @throws ApiException
+     */
     @PutMapping("/exercise")
     public ResponseEntity<Integer> createExercise(@RequestBody DDLExerciseDTO exerciseDTO) throws ApiException {
         logger.info("Enter: createExercise()");
