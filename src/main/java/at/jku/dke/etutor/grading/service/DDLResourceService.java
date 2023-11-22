@@ -177,9 +177,8 @@ public class DDLResourceService {
         try(PreparedStatement createExerciseStmt = con.prepareStatement("INSERT INTO EXERCISES VALUES(?,?,?,?,?,?,?,?,?,?)")){
             // Create exercise schema
             String schemaName = "ddl_schema_" + id;
-            PreparedStatement createSchemaStmt = con.prepareStatement("CREATE SCHEMA ? IF NOT EXISTS AUTHORIZATION ?");
-            createSchemaStmt.setString(1, schemaName);
-            createSchemaStmt.setString(2, CONN_DDL_SYSTEM_USER);
+            String query = "CREATE SCHEMA IF NOT EXISTS " + schemaName + " AUTHORIZATION " + CONN_DDL_SYSTEM_USER;
+            PreparedStatement createSchemaStmt = con.prepareStatement(query);
             logger.debug("Statement for creating exercise schema: {} ", createSchemaStmt);
             createSchemaStmt.execute();
 
@@ -260,9 +259,8 @@ public class DDLResourceService {
             dropStmt.setString(1, schemaName);
             dropStmt.execute();
 
-            PreparedStatement createSchemaStmt = con.prepareStatement("CREATE SCHEMA ? IF NOT EXISTS AUTHORIZATION ?");
-            createSchemaStmt.setString(1, schemaName);
-            createSchemaStmt.setString(2, CONN_DDL_SYSTEM_USER);
+            String query = "CREATE SCHEMA IF NOT EXISTS " + schemaName + " AUTHORIZATION " + CONN_DDL_SYSTEM_USER;
+            PreparedStatement createSchemaStmt = con.prepareStatement(query);
             createSchemaStmt.execute();
 
             // Set schema to exercise schema
