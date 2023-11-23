@@ -32,8 +32,7 @@ public class RTAnalysis extends DefaultAnalysis {
     private String inputSolution;
     private List<RTSolution> solution;
     private List<String> solutionStudent;
-    private ApplicationProperties applicationProperties;
-    private RTSemanticsAnalysis rtSemanticsAnalysis;
+
     private int maxPoints;
 
     private boolean hasSyntaxError = false;
@@ -42,13 +41,19 @@ public class RTAnalysis extends DefaultAnalysis {
 
     private String errorLogSyntax="";
 
-    public RTAnalysis(int id, String inputSolution, ApplicationProperties applicationProperties) throws SQLException {
+    public RTAnalysis(int id, String inputSolution) throws SQLException {
         super();
         this.id = id;
         this.inputSolution = inputSolution;
         setDataBaseProperties();
         setSolutionStudent();
-        this.rtSemanticsAnalysis = new RTSemanticsAnalysis(solutionStudent, Arrays.stream(solution.get(0).getSolution()).toList());
+        initAnalyse();
+    }
+
+    public void initAnalyse(){
+        for (RTSolution rtSolution : this.solution){
+            rtSolution.initAnalyse(this.solutionStudent);
+        }
     }
 
     public boolean checkSyntax() {
@@ -71,22 +76,25 @@ public class RTAnalysis extends DefaultAnalysis {
                 }
             }
         }
-        if (!this.rtSemanticsAnalysis.getErrorLogSyntax().isEmpty() || !this.rtSemanticsAnalysis.getErrorLogSyntax().isBlank()){
-            checkSuccess = false;
-            hasSyntaxError = true;
+        for (RTSolution rtSolution : this.solution) {
+            System.err.println(rtSolution.getRtSemanticsAnalysis().toString());
+            if (!rtSolution.getRtSemanticsAnalysis().getErrorLogSyntax().isEmpty() || !rtSolution.getRtSemanticsAnalysis().getErrorLogSyntax().isBlank()) {
+                checkSuccess = false;
+                hasSyntaxError = true;
+            }
         }
         return checkSuccess;
     }
 
     @Override
     public boolean submissionSuitsSolution() {
-        if (this.hasSyntaxError){
+       /* if (this.hasSyntaxError){
             return false;
         }
         if (!this.rtSemanticsAnalysis.getErrorLogSemantik().isEmpty() || !this.rtSemanticsAnalysis.getErrorLogSemantik().isBlank()){
             this.hasSemantikError = true;
             return false;
-        }
+        }*/
         return true;
     }
 
@@ -153,10 +161,6 @@ public class RTAnalysis extends DefaultAnalysis {
 
     public boolean getHasSemantikError() {
         return hasSemantikError;
-    }
-
-    public RTSemanticsAnalysis getRtSemanticsAnalysis() {
-        return rtSemanticsAnalysis;
     }
 
     public String getErrorLogSyntax() {

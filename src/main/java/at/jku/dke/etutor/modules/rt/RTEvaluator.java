@@ -22,8 +22,9 @@ public class RTEvaluator implements Evaluator {
 
     @Override
     public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
-        RTAnalysis rtAnalysis = new RTAnalysis(exerciseID,passedAttributes.get("submission"),this.applicationProperties);
-        System.out.println(rtAnalysis.getSolution().get(1).getGewichtungLoesung());
+        RTAnalysis rtAnalysis = new RTAnalysis(exerciseID,passedAttributes.get("submission"));
+        System.out.println(rtAnalysis.checkSyntax());
+
         return rtAnalysis;
     }
 
@@ -32,16 +33,11 @@ public class RTEvaluator implements Evaluator {
         rtGrading grading = new rtGrading();
         RTAnalysis rtAnalysis = (RTAnalysis) analysis;
         grading.setMaxPoints(maxPoints);
-        rtAnalysis.checkSyntax();
-        if(rtAnalysis.submissionSuitsSolution()){
-            grading.setPoints(grading.getMaxPoints());
-        }
         return grading;
     }
 
     @Override
     public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
-        System.out.println(passedAttributes.toString());
         RTAnalysis rtAnalysis = (RTAnalysis) analysis;
         rtReport rtReport = new rtReport(rtAnalysis, passedAttributes);
         rtReport.getReport();

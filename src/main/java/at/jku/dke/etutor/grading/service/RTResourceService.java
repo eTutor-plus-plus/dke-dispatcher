@@ -125,6 +125,7 @@ public class RTResourceService {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
                     String solution = resultSet.getString("solution");
+                    solution = solution.replace("\\t\\r\\n","\t\r\n");
                     solution = solution.replace("\\r\\n", "\r\n");
                     solution = solution.replace("\\","");
                     List<RTSolution> rtSolutions = getRTSolutions(solution);

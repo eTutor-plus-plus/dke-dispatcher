@@ -19,7 +19,8 @@ public class rtReport extends DefaultReport implements Serializable {
     }
 
     public void getReport(){
-        if(this.rtAnalysis.getHasSyntaxError()){
+        return;
+        /*if(this.rtAnalysis.getHasSyntaxError()){
             this.setShowErrorDescription(true);
             this.errorMessage = "Die Abfrage wurde aufgrund von Syntax-Fehlern abgebrochen!";
             if (this.rtAnalysis.getErrorLogSyntax() != null){
@@ -35,6 +36,6 @@ public class rtReport extends DefaultReport implements Serializable {
             this.hintMessage = "Die Abgabe enthält semantische Fehler!";
             this.hintMessage = hintMessage + this.rtAnalysis.getRtSemanticsAnalysis().getErrorLogSemantik();
             this.setHint(hintMessage);
-        }
+        }*/
     }
 }

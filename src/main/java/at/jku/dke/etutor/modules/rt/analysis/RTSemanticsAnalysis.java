@@ -18,11 +18,16 @@ public class RTSemanticsAnalysis {
     Map<String,String> dependenciesStudent = new HashMap<String,String>();
     String errorLogSemantik = "";
     String errorLogSyntax = "";
+    List<Integer> weighting;
+    int pointsPK = 0;
+    int pointsAtt = 0;
+    int pointsDep = 0;
 
 
-    public RTSemanticsAnalysis(List<String> studentSolution, List<String> solution) {
+    public RTSemanticsAnalysis(List<String> studentSolution, List<String> solution, List<Integer> weighting) {
         this.studentSolution = studentSolution;
         this.solution = solution;
+        this.weighting = weighting;
         this.calcRelations();
         this.clacPrimaryKey();
         this.clacAttributes();
@@ -61,14 +66,14 @@ public class RTSemanticsAnalysis {
     }
 
     public boolean checkRelation(){
-        for(String str : this.relationsStudent){
-            if(!this.relations.contains(str)){
+        for(String str : this.relations){
+            if(!this.relationsStudent.contains(str)){
                 this.errorLogSyntax = this.errorLogSyntax.concat("<br>Falsche Relation: " + str);
                 return false;
             }
         }
 
-        if(this.relations.size() != this.relationsStudent.size()){
+        if(this.relations.size() != this.relationsStudent.size() && this.relations.size() > 1){
             this.errorLogSyntax = this.errorLogSyntax.concat("<br>Fehlende oder redundante Relationen!");
             return false;
         }
@@ -85,6 +90,9 @@ public class RTSemanticsAnalysis {
                 this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falscher Primärschlüssel: " + student);
                 check = false;
             }
+            else {
+                pointsPK = pointsPK + weighting.get(0);
+            }
         }
         return check;
     }
@@ -98,6 +106,9 @@ public class RTSemanticsAnalysis {
                 this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falsche/s, redundante/s oder fehlende/s Attributt/e: " + student);
                 check = false;
             }
+            else {
+                pointsAtt = pointsAtt + weighting.get(1);
+            }
         }
         return check;
     }
@@ -110,6 +121,9 @@ public class RTSemanticsAnalysis {
             if (!solution.equals(student)) {
                 this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falsche, redundante oder fehlende Inklusions-Abhängigkeit/en: " + student);
                 check = false;
+            }
+            else{
+                pointsDep = pointsDep + weighting.get(2);
             }
         }
         return check;
@@ -227,5 +241,36 @@ public class RTSemanticsAnalysis {
 
     public String getErrorLogSyntax() {
         return errorLogSyntax;
+    }
+
+    public List<Integer> getWeighting() {
+        return weighting;
+    }
+
+    public int getPointsPK() {
+        return pointsPK;
+    }
+
+    public int getPointsAtt() {
+        return pointsAtt;
+    }
+
+    public int getPointsDep() {
+        return pointsDep;
+    }
+    public int getTotalPoints(){
+        return this.pointsAtt + this.pointsPK + this.pointsDep;
+    }
+
+    @Override
+    public String toString() {
+        return "RTSemanticsAnalysis{" +
+                ", errorLogSemantik='" + errorLogSemantik + '\'' +
+                ", errorLogSyntax='" + errorLogSyntax + '\'' +
+                ", weighting=" + weighting +
+                ", pointsPK=" + pointsPK +
+                ", pointsAtt=" + pointsAtt +
+                ", pointsDep=" + pointsDep +
+                '}';
     }
 }
