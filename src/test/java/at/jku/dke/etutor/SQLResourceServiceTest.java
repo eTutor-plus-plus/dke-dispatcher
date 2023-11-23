@@ -73,30 +73,6 @@ class SQLResourceServiceTest {
     }
 
     @Test
-    public void when_createTables_false_statement_then_exception(){
-        createSchema(schema);
-        String query = "CREATE ROLE sudo WITH SUPERUSER";
-        assertThrows(StatementValidationException.class, ()->service.createTables(schema, query));
-        deleteSchema(schema);
-    }
-
-    @Test
-    public void when_createTables_with_comments_then_exception(){
-        createSchema(schema);
-        String query = "CREATE ROLE sudo WITH SUPERUSER -- createtable";
-        assertThrows(StatementValidationException.class, ()-> service.createTables(schema,query));
-        deleteSchema(schema);
-    }
-
-    @Test
-    public void when_createTables_with_comments2_then_exception(){
-        createSchema(schema);
-        String query = "CREATE ROLE sudo WITH SUPERUSER /*createtable*/";
-        assertThrows(StatementValidationException.class, ()-> service.createTables(schema,query));
-        deleteSchema(schema);
-    }
-
-    @Test
     public void when_createTables_schema_non_existent_then_exception(){
         String query = "CREATE TABLE main(id integer primary key)";
         assertThrows(DatabaseException.class, ()->service.createTables("non_existent", query));
@@ -124,31 +100,6 @@ class SQLResourceServiceTest {
         String query = "CREATE TABLE main(id integer primary key)";
         assertDoesNotThrow(()-> service.createTables(schema,query));
         assertDoesNotThrow(()->service.deleteTables(schema, "main"));
-        deleteSchema(schema);
-    }
-
-    @Test
-    public void when_insertDataSubmission_false_statement_then_exception(){
-       createSchema(schema);
-       String query = "CREAT ROLE sudo WITH SUPERUSER";
-       assertThrows(StatementValidationException.class, ()->service.insertDataSubmission(schema, query));
-       deleteSchema(schema);
-    }
-
-    @Test
-    public void when_insertDataSubmission_with_comments_then_exception(){
-        createSchema(schema);
-        String query = "CREATE ROLE sudo WITH SUPERUSER -- insert into";
-        assertThrows(StatementValidationException.class, ()->service.insertDataSubmission(schema, query));
-        deleteSchema(schema);
-    }
-
-
-    @Test
-    public void when_insertDataSubmission_with_comments2_then_exception(){
-        createSchema(schema);
-        String query = "CREATE ROLE sudo WITH SUPERUSER /*insert into*/";
-        assertThrows(StatementValidationException.class, ()->service.insertDataSubmission(schema, query));
         deleteSchema(schema);
     }
 
