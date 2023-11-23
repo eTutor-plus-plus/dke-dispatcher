@@ -30,7 +30,7 @@ public interface Evaluator {
     public Grading grade(Analysis analysis, int maxPoints, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception;
 
     /**
-     * Genereates a report
+     * Generates a report
      * @param analysis the Analysis
      * @param grading the grading
      * @param passedAttributes the passed attributes

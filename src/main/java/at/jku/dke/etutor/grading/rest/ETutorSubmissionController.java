@@ -49,7 +49,6 @@ public class ETutorSubmissionController {
      * @param persist : if true, the submission is persisted in the database
      * @return : ResponseEntity containing EntityModel with the generated submissionId and a link under which the grading can be requested
      *          - HttpStatus.INTERNAL_SERVER_ERROR if exception occurs
-     *          - HttpStatus.ACCEPTED if submission is accepted for processing
      */
     @PostMapping("")
     public ResponseEntity<EntityModel<SubmissionId>> dispatchSubmission(@RequestBody SubmissionDTO submissionDto, @RequestHeader(value = "Accept-Language", defaultValue = "de") String language, @RequestParam(required = false, defaultValue = "true") Boolean persist) {

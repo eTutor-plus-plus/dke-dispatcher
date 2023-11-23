@@ -241,16 +241,8 @@ public class SQLResourceService {
      * @param query the query to be executed
      * @throws DatabaseException if an SQLException occurs or the query does not contain "create table"
      */
-    public Map<String, List<String>> createTables(String schemaName, String query) throws DatabaseException, StatementValidationException {
+    public Map<String, List<String>> createTables(String schemaName, String query) throws DatabaseException {
         logger.debug("Query for creating table: {}", query);
-        if (!query.replace(" ", "").toLowerCase().contains("createtable")) {
-            logger.warn("Not a crate-table-statement");
-            throw new StatementValidationException("Not a create-table-statement: "+query);
-        }
-        if(query.contains("--") || query.contains("/*")){
-            logger.warn("No comments allowed");
-            throw new StatementValidationException("No comments allowed: "+query);
-        }
         executeUpdate(schemaName + SUBMISSION_SUFFIX, query);
         executeUpdate(schemaName + DIAGNOSE_SUFFIX, query);
         logger.debug("Tables in schemas with prefix {} created", schemaName);
@@ -346,15 +338,7 @@ public class SQLResourceService {
         logger.debug("Inserting data into diagnose schema of {} complete", schemaName);
     }
 
-    private void insertData(String schemaName, String query) throws DatabaseException, StatementValidationException {
-        if (!query.replace(" ", "").toLowerCase().contains("insertinto")) {
-            logger.warn("Not an insert-into-statement: {}", query);
-            throw new StatementValidationException("Not an insert-into-statement: "+query);
-        }
-        if(query.contains("--") || query.contains("/*")){
-            logger.warn("No comments allowed");
-            throw new StatementValidationException("No comments allowed: "+query);
-        }
+    private void insertData(String schemaName, String query) throws DatabaseException {
         executeUpdate(schemaName, query);
     }
 
