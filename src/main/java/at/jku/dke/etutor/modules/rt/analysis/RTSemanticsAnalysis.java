@@ -1,9 +1,6 @@
 package at.jku.dke.etutor.modules.rt.analysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RTSemanticsAnalysis {
     List<String> studentSolution;
@@ -18,17 +15,19 @@ public class RTSemanticsAnalysis {
     Map<String,String> dependenciesStudent = new HashMap<String,String>();
     String errorLogSemantik = "";
     String errorLogSyntax = "";
-    List<Integer> weighting;
+    int [] weighting;
     int pointsPK = 0;
     int pointsAtt = 0;
     int pointsDep = 0;
+    int countRelations = 0;
 
 
-    public RTSemanticsAnalysis(List<String> studentSolution, List<String> solution, List<Integer> weighting) {
+    public RTSemanticsAnalysis(List<String> studentSolution, List<String> solution, int [] weighting) {
         this.studentSolution = studentSolution;
         this.solution = solution;
         this.weighting = weighting;
         this.calcRelations();
+        this.countRelations();
         this.clacPrimaryKey();
         this.clacAttributes();
         this.clacDependendcies();
@@ -36,6 +35,10 @@ public class RTSemanticsAnalysis {
         this.checkAttributes();
         this.checkDependendcies();
         this.checkRelation();
+    }
+
+    public void countRelations(){
+        this.countRelations = relations.size();
     }
 
     private void calcRelations() {
@@ -72,12 +75,6 @@ public class RTSemanticsAnalysis {
                 return false;
             }
         }
-
-        if(this.relations.size() != this.relationsStudent.size() && this.relations.size() > 1){
-            this.errorLogSyntax = this.errorLogSyntax.concat("<br>Fehlende oder redundante Relationen!");
-            return false;
-        }
-
         return true;
     }
 
@@ -91,7 +88,7 @@ public class RTSemanticsAnalysis {
                 check = false;
             }
             else {
-                pointsPK = pointsPK + weighting.get(0);
+                pointsPK = pointsPK + (weighting[0] / countRelations);
             }
         }
         return check;
@@ -107,7 +104,7 @@ public class RTSemanticsAnalysis {
                 check = false;
             }
             else {
-                pointsAtt = pointsAtt + weighting.get(1);
+                pointsAtt = pointsAtt + (weighting[1] / countRelations);
             }
         }
         return check;
@@ -123,7 +120,7 @@ public class RTSemanticsAnalysis {
                 check = false;
             }
             else{
-                pointsDep = pointsDep + weighting.get(2);
+                pointsDep = pointsDep + (weighting[2] / countRelations);
             }
         }
         return check;
@@ -243,10 +240,6 @@ public class RTSemanticsAnalysis {
         return errorLogSyntax;
     }
 
-    public List<Integer> getWeighting() {
-        return weighting;
-    }
-
     public int getPointsPK() {
         return pointsPK;
     }
@@ -265,9 +258,9 @@ public class RTSemanticsAnalysis {
     @Override
     public String toString() {
         return "RTSemanticsAnalysis{" +
-                ", errorLogSemantik='" + errorLogSemantik + '\'' +
+                "errorLogSemantik='" + errorLogSemantik + '\'' +
                 ", errorLogSyntax='" + errorLogSyntax + '\'' +
-                ", weighting=" + weighting +
+                ", weighting=" + Arrays.toString(weighting) +
                 ", pointsPK=" + pointsPK +
                 ", pointsAtt=" + pointsAtt +
                 ", pointsDep=" + pointsDep +

@@ -30,9 +30,8 @@ public class RTEvaluator implements Evaluator {
 
     @Override
     public Grading grade(Analysis analysis, int maxPoints, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
-        rtGrading grading = new rtGrading();
         RTAnalysis rtAnalysis = (RTAnalysis) analysis;
-        grading.setMaxPoints(maxPoints);
+        rtGrading grading = new rtGrading(rtAnalysis, maxPoints);
         return grading;
     }
 

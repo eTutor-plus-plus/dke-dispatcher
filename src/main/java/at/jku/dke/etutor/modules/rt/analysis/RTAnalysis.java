@@ -51,8 +51,19 @@ public class RTAnalysis extends DefaultAnalysis {
     }
 
     public void initAnalyse(){
+        if (!checkSyntax()){
+            return;
+        }
+        int countRalations = 0;
         for (RTSolution rtSolution : this.solution){
             rtSolution.initAnalyse(this.solutionStudent);
+            countRalations = countRalations + rtSolution.getRtSemanticsAnalysis().getRelations().size();
+            System.err.println(rtSolution);
+        }
+        int countRalationsStudent = solution.get(0).getRtSemanticsAnalysis().getRelationsStudent().size();
+        if (countRalations != countRalationsStudent){
+            System.err.println("Error");
+            this.hasSyntaxError = true;
         }
     }
 
@@ -76,26 +87,7 @@ public class RTAnalysis extends DefaultAnalysis {
                 }
             }
         }
-        for (RTSolution rtSolution : this.solution) {
-            System.err.println(rtSolution.getRtSemanticsAnalysis().toString());
-            if (!rtSolution.getRtSemanticsAnalysis().getErrorLogSyntax().isEmpty() || !rtSolution.getRtSemanticsAnalysis().getErrorLogSyntax().isBlank()) {
-                checkSuccess = false;
-                hasSyntaxError = true;
-            }
-        }
         return checkSuccess;
-    }
-
-    @Override
-    public boolean submissionSuitsSolution() {
-       /* if (this.hasSyntaxError){
-            return false;
-        }
-        if (!this.rtSemanticsAnalysis.getErrorLogSemantik().isEmpty() || !this.rtSemanticsAnalysis.getErrorLogSemantik().isBlank()){
-            this.hasSemantikError = true;
-            return false;
-        }*/
-        return true;
     }
 
     public void setDataBaseProperties() throws SQLException {

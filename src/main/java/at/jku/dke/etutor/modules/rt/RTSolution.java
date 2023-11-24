@@ -18,31 +18,28 @@ public class RTSolution {
     @JsonProperty("punkteInk")
     private int[] punkteInk;
     @JsonProperty("solution")
-    private Map<String, List<String>> solution;
+    private Map<Integer, List<String>> solution;
     int maxPoints;
     int points;
     List<String> solutionStudent;
-    RTSemanticsAnalysis rtSemanticsAnalysis;
+    RTSemanticsAnalysis rtSemanticsAnalysis = null;
 
     public void initAnalyse(List<String> solutionStudent){
         this.solutionStudent = solutionStudent;
-        List<Integer> weighting = new ArrayList<>();
-        weighting.add(this.punktePK[0]);
-        weighting.add(this.punkteAtt[0]);
-        weighting.add(this.punkteAtt[0]);
         if(solution.size() == 1) {
-            this.rtSemanticsAnalysis = new RTSemanticsAnalysis(solutionStudent, solution.get("var1"), weighting);
+            int[] weighting = {punktePK[0],punkteAtt[0],punkteInk[0]};
+            this.rtSemanticsAnalysis = new RTSemanticsAnalysis(solutionStudent, solution.get(1), weighting);
         }
         else{
             List<RTSemanticsAnalysis> rtSemanticsAnalyses = new ArrayList<>();
-            for (Map.Entry<String,List<String>> entry : this.solution.entrySet()){
+            for (Map.Entry<Integer,List<String>> entry : this.solution.entrySet()){
+                int id = entry.getKey() -1;
+                int[] weighting = {punktePK[id],punkteAtt[id],punkteInk[id]};
                 rtSemanticsAnalyses.add(new RTSemanticsAnalysis(solutionStudent, entry.getValue(),weighting));
             }
-            int maxAchievedPoints = 0;
+            int maxAchievedPoints = -1;
             RTSemanticsAnalysis rtSemanticsAnalysisToUse = null;
             for (RTSemanticsAnalysis elem: rtSemanticsAnalyses){
-                System.err.println(elem.getTotalPoints());
-                System.out.println(elem.getRelations().toString());
                 if (elem.getTotalPoints()>maxAchievedPoints){
                     maxAchievedPoints = elem.getTotalPoints();
                     rtSemanticsAnalysisToUse = elem;
@@ -84,11 +81,11 @@ public class RTSolution {
         this.punkteInk = punkteInk;
     }
 
-    public Map<String, List<String>> getSolution() {
+    public Map<Integer, List<String>> getSolution() {
         return solution;
     }
 
-    public void setSolution(Map<String, List<String>> solution) {
+    public void setSolution(Map<Integer, List<String>> solution) {
         this.solution = solution;
     }
 
