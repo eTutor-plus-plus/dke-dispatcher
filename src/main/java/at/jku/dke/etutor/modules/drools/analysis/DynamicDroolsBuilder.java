@@ -105,7 +105,7 @@ public class DynamicDroolsBuilder implements AutoCloseable {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null)) {
             List<StringJavaFileObject> compilationUnit = files.stream()
-                    .map(x -> new StringJavaFileObject(x.getFullClassName(), x.getFileContents()))
+                    .map(x -> new StringJavaFileObject(x.getFullClassName(), x.getClassContent()))
                     .toList();
             JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, Arrays.asList("-d", targetDir.toString()), null, compilationUnit);
 

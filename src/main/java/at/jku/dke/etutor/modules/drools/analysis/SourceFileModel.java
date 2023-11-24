@@ -10,7 +10,7 @@ import java.util.StringJoiner;
  */
 public final class SourceFileModel {
     private final String fullClassName;
-    private final String fileContents;
+    private final String classContent;
     private final String fileName;
     private final List<String> folderHierarchy;
     private Path compiledFile;
@@ -19,18 +19,18 @@ public final class SourceFileModel {
      * Creates a new instance of class {@linkplain SourceFileModel}.
      *
      * @param fullClassName The full name of the class defined in the file (including package name).
-     * @param fileContents  The file contents.
+     * @param classContent  The file contents.
      * @throws IllegalArgumentException If any of the parameters contains an invalid value.
      */
-    public SourceFileModel(String fullClassName, String fileContents) {
+    public SourceFileModel(String fullClassName, String classContent) {
         this.fullClassName = fullClassName;
-        this.fileContents = fileContents;
+        this.classContent = classContent;
 
         var parts = fullClassName.split("\\.");
 
         // Get file name
         var tmp = parts[parts.length - 1];
-        if (!fileContents.contains(tmp)) // simple check, should be improved
+        if (!classContent.contains(tmp)) // simple check, should be improved
             throw new IllegalArgumentException("The file does not contain the specified class");
         this.fileName = tmp + ".java";
 
@@ -87,8 +87,8 @@ public final class SourceFileModel {
      *
      * @return The file contents.
      */
-    public String getFileContents() {
-        return fileContents;
+    public String getClassContent() {
+        return classContent;
     }
 
     /**
@@ -111,7 +111,7 @@ public final class SourceFileModel {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", SourceFile.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", SourceFileModel.class.getSimpleName() + "[", "]")
                 .add("fullClassName='" + fullClassName + "'")
                 .add("compiledFile=" + compiledFile)
                 .toString();
