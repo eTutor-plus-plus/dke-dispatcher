@@ -11,25 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DroolsAnalysis extends DefaultAnalysis {
-    private int id;
-    private Boolean cepMode;
+    private int exerciseID;
     private String inputRules;
-    private List<SourceFileModel> inputClasses = new ArrayList<>();
-    private List<List<Object>> inputFacts = new ArrayList<>();
-    private List<List<Object>> inputTestData = new ArrayList<>();
-    private String syntaxErrorMessage;
-    private KieSession kieSession;
+    private ApplicationProperties applicationProperties;
 
 
-    public DroolsAnalysis(int id, Boolean cepMode, String inputRules, List<SourceFileModel> inputClasses, List<List<Object>> inputFacts, List<List<Object>> inputTestData) throws IOException {
+    public DroolsAnalysis(int exerciseID, String inputRules, ApplicationProperties applicationProperties) throws IOException {
         super();
-        this.id = id;
-        this.cepMode = cepMode;
+        this.exerciseID = exerciseID;
+        this.applicationProperties = applicationProperties;
         this.inputRules = inputRules;
-        this.inputClasses = inputClasses;
-        this.inputFacts = inputFacts;
-        this.inputTestData = inputTestData;
-        this.kieSession = new DynamicDroolsBuilder(inputClasses).newKieSession(inputRules, cepMode);
     }
 
     public int getId() {

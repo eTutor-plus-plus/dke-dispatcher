@@ -21,7 +21,7 @@ public class DroolsEvaluator implements Evaluator {
 
     @Override
     public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
-        DroolsAnalysis analysis = new DroolsAnalysis(exerciseID, passedAttributes.get("submission"));
+        DroolsAnalysis analysis = new DroolsAnalysis(exerciseID, passedAttributes.get("submission"), applicationProperties);
         return analysis;
     }
 
