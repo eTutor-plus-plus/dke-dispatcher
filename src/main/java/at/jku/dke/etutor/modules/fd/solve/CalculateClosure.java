@@ -19,7 +19,6 @@ public class CalculateClosure {
 	}
 
 	public static Closure calculateClosure(Set<? extends Dependency> dependencies, String [] leftSide, Relation relation) {
-
 		HashSet<String> result= new HashSet<>();
 		/** Ausgangspunkt ist die linke Seite jeder Abhängigkeit */
 		result.addAll(Arrays.asList(leftSide));

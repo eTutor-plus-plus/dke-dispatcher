@@ -33,12 +33,7 @@ public class RelationService {
         }
         try {
             relation.setFunctionalDependencies(input.getFunctionalDependencies());
-            if (input.getAttributes()==null || input.getAttributes().length==0) {
-                relation.setAttributes(calculateRelation(input));
-            }
-            else {
-                relation.setAttributes(input.getAttributes());
-            }
+            relation.setAttributes(calculateRelation(input));
             relation.setClosures(calculateClosures(relation));
             relation.setKeys(calculateKeys(relation));
             relation.setMinimalCovers(calculateMinimalCover(relation));
