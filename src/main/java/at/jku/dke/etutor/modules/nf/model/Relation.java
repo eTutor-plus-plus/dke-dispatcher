@@ -162,13 +162,11 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 	}
 
 	public void setMinimalKeys(Collection<Key> minimalKeys) {
-		Iterator<Key> minimalKeysIterator;
-
 		this.minimalKeys.clear();
-		if (superKeys != null) {
-			minimalKeysIterator = minimalKeys.iterator();
-			while (minimalKeysIterator.hasNext()) {
-				this.addMinimalKey(minimalKeysIterator.next());
+
+		if (minimalKeys != null) {
+			for(Key k : minimalKeys) {
+				this.addMinimalKey(k);
 			}
 		}
 	}

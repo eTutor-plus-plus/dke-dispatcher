@@ -1,6 +1,11 @@
-// Generated from nf.g4 by ANTLR 4.13.1
+// Generated from NF.g4 by ANTLR 4.13.1
 
-    package at.jku.dke.etutor.modules.nf.parser ;
+package at.jku.dke.etutor.modules.nf.parser ;
+
+import java.util.Set;
+import java.util.HashSet;
+import at.jku.dke.etutor.modules.nf.model.Key;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -12,7 +17,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
-public class nfLexer extends Lexer {
+public class NFLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.13.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -88,13 +93,13 @@ public class nfLexer extends Lexer {
 	}
 
 
-	public nfLexer(CharStream input) {
+	public NFLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "nf.g4"; }
+	public String getGrammarFileName() { return "NF.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

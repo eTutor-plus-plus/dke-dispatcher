@@ -30,43 +30,42 @@ public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
 	public NormalformLevel getViolatedNormalformLevel(FunctionalDependency dependency){
 		Iterator<? extends NormalformViolation> iter;
 		NormalformLevel level = null;
-		NormalformViolation violation;
 		
 		if (level == null) {
-			iter = this.firstNormalFormViolations.iterator();
-			while((iter.hasNext()) && (level == null)){
-				violation = iter.next();
-				if (violation.getFunctionalDependency().equals(dependency)){
+			iter = firstNormalFormViolations.iterator();
+			while((iter.hasNext()) && (level == null)) {
+				NormalformViolation violation = iter.next();
+				if (violation.getFunctionalDependency().equals(dependency)) {
 					level = NormalformLevel.FIRST;
 				}
 			}
 		}
 
 		if (level == null) {
-			iter = this.secondNormalFormViolations.iterator();
-			while((iter.hasNext()) && (level == null)){
-				violation = iter.next();
-				if (violation.getFunctionalDependency().equals(dependency)){
+			iter = secondNormalFormViolations.iterator();
+			while((iter.hasNext()) && (level == null)) {
+				NormalformViolation violation = iter.next();
+				if (violation.getFunctionalDependency().equals(dependency)) {
 					level = NormalformLevel.SECOND;
 				}
 			}
 		}
 
 		if (level == null) {
-			iter = this.thirdNormalFormViolations.iterator();
-			while((iter.hasNext()) && (level == null)){
-				violation = iter.next();
-				if (violation.getFunctionalDependency().equals(dependency)){
+			iter = thirdNormalFormViolations.iterator();
+			while((iter.hasNext()) && (level == null)) {
+				NormalformViolation violation = iter.next();
+				if (violation.getFunctionalDependency().equals(dependency)) {
 					level = NormalformLevel.THIRD;
 				}
 			}
 		}
 		
 		if (level == null) {
-			iter = this.boyceCoddNormalFormViolations.iterator();
-			while((iter.hasNext()) && (level == null)){
-				violation = iter.next();
-				if (violation.getFunctionalDependency().equals(dependency)){
+			iter = boyceCoddNormalFormViolations.iterator();
+			while((iter.hasNext()) && (level == null)) {
+				NormalformViolation violation = iter.next();
+				if (violation.getFunctionalDependency().equals(dependency)) {
 					level = NormalformLevel.BOYCE_CODD;
 				}
 			}

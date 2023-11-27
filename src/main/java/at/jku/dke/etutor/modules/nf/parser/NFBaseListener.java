@@ -1,6 +1,11 @@
-// Generated from nf.g4 by ANTLR 4.13.1
+// Generated from NF.g4 by ANTLR 4.13.1
 
-    package at.jku.dke.etutor.modules.nf.parser ;
+package at.jku.dke.etutor.modules.nf.parser ;
+
+import java.util.Set;
+import java.util.HashSet;
+import at.jku.dke.etutor.modules.nf.model.Key;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -8,144 +13,144 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
- * This class provides an empty implementation of {@link nfListener},
+ * This class provides an empty implementation of {@link NFListener},
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
 @SuppressWarnings("CheckReturnValue")
-public class nfBaseListener implements nfListener {
+public class NFBaseListener implements NFListener {
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRelationSet(nfParser.RelationSetContext ctx) { }
+	@Override public void enterRelationSet(NFParser.RelationSetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRelationSet(nfParser.RelationSetContext ctx) { }
+	@Override public void exitRelationSet(NFParser.RelationSetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRelation(nfParser.RelationContext ctx) { }
+	@Override public void enterRelation(NFParser.RelationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRelation(nfParser.RelationContext ctx) { }
+	@Override public void exitRelation(NFParser.RelationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterKeySet(nfParser.KeySetContext ctx) { }
+	@Override public void enterKeySet(NFParser.KeySetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitKeySet(nfParser.KeySetContext ctx) { }
+	@Override public void exitKeySet(NFParser.KeySetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterKey(nfParser.KeyContext ctx) { }
+	@Override public void enterKey(NFParser.KeyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitKey(nfParser.KeyContext ctx) { }
+	@Override public void exitKey(NFParser.KeyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterViolatedNormalForm(nfParser.ViolatedNormalFormContext ctx) { }
+	@Override public void enterViolatedNormalForm(NFParser.ViolatedNormalFormContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitViolatedNormalForm(nfParser.ViolatedNormalFormContext ctx) { }
+	@Override public void exitViolatedNormalForm(NFParser.ViolatedNormalFormContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNormalForm(nfParser.NormalFormContext ctx) { }
+	@Override public void enterNormalForm(NFParser.NormalFormContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNormalForm(nfParser.NormalFormContext ctx) { }
+	@Override public void exitNormalForm(NFParser.NormalFormContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAttributeClosure(nfParser.AttributeClosureContext ctx) { }
+	@Override public void enterAttributeClosure(NFParser.AttributeClosureContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAttributeClosure(nfParser.AttributeClosureContext ctx) { }
+	@Override public void exitAttributeClosure(NFParser.AttributeClosureContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunctionalDependencySet(nfParser.FunctionalDependencySetContext ctx) { }
+	@Override public void enterFunctionalDependencySet(NFParser.FunctionalDependencySetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunctionalDependencySet(nfParser.FunctionalDependencySetContext ctx) { }
+	@Override public void exitFunctionalDependencySet(NFParser.FunctionalDependencySetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunctionalDependency(nfParser.FunctionalDependencyContext ctx) { }
+	@Override public void enterFunctionalDependency(NFParser.FunctionalDependencyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunctionalDependency(nfParser.FunctionalDependencyContext ctx) { }
+	@Override public void exitFunctionalDependency(NFParser.FunctionalDependencyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAttributeSet(nfParser.AttributeSetContext ctx) { }
+	@Override public void enterAttributeSet(NFParser.AttributeSetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAttributeSet(nfParser.AttributeSetContext ctx) { }
+	@Override public void exitAttributeSet(NFParser.AttributeSetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAttribute(nfParser.AttributeContext ctx) { }
+	@Override public void enterAttribute(NFParser.AttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAttribute(nfParser.AttributeContext ctx) { }
+	@Override public void exitAttribute(NFParser.AttributeContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

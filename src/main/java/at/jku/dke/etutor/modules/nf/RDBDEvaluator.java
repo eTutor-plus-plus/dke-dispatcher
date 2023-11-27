@@ -21,12 +21,21 @@ import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalyzer;
 import at.jku.dke.etutor.modules.nf.exercises.RDBDExercisesManager;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.KeysContainer;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
+import at.jku.dke.etutor.modules.nf.parser.NFLexer;
+import at.jku.dke.etutor.modules.nf.parser.NFParser;
 import at.jku.dke.etutor.modules.nf.report.*;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.TokenStream;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
@@ -62,6 +71,13 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		 */
 		// Serializable submission = (Serializable)passedAttributes.get(RDBDConstants.calcSubmissionIDFor(exerciseID));
 		Serializable submission = null; // NOTE: Temporary addition so IntelliJ doesn't complain about the uninitialized variable (Gerald Wimmer, 2023-11-12)
+
+		submission = "#A,B,C#;#D,E,F#";
+		CharStream lexerInput = CharStreams.fromString((String)submission);	// Source: https://datacadamia.com/antlr/getting_started (Gerald Wimmer, 2023-11-27)
+		Lexer lexer = new NFLexer(lexerInput);
+		TokenStream parserInput = new CommonTokenStream(lexer);
+		NFParser parser = new NFParser(parserInput);
+
 		int internalType = RDBDExercisesManager.fetchInternalType(exerciseID);
 		Serializable specification = RDBDExercisesManager.fetchSpecification(exerciseID);
 
@@ -76,7 +92,12 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			KeysContainer correctKeys = KeysDeterminator.determineAllKeys((Relation)specification);
 			keysAnalyzerConfig.setCorrectMinimalKeys(correctKeys.getMinimalKeys());
 
-			Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			// Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // Replaced with call to parser (Gerald Wimmer, 2023-11-27)
+			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
+			Relation relation = new Relation();
+			Set<Key> minimalKeys = parser.keySet().keys;
+			relation.setMinimalKeys(minimalKeys);
+
 			analysis = KeysAnalyzer.analyze(relation, keysAnalyzerConfig);
 			
 			//Set Submission
@@ -84,7 +105,12 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER){
 			//MINIMAL COVER
-			Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			// Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // Replaced with call to parser (Gerald Wimmer, 2023-11-27)
+			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
+			Relation relation = new Relation();
+			Set<FunctionalDependency> functionalDependencies = parser.functionalDependencySet().functionalDependencies;
+			relation.setFunctionalDependencies(functionalDependencies);
+
 			//TODO: pass specification itself instead of exerciseID? (2005-10-16, g.n.)
 			analysis = MinimalCoverAnalyzer.analyze(relation, exerciseID);
 				
@@ -94,7 +120,12 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE){
 			//ATTRIBUTE CLOSURE
 			AttributeClosureSpecification attributeClosureSpecification = (AttributeClosureSpecification)specification;
-			Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			// Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // Replaced with call to parser (Gerald Wimmer, 2023-11-27)
+			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
+			Relation relation = new Relation();
+			Set<String> attributes = parser.attributeSet().attributes;
+			relation.setAttributes(attributes);
+
 			analysis = AttributeClosureAnalyzer.analyze(
 					attributeClosureSpecification.getBaseRelation().getFunctionalDependencies(),
 					attributeClosureSpecification.getBaseAttributes(),
@@ -103,7 +134,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			//Set Submission
 			analysis.setSubmission(relation);
 
-		} else if (internalType == RDBDConstants.TYPE_RBR){
+		} else if (internalType == RDBDConstants.TYPE_RBR) { // Note: No longer necessary as its own task type, may be required for Decompose (Gerald Wimmer, 2023-11-27)
 			//RBR
 			RBRSpecification rbrSpecification = (RBRSpecification)specification;
 			Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
@@ -167,7 +198,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			//Set Submission
 			analysis.setSubmission(submissionTreeSet);
 
-		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION){
+		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION){ // Note: Could be identical to Decompose, now that you only have to specify the end result (Gerald Wimmer, 2023-11-27)
 			//NORMALIZATION
 			NormalizationAnalyzerConfig normalizationAnalyzerConfig = new NormalizationAnalyzerConfig();
 			NormalizationSpecification normalizationSpecification = (NormalizationSpecification)specification;
@@ -210,32 +241,30 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			RDBDHelper.getLogger().log(Level.INFO, "OVERALL LEVEL: " + normalformDeterminationSubmission.getOverallLevel());
 
 			//Set normalform violations
-			Integer currID;
-			String violatedNF;
 			Iterator<Integer> iter = normalformDeterminationSubmission.iterDependencyIDs();
 			while (iter.hasNext()){
-				currID = (Integer)iter.next();
+				Integer currID = iter.next();
 				
 				if (passedParameters.get(currID + "_violation") != null){
-					violatedNF = (String)passedParameters.get(currID + "_violation");
+					String violatedNF = (String)passedParameters.get(currID + "_violation");
 					
 					if (violatedNF.equalsIgnoreCase("1")){
-						normalformDeterminationSubmission.setNormalformVioaltion(NormalformLevel.FIRST, currID);
+						normalformDeterminationSubmission.setNormalformViolation(NormalformLevel.FIRST, currID);
 						//RDBDHelper.getLogger().log(Level.INFO, "Dependency '" + normalformDeterminationSubmission.getDependency(currID) + "' violates FIRST NF.");
 					} else if (violatedNF.equalsIgnoreCase("2")){
-						normalformDeterminationSubmission.setNormalformVioaltion(NormalformLevel.SECOND, currID);
+						normalformDeterminationSubmission.setNormalformViolation(NormalformLevel.SECOND, currID);
 						//RDBDHelper.getLogger().log(Level.INFO, "Dependency '" + normalformDeterminationSubmission.getDependency(currID) + "' violates SECOND NF.");
 					} else if (violatedNF.equalsIgnoreCase("3")){
-						normalformDeterminationSubmission.setNormalformVioaltion(NormalformLevel.THIRD, currID);
+						normalformDeterminationSubmission.setNormalformViolation(NormalformLevel.THIRD, currID);
 						//RDBDHelper.getLogger().log(Level.INFO, "Dependency '" + normalformDeterminationSubmission.getDependency(currID) + "' violates THIRD NF.");
 					} else if (violatedNF.equalsIgnoreCase("4")){
-						normalformDeterminationSubmission.setNormalformVioaltion(NormalformLevel.BOYCE_CODD, currID);
+						normalformDeterminationSubmission.setNormalformViolation(NormalformLevel.BOYCE_CODD, currID);
 						//RDBDHelper.getLogger().log(Level.INFO, "Dependency '" + normalformDeterminationSubmission.getDependency(currID) + "' violates BOYCE CODD NF.");
 					} else {
-						normalformDeterminationSubmission.setNormalformVioaltion(null, currID);
+						normalformDeterminationSubmission.setNormalformViolation(null, currID);
 					}
 				} else {
-					normalformDeterminationSubmission.setNormalformVioaltion(null, currID);
+					normalformDeterminationSubmission.setNormalformViolation(null, currID);
 				}
 			}
 

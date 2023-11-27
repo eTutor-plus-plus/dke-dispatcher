@@ -49,8 +49,8 @@ public class NormalformDeterminationSubmission implements Serializable {
 		return this.dependencyIDs.keySet().iterator();
 	}
 
-	public void setNormalformVioaltion(NormalformLevel violatedLevel,
-			Integer dependencyID) {
+	public void setNormalformViolation(NormalformLevel violatedLevel,
+									   Integer dependencyID) {
 		this.normalformViolations.put(dependencyID, violatedLevel);
 	}
 

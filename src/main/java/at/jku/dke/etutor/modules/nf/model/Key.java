@@ -5,12 +5,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-public class Key implements Serializable{
+public class Key implements Serializable {
 
 	private final TreeSet<String> attributes;
 
 	public Key() {
-		super();
 		this.attributes = new TreeSet<>(new AttributeCollator());
 	}
 	

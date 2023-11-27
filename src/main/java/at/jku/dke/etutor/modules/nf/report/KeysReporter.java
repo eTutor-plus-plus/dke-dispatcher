@@ -91,12 +91,10 @@ public class KeysReporter {
 				description.append("<p>").append(messageSource.getMessage("keysreporter.keysmissing", null, locale)).append(":</p>");
 				description.append("<table border='2' rules='all'>");
 
-				it = analysis.iterMissingKeys();
-				while (it.hasNext()){
-					description.append("<tr><td>");
-					description.append(it.next().toString());
-					description.append("</td></tr>");
+				for (Key k : analysis.getMissingKeys()){
+					description.append("<tr><td>").append(k.toString()).append("</td></tr>");
 				}
+
 				description.append("</table>");
 				description.append("</body></html>");
 				description.append("\"></input>");
@@ -138,12 +136,10 @@ public class KeysReporter {
 				description.append("<p>").append(messageSource.getMessage("keysreporter.keystoomuch", null, locale)).append(":</p>");
 				description.append("<table border='2' rules='all'>");
 
-				it = analysis.iterAdditionalKeys();
-				while (it.hasNext()){
-					description.append("<tr><td>");
-					description.append(it.next().toString());
-					description.append("</td></tr>");
+				for (Key k : analysis.getAdditionalKeys()){
+					description.append("<tr><td>").append(k.toString()).append("</td></tr>");
 				}
+
 				description.append("</table>");
 				description.append("</body></html>");
 				description.append("\"></input>");

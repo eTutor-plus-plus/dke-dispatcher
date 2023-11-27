@@ -10,8 +10,8 @@ import java.util.logging.Level;
 public class KeysAnalyzer {
 
 	public static KeysAnalysis analyze(Relation relation, KeysAnalyzerConfig config){
-		String message = "Start analyzing keys determination.";
-		RDBDHelper.getLogger().log(Level.INFO, message);
+		// Log progress
+		RDBDHelper.getLogger().log(Level.INFO, "Start analyzing keys determination.");
 
 		KeysAnalysis analysis = new KeysAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
@@ -32,9 +32,8 @@ public class KeysAnalyzer {
 		RDBDHelper.getLogger().log(Level.INFO, "Found " + analysis.getMissingKeys().size() + " missing keys.");
 		RDBDHelper.getLogger().log(Level.INFO, "Found " + analysis.getAdditionalKeys().size() + " additional keys.");
 
-		message = "";
-		message = message.concat("Exit analyzing keys determination.");
-		RDBDHelper.getLogger().log(Level.INFO, message);
+		// Log Progress
+		RDBDHelper.getLogger().log(Level.INFO, "Exit analyzing keys determination.");
 		
 		return analysis;
 	}

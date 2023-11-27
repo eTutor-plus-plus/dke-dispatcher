@@ -2,7 +2,7 @@ package at.jku.dke.etutor.modules.nf.model;
 
 import java.io.Serializable;
 
-public class NormalformLevel implements Serializable{
+public class NormalformLevel implements Serializable {
 
 	private final String degree;
 	private final int intRepresentation;
