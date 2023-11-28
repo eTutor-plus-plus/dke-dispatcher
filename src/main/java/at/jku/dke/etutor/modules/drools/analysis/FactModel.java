@@ -4,10 +4,12 @@ import java.util.List;
 
 public class FactModel {
     private String clazz;
+    private String instanceName;
     private List<Object> parameters;
 
-    public FactModel(String clazz, List<Object> parameters) {
+    public FactModel(String clazz, String instanceName, List<Object> parameters) {
         this.clazz = clazz;
+        this.instanceName = instanceName;
         this.parameters = parameters;
     }
 
@@ -25,5 +27,13 @@ public class FactModel {
 
     public void setParameters(List<Object> parameters) {
         this.parameters = parameters;
+    }
+
+    public String getInstanceName() {
+        return instanceName;
+    }
+
+    public void setInstanceName(String instanceName) {
+        this.instanceName = instanceName;
     }
 }

@@ -1,17 +1,18 @@
 package at.jku.dke.etutor.modules.drools.analysis;
 
-import java.time.LocalTime;
 import java.util.Date;
 
 public class EventModel {
     private String clazz;
-    private Object reference;
+    private Object referenceClass;
     private Date timestamp;
+    private String instanceName;
 
-    public EventModel(String clazz, Object input, Date timestamp) {
+    public EventModel(String clazz, Object referenceClass, String instanceName, Date timestamp) {
         this.clazz = clazz;
-        this.reference = input;
+        this.referenceClass = referenceClass;
         this.timestamp = timestamp;
+        this.instanceName = instanceName;
     }
 
     public String getClazz() {
@@ -22,12 +23,12 @@ public class EventModel {
         this.clazz = clazz;
     }
 
-    public Object getReference() {
-        return reference;
+    public Object getReferenceClass() {
+        return referenceClass;
     }
 
-    public void setReference(Object input) {
-        this.reference = input;
+    public void setReferenceClass(Object input) {
+        this.referenceClass = input;
     }
 
     public Date getTimestamp() {
@@ -36,5 +37,13 @@ public class EventModel {
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getInstanceName() {
+        return instanceName;
+    }
+
+    public void setInstanceName(String instanceName) {
+        this.instanceName = instanceName;
     }
 }

@@ -2,19 +2,16 @@ package at.jku.dke.etutor.modules.drools.analysis;
 
 import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.modules.rt.RTObject;
-import at.jku.dke.etutor.modules.rt.analysis.RTSemanticsAnalysis;
+import org.junit.Assert;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Results;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
-import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -23,10 +20,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +33,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
     private List<EventModel> events;
     private String solution;
     private List<Object[]> testData;
+    private static final String route = "http://localhost:8081"; //for etutor: "http://localhost:8081" | for test "http://localhost:9000"
 
 
     public DroolsAnalysis(int exerciseID, String inputRules, ApplicationProperties applicationProperties) throws IOException {
@@ -53,7 +48,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
     }
 
     /**
-     * Loads the defined classes from the task-database.
+     * Loads the required classes from the task-database.
      *
      */
 
@@ -61,7 +56,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
         List<SourceFileModel> classList = new ArrayList<>();
 
         final HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create("http://localhost:8081/drools/task/getTaskProperties/" + this.exerciseID);
+        URI uri = URI.create(route+"/drools/task/getClasses/" + this.exerciseID);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -93,7 +88,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
         List<Object[]> testDataList = new ArrayList<>();
 
         final HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create("http://localhost:8081/drools/task/getTestData/" + this.exerciseID);
+        URI uri = URI.create(route + "/drools/task/getTestData/" + this.exerciseID);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -138,7 +133,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
         List<FactModel> factList = new ArrayList<>();
 
         final HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create("http://localhost:8081/drools/task/getFacts/" + this.exerciseID);
+        URI uri = URI.create(route + "/drools/task/getFacts/" + this.exerciseID);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -148,10 +143,12 @@ public class DroolsAnalysis extends DefaultAnalysis {
             JSONArray jsonArray = new JSONArray(response.body());
 
             String clazz = "";
+            String instanceName = "";
             List<Object> parametersList = new ArrayList<>();
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
                 clazz = obj.getString("clazz");
+                instanceName = obj.getString("instanceName");
                 JSONArray parametersArray = obj.getJSONArray("parameters");
 
                 for (int j = 0; j < parametersArray.length(); j++) {
@@ -162,7 +159,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
                     parametersList.add(value);
                 }
             }
-            FactModel factModel = new FactModel(clazz, parametersList);
+            FactModel factModel = new FactModel(clazz, instanceName, parametersList);
             factList.add(factModel);
         } catch (Exception e) {
             e.printStackTrace();
@@ -196,7 +193,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
         String solution = "";
 
         final HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create("http://localhost:8081/drools/task/getSolution/" + this.exerciseID);
+        URI uri = URI.create(route + "/drools/task/getSolution/" + this.exerciseID);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -215,7 +212,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
         List<EventModel> eventList = new ArrayList<>();
 
         final HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create("http://localhost:8081/drools/task/getEvents/" + this.exerciseID);
+        URI uri = URI.create(route + "/drools/task/getEvents/" + this.exerciseID);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -228,13 +225,15 @@ public class DroolsAnalysis extends DefaultAnalysis {
             String referenceName = "";
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             Date timestamp = null;
+            String instanceName = "";
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
                 clazz = obj.getString("clazz");
                 referenceName = obj.getString("input");
                 timestamp = formatter.parse(obj.getString("timestamp"));
+                instanceName = obj.getString("instanceName");
             }
-            EventModel eventModel = new EventModel(clazz, referenceName, timestamp);
+            EventModel eventModel = new EventModel(clazz, referenceName, instanceName, timestamp);
             eventList.add(eventModel);
         } catch (Exception e) {
             e.printStackTrace();
@@ -244,9 +243,8 @@ public class DroolsAnalysis extends DefaultAnalysis {
     }
 
     public boolean hasSyntaxError() throws IOException, ReflectiveOperationException {
-
-        KieServices kieServices = KieServices.Factory.get();
-        KieContainer kieContainer = kieServices.getKieClasspathContainer(); //TODO: Richtige KieSession erstellen mit String rules 2023-11-24
+        DynamicDroolsBuilder dyn = new DynamicDroolsBuilder();
+        KieContainer kieContainer = dyn.getKieContainer(this.inputRules, EventProcessingOption.CLOUD); //TODO: Richtige KieSession erstellen mit String rules 2023-11-24
         Results results = kieContainer.verify();
 
         if (results.hasMessages(org.kie.api.builder.Message.Level.ERROR)) {
@@ -265,7 +263,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
     }
 
     @Test(dataProvider = "testData")
-    public void runRules() throws IOException, ReflectiveOperationException{
+    public void hasSemantikError(Object inputClassName, Object expectedOutput) throws IOException, ReflectiveOperationException{
         try(var dyn = new DynamicDroolsBuilder(this.javaClasses)) {
             var ks = dyn.newKieSession(this.inputRules, true);
 
@@ -273,22 +271,29 @@ public class DroolsAnalysis extends DefaultAnalysis {
             if (!(clock instanceof SessionPseudoClock spc))
                 return;
 
-            Map<String, Object> dynamicObjects = new HashMap<>();
-            int i = 1;
+            Map<String, Object> dynamicFactObjects = new HashMap<>();
             for (var fact : facts) {
                 Object obj = dyn.instantiate(fact.getClazz(), fact.getParameters());
-                dynamicObjects.put(fact.getClazz() + i, obj); //Dynamische Objekte sind nicht möglich, daher hier der Umweg mit einer HashMap die, die Objekte speichert
+                dynamicFactObjects.put(fact.getInstanceName(), obj);
+                //Dynamische Objekte sind nicht möglich, daher hier der Umweg mit einer HashMap, die die Objekte speichert
                 //TODO: Risikos abklären
-                i++;
             }
-            // Fire all rules
-            for (var event : events) {
-                String referenceName = (String) event.getReference();
-                if (dynamicObjects.containsKey(referenceName)) event.setReference(dynamicObjects.get(referenceName));
 
+            var dynamicEventObjects = new ArrayList<>();
+            for (var event : events) {
+                Object obj = dyn.instantiate(event.getClazz(), event.getReferenceClass(), event.getTimestamp());
+                String referenceName = (String) event.getReferenceClass();
+                if (dynamicFactObjects.containsKey(referenceName)) event.setReferenceClass(dynamicFactObjects.get(referenceName));
+                dynamicEventObjects.add(obj);
+                //Dynamische Objekte sind nicht möglich, daher hier der Umweg mit einer HashMap, die die Objekte speichert
+                //TODO: Risikos abklären
+            }
+
+            // Fire all rules
+            for (var event : dynamicEventObjects) {
                 ks.insert(event);
                 // Martin: folgendes kann man anders lösen, indem man z.B. Event-Interface generell im eTutor vorgibt.
-                Date ts = (Date) event.getClass().getMethod("getTimestamp").invoke(event);
+                Date ts = (Date) event.getClass().getMethod("timestamp").invoke(event);
 
                 var diff = ts.getTime() - clock.getCurrentTime();
                 if (diff > 0)
@@ -297,12 +302,11 @@ public class DroolsAnalysis extends DefaultAnalysis {
                 ks.fireAllRules();
             }
 
-//            Object[] firstElement = new Optional[]{this.testData.stream().findFirst()};
-//            var referenceClass = dyn.loadClass((String) firstElement[0]);
-//
-//            for (Object testInput : ks.getObjects(obj -> obj.getClass().equals(referenceClass))) {
-//                System.out.println(testInput);
-//            }
+            // Analyze
+            var inputClass = dyn.loadClass((String) inputClassName);
+            for (Object invoice : ks.getObjects(obj -> obj.getClass().equals(inputClass))) {
+                Assert.assertEquals(invoice.getClass().getMethod("price").invoke(invoice), (Double) expectedOutput);
+            }
 
 
         } catch (Exception e) {
@@ -310,16 +314,9 @@ public class DroolsAnalysis extends DefaultAnalysis {
         }
     }
 
-    public void hasSemantikError(Object input, Object expectedOutput){
         //TODO: Klassen laden eventuell mit der Variante von Martin (loadClass) und dann aus der KIESession die Objekte laden
         //TODO Dann den Test ausführen, TestListener implementieren
         //TODO Main methode für einen ersten Test mit hardcoded Testdaten durchführen.
-    }
-
-
-
-
-
 
 
     public int getExerciseID() {

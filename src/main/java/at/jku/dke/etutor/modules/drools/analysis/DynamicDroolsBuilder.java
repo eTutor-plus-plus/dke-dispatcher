@@ -28,6 +28,10 @@ public class DynamicDroolsBuilder implements AutoCloseable {
     private final Path targetDir;
     private ClassLoader classLoader;
 
+    public DynamicDroolsBuilder() throws IOException {
+        this.targetDir = Files.createTempDirectory("drools_jit_target");
+    }
+
     /**
      * Creates a new instance of class {@linkplain DynamicDroolsBuilder}.
      *
@@ -145,6 +149,25 @@ public class DynamicDroolsBuilder implements AutoCloseable {
         KieBaseConfiguration config = KieServices.Factory.get().newKieBaseConfiguration();
         config.setOption(processingOption);
         return new Pair<>(ks, ks.newKieContainer(ks.getRepository().getDefaultReleaseId()));
+    }
+
+
+    public KieContainer getKieContainer(String rules, EventProcessingOption processingOption) {
+        // Load rules dynamically
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write("src/main/resources/rules/DynamicRules.drl", rules);
+
+        // Build rules
+        KieBuilder kb = ks.newKieBuilder(kfs, this.classLoader).buildAll();
+        var res = kb.getResults();
+        if (res.hasMessages(Message.Level.ERROR))
+            throw new RuntimeException("Rule compilation errors: " + res);
+
+        // Set kie base event processing option
+        KieBaseConfiguration config = KieServices.Factory.get().newKieBaseConfiguration();
+        config.setOption(processingOption);
+        return ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
     }
 
     /**
