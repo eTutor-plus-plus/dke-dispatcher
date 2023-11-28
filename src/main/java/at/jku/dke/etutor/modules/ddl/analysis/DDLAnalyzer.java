@@ -317,7 +317,6 @@ public class DDLAnalyzer {
 
                             if(systemDatatype != userDatatype) {
                                 // Check if both datatypes are varchar -> every varchar should be treated as equal
-                                //todo Check if this is correct
                                 String sd = systemColumns.getString("TYPE_NAME");
                                 String ud = userColumns.getString("TYPE_NAME");
                                 if(!(sd.toLowerCase().contains(VARCHAR) && ud.toLowerCase().contains(VARCHAR))) {

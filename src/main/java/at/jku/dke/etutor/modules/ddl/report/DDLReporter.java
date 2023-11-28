@@ -309,7 +309,8 @@ public class DDLReporter {
                             columnsIterator = columnsAnalysis.iterMissingColumns();
                             description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
                             while(columnsIterator.hasNext()) {
-                                description.append("<tr>").append("<td>").append(columnsIterator.next().getSource()).append("</td><td>").append(columnsIterator.next().getError()).append("</td></tr>");
+                                ErrorTupel tupel = columnsIterator.next();
+                                description.append("<tr>").append("<td>").append(tupel.getSource()).append("</td><td>").append(tupel.getError()).append("</td></tr>");
                             }
                             description.append("</table>");
                         }
@@ -334,7 +335,8 @@ public class DDLReporter {
                             columnsIterator = columnsAnalysis.iterSurplusColumns();
                             description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
                             while(columnsIterator.hasNext()) {
-                                description.append("<tr>").append("<td>").append(columnsIterator.next().getSource()).append("</td><td>").append(columnsIterator.next().getError()).append("</td></tr>");
+                                ErrorTupel tupel = columnsIterator.next();
+                                description.append("<tr>").append("<td>").append(tupel.getSource()).append("</td><td>").append(tupel.getError()).append("</td></tr>");
                             }
                             description.append("</table>");
                         }
@@ -357,7 +359,8 @@ public class DDLReporter {
                             columnsIterator = columnsAnalysis.iterWrongDatatypeColumns();
                             description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
                             while(columnsIterator.hasNext()) {
-                                description.append("<tr>").append("<td>").append(columnsIterator.next().getSource()).append("</td><td>").append(columnsIterator.next().getError()).append("</td></tr>");
+                                ErrorTupel tupel = columnsIterator.next();
+                                description.append("<tr>").append("<td>").append(tupel.getSource()).append("</td><td>").append(tupel.getError()).append("</td></tr>");
                             }
                             description.append("</table>");
                         }
@@ -380,7 +383,8 @@ public class DDLReporter {
                             columnsIterator = columnsAnalysis.iterWrongNullColumns();
                             description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
                             while(columnsIterator.hasNext()) {
-                                description.append("<tr>").append("<td>").append(columnsIterator.next().getSource()).append("</td><td>").append(columnsIterator.next().getError()).append("</td></tr>");
+                                ErrorTupel tupel = columnsIterator.next();
+                                description.append("<tr>").append("<td>").append(tupel.getSource()).append("</td><td>").append(tupel.getError()).append("</td></tr>");
                             }
                             description.append("</table>");
                         }
@@ -403,7 +407,8 @@ public class DDLReporter {
                             columnsIterator = columnsAnalysis.iterWrongDefaultColumns();
                             description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
                             while(columnsIterator.hasNext()) {
-                                description.append("<tr>").append("<td>").append(columnsIterator.next().getSource()).append("</td><td>").append(columnsIterator.next().getError()).append("</td></tr>");
+                                ErrorTupel tupel = columnsIterator.next();
+                                description.append("<tr>").append("<td>").append(tupel.getSource()).append("</td><td>").append(tupel.getError()).append("</td></tr>");
                             }
                             description.append("</table>");
                         }
@@ -486,7 +491,8 @@ public class DDLReporter {
                             primaryKeysIterator = primaryKeysAnalysis.iterMissingPrimaryKeys();
                             description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
                             while(primaryKeysIterator.hasNext()) {
-                                description.append("<tr>").append("<td>").append(primaryKeysIterator.next().getSource()).append("</td><td>").append(primaryKeysIterator.next().getError()).append("</td></tr>");
+                                ErrorTupel tupel = primaryKeysIterator.next();
+                                description.append("<tr>").append("<td>").append(tupel.getSource()).append("</td><td>").append(tupel.getError()).append("</td></tr>");
                             }
                             description.append("</table>");
                         }
@@ -511,7 +517,8 @@ public class DDLReporter {
                             primaryKeysIterator = primaryKeysAnalysis.iterSurplusPrimaryKeys();
                             description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
                             while(primaryKeysIterator.hasNext()) {
-                                description.append("<tr>").append("<td>").append(primaryKeysIterator.next().getSource()).append("</td><td>").append(primaryKeysIterator.next().getError()).append("</td></tr>");
+                                ErrorTupel tupel = primaryKeysIterator.next();
+                                description.append("<tr>").append("<td>").append(tupel.getSource()).append("</td><td>").append(tupel.getError()).append("</td></tr>");
                             }
                             description.append("</table>");
                         }
@@ -594,7 +601,8 @@ public class DDLReporter {
                             foreignKeysIterator = foreignKeysAnalysis.iterMissingForeignKeys();
                             description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
                             while(foreignKeysIterator.hasNext()) {
-                                description.append("<tr>").append("<td>").append(foreignKeysIterator.next().getSource()).append("</td><td>").append(foreignKeysIterator.next().getError()).append("</td></tr>");
+                                ErrorTupel tupel = foreignKeysIterator.next();
+                                description.append("<tr>").append("<td>").append(tupel.getSource()).append("</td><td>").append(tupel.getError()).append("</td></tr>");
                             }
                             description.append("</table>");
                         }
@@ -619,7 +627,8 @@ public class DDLReporter {
                             foreignKeysIterator = foreignKeysAnalysis.iterSurplusForeignKeys();
                             description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
                             while(foreignKeysIterator.hasNext()) {
-                                description.append("<tr>").append("<td>").append(foreignKeysIterator.next().getSource()).append("</td><td>").append(foreignKeysIterator.next().getError()).append("</td></tr>");
+                                ErrorTupel tupel = foreignKeysIterator.next();
+                                description.append("<tr>").append("<td>").append(tupel.getSource()).append("</td><td>").append(tupel.getError()).append("</td></tr>");
                             }
                             description.append("</table>");
                         }
@@ -725,7 +734,8 @@ public class DDLReporter {
                             constraintsIterator = constraintsAnalysis.iterMissingConstraints();
                             description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
                             while(constraintsIterator.hasNext()) {
-                                description.append("<tr>").append("<td>").append(constraintsIterator.next().getSource()).append("</td><td>").append(constraintsIterator.next().getError()).append("</td></tr>");
+                                ErrorTupel tupel = constraintsIterator.next();
+                                description.append("<tr>").append("<td>").append(tupel.getSource()).append("</td><td>").append(tupel.getError()).append("</td></tr>");
                             }
                             description.append("</table>");
                         }
@@ -750,7 +760,8 @@ public class DDLReporter {
                             constraintsIterator = constraintsAnalysis.iterSurplusConstraints();
                             description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
                             while(constraintsIterator.hasNext()) {
-                                description.append("<tr>").append("<td>").append(constraintsIterator.next().getSource()).append("</td><td>").append(constraintsIterator.next().getError()).append("</td></tr>");
+                                ErrorTupel tupel = constraintsIterator.next();
+                                description.append("<tr>").append("<td>").append(tupel.getSource()).append("</td><td>").append(tupel.getError()).append("</td></tr>");
                             }
                             description.append("</table>");
                         }
