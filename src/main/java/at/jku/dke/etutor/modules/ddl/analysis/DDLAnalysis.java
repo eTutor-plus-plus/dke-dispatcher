@@ -61,7 +61,7 @@ public class DDLAnalysis extends DefaultAnalysis implements Analysis {
      * @return Returns true if it was analyzed; otherwise false
      */
     public boolean isCriterionAnalyzed(DDLEvaluationCriterion evaluationCriterion) {
-        return this.criterionAnalysis.containsKey(criterionAnalysis);
+        return this.criterionAnalysis.containsKey(evaluationCriterion);
     }
 
     /**

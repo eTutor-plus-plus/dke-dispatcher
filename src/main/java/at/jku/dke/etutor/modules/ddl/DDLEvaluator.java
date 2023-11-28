@@ -322,18 +322,12 @@ public class DDLEvaluator implements Evaluator {
         String diagnoseLevel = passedAttributes.get("diagnoseLevel");
 
         // Set action and diagnose level
-        if(action.equalsIgnoreCase(DDLEvaluationAction.RUN.toString())) {
-            reporterConfig.setAction(DDLEvaluationAction.RUN);
-            reporterConfig.setDiagnoseLevel(1);
-        } else if(action.equalsIgnoreCase(DDLEvaluationAction.SUBMIT.toString())) {
+        if(action.equalsIgnoreCase(DDLEvaluationAction.SUBMIT.toString())) {
             reporterConfig.setAction(DDLEvaluationAction.SUBMIT);
-            reporterConfig.setDiagnoseLevel(2);
+            reporterConfig.setDiagnoseLevel(0);
         } else if(action.equalsIgnoreCase(DDLEvaluationAction.DIAGNOSE.toString())) {
             reporterConfig.setAction(DDLEvaluationAction.DIAGNOSE);
             reporterConfig.setDiagnoseLevel(Integer.parseInt(diagnoseLevel));
-        } else if(action.equalsIgnoreCase(DDLEvaluationAction.CHECK.toString())) {
-            reporterConfig.setAction(DDLEvaluationAction.CHECK);
-            reporterConfig.setDiagnoseLevel(0);
         }
 
         return reporter.createReport((DDLAnalysis)analysis, reporterConfig, locale);

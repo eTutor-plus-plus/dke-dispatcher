@@ -75,9 +75,6 @@ public class DDLAnalyzer {
             return analysis;
         }
 
-        // Get the DDL statements
-        submittedStatements = List.of(submittedQuery.replace("\n", "").split(";"));
-
         // Check if the configuration is null
         if (config == null) {
             msg = "";
@@ -102,7 +99,7 @@ public class DDLAnalyzer {
         // Execute query
         // Check correct syntax
         if (config.isCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_SYNTAX)) {
-            criterionAnalysis = this.analyzeSyntax(submittedStatements);
+            criterionAnalysis = this.analyzeSyntax(submittedQuery);
             analysis.addCriterionAnalysis(DDLEvaluationCriterion.CORRECT_SYNTAX, criterionAnalysis);
             if(criterionAnalysis.getAnalysisException() != null && !criterionAnalysis.isCriterionSatisfied()) {
                 analysis.setAnalysisException(criterionAnalysis.getAnalysisException());
@@ -182,20 +179,18 @@ public class DDLAnalyzer {
 
     /**
      * Function to check the correctness of the syntax
-     * @param submittedStatements Specifies the submitted ddl statements
+     * @param submittedQuery Specifies the submitted ddl statement
      * @return Returns a criterion analysis object
      */
-    private DDLCriterionAnalysis analyzeSyntax(List<String> submittedStatements) {
+    private DDLCriterionAnalysis analyzeSyntax(String submittedQuery) {
         this.logger.info("Analyze syntax");
 
         SyntaxAnalysis syntaxAnalysis = new SyntaxAnalysis();
 
         try {
-            // Execute every query to check the correctness of the query
-            for(String ddl : submittedStatements) {
-                Statement stmt = userConn.createStatement();
-                stmt.executeQuery(ddl);
-            }
+            // Execute query to check the correctness of the syntax
+            Statement stmt = userConn.createStatement();
+            stmt.executeQuery(submittedQuery);
         } catch (SQLException ex) {
             syntaxAnalysis.setFoundError(true);
             syntaxAnalysis.setCriterionIsSatisfied(false);
@@ -203,7 +198,7 @@ public class DDLAnalyzer {
         }
 
         syntaxAnalysis.setCriterionIsSatisfied(true);
-        this.logger.info("Finished syntax analysis.");
+        this.logger.info("Finished syntax analysis. Criterion satisfied: " + syntaxAnalysis.isCriterionSatisfied());
         return syntaxAnalysis;
     }
 
@@ -245,6 +240,9 @@ public class DDLAnalyzer {
                 exists = false;
             }
 
+            // Reset variable
+            systemRS.beforeFirst();
+
             // Search for surplus tables
             while (userRs.next()) {
                 String userTable = userRs.getString("TABLE_NAME");
@@ -279,7 +277,7 @@ public class DDLAnalyzer {
 
         // Set submission is correct for this criterion
         tablesAnalysis.setCriterionIsSatisfied(tablesAnalysis.isMissingTablesEmpty() && tablesAnalysis.isSurplusTablesEmpty());
-        this.logger.info("Finished table analysis.");
+        this.logger.info("Finished table analysis. Criterion satisfied: " + tablesAnalysis.isCriterionSatisfied());
         return tablesAnalysis;
     }
 
@@ -358,6 +356,9 @@ public class DDLAnalyzer {
                     exists = false;
                 }
 
+                // Reset variable
+                systemColumns.beforeFirst();
+
                 // Search for surplus columns
                 while (userColumns.next()) {
                     String userColumn = userColumns.getString("COLUMN_NAME");
@@ -392,7 +393,7 @@ public class DDLAnalyzer {
         }
 
         columnsAnalysis.setCriterionIsSatisfied(columnsAnalysis.isMissingColumnsEmpty() && columnsAnalysis.isSurplusColumnsEmpty() && columnsAnalysis.isWrongNullColumnsEmpty() && columnsAnalysis.isWrongDatatypeColumnsEmpty() && columnsAnalysis.isWrongDefaultColumnsEmpty());
-        this.logger.info("Finished column analysis.");
+        this.logger.info("Finished column analysis. Criterion satisfied: " + columnsAnalysis.isCriterionSatisfied());
         return columnsAnalysis;
     }
 
@@ -439,6 +440,9 @@ public class DDLAnalyzer {
                     exists = false;
                 }
 
+                // Reset variable
+                systemPrimaryKeys.beforeFirst();
+
                 // Search for surplus primary keys
                 while (userPrimaryKeys.next()) {
                     String userColumn = userPrimaryKeys.getString("COLUMN_NAME");
@@ -473,7 +477,7 @@ public class DDLAnalyzer {
         }
 
         primaryKeysAnalysis.setCriterionIsSatisfied(primaryKeysAnalysis.isMissingPrimaryKeysEmpty() && primaryKeysAnalysis.isSurplusPrimaryKeysEmpty());
-        this.logger.info("Finished primary key analysis.");
+        this.logger.info("Finished primary key analysis. Criterion satisfied: " + primaryKeysAnalysis.isCriterionSatisfied());
         return primaryKeysAnalysis;
     }
 
@@ -526,6 +530,9 @@ public class DDLAnalyzer {
                     exists = false;
                 }
 
+                // Reset variable
+                systemForeignKeys.beforeFirst();
+
                 // Search for surplus primary keys
                 while (userForeignKeys.next()) {
                     String userColumn = userForeignKeys.getString("FKCOLUMN_NAME");
@@ -560,7 +567,7 @@ public class DDLAnalyzer {
         }
 
         foreignKeysAnalysis.setCriterionIsSatisfied(foreignKeysAnalysis.isMissingForeignKeysEmpty() && foreignKeysAnalysis.isSurplusForeignKeysEmpty());
-        this.logger.info("Finished foreign key analysis.");
+        this.logger.info("Finished foreign key analysis. Criterion satisfied: " + foreignKeysAnalysis.isCriterionSatisfied());
         return foreignKeysAnalysis;
     }
 
@@ -612,6 +619,9 @@ public class DDLAnalyzer {
                     exists = false;
                 }
 
+                // Reset variable
+                systemConstraints.beforeFirst();
+
                 // Search for surplus unique constraints
                 while (userConstraints.next()) {
                     String userColumn = userConstraints.getString("INDEX_NAME");
@@ -661,7 +671,7 @@ public class DDLAnalyzer {
         }
 
         constraintsAnalysis.setCriterionIsSatisfied(constraintsAnalysis.isMissingConstraintsEmpty() && constraintsAnalysis.isSurplusConstraintsEmpty() && constraintsAnalysis.isDmlStatementsWithMistakesEmpty());
-        this.logger.info("Finished constraint analysis.");
+        this.logger.info("Finished constraint analysis. Criterion satisfied: " + constraintsAnalysis.isCriterionSatisfied());
         return constraintsAnalysis;
     }
     //endregion
