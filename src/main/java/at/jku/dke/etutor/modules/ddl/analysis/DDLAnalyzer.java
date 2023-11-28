@@ -22,6 +22,8 @@ public class DDLAnalyzer {
     private Connection userConn;
     private DatabaseMetaData userMetadata;
     private DatabaseMetaData exerciseMetadata;
+    private String userSchema;
+    private String exerciseSchema;
     //endregion
 
     public DDLAnalyzer() {
@@ -92,6 +94,10 @@ public class DDLAnalyzer {
         // Get connections
         exerciseConn = config.getExerciseConn();
         userConn = config.getUserConn();
+
+        // Set schema variables
+        exerciseSchema = exerciseConn.getSchema();
+        userSchema = userConn.getSchema();
 
         // Execute query
         // Check correct syntax
@@ -196,6 +202,8 @@ public class DDLAnalyzer {
             syntaxAnalysis.setErrorDescription(ex.toString());
         }
 
+        syntaxAnalysis.setCriterionIsSatisfied(true);
+        this.logger.info("Finished syntax analysis.");
         return syntaxAnalysis;
     }
 
@@ -211,8 +219,8 @@ public class DDLAnalyzer {
         String msg;
 
         try {
-            ResultSet userRs = userMetadata.getTables(null, null, null, new String[]{"TABLE"});
-            ResultSet systemRS = exerciseMetadata.getTables(null, null, null, new String[]{"TABLE"});
+            ResultSet userRs = userMetadata.getTables(null, userSchema, null, new String[]{"TABLE"});
+            ResultSet systemRS = exerciseMetadata.getTables(null, exerciseSchema, null, new String[]{"TABLE"});
 
             // Search for missing tables
             while (systemRS.next()) {
@@ -286,14 +294,14 @@ public class DDLAnalyzer {
         boolean exists = false;
 
         try {
-            ResultSet userTables = userMetadata.getTables(null, null, null, new String[]{"TABLE"});
+            ResultSet userTables = userMetadata.getTables(null, userSchema, null, new String[]{"TABLE"});
 
             // Run through all tables and look at the columns
             while (userTables.next()) {
                 String tableName = userTables.getString("TABLE_NAME");
 
-                ResultSet userColumns = userMetadata.getColumns(null, null, tableName, null);
-                ResultSet systemColumns = exerciseMetadata.getColumns(null, null, tableName, null);
+                ResultSet userColumns = userMetadata.getColumns(null, userSchema, tableName, null);
+                ResultSet systemColumns = exerciseMetadata.getColumns(null, exerciseSchema, tableName, null);
 
                 // Search for missing columns
                 while (systemColumns.next()) {
@@ -331,7 +339,8 @@ public class DDLAnalyzer {
                             String systemDefault = systemColumns.getString("COLUMN_DEF");
                             String userDefault = userColumns.getString("COLUMN_DEF");
 
-                            if(!systemDefault.equals(userDefault)) {
+                            // Check like this and not with equals to avoid null exception
+                            if(systemDefault != userDefault) {
                                 columnsAnalysis.addWrongDefaultColumn(new ErrorTupel(tableName, systemColumn));
                             }
 
@@ -398,14 +407,14 @@ public class DDLAnalyzer {
         boolean exists = false;
 
         try {
-            ResultSet userTables = userMetadata.getTables(null, null, null, new String[]{"TABLE"});
+            ResultSet userTables = userMetadata.getTables(null, userSchema, null, new String[]{"TABLE"});
 
             // Run through all tables and look at the primary keys
             while (userTables.next()) {
                 String tableName = userTables.getString("TABLE_NAME");
 
-                ResultSet userPrimaryKeys = userMetadata.getPrimaryKeys(null, null, tableName);
-                ResultSet systemPrimaryKeys = exerciseMetadata.getPrimaryKeys(null, null, tableName);
+                ResultSet userPrimaryKeys = userMetadata.getPrimaryKeys(null, userSchema, tableName);
+                ResultSet systemPrimaryKeys = exerciseMetadata.getPrimaryKeys(null, exerciseSchema, tableName);
 
                 // Search for missing primary keys
                 while (systemPrimaryKeys.next()) {
@@ -479,14 +488,14 @@ public class DDLAnalyzer {
         boolean exists = false;
 
         try {
-            ResultSet userTables = userMetadata.getTables(null, null, null, new String[]{"TABLE"});
+            ResultSet userTables = userMetadata.getTables(null, userSchema, null, new String[]{"TABLE"});
 
             // Run through all tables and look at the foreign keys
             while (userTables.next()) {
                 String tableName = userTables.getString("TABLE_NAME");
 
-                ResultSet userForeignKeys = userMetadata.getImportedKeys(null, null, tableName);
-                ResultSet systemForeignKeys = exerciseMetadata.getImportedKeys(null, null, tableName);
+                ResultSet userForeignKeys = userMetadata.getImportedKeys(null, userSchema, tableName);
+                ResultSet systemForeignKeys = exerciseMetadata.getImportedKeys(null, exerciseSchema, tableName);
 
                 // Search for missing foreign keys
                 while (systemForeignKeys.next()) {
@@ -571,14 +580,14 @@ public class DDLAnalyzer {
 
         try {
             // Analyze unique constraints
-            ResultSet userTables = userMetadata.getTables(null, null, null, new String[]{"TABLE"});
+            ResultSet userTables = userMetadata.getTables(null, userSchema, null, new String[]{"TABLE"});
 
             // Run through all tables and look at the unique constraints
             while (userTables.next()) {
                 String tableName = userTables.getString("TABLE_NAME");
 
-                ResultSet userConstraints = userMetadata.getIndexInfo(null, null, tableName, true, true);
-                ResultSet systemConstraints = exerciseMetadata.getIndexInfo(null, null, tableName, true, true);
+                ResultSet userConstraints = userMetadata.getIndexInfo(null, userSchema, tableName, true, true);
+                ResultSet systemConstraints = exerciseMetadata.getIndexInfo(null, exerciseSchema, tableName, true, true);
 
                 // Search for missing unique constraints
                 while (systemConstraints.next()) {

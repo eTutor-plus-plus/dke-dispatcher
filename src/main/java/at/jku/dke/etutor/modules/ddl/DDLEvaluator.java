@@ -32,6 +32,7 @@ public class DDLEvaluator implements Evaluator {
     public DDLEvaluator(ApplicationProperties properties) {
         try {
             this.logger = (Logger) LoggerFactory.getLogger(DDLEvaluator.class);
+            DBHelper.init(properties);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -87,103 +88,103 @@ public class DDLEvaluator implements Evaluator {
         // Set the submission
         analysis.setSubmission(submission);
 
-        try {
-            // Get the system connection
-            systemConn = DBHelper.getSystemConnection();
+        // Get the system connection
+        systemConn = DBHelper.getSystemConnection();
 
-            // Check if the connection is successfully up
-            if(systemConn == null)
-                return null;
+        // Check if the connection is successfully up
+        if(systemConn == null)
+            return null;
 
-            // Get the schema with the solution for the exercise
-            solutionSchema = "";
-            tempDMLStatements = "";
+        // Get the schema with the solution for the exercise
+        solutionSchema = "";
+        tempDMLStatements = "";
 
-            query = "";
-            query = query.concat("SELECT	schema_name, insert_statements " + LINE_SEP);
-            query = query.concat("FROM 		exercises " + LINE_SEP);
-            query = query.concat("WHERE 	id = " + exerciseID + LINE_SEP);
+        query = "";
+        query = query.concat("SELECT	schema_name, insert_statements " + LINE_SEP);
+        query = query.concat("FROM 		exercises " + LINE_SEP);
+        query = query.concat("WHERE 	id = " + exerciseID + LINE_SEP);
 
-            stmt = systemConn.createStatement();
-            rs = stmt.executeQuery(query);
-            if (rs.next()){
-                // note: this is the correct query for the exercise
-                solutionSchema = rs.getString("schema_name");
-                tempDMLStatements = rs.getString("insert_statements");
-            }
+        stmt = systemConn.createStatement();
+        rs = stmt.executeQuery(query);
+        if (rs.next()){
+            // note: this is the correct query for the exercise
+            solutionSchema = rs.getString("schema_name");
+            tempDMLStatements = rs.getString("insert_statements");
+        }
 
-            // Get the system connection with the schema of the exercise solution
-            exerciseConnection = DBHelper.getSystemConnectionWithSchema(solutionSchema);
+        // Get the system connection with the schema of the exercise solution
+        exerciseConnection = DBHelper.getSystemConnectionWithSchema(solutionSchema);
 
-            // Check if the exercise connection is successfully up
-            if(exerciseConnection == null)
-                return null;
+        // Check if the exercise connection is successfully up
+        if(exerciseConnection == null)
+            return null;
 
-            // Set the exercise connection
-            analyzerConfig.setExerciseConn(exerciseConnection);
+        // Set the exercise connection
+        analyzerConfig.setExerciseConn(exerciseConnection);
 
-            // Set the dml statements for the check constraints
+        // Set the dml statements for the check constraints
+        if(tempDMLStatements != null) {
             dmlStatements = List.of(tempDMLStatements.replace("\n", "").split(";"));
             analyzerConfig.setDmlStatements(dmlStatements);
+        }
 
-            // Get user connection
-            admin = DBUserAdmin.getAdmin();
-            user = admin.getUser();
-            userPwd = admin.getPwd(user);
-            userSchema = admin.getSchema(user);
+        // Get user connection
+        admin = DBUserAdmin.getAdmin();
+        user = admin.getUser();
+        userPwd = admin.getPwd(user);
+        userSchema = admin.getSchema(user);
 
-            userConn = DBHelper.getUserConnection(user, userPwd, userSchema);
+        userConn = DBHelper.getUserConnection(user, userPwd, userSchema);
 
-            // Check if the user connection is successfully up
-            if(userConn == null)
-                return null;
+        // Check if the user connection is successfully up
+        if(userConn == null)
+            return null;
 
-            // Set the user connection
-            analyzerConfig.setUserConn(userConn);
+        // Set the user connection
+        analyzerConfig.setUserConn(userConn);
 
-            // Configure analyzer
-            if(action.equalsIgnoreCase(DDLEvaluationAction.RUN.toString())) {
-                analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_SYNTAX);
+        // Configure analyzer
+        if(action.equalsIgnoreCase(DDLEvaluationAction.RUN.toString())) {
+            analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_SYNTAX);
+            analyzerConfig.setDiagnoseLevel(1);
+        } else {
+            analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_SYNTAX);
+            analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_TABLES);
+            analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_COLUMNS);
+            analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_PRIMARY_KEYS);
+            analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_FOREIGN_KEYS);
+            analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_CONSTRAINTS);
+
+            if (action.equalsIgnoreCase(DDLEvaluationAction.SUBMIT.toString())) {
                 analyzerConfig.setDiagnoseLevel(1);
             } else {
-                analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_SYNTAX);
-                analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_TABLES);
-                analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_COLUMNS);
-                analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_PRIMARY_KEYS);
-                analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_FOREIGN_KEYS);
-                analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_CONSTRAINTS);
-
-                if (action.equalsIgnoreCase(DDLEvaluationAction.SUBMIT.toString())) {
-                    analyzerConfig.setDiagnoseLevel(1);
-                } else {
-                    analyzerConfig.setDiagnoseLevel(diagnoseLevel);
-                }
+                analyzerConfig.setDiagnoseLevel(diagnoseLevel);
             }
-
-            // Execute analysis
-            analysis = analyzer.analyze(analysis.getSubmission(), analyzerConfig);
-
-            // Check for each criterion if the solution is correct
-            criterionAnalysisIterator = analysis.iterCriterionAnalysis();
-            while (criterionAnalysisIterator.hasNext()) {
-                criterionAnalysis = criterionAnalysisIterator.next();
-                if(!criterionAnalysis.isCriterionSatisfied() || criterionAnalysis.getAnalysisException() != null) {
-                    analysis.setSubmissionSuitsSolution(false);
-                }
-            }
-
-            // Reset user schema and release user
-            DBHelper.resetUserConnection(userConn);
-            admin.releaseUser(user);
-
-            // Set the exercise id in the analysis object
-            analysis.setExerciseId(exerciseID);
-
-            return analysis;
-        } finally {
-            DBHelper.closeSystemConnectionWithSchema();
-            DBHelper.closeSystemConnection();
         }
+
+        // Execute analysis
+        analysis = analyzer.analyze(analysis.getSubmission(), analyzerConfig);
+
+        // Check for each criterion if the solution is correct
+        criterionAnalysisIterator = analysis.iterCriterionAnalysis();
+        while (criterionAnalysisIterator.hasNext()) {
+            criterionAnalysis = criterionAnalysisIterator.next();
+            if(!criterionAnalysis.isCriterionSatisfied() || criterionAnalysis.getAnalysisException() != null) {
+                analysis.setSubmissionSuitsSolution(false);
+            }
+        }
+
+        // Reset user schema and release user
+        DBHelper.resetUserConnection(userConn, user);
+        admin.releaseUser(user);
+
+        // Set the exercise id in the analysis object
+        analysis.setExerciseId(exerciseID);
+
+        // Close connection
+        DBHelper.closeSystemConnectionWithSchema();
+
+        return analysis;
     }
 
     /**

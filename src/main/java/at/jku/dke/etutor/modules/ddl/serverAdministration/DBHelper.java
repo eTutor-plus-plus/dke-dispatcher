@@ -1,34 +1,33 @@
 package at.jku.dke.etutor.modules.ddl.serverAdministration;
 
+import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import ch.qos.logback.classic.Logger;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 // Class to handle the database connections for several users
 public class DBHelper {
-    //region Constants
-    private static final String driverClassName;
-    private static final String connUrl;
-    private static final String connPwd;
-    private static final String connUser;
-    private static final String maxLifetime;
-    private static final String maxPoolSize;
-    //region
-
     //region Fields
+    private static String driverClassName;
+    private static String connUrl;
+    private static String connPwd;
+    private static String connUser;
+    private static long maxLifetime;
+    private static int maxPoolSize;
+
+
     private static Logger logger = null;
     private static Connection conn = null;
     private static Connection connWithSchema = null;
-    private static Properties properties = null;
     private static HikariConfig config = null;
     private static HikariDataSource dataSource;
+    private static Map<String, HikariDataSource> userDatasources;
     //endregion
 
     static {
@@ -39,29 +38,31 @@ public class DBHelper {
             ex.printStackTrace();
         }
 
-        // Get application properties
-        try {
-            properties = new Properties();
-            properties.load(new FileInputStream("application.properties"));
-        } catch (IOException ex) {
-            logger.error("Error while accessing application properties", ex);
-        }
+        // Initialize map
+        userDatasources = new HashMap<>();
+    }
 
+    /**
+     * Function to initialize the connection with the application properties
+     * @param properties Specifies the application properties
+     */
+    public static void init(ApplicationProperties properties) {
         // Initialize connections constants
-        driverClassName = properties.getProperty("application.datasource.driverClassName");
-        connUrl = properties.getProperty("application.datasource.url") + properties.getProperty("application.ddl.connUrl");
-        connUser = properties.getProperty("application.ddl.systemConnUser");
-        connPwd = properties.getProperty("application.ddl.systemConnPwd");
-        maxLifetime = properties.getProperty("application.datasource.maxLifetime");
-        maxPoolSize = properties.getProperty("application.datasource.maxPoolSize");
+        driverClassName = properties.getDatasource().getDriverClassName();
+        connUrl = properties.getDatasource().getUrl() + properties.getDdl().getConnUrl();
+        connUser = properties.getDdl().getSystemConnUser();
+        connPwd = properties.getDdl().getSystemConnPwd();
+        maxLifetime = properties.getDatasource().getMaxLifetime();
+        maxPoolSize = properties.getDatasource().getMaxPoolSize();
 
         // Initialize Hikari connection
+        config = new HikariConfig();
         config.setDriverClassName(driverClassName);
         config.setJdbcUrl(connUrl);
         config.setUsername(connUser);
         config.setPassword(connPwd);
-        config.setMaxLifetime(Long.parseLong(maxLifetime));
-        config.setMaximumPoolSize(Integer.parseInt(maxPoolSize));
+        config.setMaxLifetime(maxLifetime);
+        config.setMaximumPoolSize(maxPoolSize);
         config.setAutoCommit(false);
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
@@ -119,6 +120,7 @@ public class DBHelper {
         if(conn != null) {
             try {
                 conn.close();
+                dataSource.close();
             } catch (SQLException ex) {
                 logger.error("Error when closing module connection.", ex);
             }
@@ -150,9 +152,27 @@ public class DBHelper {
             return null;
 
         try {
-            Connection userConn = dataSource.getConnection(user, pwd);
-            userConn.setSchema(schema);
-            userConn.setAutoCommit(false);
+            // Initialize config element with the user and pwd
+            HikariConfig userConfig = new HikariConfig();
+            userConfig.setDriverClassName(driverClassName);
+            userConfig.setJdbcUrl(connUrl);
+            userConfig.setUsername(user);
+            userConfig.setPassword(pwd);
+            userConfig.setSchema(schema);
+            userConfig.setMaxLifetime(maxLifetime);
+            userConfig.setMaximumPoolSize(maxPoolSize);
+            userConfig.setAutoCommit(false);
+            userConfig.addDataSourceProperty("cachePrepStmts", "true");
+            userConfig.addDataSourceProperty("prepStmtCacheSize", "250");
+            userConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            userConfig.addDataSourceProperty("socketTimeout", "30");
+
+            // Get connection
+            HikariDataSource userDatasource = new HikariDataSource(userConfig);
+            userDatasources.put(user, userDatasource);
+
+            Connection userConn = userDatasource.getConnection();
+
             return userConn;
         } catch (SQLException ex) {
             logger.error("Error when creating user connection.", ex);
@@ -165,13 +185,18 @@ public class DBHelper {
      * Funciton to reset the schema for a specified connection and close it
      * @param userConn Specifies the connection
      */
-    public static void resetUserConnection(Connection userConn) {
+    public static void resetUserConnection(Connection userConn, String user) {
         try {
             if(userConn == null || userConn.isClosed())
                 return;
 
             userConn.rollback();
             userConn.close();
+
+            // Close datasource
+            if(userDatasources.get(user) != null) {
+                userDatasources.get(user).close();
+            }
         } catch (SQLException ex) {
             logger.error("Error when reseting user connection.", ex);
         }

@@ -223,16 +223,22 @@ public class DDLResourceService {
             // Get the schema name
             exerciseStmt.setInt(1, id);
             ResultSet rs = exerciseStmt.executeQuery();
+            // Check if the result set has a solution
+            if(!rs.next()) {
+                logger.error("Schema not found!");
+                return;
+            }
+
             String schemaName = rs.getString("schemaName");
 
             // Drop schema with all tables
-            PreparedStatement dropStmt = con.prepareStatement("DROP SCHEMA IF EXISTS ? CASCADE");
-            dropStmt.setString(1, schemaName);
+            String query = "DROP SCHEMA IF EXISTS " + schemaName + " CASCADE";
+            PreparedStatement dropStmt = con.prepareStatement(query);
             dropStmt.execute();
 
             // Delete exercise from exercises table
-            PreparedStatement deleteStmt = con.prepareStatement("DElETE FROM EXERCISES WHERE ID = ?");
-            deleteStmt.setInt(1, id);
+            query = "DElETE FROM EXERCISES WHERE ID = " + id;
+            PreparedStatement deleteStmt = con.prepareStatement(query);
             deleteStmt.executeUpdate();
             con.commit();
         } catch (SQLException throwables) {
@@ -252,14 +258,20 @@ public class DDLResourceService {
             // Get the schema name
             exerciseStmt.setInt(1, id);
             ResultSet rs = exerciseStmt.executeQuery();
+            // Check if the result set has a solution
+            if(!rs.next()) {
+                logger.error("Schema not found!");
+                return;
+            }
+
             String schemaName = rs.getString("schemaName");
 
             // Reset schema
-            PreparedStatement dropStmt = con.prepareStatement("DROP SCHEMA IF EXISTS ? CASCADE");
-            dropStmt.setString(1, schemaName);
+            String query = "DROP SCHEMA IF EXISTS " + schemaName + " CASCADE";
+            PreparedStatement dropStmt = con.prepareStatement(query);
             dropStmt.execute();
 
-            String query = "CREATE SCHEMA IF NOT EXISTS " + schemaName + " AUTHORIZATION " + CONN_DDL_SYSTEM_USER;
+            query = "CREATE SCHEMA IF NOT EXISTS " + schemaName + " AUTHORIZATION " + CONN_DDL_SYSTEM_USER;
             PreparedStatement createSchemaStmt = con.prepareStatement(query);
             createSchemaStmt.execute();
 
@@ -276,7 +288,7 @@ public class DDLResourceService {
             switchSchemaStmt.execute("SET search_path TO public");
 
             // Update exercise in exercise table
-            PreparedStatement updateStatement = con.prepareStatement("UPDATE EXERCISES SET (schema_name,solution,insert_statements,max_points,table_points,column_points,primarykey_points,foreignkey_points,constraint_points) = (?,?,?,?,?,?,?,?,?,?) WHERE ID = ?");
+            PreparedStatement updateStatement = con.prepareStatement("UPDATE EXERCISES SET (schema_name,solution,insert_statements,max_points,table_points,column_points,primarykey_points,foreignkey_points,constraint_points) = (?,?,?,?,?,?,?,?,?) WHERE ID = ?");
             updateStatement.setString(1, schemaName);
             updateStatement.setString(2, exerciseDTO.getSolution());
             updateStatement.setString(3, exerciseDTO.getInsertStatements());
