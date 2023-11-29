@@ -44,9 +44,9 @@ public class DDLEvaluator implements Evaluator {
      * @param userID the user id
      * @param passedAttributes a map containing different attributes
      * @param passedParameters a map containing different parameters
-     * @param locale
-     * @return
-     * @throws Exception
+     * @param locale Specifies the local information of the user
+     * @return Returns the analysis object
+     * @throws Exception if an error occurs
      */
     @Override
     public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
@@ -193,8 +193,8 @@ public class DDLEvaluator implements Evaluator {
      * @param maxPoints the maxPoints for this submission
      * @param passedAttributes the passed attributes
      * @param passedParameters the passed parameters
-     * @return
-     * @throws Exception
+     * @return Returns the grading object
+     * @throws Exception if an error occurs
      */
     @Override
     public Grading grade(Analysis analysis, int maxPoints, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
@@ -224,6 +224,10 @@ public class DDLEvaluator implements Evaluator {
         try {
             // Get the system connection
             systemConn = DBHelper.getSystemConnection();
+
+            // Check if the connection is successfully up
+            if(systemConn == null)
+                return null;
 
             // Get the analysis object
             ddlAnalysis = (DDLAnalysis)analysis;
@@ -259,8 +263,8 @@ public class DDLEvaluator implements Evaluator {
             criterionGradingConfig.setNegativePoints(0);
             graderConfig.addCriteriaGradingConfig(DDLEvaluationCriterion.CORRECT_SYNTAX, criterionGradingConfig);
 
-            // Check if the action is not run (run only tests syntax)
-            if(!action.equalsIgnoreCase(DDLEvaluationAction.RUN.toString())) {
+            // Check if the action is not check (check only tests syntax)
+            if(!action.equalsIgnoreCase(DDLEvaluationAction.CHECK.toString())) {
                 // Grade tables
                 criterionGradingConfig = new DDLCriterionGradingConfig();
                 criterionGradingConfig.setPositivePoints(tablePoints);
@@ -304,9 +308,9 @@ public class DDLEvaluator implements Evaluator {
      * @param grading the grading
      * @param passedAttributes the passed attributes
      * @param passedParameters the passed parameters
-     * @param locale the locale
-     * @return
-     * @throws Exception
+     * @param locale the locale Specifies the locale of the user
+     * @return Returns the report object
+     * @throws Exception if an error occurs
      */
     @Override
     public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
@@ -328,6 +332,9 @@ public class DDLEvaluator implements Evaluator {
         } else if(action.equalsIgnoreCase(DDLEvaluationAction.DIAGNOSE.toString())) {
             reporterConfig.setAction(DDLEvaluationAction.DIAGNOSE);
             reporterConfig.setDiagnoseLevel(Integer.parseInt(diagnoseLevel));
+        } else if(action.equalsIgnoreCase(DDLEvaluationAction.CHECK.toString())) {
+            reporterConfig.setAction(DDLEvaluationAction.CHECK);
+            reporterConfig.setDiagnoseLevel(3);
         }
 
         return reporter.createReport((DDLAnalysis)analysis, reporterConfig, locale);
@@ -337,8 +344,8 @@ public class DDLEvaluator implements Evaluator {
      * Function to generate a html result
      * @param analysis the Analysis
      * @param passedAttributes the passed attributes
-     * @param locale
-     * @return
+     * @param locale Specifies the locale of the user
+     * @return Return the html result as a string
      */
     @Override
     public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
@@ -347,11 +354,9 @@ public class DDLEvaluator implements Evaluator {
             return null;
 
         // Check if analysis object is DDLAnalysis
-        if(analysis instanceof DDLAnalysis) {
+        if(analysis instanceof DDLAnalysis ddlAnalysis) {
             // Initialize variables
             StringBuilder result = new StringBuilder();
-            DDLAnalysis ddlAnalysis = (DDLAnalysis)analysis;
-
 
             // Add syntax exception if there is one
             SyntaxAnalysis correctSyntaxCriterion = (SyntaxAnalysis) ddlAnalysis.getCriterionAnalysis(DDLEvaluationCriterion.CORRECT_SYNTAX);
