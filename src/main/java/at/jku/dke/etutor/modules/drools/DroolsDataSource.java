@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.rt;
+package at.jku.dke.etutor.modules.drools;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import com.zaxxer.hikari.HikariConfig;
@@ -9,21 +9,22 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @Configuration
-public class RTDataSource {
+public class DroolsDataSource {
     private static HikariConfig config = new HikariConfig();
     private static HikariDataSource ds;
+
 
     public static synchronized Connection getConnection() throws SQLException {
         return ds.getConnection();
     }
 
-    public RTDataSource(ApplicationProperties properties){
+    public DroolsDataSource(ApplicationProperties properties){
         config.setDriverClassName(properties.getDatasource().getDriverClassName());
-        config.setJdbcUrl(properties.getDatasource().getUrl() + properties.getRt().getConnUrl());
-        config.setUsername(properties.getRt().getConnUser());
-        config.setPassword(properties.getRt().getConnPwd());
+        config.setJdbcUrl(properties.getDatasource().getUrl() + properties.getSql().getConnUrl());
+        config.setUsername(properties.getSql().getConnUser());
+        config.setPassword(properties.getSql().getConnPwd());
         config.setMaxLifetime(properties.getDatasource().getMaxLifetime());
-        config.setMaximumPoolSize(30);
+        config.setMaximumPoolSize(10);
         config.setAutoCommit(false);
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");

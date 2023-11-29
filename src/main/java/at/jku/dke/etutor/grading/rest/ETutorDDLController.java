@@ -1,7 +1,6 @@
 package at.jku.dke.etutor.grading.rest;
 
 import at.jku.dke.etutor.grading.ETutorCORSPolicy;
-import at.jku.dke.etutor.grading.service.DDLResourceService;
 import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.objects.dispatcher.ddl.DDLExerciseDTO;
 import ch.qos.logback.classic.Logger;
