@@ -1,21 +1,15 @@
 
 package at.jku.dke.etutor.grading.rest;
 
-        import at.jku.dke.etutor.grading.rest.model.entities.Grading;
-        import at.jku.dke.etutor.grading.service.DatabaseException;
-        import at.jku.dke.etutor.grading.service.DroolsResourceService;
-        import at.jku.dke.etutor.grading.service.SQLResourceService;
-        import at.jku.dke.etutor.modules.pm.plg.utils.Logger;
-        import net.minidev.json.JSONArray;
-        import net.minidev.json.JSONObject;
-        import net.minidev.json.parser.ParseException;
-        import org.slf4j.LoggerFactory;
-        import org.springframework.http.HttpStatus;
-        import org.springframework.http.ResponseEntity;
-        import org.springframework.web.bind.annotation.*;
+import at.jku.dke.etutor.grading.service.DroolsResourceService;
 
-        import java.sql.SQLException;
-        import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/drools")
