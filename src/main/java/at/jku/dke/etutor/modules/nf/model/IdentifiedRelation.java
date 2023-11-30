@@ -28,7 +28,7 @@ public class IdentifiedRelation extends Relation implements Serializable, Clonea
 	
 	public void setID(String id) throws MalformedRelationIDException {
 		if (id != null){
-			if (id.matches("(?idmsux)\\d*(\\.\\d*)*")){
+			if (id.matches("(?idmsux)\\d*(\\.\\d*)*")) { // Todo: Make sure this doesn't cause problems with the "R*[.*]" scheme used now. (Gerald Wimmer, 2023-11-30)
 				this.id = id;
 			} else {
 				throw new MalformedRelationIDException("ID '" + id + "' is malformed!");

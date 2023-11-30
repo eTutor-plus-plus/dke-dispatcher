@@ -50,6 +50,18 @@ public class NFBaseListener implements NFListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterRelationId(NFParser.RelationIdContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRelationId(NFParser.RelationIdContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterKeySet(NFParser.KeySetContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -11,7 +11,7 @@ import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 }
 
-relationSet returns [Set<IdentifiedRelation> relations]                                       // start rule
+relationSet returns [Set<IdentifiedRelation> relations]                              // start rule
     @init {
         $relations = new HashSet<>();
     } :
@@ -20,7 +20,8 @@ relation returns [IdentifiedRelation parsedRelation]
     @init {
         $parsedRelation = new IdentifiedRelation();
     } :
-        '(' attributeSet {$parsedRelation.setAttributes($attributeSet.attributes);} ')' '(' keySet {$parsedRelation.setMinimalKeys($keySet.keys);} ')' '(' functionalDependencySet {$parsedRelation.setFunctionalDependencies($functionalDependencySet.functionalDependencies);} ')' ;
+        relationId {$parsedRelation.setID($relationId.text);} ':' '(' attributeSet {$parsedRelation.setAttributes($attributeSet.attributes);} ')' '(' keySet {$parsedRelation.setMinimalKeys($keySet.keys);} ')' '(' functionalDependencySet {$parsedRelation.setFunctionalDependencies($functionalDependencySet.functionalDependencies);} ')' ;
+relationId: 'R' Integer ('.' Integer)? ; // Todo: If the fact that the start is indistinguishable from AlphaNumericChain causes problems, add some unique prefix symbol (.e.g, '*'). (Gerald Wimmer, 2023-11-30)
 
 keySet returns [Set<Key> keys]                                                      // start rule
     @init {
@@ -71,6 +72,7 @@ attribute : AlphaNumericChain ;
 
 AlphaNumericChain : AlphaNumericChar+ ;
 AlphaNumericChar : Digit | Letter ;
+Integer : Digit+ ;
 Digit : '0' .. '9' ;
 Letter : 'A' .. 'Z' | 'a' .. 'z' ;
 

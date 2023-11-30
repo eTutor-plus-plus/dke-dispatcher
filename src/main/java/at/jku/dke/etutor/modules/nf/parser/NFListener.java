@@ -37,6 +37,16 @@ public interface NFListener extends ParseTreeListener {
 	 */
 	void exitRelation(NFParser.RelationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link NFParser#relationId}.
+	 * @param ctx the parse tree
+	 */
+	void enterRelationId(NFParser.RelationIdContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NFParser#relationId}.
+	 * @param ctx the parse tree
+	 */
+	void exitRelationId(NFParser.RelationIdContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link NFParser#keySet}.
 	 * @param ctx the parse tree
 	 */

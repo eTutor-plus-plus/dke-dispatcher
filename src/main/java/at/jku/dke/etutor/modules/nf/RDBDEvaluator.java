@@ -143,7 +143,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			//Set Submission
 			analysis.setSubmission(relation);
 
-		}*/ else if (internalType == RDBDConstants.TYPE_DECOMPOSE) {
+		}*/ else if (internalType == RDBDConstants.TYPE_DECOMPOSE) {	// Todo: Maybe remove and replace with Normalize, now that steps need not be validated
 			//DECOMPOSE
 			StringBuilder temp;
 			
