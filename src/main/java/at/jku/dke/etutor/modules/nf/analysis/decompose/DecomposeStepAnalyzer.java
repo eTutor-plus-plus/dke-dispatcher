@@ -10,10 +10,9 @@ import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalyzer;
 import at.jku.dke.etutor.modules.nf.model.KeysContainer;
-import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.logging.Level;
 
 public class DecomposeStepAnalyzer {

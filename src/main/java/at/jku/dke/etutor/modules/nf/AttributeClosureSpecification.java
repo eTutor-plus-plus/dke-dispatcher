@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf;
 
-import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 
 import java.io.Serializable;
 import java.util.Collection;

@@ -3,7 +3,7 @@ package at.jku.dke.etutor.modules.nf.analysis.decompose;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer;
-import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
 
 import java.util.Iterator;
@@ -16,7 +16,7 @@ public class DecomposeAnalyzer {
 		super();
 	}
 	
-	public static DecomposeAnalysis analyze(DecomposeAnalyzerConfig config){
+	public static DecomposeAnalysis analyze(DecomposeAnalyzerConfig config) {
 		RDBDHelper.getLogger().log(Level.INFO, "Analyze Decompose.");
 		
 		//INIT DECOMPOSE ANALYSIS

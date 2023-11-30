@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.nf.analysis.decompose;
 
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzerConfig;
-import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 
 import java.util.Collection;
 import java.util.Iterator;

@@ -151,13 +151,11 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 	}
 
 	public void setAttributes(Collection<String> attributes) {
-		Iterator<String> attributesIterator;
-
 		this.attributes.clear();
+
 		if (attributes != null) {
-			attributesIterator = attributes.iterator();
-			while (attributesIterator.hasNext()) {
-				this.addAttribute(attributesIterator.next());
+			for (String a : attributes) {
+				this.addAttribute(a);
 			}
 		}
 	}
@@ -173,13 +171,11 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 	}
 
 	public void setFunctionalDependencies(Collection<FunctionalDependency> dependencies) {
-		Iterator<FunctionalDependency> dependenciesIterator;
-
 		this.dependencies.clear();
+
 		if (dependencies != null) {
-			dependenciesIterator = dependencies.iterator();
-			while (dependenciesIterator.hasNext()) {
-				this.addFunctionalDependency(dependenciesIterator.next());
+			for (FunctionalDependency fd : dependencies) {
+				this.addFunctionalDependency(fd);
 			}
 		}
 	}

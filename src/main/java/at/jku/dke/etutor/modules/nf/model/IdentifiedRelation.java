@@ -1,9 +1,7 @@
-package at.jku.dke.etutor.modules.nf.ui;
+package at.jku.dke.etutor.modules.nf.model;
 
 import at.jku.dke.etutor.modules.nf.RDBDSpecification;
-import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
-import at.jku.dke.etutor.modules.nf.model.Key;
-import at.jku.dke.etutor.modules.nf.model.Relation;
+import at.jku.dke.etutor.modules.nf.ui.MalformedRelationIDException;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -28,7 +26,7 @@ public class IdentifiedRelation extends Relation implements Serializable, Clonea
 		super(attributes, dependencies);
 	}
 	
-	public void setID(String id) throws MalformedRelationIDException{
+	public void setID(String id) throws MalformedRelationIDException {
 		if (id != null){
 			if (id.matches("(?idmsux)\\d*(\\.\\d*)*")){
 				this.id = id;

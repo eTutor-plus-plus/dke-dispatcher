@@ -1,5 +1,7 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.TreeSet;

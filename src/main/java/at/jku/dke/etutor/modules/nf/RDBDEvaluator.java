@@ -29,7 +29,7 @@ import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.parser.NFLexer;
 import at.jku.dke.etutor.modules.nf.parser.NFParser;
 import at.jku.dke.etutor.modules.nf.report.*;
-import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -199,6 +199,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			analysis.setSubmission(submissionTreeSet);
 
 		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION) { // Note: Could be identical to Decompose, now that you only have to specify the end result (Gerald Wimmer, 2023-11-27)
+			// TODO: Replace Decompose with THIS. (Gerald Wimmer, 2023-11-30)
 			//NORMALIZATION
 			NormalizationAnalyzerConfig normalizationAnalyzerConfig = new NormalizationAnalyzerConfig();
 			NormalizationSpecification normalizationSpecification = (NormalizationSpecification)specification;

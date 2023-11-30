@@ -8,10 +8,15 @@ import java.util.HashSet;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 }
 
 relationSet : relation (';' relation)* ;                                            // start rule
-relation : '(' attributeSet ')' '(' keySet ')' '(' functionalDependencySet ')' ;
+relation returns [IdentifiedRelation parsedRelation]
+    @init {
+        $parsedRelation = new IdentifiedRelation();
+    } :
+        '(' attributeSet ')' '(' keySet ')' '(' functionalDependencySet ')' ;
 
 keySet returns [Set<Key> keys]                                                      // start rule
     @init {

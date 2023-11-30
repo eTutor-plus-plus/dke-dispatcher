@@ -5,7 +5,7 @@ import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.ui.HTMLPrinter;
-import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
 import at.jku.dke.etutor.modules.nf.ui.MalformedRelationIDException;
 import at.jku.dke.etutor.modules.nf.ui.SpecificationParser;
