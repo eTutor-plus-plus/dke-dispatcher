@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.HashSet;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -55,15 +56,35 @@ public interface NFListener extends ParseTreeListener {
 	 */
 	void exitKey(NFParser.KeyContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link NFParser#violatedNormalForm}.
+	 * Enter a parse tree produced by {@link NFParser#normalFormSubmission}.
 	 * @param ctx the parse tree
 	 */
-	void enterViolatedNormalForm(NFParser.ViolatedNormalFormContext ctx);
+	void enterNormalFormSubmission(NFParser.NormalFormSubmissionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link NFParser#violatedNormalForm}.
+	 * Exit a parse tree produced by {@link NFParser#normalFormSubmission}.
 	 * @param ctx the parse tree
 	 */
-	void exitViolatedNormalForm(NFParser.ViolatedNormalFormContext ctx);
+	void exitNormalFormSubmission(NFParser.NormalFormSubmissionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link NFParser#normalFormViolationSet}.
+	 * @param ctx the parse tree
+	 */
+	void enterNormalFormViolationSet(NFParser.NormalFormViolationSetContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NFParser#normalFormViolationSet}.
+	 * @param ctx the parse tree
+	 */
+	void exitNormalFormViolationSet(NFParser.NormalFormViolationSetContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link NFParser#normalFormViolation}.
+	 * @param ctx the parse tree
+	 */
+	void enterNormalFormViolation(NFParser.NormalFormViolationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NFParser#normalFormViolation}.
+	 * @param ctx the parse tree
+	 */
+	void exitNormalFormViolation(NFParser.NormalFormViolationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NFParser#normalForm}.
 	 * @param ctx the parse tree

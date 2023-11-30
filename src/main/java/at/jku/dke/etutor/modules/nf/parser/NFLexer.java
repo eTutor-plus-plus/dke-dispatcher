@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.HashSet;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -26,7 +27,7 @@ public class NFLexer extends Lexer {
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, AlphaNumericChain=16, 
-		AlphaNumericChar=17, Integer=18, Letter=19, WhiteSpace=20;
+		AlphaNumericChar=17, Digit=18, Letter=19, WhiteSpace=20;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	};
@@ -39,22 +40,22 @@ public class NFLexer extends Lexer {
 		return new String[] {
 			"T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T__7", "T__8", 
 			"T__9", "T__10", "T__11", "T__12", "T__13", "T__14", "AlphaNumericChain", 
-			"AlphaNumericChar", "Integer", "Letter", "WhiteSpace"
+			"AlphaNumericChar", "Digit", "Letter", "WhiteSpace"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "';'", "'('", "')'", "'#'", "':'", "'1'", "'2'", "'3'", "'BCNF'", 
-			"')+'", "'='", "'-'", "'.'", "'>'", "','"
+			null, "';'", "'('", "')'", "'#'", "'.'", "':'", "'1'", "'2'", "'3'", 
+			"'BCNF'", "')+'", "'='", "'-'", "'>'", "','"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, null, null, null, null, null, null, null, null, null, null, null, 
-			null, null, null, null, "AlphaNumericChain", "AlphaNumericChar", "Integer", 
+			null, null, null, null, "AlphaNumericChain", "AlphaNumericChar", "Digit", 
 			"Letter", "WhiteSpace"
 		};
 	}
@@ -126,8 +127,8 @@ public class NFLexer extends Lexer {
 		"\u0012\u0007\u0012\u0002\u0013\u0007\u0013\u0001\u0000\u0001\u0000\u0001"+
 		"\u0001\u0001\u0001\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003\u0001"+
 		"\u0004\u0001\u0004\u0001\u0005\u0001\u0005\u0001\u0006\u0001\u0006\u0001"+
-		"\u0007\u0001\u0007\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001\t\u0001"+
-		"\t\u0001\t\u0001\n\u0001\n\u0001\u000b\u0001\u000b\u0001\f\u0001\f\u0001"+
+		"\u0007\u0001\u0007\u0001\b\u0001\b\u0001\t\u0001\t\u0001\t\u0001\t\u0001"+
+		"\t\u0001\n\u0001\n\u0001\n\u0001\u000b\u0001\u000b\u0001\f\u0001\f\u0001"+
 		"\r\u0001\r\u0001\u000e\u0001\u000e\u0001\u000f\u0004\u000fM\b\u000f\u000b"+
 		"\u000f\f\u000fN\u0001\u0010\u0001\u0010\u0003\u0010S\b\u0010\u0001\u0011"+
 		"\u0001\u0011\u0001\u0012\u0001\u0012\u0001\u0013\u0004\u0013Z\b\u0013"+
@@ -148,22 +149,22 @@ public class NFLexer extends Lexer {
 		"\u0000\u0001)\u0001\u0000\u0000\u0000\u0003+\u0001\u0000\u0000\u0000\u0005"+
 		"-\u0001\u0000\u0000\u0000\u0007/\u0001\u0000\u0000\u0000\t1\u0001\u0000"+
 		"\u0000\u0000\u000b3\u0001\u0000\u0000\u0000\r5\u0001\u0000\u0000\u0000"+
-		"\u000f7\u0001\u0000\u0000\u0000\u00119\u0001\u0000\u0000\u0000\u0013>"+
-		"\u0001\u0000\u0000\u0000\u0015A\u0001\u0000\u0000\u0000\u0017C\u0001\u0000"+
+		"\u000f7\u0001\u0000\u0000\u0000\u00119\u0001\u0000\u0000\u0000\u0013;"+
+		"\u0001\u0000\u0000\u0000\u0015@\u0001\u0000\u0000\u0000\u0017C\u0001\u0000"+
 		"\u0000\u0000\u0019E\u0001\u0000\u0000\u0000\u001bG\u0001\u0000\u0000\u0000"+
 		"\u001dI\u0001\u0000\u0000\u0000\u001fL\u0001\u0000\u0000\u0000!R\u0001"+
 		"\u0000\u0000\u0000#T\u0001\u0000\u0000\u0000%V\u0001\u0000\u0000\u0000"+
 		"\'Y\u0001\u0000\u0000\u0000)*\u0005;\u0000\u0000*\u0002\u0001\u0000\u0000"+
 		"\u0000+,\u0005(\u0000\u0000,\u0004\u0001\u0000\u0000\u0000-.\u0005)\u0000"+
 		"\u0000.\u0006\u0001\u0000\u0000\u0000/0\u0005#\u0000\u00000\b\u0001\u0000"+
-		"\u0000\u000012\u0005:\u0000\u00002\n\u0001\u0000\u0000\u000034\u00051"+
-		"\u0000\u00004\f\u0001\u0000\u0000\u000056\u00052\u0000\u00006\u000e\u0001"+
-		"\u0000\u0000\u000078\u00053\u0000\u00008\u0010\u0001\u0000\u0000\u0000"+
-		"9:\u0005B\u0000\u0000:;\u0005C\u0000\u0000;<\u0005N\u0000\u0000<=\u0005"+
-		"F\u0000\u0000=\u0012\u0001\u0000\u0000\u0000>?\u0005)\u0000\u0000?@\u0005"+
-		"+\u0000\u0000@\u0014\u0001\u0000\u0000\u0000AB\u0005=\u0000\u0000B\u0016"+
-		"\u0001\u0000\u0000\u0000CD\u0005-\u0000\u0000D\u0018\u0001\u0000\u0000"+
-		"\u0000EF\u0005.\u0000\u0000F\u001a\u0001\u0000\u0000\u0000GH\u0005>\u0000"+
+		"\u0000\u000012\u0005.\u0000\u00002\n\u0001\u0000\u0000\u000034\u0005:"+
+		"\u0000\u00004\f\u0001\u0000\u0000\u000056\u00051\u0000\u00006\u000e\u0001"+
+		"\u0000\u0000\u000078\u00052\u0000\u00008\u0010\u0001\u0000\u0000\u0000"+
+		"9:\u00053\u0000\u0000:\u0012\u0001\u0000\u0000\u0000;<\u0005B\u0000\u0000"+
+		"<=\u0005C\u0000\u0000=>\u0005N\u0000\u0000>?\u0005F\u0000\u0000?\u0014"+
+		"\u0001\u0000\u0000\u0000@A\u0005)\u0000\u0000AB\u0005+\u0000\u0000B\u0016"+
+		"\u0001\u0000\u0000\u0000CD\u0005=\u0000\u0000D\u0018\u0001\u0000\u0000"+
+		"\u0000EF\u0005-\u0000\u0000F\u001a\u0001\u0000\u0000\u0000GH\u0005>\u0000"+
 		"\u0000H\u001c\u0001\u0000\u0000\u0000IJ\u0005,\u0000\u0000J\u001e\u0001"+
 		"\u0000\u0000\u0000KM\u0003!\u0010\u0000LK\u0001\u0000\u0000\u0000MN\u0001"+
 		"\u0000\u0000\u0000NL\u0001\u0000\u0000\u0000NO\u0001\u0000\u0000\u0000"+

@@ -3,6 +3,7 @@ package at.jku.dke.etutor.modules.nf.model;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -51,6 +52,7 @@ public class FunctionalDependency implements Serializable{
 		return this.lhs.containsAll(this.rhs);
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		FunctionalDependency dependency;
 
@@ -79,10 +81,12 @@ public class FunctionalDependency implements Serializable{
         return this.rhs.containsAll(dependency.getRHSAttributes());
     }
 
+	@Override
 	public int hashCode() {
-		return -1;
+		return Objects.hash(lhs, rhs);
 	}
 
+	@Override
 	public String toString() {
 		boolean first;
 		String toString;

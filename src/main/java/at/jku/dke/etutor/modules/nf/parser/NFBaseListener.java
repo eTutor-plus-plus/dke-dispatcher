@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.HashSet;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -72,13 +73,37 @@ public class NFBaseListener implements NFListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterViolatedNormalForm(NFParser.ViolatedNormalFormContext ctx) { }
+	@Override public void enterNormalFormSubmission(NFParser.NormalFormSubmissionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitViolatedNormalForm(NFParser.ViolatedNormalFormContext ctx) { }
+	@Override public void exitNormalFormSubmission(NFParser.NormalFormSubmissionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNormalFormViolationSet(NFParser.NormalFormViolationSetContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNormalFormViolationSet(NFParser.NormalFormViolationSetContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNormalFormViolation(NFParser.NormalFormViolationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNormalFormViolation(NFParser.NormalFormViolationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

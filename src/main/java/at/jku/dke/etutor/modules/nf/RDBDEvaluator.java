@@ -86,7 +86,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		 *  selected inside the if statement) and receive the appropriate data (TreeSet, IdentifiedRelation, Vector)
 		 *  from the parser (Gerald Wimmer, 2023-11-12).
 		 */
-		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION){
+		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION) {
 			//KEYS DETERMINATION
 			KeysAnalyzerConfig keysAnalyzerConfig = new KeysAnalyzerConfig();
 			KeysContainer correctKeys = KeysDeterminator.determineAllKeys((Relation)specification);
@@ -103,7 +103,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			//Set Submission
 			analysis.setSubmission(relation);
 
-		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER){
+		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER) {
 			//MINIMAL COVER
 			// Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // Replaced with call to parser (Gerald Wimmer, 2023-11-27)
 			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
@@ -117,7 +117,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			//Set Submission
 			analysis.setSubmission(relation);
 
-		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE){
+		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) {
 			//ATTRIBUTE CLOSURE
 			AttributeClosureSpecification attributeClosureSpecification = (AttributeClosureSpecification)specification;
 			// Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // Replaced with call to parser (Gerald Wimmer, 2023-11-27)
@@ -143,7 +143,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			//Set Submission
 			analysis.setSubmission(relation);
 
-		} else if (internalType == RDBDConstants.TYPE_DECOMPOSE){
+		} else if (internalType == RDBDConstants.TYPE_DECOMPOSE) {
 			//DECOMPOSE
 			StringBuilder temp;
 			
@@ -198,7 +198,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			//Set Submission
 			analysis.setSubmission(submissionTreeSet);
 
-		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION){ // Note: Could be identical to Decompose, now that you only have to specify the end result (Gerald Wimmer, 2023-11-27)
+		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION) { // Note: Could be identical to Decompose, now that you only have to specify the end result (Gerald Wimmer, 2023-11-27)
 			//NORMALIZATION
 			NormalizationAnalyzerConfig normalizationAnalyzerConfig = new NormalizationAnalyzerConfig();
 			NormalizationSpecification normalizationSpecification = (NormalizationSpecification)specification;
@@ -223,7 +223,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			//Set Submission
 			analysis.setSubmission(submissionTreeSet);
 
-		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION){
+		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
 			//NORMALFORM DETERMINATION
 			NormalformDeterminationSubmission normalformDeterminationSubmission = (NormalformDeterminationSubmission)submission; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
 
@@ -242,7 +242,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			//Set normalform violations
 			Iterator<Integer> iter = normalformDeterminationSubmission.iterDependencyIDs();
-			while (iter.hasNext()){
+			while (iter.hasNext()) {
 				Integer currID = iter.next();
 				
 				if (passedParameters.get(currID + "_violation") != null){
