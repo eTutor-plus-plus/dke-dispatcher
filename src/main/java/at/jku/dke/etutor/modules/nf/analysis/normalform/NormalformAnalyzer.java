@@ -16,8 +16,7 @@ public class NormalformAnalyzer {
 	public static NormalformAnalysis analyze(NormalformAnalyzerConfig config){
 		NormalformAnalysis analysis = new NormalformAnalysis();
 		analysis.setSubmissionSuitsSolution(false);
-		Iterator<FunctionalDependency> dependenciesIterator = config.getRelation().iterFunctionalDependencies();
-		
+
 		StringBuilder temp = new StringBuilder();
         for (Key key : config.getCorrectMinimalKeys()) {
             temp.append(key).append("; ");
@@ -26,8 +25,7 @@ public class NormalformAnalyzer {
 		RDBDHelper.getLogger().log(Level.INFO, "Correct Minimal Keys: " + temp);
 		
 		//CHECK DEPENDENCIES
-		while (dependenciesIterator.hasNext()){
-			FunctionalDependency currDependency = dependenciesIterator.next();
+		for (FunctionalDependency currDependency : config.getRelation().getFunctionalDependencies()){
 			RDBDHelper.getLogger().log(Level.INFO, "Check Dependency: " + currDependency);
 
 			if (satisfiesFirstNormalform(analysis, currDependency, config)){
@@ -67,7 +65,7 @@ public class NormalformAnalyzer {
 		return analysis;
 	}
 
-	private static boolean isPrimAttribute(String attribute, Collection<Key> minimalKeys) {
+	private static boolean isPrimeAttribute(String attribute, Collection<Key> minimalKeys) {
 
         for (Key currMinimalKey : minimalKeys) {
             if (currMinimalKey.getAttributes().contains(attribute)) {
@@ -78,21 +76,15 @@ public class NormalformAnalyzer {
 	}
 
 	public static boolean satisfiesFirstNormalform(NormalformAnalysis analysis, FunctionalDependency dependency, NormalformAnalyzerConfig config) {
-		FirstNormalformViolation violation;
-		boolean isViolated;
-		
-		violation = getFirstNormalformViolation(dependency, config);
-		isViolated = violation != null;
+		FirstNormalformViolation violation = getFirstNormalformViolation(dependency, config);
+		boolean isViolated = violation != null;
 		
 		return !isViolated;
 	}
 
 	public static boolean satisfiesSecondNormalform(NormalformAnalysis analysis, FunctionalDependency dependency, NormalformAnalyzerConfig config) {
-		SecondNormalformViolation violation;
-		boolean isViolated;
-		
-		violation = getSecondNormalformViolation(dependency, config);
-		isViolated = violation != null;
+		SecondNormalformViolation violation = getSecondNormalformViolation(dependency, config);
+		boolean isViolated = violation != null;
 		
 		if (isViolated){
 			analysis.addSecondNormalformViolation(violation);
@@ -103,11 +95,8 @@ public class NormalformAnalyzer {
 	}
 	
 	public static boolean satisfiesThirdNormalform(NormalformAnalysis analysis, FunctionalDependency dependency, NormalformAnalyzerConfig config) {
-		ThirdNormalformViolation violation;
-		boolean isViolated;
-
-		violation = getThirdNormalformViolation(dependency, config);
-		isViolated = violation != null;
+		ThirdNormalformViolation violation = getThirdNormalformViolation(dependency, config);
+		boolean isViolated = violation != null;
 		
 		if (isViolated){
 			analysis.addThirdNormalformViolation(violation);
@@ -118,14 +107,11 @@ public class NormalformAnalyzer {
 	}
 
 	public static boolean satisfiesBoyceCoddNormalform(NormalformAnalysis analysis, FunctionalDependency dependency, NormalformAnalyzerConfig config) {
-		boolean isViolated;
-		BoyceCoddNormalformViolation violation;
-
-		violation = getBoyceCoddNormalformViolation(dependency, config);
-		isViolated = violation != null;
+		BoyceCoddNormalformViolation violation = getBoyceCoddNormalformViolation(dependency, config);
+		boolean isViolated = violation != null;
 		
 		if (isViolated){
-			analysis.addBoyceCottNormalformViolation(violation);		
+			analysis.addBoyceCoddNormalformViolation(violation);
 		}
 		
 		RDBDHelper.getLogger().log(Level.INFO, "FINISHED BC NF CHECK. Is violated: " + isViolated);
@@ -138,19 +124,18 @@ public class NormalformAnalyzer {
 
 	public static SecondNormalformViolation getSecondNormalformViolation(FunctionalDependency dependency, NormalformAnalyzerConfig config) {
 		boolean isViolated;
-		boolean rhsComprisesNonPrimAttribute;
-		
+
 		SecondNormalformViolation violation = new SecondNormalformViolation();
 		violation.setFunctionalDependency(dependency);
 
 		//Deciding whether RHS comprises at least one non-prime attribute
-		rhsComprisesNonPrimAttribute = false;
+		boolean rhsComprisesNonPrimeAttribute = false;
 		Iterator<String> attributesIterator = dependency.iterRHSAttributes();
-		while (attributesIterator.hasNext() && !rhsComprisesNonPrimAttribute) {
+		while (attributesIterator.hasNext() && !rhsComprisesNonPrimeAttribute) {
 			String currAttribute = attributesIterator.next();
 
-			if (!isPrimAttribute(currAttribute, config.getCorrectMinimalKeys())) {
-				rhsComprisesNonPrimAttribute = true;
+			if (!isPrimeAttribute(currAttribute, config.getCorrectMinimalKeys())) {
+				rhsComprisesNonPrimeAttribute = true;
 				violation.addNonPrimRHSAttribute(currAttribute);
 			}
 		}
@@ -158,7 +143,7 @@ public class NormalformAnalyzer {
 		//Deciding whether LHS is a partial key
 		//Violated, if LHS is a partial key
 
-		if (rhsComprisesNonPrimAttribute) {
+		if (rhsComprisesNonPrimeAttribute) {
 			isViolated = false;
 
             for (Key currKey : config.getCorrectMinimalKeys()) {
@@ -204,31 +189,26 @@ public class NormalformAnalyzer {
 	public static ThirdNormalformViolation getThirdNormalformViolation(FunctionalDependency dependency, NormalformAnalyzerConfig config) {
 
 		boolean isViolated = true;
-		boolean rhsComprisesNonPrimAttribute;
-		
+
 		ThirdNormalformViolation violation = new ThirdNormalformViolation();
 		violation.setFunctionalDependency(dependency);
 
 		//Deciding whether RHS comprises at least one non-prime attribute
-		rhsComprisesNonPrimAttribute = false;
-		Iterator<String> attributesIterator = dependency.iterRHSAttributes();
-		while (attributesIterator.hasNext() && !rhsComprisesNonPrimAttribute) {
-			String currAttribute = attributesIterator.next();
-			if (!isPrimAttribute(currAttribute,config.getCorrectMinimalKeys())) {
-				rhsComprisesNonPrimAttribute = true;
+		boolean rhsComprisesNonPrimeAttribute = false;
+		for (String currAttribute : dependency.getRHSAttributes()) {
+			if (!isPrimeAttribute(currAttribute,config.getCorrectMinimalKeys())) {
+				rhsComprisesNonPrimeAttribute = true;
 				violation.addNonPrimRHSAttribute(currAttribute);
+				break;
 			}
 		}
 
 		//Deciding whether LHS is a super key
 		//Violation, if LHS is not a super key
-		if (rhsComprisesNonPrimAttribute) {
+		if (rhsComprisesNonPrimeAttribute) {
 			RDBDHelper.getLogger().log(Level.INFO, "RHS comprises non prim attribute. Is violated: " + isViolated);
-			Iterator<Key> keysIterator = config.getCorrectMinimalKeys().iterator();
 
-			while ((keysIterator.hasNext()) && (isViolated)) {
-				Key currKey = keysIterator.next();
-
+			for (Key currKey : config.getCorrectMinimalKeys()) {
 				//RDBDHelper.getLogger().log(Level.INFO, "Check Key: " + currKey + " (Key: " + currKey.getAttributes().size() + " -  Dependency: " + dependency.getLHSAttributes().size() + ")");
 				/* OLD
 				if ((currKey.getAttributes().containsAll(dependency.getLHSAttributes()))
@@ -239,6 +219,7 @@ public class NormalformAnalyzer {
 				if (dependency.getLHSAttributes().containsAll(currKey.getAttributes())){
 					isViolated = false;
 					RDBDHelper.getLogger().log(Level.INFO, "LHS is a super key. Is violated: " + isViolated);
+					break;
 				}
 			}
 		} else {
@@ -253,9 +234,6 @@ public class NormalformAnalyzer {
 	}
 
 	public static BoyceCoddNormalformViolation getBoyceCoddNormalformViolation(FunctionalDependency dependency, NormalformAnalyzerConfig config) {
-		BoyceCoddNormalformViolation violation = new BoyceCoddNormalformViolation();
-		violation.setFunctionalDependency(dependency);
-
 		boolean isViolated = true;
 
         for (Key currKey : config.getCorrectMinimalKeys()) {
@@ -271,7 +249,10 @@ public class NormalformAnalyzer {
         }
 
 		if (isViolated){
-			return violation;		
+			BoyceCoddNormalformViolation violation = new BoyceCoddNormalformViolation();
+			violation.setFunctionalDependency(dependency);
+
+			return violation;
 		}
 		
 		return null;

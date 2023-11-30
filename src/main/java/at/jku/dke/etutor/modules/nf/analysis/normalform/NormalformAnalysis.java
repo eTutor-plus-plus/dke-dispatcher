@@ -91,7 +91,7 @@ public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
 		return (Vector<ThirdNormalformViolation>)this.thirdNormalFormViolations.clone();
 	}
 
-	public void addBoyceCottNormalformViolation(BoyceCoddNormalformViolation violation){
+	public void addBoyceCoddNormalformViolation(BoyceCoddNormalformViolation violation){
 		this.boyceCoddNormalFormViolations.add(violation);
 	}
 	
