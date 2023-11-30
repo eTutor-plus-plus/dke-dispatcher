@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class Relation implements Serializable, Cloneable, RDBDSpecification {
@@ -127,25 +128,21 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 	}
 
 	public void setSubKeys(Collection<Key> subKeys) {
-		Iterator<Key> subKeysIterator;
-
 		this.subKeys.clear();
+
 		if (subKeys != null) {
-			subKeysIterator = subKeys.iterator();
-			while (subKeysIterator.hasNext()) {
-				this.addSubKey(subKeysIterator.next());
+			for (Key subKey : subKeys) {
+				this.addSubKey(subKey);
 			}
 		}
 	}
 
 	public void setSuperKeys(Collection<Key> superKeys) {
-		Iterator<Key> superKeysIterator;
-
 		this.superKeys.clear();
+
 		if (superKeys != null) {
-			superKeysIterator = superKeys.iterator();
-			while (superKeysIterator.hasNext()) {
-				this.addSuperKey(superKeysIterator.next());
+			for (Key superKey : superKeys) {
+				this.addSuperKey(superKey);
 			}
 		}
 	}
@@ -164,8 +161,8 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		this.minimalKeys.clear();
 
 		if (minimalKeys != null) {
-			for(Key k : minimalKeys) {
-				this.addMinimalKey(k);
+			for(Key minimalKey : minimalKeys) {
+				this.addMinimalKey(minimalKey);
 			}
 		}
 	}
@@ -224,8 +221,8 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		return this.name;
 	}
 	
-	public HashSet<Key> getSubKeys(){
-		return (HashSet<Key>)this.subKeys.clone();
+	public Set<Key> getSubKeys(){
+		return (Set<Key>)this.subKeys.clone();
 	}
 	
 	public TreeSet<Key> getSuperKeys(){
@@ -236,24 +233,24 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		return (TreeSet<String>)this.attributes.clone();
 	}
 	
-	public String[] getAttributesArray(){
-		int pos = 0;
-		String[] attributes = new String[this.attributes.size()];
+	public String[] getAttributesArray() {
+		String[] attributesArray = new String[this.attributes.size()];
 
+		int pos = 0;
         for (String attribute : this.attributes) {
-            attributes[pos] = attribute;
-            pos = pos + 1;
+            attributesArray[pos] = attribute;
+            pos++;
         }
 		
-		return attributes;
+		return attributesArray;
 	}
 	
 	public TreeSet<Key> getMinimalKeys(){
 		return (TreeSet<Key>)this.minimalKeys.clone();
 	}
 	
-	public HashSet<FunctionalDependency> getFunctionalDependencies(){
-		return (HashSet<FunctionalDependency>)this.dependencies.clone();
+	public Set<FunctionalDependency> getFunctionalDependencies(){
+		return (Set<FunctionalDependency>)this.dependencies.clone();
 	}
 
 	/*

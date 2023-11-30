@@ -11,12 +11,16 @@ import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 }
 
-relationSet : relation (';' relation)* ;                                            // start rule
+relationSet returns [Set<IdentifiedRelation> relations]                                       // start rule
+    @init {
+        $relations = new HashSet<>();
+    } :
+        relation {$relations.add($relation.parsedRelation);} (';' relation {$relations.add($relation.parsedRelation);})* ;
 relation returns [IdentifiedRelation parsedRelation]
     @init {
         $parsedRelation = new IdentifiedRelation();
     } :
-        '(' attributeSet ')' '(' keySet ')' '(' functionalDependencySet ')' ;
+        '(' attributeSet {$parsedRelation.setAttributes($attributeSet.attributes);} ')' '(' keySet {$parsedRelation.setMinimalKeys($keySet.keys);} ')' '(' functionalDependencySet {$parsedRelation.setFunctionalDependencies($functionalDependencySet.functionalDependencies);} ')' ;
 
 keySet returns [Set<Key> keys]                                                      // start rule
     @init {

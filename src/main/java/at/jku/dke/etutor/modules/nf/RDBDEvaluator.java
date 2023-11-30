@@ -134,7 +134,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			//Set Submission
 			analysis.setSubmission(relation);
 
-		} else if (internalType == RDBDConstants.TYPE_RBR) { // Note: No longer necessary as its own task type, may be required for Decompose (Gerald Wimmer, 2023-11-27)
+		} /*else if (internalType == RDBDConstants.TYPE_RBR) { // Note: No longer necessary as its own task type, may be required for Decompose (Gerald Wimmer, 2023-11-27)
 			//RBR
 			RBRSpecification rbrSpecification = (RBRSpecification)specification;
 			Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
@@ -143,7 +143,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			//Set Submission
 			analysis.setSubmission(relation);
 
-		} else if (internalType == RDBDConstants.TYPE_DECOMPOSE) {
+		}*/ else if (internalType == RDBDConstants.TYPE_DECOMPOSE) {
 			//DECOMPOSE
 			StringBuilder temp;
 			
