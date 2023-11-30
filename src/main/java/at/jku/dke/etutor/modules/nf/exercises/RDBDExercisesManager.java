@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  * Since exercise IDs of existing exercises are mapped to the internal type,
  * a single class to process tasks for all RDBD types would be sufficient 
  * (like the RDBDEvaluator implementation). Nevertheless, based on the exercise ID, 
- * passed as argument to method {@link #createExercise(int, Serializable, Map, Map)}, 
+ * passed as argument to method {@link #createExercise(int, Serializable, Map, Map)},
  * the retrieval of the appropriate internal type is not possible. This is why
  * each RDBD type has its own implementation which is registered with the eTutor core. 
  *  
@@ -728,16 +728,16 @@ public class RDBDExercisesManager {
 	 * Returns a wrapped <code>ResultSet</code> object, if it is wrapped by the passed
 	 * <code>ResultSet</code> object.
 	 *
-	 * @param stmt Any <code>ResultSet</code>.
+	 * @param rset Any <code>ResultSet</code>.
 	 * @return The underlying statement if the passed <code>ResultSet</code>
 	 * 			object is of the expected type and is a wrapper of it.
-	 * 			Otherwise the passed <code>ResultSet</code> is returned again.
+	 * 			Otherwise, the passed <code>ResultSet</code> is returned again.
 	 * @throws SQLException
 	 */
 	public static ResultSet getNativeResultSet(ResultSet rset) throws SQLException {
-		Object delegate = getNativeSQLObject(rset);
+		ResultSet delegate = getNativeSQLObject(rset);
 		if (delegate instanceof ResultSet) {
-			return (ResultSet)delegate;
+			return delegate;
 		} else {
 			return rset;
 		}
@@ -752,53 +752,34 @@ public class RDBDExercisesManager {
 	 * @param sqlObject
 	 * @return
 	 */
-	private static Object getNativeSQLObject(Object sqlObject) {
-		Object delegate = sqlObject;
-		Method method;
-		String methodName;
+	private static ResultSet getNativeSQLObject(ResultSet sqlObject) {
+		ResultSet delegate = sqlObject;
+		String methodName = "";
 
 		try {
-			if (delegate instanceof Connection) {
-				methodName = "getDelegate";
-			} else if (delegate instanceof CallableStatement) {
-				methodName = "getDelegate";
-			} else if (delegate instanceof PreparedStatement) {
-				methodName = "getDelegate";
-			} else if (delegate instanceof Statement) {
-				methodName = "getDelegate";
-			} else if (delegate instanceof ResultSet) {
+			if (delegate instanceof ResultSet) {
 				methodName = "getDelegate";
 			} else {
 				return null;
 			}
-			method = sqlObject.getClass().getMethod(methodName, null);
-			delegate = method.invoke(sqlObject, null);
+
+			Method method = sqlObject.getClass().getMethod(methodName, null);
+			delegate = (ResultSet) method.invoke(sqlObject, null);
 		} catch (Exception e) {
-			// TODO: Replace with alternative logging
-			/*String msg = "Exception was thrown when trying to call method " + methodName;
+			String msg = "Exception was thrown when trying to call method " + methodName;
 			msg += " from object " + sqlObject;
 			msg += ", which is expected to be a wrapper object. " + e.getMessage();
-			try {
-				CoreManager.getCML().log(Level.WARNING, msg);
-			} catch (InternalConfigurationException e1) {
-				e1.printStackTrace();
-				System.out.println(msg);
-			}*/
+
+            RDBDHelper.getLogger().log(Level.WARNING, msg);
 		}
-		if (delegate != null &&
-				!(delegate instanceof Connection ||
-						delegate instanceof Statement ||
-						delegate instanceof ResultSet)) {
-			// TODO: Replace with alternative logging
-			/*String msg = "Calling method " + methodName + " by reflection on object " + sqlObject;
-			msg += " was expected to return a Connection, Statement or ResultSet object. In fact, a ";
+
+		if (delegate != null && !(delegate instanceof ResultSet)) {
+			String msg = "Calling method " + methodName + " by reflection on object " + sqlObject;
+			msg += " was expected to return a ResultSet object. In fact, a ";
 			msg += delegate.getClass().getName() + " object was returned.";
-			try {
-				// CoreManager.getCML().log(Level.WARNING, msg);
-			} catch (InternalConfigurationException e1) {
-				e1.printStackTrace();
-				System.out.println(msg);
-			}*/
+
+            RDBDHelper.getLogger().log(Level.WARNING, msg);
+
 			delegate = null;
 		}
 

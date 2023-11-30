@@ -27,46 +27,32 @@ public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
 		this.overallNormalformLevel = NormalformLevel.FIRST;
 	}
 	
-	public NormalformLevel getViolatedNormalformLevel(FunctionalDependency dependency){
-		NormalformLevel level = null;
-		
-		if (level == null) {
-			for(NormalformViolation violation : firstNormalFormViolations) {
-				if (violation.getFunctionalDependency().equals(dependency)) {
-					level = NormalformLevel.FIRST;
-					break;
-				}
+	public NormalformLevel getViolatedNormalformLevel(FunctionalDependency dependency) {
+		for(NormalformViolation violation : firstNormalFormViolations) {
+			if (violation.getFunctionalDependency().equals(dependency)) {
+				return NormalformLevel.FIRST;
 			}
 		}
 
-		if (level == null) {
-			for(NormalformViolation violation : secondNormalFormViolations) {
-				if (violation.getFunctionalDependency().equals(dependency)) {
-					level = NormalformLevel.SECOND;
-					break;
-				}
+		for(NormalformViolation violation : secondNormalFormViolations) {
+			if (violation.getFunctionalDependency().equals(dependency)) {
+				return NormalformLevel.SECOND;
 			}
 		}
 
-		if (level == null) {
-			for(NormalformViolation violation : thirdNormalFormViolations) {
-				if (violation.getFunctionalDependency().equals(dependency)) {
-					level = NormalformLevel.THIRD;
-					break;
-				}
+		for(NormalformViolation violation : thirdNormalFormViolations) {
+			if (violation.getFunctionalDependency().equals(dependency)) {
+				return NormalformLevel.THIRD;
 			}
 		}
-		
-		if (level == null) {
-			for(NormalformViolation violation : boyceCoddNormalFormViolations) {
-				if (violation.getFunctionalDependency().equals(dependency)) {
-					level = NormalformLevel.BOYCE_CODD;
-					break;
-				}
+
+		for(NormalformViolation violation : boyceCoddNormalFormViolations) {
+			if (violation.getFunctionalDependency().equals(dependency)) {
+				return NormalformLevel.BOYCE_CODD;
 			}
 		}
-		
-		return level;
+
+		return null;
 	}
 	
 	public void setOverallNormalformLevel(NormalformLevel level){

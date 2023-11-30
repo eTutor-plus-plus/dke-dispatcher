@@ -102,7 +102,8 @@ public class RDBDHelper {
 		try {
 			//NOTE: enough connections must be available if multiple 
 			//connections are required within a single request at the same time
-			conn = getDataSource().getConnection();
+			// conn = getDataSource().getConnection(); // Replaced with NFDataSource (Gerald Wimmer, 2023-11-30)
+			conn = NFDataSource.getConnection();
 		} catch(SQLException e){
 			rdbdLogger.log(Level.SEVERE, "", e);
 		}
