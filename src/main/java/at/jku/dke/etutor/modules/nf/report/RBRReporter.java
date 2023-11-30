@@ -91,10 +91,9 @@ public class RBRReporter {
 				description.append("<p>").append(messageSource.getMessage("rbrreporter.dependenciesmissing", null, locale)).append(":</p>");
 				description.append("<table border='2' rules='all'>");
 
-				it = analysis.iterMissingFunctionalDependencies();
-				while (it.hasNext()){
+				for (FunctionalDependency fd : analysis.getMissingFunctionalDependencies()){
 					description.append("<tr><td>");
-					description.append(it.next().toString());
+					description.append(fd.toString());
 					description.append("</td></tr>");
 				}
 				description.append("</table>");
@@ -138,10 +137,9 @@ public class RBRReporter {
 				description.append("<p>").append(messageSource.getMessage("rbrreporter.dependenciestoomuch", null, locale)).append(":</p>");
 				description.append("<table border='2' rules='all'>");
 
-				it = analysis.iterAdditionalFunctionalDependencies();
-				while (it.hasNext()){
+				for (FunctionalDependency fd : analysis.getAdditionalFunctionalDependencies()){
 					description.append("<tr><td>");
-					description.append(it.next().toString());
+					description.append(fd.toString());
 					description.append("</td></tr>");
 				}
 				description.append("</table>");

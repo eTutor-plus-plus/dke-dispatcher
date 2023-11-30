@@ -23,11 +23,7 @@ public class KeysAnalysis extends DefaultAnalysis implements Analysis {
 	public void addMissingKey(Key key){
 		this.missingKeys.add(key);
 	}
-	
-	public Iterator<Key> iterMissingKeys(){
-		return this.missingKeys.iterator();
-	}
-	
+
 	public TreeSet<Key> getMissingKeys(){
 		return (TreeSet<Key>)this.missingKeys.clone();
 	}
@@ -44,11 +40,7 @@ public class KeysAnalysis extends DefaultAnalysis implements Analysis {
 	public void addAdditionalKey(Key key){
 		this.additionalKeys.add(key);
 	}
-	
-	public Iterator<Key> iterAdditionalKeys(){
-		return this.additionalKeys.iterator();
-	}
-	
+
 	public TreeSet<Key> getAdditionalKeys(){
 		return (TreeSet<Key>)this.additionalKeys.clone();
 	}

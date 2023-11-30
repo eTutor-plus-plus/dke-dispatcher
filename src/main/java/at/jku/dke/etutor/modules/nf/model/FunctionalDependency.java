@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.TreeSet;
 
 public class FunctionalDependency implements Serializable{
@@ -87,37 +88,17 @@ public class FunctionalDependency implements Serializable{
 
 	@Override
 	public String toString() {
-		boolean first;
-		String toString;
-		Iterator<String> attributesIterator;
-
-		toString = "";
-		
-		first = true;
-		attributesIterator = this.iterLHSAttributes();
-		while (attributesIterator.hasNext()){
-			if (first){
-				first = false;
-			} else {
-				toString = toString.concat(" ");
-			}
-			toString = toString.concat(attributesIterator.next());
+		StringJoiner leftSide = new StringJoiner(" ");
+		for (String a : lhs){
+			leftSide.add(a);
 		}
 
-		toString = toString.concat(" -> ");
-
-		first = true;
-		attributesIterator = this.iterRHSAttributes();
-		while (attributesIterator.hasNext()){
-			if (first){
-				first = false;
-			} else {
-				toString = toString.concat(" ");
-			}
-			toString = toString.concat(attributesIterator.next());
+		StringJoiner rightSide = new StringJoiner(" ");
+		for (String a : rhs){
+			rightSide.add(a);
 		}
 
-		return toString;
+		return leftSide + " -> " + rightSide;
 	}
 
 	public boolean addLHSAttribute(String attribute) {
@@ -190,14 +171,6 @@ public class FunctionalDependency implements Serializable{
 
 	public void removeRHSAttributes(Collection<String> attributes) {
 		this.rhs.removeAll(attributes);
-	}
-
-	public Iterator<String> iterLHSAttributes() {
-		return this.lhs.iterator();
-	}
-
-	public Iterator<String> iterRHSAttributes() {
-		return this.rhs.iterator();
 	}
 
 	public TreeSet<String> getLHSAttributes(){

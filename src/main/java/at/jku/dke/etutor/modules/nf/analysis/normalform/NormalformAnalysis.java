@@ -58,11 +58,7 @@ public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
 	public void addFirstNormalformViolation(FirstNormalformViolation violation){
 		this.firstNormalFormViolations.add(violation);
 	}
-	
-	public Iterator<FirstNormalformViolation> iterFirstNormalformViolations(){
-		return this.firstNormalFormViolations.iterator();
-	}
-	
+
 	public Vector<FirstNormalformViolation> getFirstNormalformViolations(){
 		return (Vector<FirstNormalformViolation>)this.firstNormalFormViolations.clone();
 	}
@@ -70,11 +66,7 @@ public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
 	public void addSecondNormalformViolation(SecondNormalformViolation violation){
 		this.secondNormalFormViolations.add(violation);
 	}
-	
-	public Iterator<SecondNormalformViolation> iterSecondNormalformViolations(){
-		return this.secondNormalFormViolations.iterator();
-	}
-	
+
 	public Vector<SecondNormalformViolation> getSecondNormalformViolations(){
 		return (Vector<SecondNormalformViolation>)this.secondNormalFormViolations.clone();
 	}
@@ -82,11 +74,7 @@ public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
 	public void addThirdNormalformViolation(ThirdNormalformViolation violation){
 		this.thirdNormalFormViolations.add(violation);
 	}
-	
-	public Iterator<ThirdNormalformViolation> iterThirdNormalformViolations(){
-		return this.thirdNormalFormViolations.iterator();
-	}
-	
+
 	public Vector<ThirdNormalformViolation> getThirdNormalformViolations(){
 		return (Vector<ThirdNormalformViolation>)this.thirdNormalFormViolations.clone();
 	}
@@ -94,11 +82,7 @@ public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
 	public void addBoyceCoddNormalformViolation(BoyceCoddNormalformViolation violation){
 		this.boyceCoddNormalFormViolations.add(violation);
 	}
-	
-	public Iterator<BoyceCoddNormalformViolation> iterBoyceCoddNormalformViolations(){
-		return this.boyceCoddNormalFormViolations.iterator();
-	}
-	
+
 	public Vector<BoyceCoddNormalformViolation> getBoyceCoddNormalformViolations(){
 		return (Vector<BoyceCoddNormalformViolation>)this.boyceCoddNormalFormViolations.clone();
 	}

@@ -23,20 +23,12 @@ public class RBRAnalysis extends DefaultAnalysis implements Analysis {
 		return (Vector<FunctionalDependency>)this.missingFunctionalDependencies.clone();
 	}
 
-	public Iterator<FunctionalDependency> iterMissingFunctionalDependencies(){
-		return this.missingFunctionalDependencies.iterator();
-	}
-
 	public void addMissingFunctionalDependency(FunctionalDependency lostDependency) {
 		this.missingFunctionalDependencies.add(lostDependency);
 	}
 
 	public Vector<FunctionalDependency> getAdditionalFunctionalDependencies() {
 		return (Vector<FunctionalDependency>)this.additionalFunctionalDependencies.clone();
-	}
-
-	public Iterator<FunctionalDependency> iterAdditionalFunctionalDependencies(){
-		return this.additionalFunctionalDependencies.iterator();
 	}
 
 	public void addAdditionalFunctionalDependency(FunctionalDependency additionalDependency) {

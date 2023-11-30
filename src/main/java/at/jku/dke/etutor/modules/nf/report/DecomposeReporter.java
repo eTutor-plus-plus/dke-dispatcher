@@ -56,7 +56,7 @@ public class DecomposeReporter {
 		if (!config.getAction().equals(RDBDConstants.EVAL_ACTION_CHECK)){
 			String baseRelationID;
 			Iterator<String> decomposeStepAnalysesIterator = config.getDecomposeAnalysis().iterAnalysedDecomposeStepBaseRelations();
-			while (decomposeStepAnalysesIterator.hasNext()){
+			while (decomposeStepAnalysesIterator.hasNext()) {
 				baseRelationID = decomposeStepAnalysesIterator.next();
 				report.addErrorReportGroup(createDecomposeStepReportAtomGroup(baseRelationID, config, messageSource, locale));	
 			}

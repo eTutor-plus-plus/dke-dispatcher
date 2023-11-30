@@ -149,11 +149,8 @@ public class MinimalCoverAnalyzer {
 
 		while (dependenciesIterator.hasNext()) {
 			FunctionalDependency currDependency = dependenciesIterator.next();
-			Iterator<String> attributesIterator = currDependency.iterLHSAttributes();
 
-			while (attributesIterator.hasNext()) {
-				String currAttribute = attributesIterator.next();
-
+			for (String currAttribute : currDependency.getLHSAttributes()) {
 				tempDependency.setLHSAttributes(currDependency.getLHSAttributes());
 				tempDependency.setRHSAttributes(currDependency.getRHSAttributes());
 				tempDependency.removeLHSAttribute(currAttribute);

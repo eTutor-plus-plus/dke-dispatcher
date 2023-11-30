@@ -63,11 +63,7 @@ public class MinimalCover {
 		HashMap<FunctionalDependency, Vector<String>> extraneusAttributes = new HashMap<>();
 
         for (FunctionalDependency currFD : dependencies) {
-            Iterator<String> attributesIterator = currFD.iterLHSAttributes();
-
-            while (attributesIterator.hasNext()) {
-                String currAttribute = attributesIterator.next();
-
+			for (String currAttribute : currFD.getLHSAttributes()) {
                 tempFD.setLHSAttributes(currFD.getLHSAttributes());
                 tempFD.setRHSAttributes(currFD.getRHSAttributes());
                 tempFD.removeLHSAttribute(currAttribute);

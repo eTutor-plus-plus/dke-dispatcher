@@ -194,10 +194,9 @@ public class MinimalCoverReporter {
 			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.trivialdependencies", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
-		 	Iterator<FunctionalDependency> it = analysis.iterTrivialDependencies();
-			while (it.hasNext()){
+			for (FunctionalDependency fd : analysis.getTrivialDependencies()){
 				description.append("<tr><td>");
-				description.append(printDependency(it.next()));
+				description.append(printDependency(fd));
 				description.append("</td></tr>");
 			}
 			description.append("</table>");
@@ -357,10 +356,9 @@ public class MinimalCoverReporter {
 			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.redundanddependencies", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
-			Iterator<FunctionalDependency> it = analysis.iterRedundantDependencies();
-			while (it.hasNext()){
+			for (FunctionalDependency fd : analysis.getRedundantDependencies()){
 				description.append("<tr><td>");
-				description.append(printDependency(it.next()));
+				description.append(printDependency(fd));
 				description.append("</td></tr>");
 			}
 			description.append("</table>");
@@ -534,27 +532,25 @@ public class MinimalCoverReporter {
 		boolean first = true;
 		String s = "";
 
-		Iterator<String> attributesIterator = dependency.iterLHSAttributes();
-		while (attributesIterator.hasNext()){
+		for (String a : dependency.getLHSAttributes()){
 			if (first){
 				first = false;
 			} else {
 				s = s.concat(" ");
 			}
-			s = s.concat(attributesIterator.next());
+			s = s.concat(a);
 		}
 
 		s = s.concat(" &rarr; ");
 
 		first = true;
-		attributesIterator = dependency.iterRHSAttributes();
-		while (attributesIterator.hasNext()){
+		for (String a : dependency.getRHSAttributes()){
 			if (first){
 				first = false;
 			} else {
 				s = s.concat(" ");
 			}
-			s = s.concat(attributesIterator.next());
+			s = s.concat(a);
 		}
 		
 		return s;

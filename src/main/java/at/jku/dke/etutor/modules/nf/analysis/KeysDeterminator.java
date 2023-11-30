@@ -158,11 +158,7 @@ public class KeysDeterminator {
                     }
 				}
 
-				Vector<String> attributes = new Vector<>();
-				Iterator<String> attributesIterator = candidate.iterAttributes();
-				while (attributesIterator.hasNext()) {
-					attributes.add(attributesIterator.next());
-				}
+				List<String> attributes = new LinkedList<>(candidate.getAttributes());
 
 				Collection<String> closure = Closure.execute(attributes, relation.getFunctionalDependencies());
 				if (closure.containsAll(relation.getAttributes())) {
@@ -205,11 +201,7 @@ public class KeysDeterminator {
 
 					candidate.addAllAttributes(constantAttributes);
 
-					Vector<String> attributes = new Vector<>();
-					Iterator<String> attributesIterator = candidate.iterAttributes();
-					while (attributesIterator.hasNext()) {
-						attributes.add(attributesIterator.next());
-					}
+					List<String> attributes = new LinkedList<>(candidate.getAttributes());
 
 					Collection<String> closure = Closure.execute(attributes, relation.getFunctionalDependencies());
 					if (closure.containsAll(relation.getAttributes())) {

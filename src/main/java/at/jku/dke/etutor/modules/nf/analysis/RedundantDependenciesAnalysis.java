@@ -29,8 +29,5 @@ public class RedundantDependenciesAnalysis extends DefaultAnalysis implements An
 	public HashSet<FunctionalDependency> getRedundantDependencies() {
 		return (HashSet<FunctionalDependency>)this.redundantDependencies.clone();
 	}
-	
-	public Iterator<FunctionalDependency> iterRedundantDependencies(){
-		return this.redundantDependencies.iterator();
-	}
+
 }

@@ -5,7 +5,4 @@ import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 
 public class LosslessAnalysis extends DefaultAnalysis implements Analysis {
 
-	public LosslessAnalysis() {
-		super();
-	}
 }

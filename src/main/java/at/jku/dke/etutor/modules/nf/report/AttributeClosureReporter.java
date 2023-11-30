@@ -91,10 +91,9 @@ public class AttributeClosureReporter {
 				description.append("<p>").append(messageSource.getMessage("attributeclosurereporter.attributesmissing", null, locale)).append("</b>:</p>");
 				description.append("<table border='2' rules='all'>");
 
-				it = analysis.iterMissingAttributes();
-				while (it.hasNext()){
+				for (String a : analysis.getMissingAttributes()){
 					description.append("<tr><td>");
-					description.append(it.next());
+					description.append(a);
 					description.append("</td></tr>");
 				}
 				description.append("</table>");
@@ -138,10 +137,9 @@ public class AttributeClosureReporter {
 				description.append("<p>").append(messageSource.getMessage("attributeclosurereporter.attributestoomuch", null, locale)).append("</b>:</p>");
 				description.append("<table border='2' rules='all'>");
 
-				it = analysis.iterAdditionalAttributes();
-				while (it.hasNext()){
+				for (String a : analysis.getAdditionalAttributes()){
 					description.append("<tr><td>");
-					description.append(it.next());
+					description.append(a);
 					description.append("</td></tr>");
 				}
 				description.append("</table>");

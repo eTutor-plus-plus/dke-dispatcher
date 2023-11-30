@@ -58,18 +58,6 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		this.setFunctionalDependencies(dependencies);
 	}
 
-	public Iterator<Key> iterSubKeys() {
-		return this.subKeys.iterator();
-	}
-
-	public Iterator<Key> iterSuperKeys() {
-		return this.superKeys.iterator();
-	}
-
-	public Iterator<String> iterAttributes() {
-		return this.attributes.iterator();
-	}
-
 	public Iterator<Key> iterMinimalKeys() {
 		return this.minimalKeys.iterator();
 	}

@@ -12,7 +12,8 @@ public class Key implements Serializable {
 	public Key() {
 		this.attributes = new TreeSet<>(new AttributeCollator());
 	}
-	
+
+	@Override
 	public boolean equals(Object obj) {
 		Key key;
 
@@ -25,25 +26,20 @@ public class Key implements Serializable {
 		}
 		
 		key = (Key)obj;
-		Iterator<String> attributesIterator = key.iterAttributes();
 
 		if (!(key.getAttributes().containsAll(this.attributes))){
 			return false;
 		}
 
-		while (attributesIterator.hasNext()){
-			if (!(this.attributes.contains(attributesIterator.next()))){
-				return false;
-			}
-		}
+        return this.attributes.containsAll(key.getAttributes());
+    }
 
-		return true;
-	}
-
+	@Override
 	public int hashCode() {
 		return -1;
 	}
 
+	@Override
 	public String toString() {
 		boolean first = true;
 		StringBuilder toStringBuilder = new StringBuilder();
@@ -62,10 +58,6 @@ public class Key implements Serializable {
 	
 	public TreeSet<String> getAttributes(){
 		return (TreeSet<String>)this.attributes.clone();
-	}
-	
-	public Iterator<String> iterAttributes() {
-		return this.attributes.iterator();
 	}
 
 	public boolean addAttribute(String attribute) {

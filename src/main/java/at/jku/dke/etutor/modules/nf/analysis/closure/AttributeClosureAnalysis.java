@@ -27,11 +27,7 @@ public class AttributeClosureAnalysis extends DefaultAnalysis implements Analysi
 		this.missingAttributes.clear();
 		this.missingAttributes.addAll(attributes);
 	}
-	
-	public Iterator<String> iterMissingAttributes(){
-		return this.missingAttributes.iterator();
-	}
-	
+
 	public TreeSet<String> getMissingAttributes(){
 		return (TreeSet<String>)this.missingAttributes.clone();
 	}
@@ -48,11 +44,7 @@ public class AttributeClosureAnalysis extends DefaultAnalysis implements Analysi
 		this.additionalAttributes.clear();
 		this.additionalAttributes.addAll(attributes);
 	}
-	
-	public Iterator<String> iterAdditionalAttributes(){
-		return this.additionalAttributes.iterator();
-	}
-	
+
 	public TreeSet<String> getAdditionalAttributes(){
 		return (TreeSet<String>)this.additionalAttributes.clone();
 	}

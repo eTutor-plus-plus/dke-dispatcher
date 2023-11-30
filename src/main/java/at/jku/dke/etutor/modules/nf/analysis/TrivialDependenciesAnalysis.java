@@ -23,10 +23,6 @@ public class TrivialDependenciesAnalysis extends DefaultAnalysis implements Anal
 	public HashSet<FunctionalDependency> getTrivialDependencies() {
 		return (HashSet<FunctionalDependency>)this.trivialDependencies.clone();
 	}
-	
-	public Iterator<FunctionalDependency> iterTrivialDependencies(){
-		return this.trivialDependencies.iterator();
-	}
 
 	public void setTrivialDependencies(HashSet<FunctionalDependency> trivialDependencies) {
 		this.trivialDependencies = trivialDependencies;
