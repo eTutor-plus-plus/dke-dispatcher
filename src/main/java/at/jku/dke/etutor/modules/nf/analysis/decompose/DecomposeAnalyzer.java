@@ -17,8 +17,6 @@ public class DecomposeAnalyzer {
 	}
 	
 	public static DecomposeAnalysis analyze(DecomposeAnalyzerConfig config){
-		IdentifiedRelation relation;
-		
 		RDBDHelper.getLogger().log(Level.INFO, "Analyze Decompose.");
 		
 		//INIT DECOMPOSE ANALYSIS
@@ -36,7 +34,7 @@ public class DecomposeAnalyzer {
 		//ANALYZE DECOMPOSE STEPS
 		Iterator<IdentifiedRelation> relationsIterator = allRelations.iterator();
 		while((relationsIterator.hasNext()) && (analysis.submissionSuitsSolution())){
-			relation = relationsIterator.next();
+			IdentifiedRelation relation = relationsIterator.next();
 			
 			if (RDBDHelper.isInnerNode(relation.getID(), allRelations)){
 				DecomposeStepAnalyzerConfig decomposeStepAnalyzerConfig = new DecomposeStepAnalyzerConfig();
@@ -58,9 +56,7 @@ public class DecomposeAnalyzer {
 
 		//ANALYZE DEPENDENCIES PRESERVATION FOR LEAF-RELATIONS
 		TreeSet<IdentifiedRelation> leafRelations = new TreeSet<>(new IdentifiedRelationComparator());
-		relationsIterator = allRelations.iterator();
-		while(relationsIterator.hasNext()){
-			relation = relationsIterator.next();
+		for (IdentifiedRelation relation : allRelations){
 			if (!RDBDHelper.isInnerNode(relation.getID(), allRelations)){
 				leafRelations.add(relation);			
 			}
