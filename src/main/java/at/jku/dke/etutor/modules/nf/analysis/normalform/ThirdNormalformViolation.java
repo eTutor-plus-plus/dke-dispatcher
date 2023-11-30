@@ -8,7 +8,6 @@ public class ThirdNormalformViolation extends NormalformViolation {
 	private final Vector<String> nonPrimRHSAttributes;
 
 	public ThirdNormalformViolation() {
-		super();
 		this.nonPrimRHSAttributes = new Vector<>();
 	}
 

@@ -210,10 +210,8 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			 * TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
 			 *
 			 * NOTE: Cast to TreeSet<IdentifiedRelation> should always work, because that is the actual type passed in
-			 *  by RDBDEditor.initPerformTask() (see the first if-statement there). Also, it was cast (albeit
-			 *  needlessly) to TreeSet (without generics because there were none back then) for
-			 *  analysis.setSubmission().
-			 *  (Gerald Wimmer, 2023-11-12)
+			 *  by RDBDEditor.initPerformTask(). Also, it was cast (albeit needlessly) to TreeSet (without generics
+			 *  because there were none back then) for analysis.setSubmission(). (Gerald Wimmer, 2023-11-12)
 			 */
 			TreeSet<IdentifiedRelation> submissionTreeSet = (TreeSet<IdentifiedRelation>) submission;
 			normalizationAnalyzerConfig.setNormalizedRelations(submissionTreeSet);

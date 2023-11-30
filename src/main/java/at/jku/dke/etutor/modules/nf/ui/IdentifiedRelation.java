@@ -43,7 +43,8 @@ public class IdentifiedRelation extends Relation implements Serializable, Clonea
 	public String getID(){
 		return this.id;
 	}
-	
+
+	@Override
 	public String toString(){
 		String toString = "";
 		

@@ -6,12 +6,13 @@ import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class NormalformDeterminationSubmission implements Serializable {
 
-	private final HashMap<Integer, FunctionalDependency> dependencyIDs;
+	private final Map<Integer, FunctionalDependency> dependencyIDs;
 	private NormalformLevel overallLevel;
-	private final HashMap<Integer, NormalformLevel> normalformViolations;
+	private final Map<Integer, NormalformLevel> normalformViolations;
 
 	public NormalformDeterminationSubmission() {
 		super();
@@ -27,8 +28,7 @@ public class NormalformDeterminationSubmission implements Serializable {
 
         for (Integer integer : this.dependencyIDs.keySet()) {
             currID = integer;
-            currDependency = this.dependencyIDs
-                    .get(currID);
+            currDependency = this.dependencyIDs.get(currID);
             if (currDependency.equals(dependency)) {
                 return currID;
             }
@@ -49,19 +49,12 @@ public class NormalformDeterminationSubmission implements Serializable {
 		return this.dependencyIDs.keySet().iterator();
 	}
 
-	public void setNormalformViolation(NormalformLevel violatedLevel,
-									   Integer dependencyID) {
+	public void setNormalformViolation(NormalformLevel violatedLevel, Integer dependencyID) {
 		this.normalformViolations.put(dependencyID, violatedLevel);
 	}
 
 	public NormalformLevel getViolatedNormalformLevel(Integer dependencyID) {
-		if (this.normalformViolations.containsKey(dependencyID)) {
-			if (this.normalformViolations.get(dependencyID) != null) {
-				return this.normalformViolations
-						.get(dependencyID);
-			}
-		}
-		return null;
+		return this.normalformViolations.get(dependencyID);
 	}
 
 	public void setOverallLevel(NormalformLevel level) {

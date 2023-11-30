@@ -5,7 +5,7 @@ import at.jku.dke.etutor.modules.nf.RDBDConstants;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.decompose.DecompositionAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.DependenciesPreservationAnalysis;
-import at.jku.dke.etutor.modules.nf.analysis.normalization.LossLessAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.normalization.LosslessAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
@@ -213,7 +213,7 @@ public class NormalizationReporter {
 		return report;
 	}
 
-	public static ErrorReport createLossLessErrorReport(LossLessAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
+	public static ErrorReport createLossLessErrorReport(LosslessAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
 		ErrorReport report = new ErrorReport();
 
 		//SET ERROR

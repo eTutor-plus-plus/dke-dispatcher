@@ -30,6 +30,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		this.attributes = new TreeSet<>(new AttributeCollator());
 	}
 
+	@Override
 	public Object clone() throws CloneNotSupportedException {
 		Relation clone = (Relation)super.clone();
 		clone.attributes = (TreeSet<String>)this.attributes.clone();

@@ -9,7 +9,6 @@ public class SecondNormalformViolation extends NormalformViolation {
 	//private Vector comprisedPartialKeys;
 
 	public SecondNormalformViolation() {
-		super();
 		this.nonPrimRHSAttributes = new Vector<>();
 		//this.comprisedPartialKeys = new Vector();
 	}

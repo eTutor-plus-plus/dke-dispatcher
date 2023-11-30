@@ -21,7 +21,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 
 	private NormalformLevel desiredNormalformLevel;
 
-	private LossLessAnalysis lossLessAnalysis;
+	private LosslessAnalysis lossLessAnalysis;
 	private DecompositionAnalysis decompositionAnalysis;
 	private DependenciesPreservationAnalysis depPresAnalysis;
 
@@ -54,7 +54,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 		return this.depPresAnalysis;
 	}
 
-	public LossLessAnalysis getLossLessAnalysis() {
+	public LosslessAnalysis getLossLessAnalysis() {
 		return this.lossLessAnalysis;
 	}
 
@@ -66,7 +66,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 		this.depPresAnalysis = analysis;
 	}
 
-	public void setLossLessAnalysis(LossLessAnalysis analysis) {
+	public void setLossLessAnalysis(LosslessAnalysis analysis) {
 		this.lossLessAnalysis = analysis;
 	}
 	

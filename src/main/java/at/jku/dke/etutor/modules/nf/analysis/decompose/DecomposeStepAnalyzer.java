@@ -46,7 +46,7 @@ public class DecomposeStepAnalyzer {
 		}
 
 		//ANALYZE LOSS LESS
-		analysis.setLossLessAnalysis(NormalizationAnalyzer.analyzeLossLess(config.getBaseRelation(), config.getNormalizedRelations()));
+		analysis.setLossLessAnalysis(NormalizationAnalyzer.analyzeLossless(config.getBaseRelation(), config.getNormalizedRelations()));
 		if (!analysis.getLossLessAnalysis().submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
 			return analysis;
