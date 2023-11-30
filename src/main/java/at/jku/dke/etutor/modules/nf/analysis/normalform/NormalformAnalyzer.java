@@ -130,13 +130,11 @@ public class NormalformAnalyzer {
 
 		//Deciding whether RHS comprises at least one non-prime attribute
 		boolean rhsComprisesNonPrimeAttribute = false;
-		Iterator<String> attributesIterator = dependency.iterRHSAttributes();
-		while (attributesIterator.hasNext() && !rhsComprisesNonPrimeAttribute) {
-			String currAttribute = attributesIterator.next();
-
+		for (String currAttribute : dependency.getRHSAttributes()) {
 			if (!isPrimeAttribute(currAttribute, config.getCorrectMinimalKeys())) {
 				rhsComprisesNonPrimeAttribute = true;
 				violation.addNonPrimRHSAttribute(currAttribute);
+				break;
 			}
 		}
 
