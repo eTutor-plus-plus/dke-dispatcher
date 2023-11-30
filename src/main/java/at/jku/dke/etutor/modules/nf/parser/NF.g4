@@ -26,6 +26,11 @@ key returns [Key keyObject]
 
 normalFormSubmission: normalForm '.' (normalFormViolationSet)? ;                    // start rule
 normalFormViolationSet : normalFormViolation (';' normalFormViolation)* ;
+/*
+ * The original eTutor would pass in the IDs of violated functional dependencies, which had to be linked to their ids
+ * on the UI side. As this is probably not possible on Moodle (or desired at all), the student instead enters the
+ * actual dependency.
+*/
 normalFormViolation : functionalDependency ':' normalForm ;
 normalForm returns [NormalformLevel level] :
         '1' {$level = NormalformLevel.FIRST;}

@@ -3,9 +3,10 @@ package at.jku.dke.etutor.modules.nf.model;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.TreeSet;
-import java.util.Vector;
 
 public class FunctionalDependency implements Serializable{
 
@@ -13,7 +14,6 @@ public class FunctionalDependency implements Serializable{
 	private final TreeSet<String> rhs;
 
 	public FunctionalDependency() {
-		super();
 		this.lhs = new TreeSet<>(new AttributeCollator());
 		this.rhs = new TreeSet<>(new AttributeCollator());
 	}
@@ -24,13 +24,20 @@ public class FunctionalDependency implements Serializable{
 		this.setRHSAttributes(rhs);
 	}
 
-	public Vector<FunctionalDependency> unfold() {
-		FunctionalDependency dependency;
-
-		Vector<FunctionalDependency> unfoldedRepresentation = new Vector<>();
+	/**
+	 * This method splits this <code>FunctionalDependency</code> up into multiple <code>FunctionalDependencies</code>,
+	 * each with the same left hand side and a single attribute on the right hand side. (Gerald Wimmer, 2023-11-30)
+	 * @return A <code>List</code> of unfolded functional dependencies, derived from this one
+	 */
+	public List<FunctionalDependency> unfold() {
+		/*
+		 * As the only usage of this method's return value is to add all values to another collection, I replaced the
+		 * Vector with a LinkedList for faster insertion here.
+		 */
+		List<FunctionalDependency> unfoldedRepresentation = new LinkedList<>();
 
         for (String rh : this.rhs) {
-            dependency = new FunctionalDependency(this.lhs, null);
+            FunctionalDependency dependency = new FunctionalDependency(this.lhs, null);
             dependency.addRHSAttribute(rh);
             if (!dependency.isTrivial()) {
                 unfoldedRepresentation.add(dependency);
@@ -41,15 +48,7 @@ public class FunctionalDependency implements Serializable{
 	}
 
 	public boolean isTrivial() {
-
-		if (this.lhs.isEmpty()) {
-			return true;
-		}
-		if (this.rhs.isEmpty()) {
-			return true;
-		}
-
-		return this.lhs.containsAll(this.rhs);
+		return this.lhs.isEmpty() || this.rhs.isEmpty() || this.lhs.containsAll(this.rhs);
 	}
 
 	@Override
