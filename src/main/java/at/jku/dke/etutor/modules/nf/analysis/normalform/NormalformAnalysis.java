@@ -28,28 +28,20 @@ public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
 	}
 	
 	public NormalformLevel getViolatedNormalformLevel(FunctionalDependency dependency) {
-		for(NormalformViolation violation : firstNormalFormViolations) {
-			if (violation.getFunctionalDependency().equals(dependency)) {
-				return NormalformLevel.FIRST;
-			}
+		if(firstNormalFormViolations.stream().anyMatch(vio -> vio.getFunctionalDependency().equals(dependency))) {
+			return NormalformLevel.FIRST;
 		}
 
-		for(NormalformViolation violation : secondNormalFormViolations) {
-			if (violation.getFunctionalDependency().equals(dependency)) {
-				return NormalformLevel.SECOND;
-			}
+		if(secondNormalFormViolations.stream().anyMatch(vio -> vio.getFunctionalDependency().equals(dependency))) {
+			return NormalformLevel.SECOND;
 		}
 
-		for(NormalformViolation violation : thirdNormalFormViolations) {
-			if (violation.getFunctionalDependency().equals(dependency)) {
-				return NormalformLevel.THIRD;
-			}
+		if(thirdNormalFormViolations.stream().anyMatch(vio -> vio.getFunctionalDependency().equals(dependency))) {
+			return NormalformLevel.THIRD;
 		}
 
-		for(NormalformViolation violation : boyceCoddNormalFormViolations) {
-			if (violation.getFunctionalDependency().equals(dependency)) {
-				return NormalformLevel.BOYCE_CODD;
-			}
+		if(boyceCoddNormalFormViolations.stream().anyMatch(vio -> vio.getFunctionalDependency().equals(dependency))) {
+			return NormalformLevel.BOYCE_CODD;
 		}
 
 		return null;
