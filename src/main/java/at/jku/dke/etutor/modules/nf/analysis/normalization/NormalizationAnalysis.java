@@ -66,7 +66,7 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 		this.depPresAnalysis = analysis;
 	}
 
-	public void setLossLessAnalysis(LosslessAnalysis analysis) {
+	public void setLosslessAnalysis(LosslessAnalysis analysis) {
 		this.lossLessAnalysis = analysis;
 	}
 	

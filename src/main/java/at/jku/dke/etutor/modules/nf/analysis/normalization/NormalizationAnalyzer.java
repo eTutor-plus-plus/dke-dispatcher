@@ -19,7 +19,6 @@ import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelation;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -30,7 +29,7 @@ public class NormalizationAnalyzer {
 		// This class is not meant to be instantiated.
 	}
 	
-	public static NormalizationAnalysis analyze(NormalizationAnalyzerConfig config){
+	public static NormalizationAnalysis analyze(NormalizationAnalyzerConfig config) {
 		NormalizationAnalysis analysis = new NormalizationAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
 		analysis.setMaxLostDependencies(config.getMaxLostDependencies());
@@ -44,7 +43,7 @@ public class NormalizationAnalyzer {
 		}
 
 		//ANALYZE LOSSLESS
-		analysis.setLossLessAnalysis(analyzeLossless(config.getBaseRelation(), config.getNormalizedRelations()));
+		analysis.setLosslessAnalysis(analyzeLossless(config.getBaseRelation(), config.getNormalizedRelations()));
 		if (!analysis.getLossLessAnalysis().submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
 			return analysis;
@@ -68,7 +67,6 @@ public class NormalizationAnalyzer {
 	
 		//ANALYZE TRIVIAL FUNCTIONAL DEPENDENCIES
 		for (IdentifiedRelation currRelation : config.getNormalizedRelations()) {
-
 			analysis.addTrivialDependenciesAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeTrivialDependencies(currRelation.getFunctionalDependencies()));
 			if (!analysis.getTrivialDependenciesAnalysis(currRelation.getID()).submissionSuitsSolution()){
 				analysis.setSubmissionSuitsSolution(false);
@@ -175,10 +173,8 @@ public class NormalizationAnalyzer {
         for (Relation decomposedRelation : decomposedRelations) {
             decomposedRelationsDependencies.addAll(decomposedRelation.getFunctionalDependencies());
         }
-		
-		Iterator<FunctionalDependency> baseRelationDependenciesIterator = baseRelation.iterFunctionalDependencies();
-		while(baseRelationDependenciesIterator.hasNext()){
-			FunctionalDependency currBaseDependency = baseRelationDependenciesIterator.next();
+
+		for (FunctionalDependency currBaseDependency : baseRelation.getFunctionalDependencies()){
 			if (!Member.execute(currBaseDependency, decomposedRelationsDependencies)){
 				analysis.addLostFunctionalDependency(currBaseDependency);						
 			}
