@@ -70,6 +70,7 @@ public class DDLEvaluator implements Evaluator {
         String action;
         String submission;
         int diagnoseLevel;
+        boolean ok;
 
         String user;
         String userPwd;
@@ -165,14 +166,19 @@ public class DDLEvaluator implements Evaluator {
         // Execute analysis
         analysis = analyzer.analyze(analysis.getSubmission(), analyzerConfig);
 
+        ok = true;
+
         // Check for each criterion if the solution is correct
         criterionAnalysisIterator = analysis.iterCriterionAnalysis();
         while (criterionAnalysisIterator.hasNext()) {
             criterionAnalysis = criterionAnalysisIterator.next();
             if(!criterionAnalysis.isCriterionSatisfied() || criterionAnalysis.getAnalysisException() != null) {
-                analysis.setSubmissionSuitsSolution(false);
+                ok = false;
             }
         }
+
+        // Set if the submission suits the solution
+        analysis.setSubmissionSuitsSolution(ok);
 
         // Reset user schema and release user
         DBHelper.resetUserConnection(userConn, user);
