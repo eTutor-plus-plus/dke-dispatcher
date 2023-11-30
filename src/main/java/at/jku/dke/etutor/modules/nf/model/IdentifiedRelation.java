@@ -5,7 +5,6 @@ import at.jku.dke.etutor.modules.nf.ui.MalformedRelationIDException;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Iterator;
 
 public class IdentifiedRelation extends Relation implements Serializable, Cloneable, RDBDSpecification {
 
@@ -49,23 +48,20 @@ public class IdentifiedRelation extends Relation implements Serializable, Clonea
 		toString = toString.concat("Relation: " + this.getName() + "(" + this.getID() + ")\n");
 
 		toString = toString.concat("Attributes: \n");
-		Iterator<String> attributesIter = this.iterAttributes();
-		while (attributesIter.hasNext()){
-			toString = toString.concat(attributesIter.next() + "; ");
+		for (String a : getAttributes()) {
+			toString = toString.concat(a + "; ");
 		}
 		toString = toString.concat("\n");
 
 		toString = toString.concat("Dependencies: \n");
-		Iterator<FunctionalDependency> fdIter = this.iterFunctionalDependencies();
-		while (fdIter.hasNext()){
-			toString = toString.concat(fdIter.next().toString() + "; ");
+		for (FunctionalDependency fd : getFunctionalDependencies()) {
+			toString = toString.concat(fd + "; ");
 		}
 		toString = toString.concat("\n");
 
 		toString = toString.concat("Keys: \n");
-		Iterator<Key> minKeysiter = this.iterMinimalKeys();
-		while (minKeysiter.hasNext()){
-			toString = toString.concat(minKeysiter.next().toString() + "; ");
+		for (Key k : getMinimalKeys()) {
+			toString = toString.concat(k + "; ");
 		}
 		toString = toString.concat("\n");
 		

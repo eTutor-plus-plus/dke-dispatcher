@@ -6,6 +6,7 @@ import at.jku.dke.etutor.modules.nf.model.Relation;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 
 public class ReductionByResolution {
@@ -107,20 +108,17 @@ public class ReductionByResolution {
 	}
 	
 	public static HashSet<FunctionalDependency> execute_old(Relation rel, Collection<String> subScheme) {
-		String currAttribute;
-
 		Vector<String> attributes = new Vector<>();
-		Iterator<String> attributesIterator = rel.iterAttributes();
-		while (attributesIterator.hasNext()) {
-			currAttribute = attributesIterator.next();
+		for (String currAttribute : rel.getAttributes()) {
 			if (!subScheme.contains(currAttribute)) {
 				attributes.add(currAttribute);
 			}
 		}
 
-		HashSet<FunctionalDependency> dependencies = rel.getFunctionalDependencies();
-		HashSet<FunctionalDependency> result = MinimalCover.unfold(dependencies);
+		Set<FunctionalDependency> dependencies = rel.getFunctionalDependencies();
+		Set<FunctionalDependency> result = MinimalCover.unfold(dependencies);
 
+		String currAttribute;
 		while (!attributes.isEmpty()) {
 			currAttribute = attributes.get(0);
 			
@@ -172,20 +170,18 @@ public class ReductionByResolution {
 	
 	
 	public static HashSet<FunctionalDependency> execute(Relation rel, Collection<String> subScheme) {
-		String currAttribute;
-
 		Vector<String> attributes = new Vector<>();
-		Iterator<String> attributesIterator = rel.iterAttributes();
-		while (attributesIterator.hasNext()) {
-			currAttribute = attributesIterator.next();
+
+		for (String currAttribute : rel.getAttributes()) {
 			if (!subScheme.contains(currAttribute)) {
 				attributes.add(currAttribute);
 			}
 		}
 
-		HashSet<FunctionalDependency> dependencies = rel.getFunctionalDependencies();
-		HashSet<FunctionalDependency> result = MinimalCover.unfold(dependencies);
+		Set<FunctionalDependency> dependencies = rel.getFunctionalDependencies();
+		Set<FunctionalDependency> result = MinimalCover.unfold(dependencies);
 
+		String currAttribute;
 		while (!attributes.isEmpty()) {
 			currAttribute = attributes.get(0);
 			

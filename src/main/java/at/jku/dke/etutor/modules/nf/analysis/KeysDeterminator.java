@@ -180,15 +180,13 @@ public class KeysDeterminator {
 		TreeSet<Key> superKeys = new TreeSet<>(new KeyComparator());
 
 		//CALCULATING ATTRIBUTES THAT ARE PART OF EVERY KEY - RESTRICTING SET OF CANDIDATE ATTRIBUTES
-        HashSet<String> constantAttributes = new HashSet<>(relation.getAttributes());
-		Iterator<FunctionalDependency> dependenciesIterator = relation.iterFunctionalDependencies();
-		while (dependenciesIterator.hasNext()){
-			FunctionalDependency currDependency = dependenciesIterator.next();
+        Set<String> constantAttributes = new HashSet<>(relation.getAttributes());
+		for (FunctionalDependency currDependency : relation.getFunctionalDependencies()){
 			constantAttributes.removeAll(currDependency.getLHSAttributes());
 			constantAttributes.removeAll(currDependency.getRHSAttributes());
 		}
 
-        HashSet<String> candidateAttributes = new HashSet<>(relation.getAttributes());
+        Set<String> candidateAttributes = new HashSet<>(relation.getAttributes());
 		candidateAttributes.removeAll(constantAttributes);
 		
 		if (!candidateAttributes.isEmpty()){

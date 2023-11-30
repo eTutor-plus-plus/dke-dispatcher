@@ -258,16 +258,7 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 	
 	public static String printParameters(Relation relation, int indent) throws IOException {
-		String keys;
-		String offset;
-		String attributes;
-		String dependencies;
 		String relationID;
-		StringBuilder out = new StringBuilder();
-		
-		Iterator<Key> keysIterator;
-		Iterator<String> attributesIterator;
-		Iterator<FunctionalDependency> dependenciesIterator;
 
 		if (relation instanceof IdentifiedRelation) {
 			relationID = ((IdentifiedRelation)relation).getID();
@@ -275,26 +266,24 @@ public class HTMLPrinter implements MessageSourceAware {
 			relationID = "";
 		}
 		
-		offset = getOffset(indent);
+		String offset = getOffset(indent);
 
-		keys = "";
-		keysIterator = relation.iterMinimalKeys();
-		while (keysIterator.hasNext()) {
-			keys = keys.concat(keysIterator.next() + ";");
+		StringBuilder keys = new StringBuilder();
+		for (Key k : relation.getMinimalKeys()) {
+			keys.append(k + ";");
 		}
 
-		attributes = "";
-		attributesIterator = relation.iterAttributes();
-		while (attributesIterator.hasNext()) {
-			attributes = attributes.concat(attributesIterator.next() + ";");
+		StringBuilder attributes = new StringBuilder();
+		for (String a : relation.getAttributes()) {
+			attributes.append(a + ";");
 		}
 
-		dependencies = "";
-		dependenciesIterator = relation.iterFunctionalDependencies();
-		while (dependenciesIterator.hasNext()) {
-			dependencies = dependencies.concat(dependenciesIterator.next() + ";");
+		StringBuilder dependencies = new StringBuilder();
+		for (FunctionalDependency fd : relation.getFunctionalDependencies()) {
+			dependencies.append(fd + ";");
 		}
 
+		StringBuilder out = new StringBuilder();
 		out.append(offset);
 		out.append("<input");
 		out.append(" type='hidden'");
@@ -318,6 +307,7 @@ public class HTMLPrinter implements MessageSourceAware {
 		out.append(" name='").append(relationID).append("_DEPENDENCIES").append("'");
 		out.append(" value='").append(dependencies).append("'/>");
 		out.append(LINE_SEP);
+
 		return out.toString();
 	}
 
@@ -594,32 +584,23 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 	
 	public static String printAssignmentForRBR(RBRSpecification spec, int indent, Locale locale) throws IOException {
-		String relationAttributes;
-		String dependencies;
-		String baseAttributes;
 		String offset;
-		boolean first;
 		StringBuilder out = new StringBuilder();
 		
 		offset = getOffset(indent);
-		relationAttributes = "";
-		first = true;
-		Iterator<String> attributesIt = spec.getBaseRelation().iterAttributes();
-		while (attributesIt.hasNext()){
-			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + attributesIt.next());
-			first = false;
+		StringJoiner relationAttributes = new StringJoiner("&nbsp;");
+		for (String a : spec.getBaseRelation().getAttributes()){
+			relationAttributes.add(a);
 		}
-		dependencies = "";
-		first = true;
+
+		StringJoiner dependencies = new StringJoiner(", ");
         for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
-            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
-            first = false;
-        }
-		baseAttributes = "";
-		first = true;
+            dependencies.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
+		}
+
+		StringJoiner baseAttributes = new StringJoiner("&nbsp;");
         for (String s : spec.getBaseAttributes()) {
-            baseAttributes = baseAttributes.concat((first ? "" : "&nbsp;") + s);
-            first = false;
+            baseAttributes.add(s);
         }
 
 		out.append(offset).append("<p>").append(LINE_SEP);
@@ -656,9 +637,8 @@ public class HTMLPrinter implements MessageSourceAware {
 		String offset = getOffset(indent);
 		String relationAttributes = "";
 		boolean first = true;
-		Iterator<String> it = spec.getBaseRelation().iterAttributes();
-		while (it.hasNext()){
-			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + it.next());
+		for (String a : spec.getBaseRelation().getAttributes()){
+			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + a);
 			first = false;
 		}
 		String dependencies = "";
@@ -708,9 +688,8 @@ public class HTMLPrinter implements MessageSourceAware {
 		String offset = getOffset(indent);
 		String relationAttributes = "";
 		boolean first = true;
-		Iterator<String> it = spec.getBaseRelation().iterAttributes();
-		while (it.hasNext()){
-			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + it.next());
+		for (String a : spec.getBaseRelation().getAttributes()){
+			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + a);
 			first = false;
 		}
 		String dependencies = "";
@@ -801,9 +780,8 @@ public class HTMLPrinter implements MessageSourceAware {
 		offset = getOffset(indent);
 		relationAttributes = "";
 		first = true;
-		Iterator<String> it = spec.getBaseRelation().iterAttributes();
-		while (it.hasNext()){
-			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + it.next());
+		for (String a : spec.getBaseRelation().getAttributes()){
+			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + a);
 			first = false;
 		}
 		dependencies = "";
@@ -892,9 +870,8 @@ public class HTMLPrinter implements MessageSourceAware {
 		offset = getOffset(indent);
 		relationAttributes = "";
 		first = true;
-		Iterator<String> it = spec.iterAttributes();
-		while (it.hasNext()){
-			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + it.next());
+		for (String a : spec.getAttributes()){
+			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + a);
 			first = false;
 		}
 		dependencies = "";
@@ -970,9 +947,8 @@ public class HTMLPrinter implements MessageSourceAware {
 		offset = getOffset(indent);
 		relationAttributes = "";
 		first = true;
-		Iterator<String> it = spec.iterAttributes();
-		while (it.hasNext()){
-			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + it.next());
+		for (String a : spec.getAttributes()){
+			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + a);
 			first = false;
 		}
 		dependencies = "";

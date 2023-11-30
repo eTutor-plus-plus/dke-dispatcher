@@ -41,10 +41,7 @@ public class RBRAnalyzer {
 			}
 		}
 
-		Iterator<FunctionalDependency> submittedDependenciesIterator = subRelation.iterFunctionalDependencies();
-		while (submittedDependenciesIterator.hasNext()){
-			FunctionalDependency currSubmittedDependency = submittedDependenciesIterator.next();
-
+		for (FunctionalDependency currSubmittedDependency : subRelation.getFunctionalDependencies()){
 			if (!Member.execute(currSubmittedDependency, correctDependencies)) {
 				analysis.addAdditionalFunctionalDependency(currSubmittedDependency);
 				analysis.setSubmissionSuitsSolution(false);

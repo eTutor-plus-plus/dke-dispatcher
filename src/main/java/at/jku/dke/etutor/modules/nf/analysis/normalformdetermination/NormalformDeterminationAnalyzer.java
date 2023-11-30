@@ -12,11 +12,8 @@ import java.util.logging.Level;
 public class NormalformDeterminationAnalyzer {
 
 	public static NormalformDeterminationAnalysis analyze(NormalformDeterminationSubmission submission, NormalformAnalyzerConfig config){
-		FunctionalDependency currDependency;
-		
 		NormalformDeterminationAnalysis analysis = new NormalformDeterminationAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
-		Iterator<FunctionalDependency> dependenciesIterator = config.getRelation().iterFunctionalDependencies();
 		
 		StringBuilder temp = new StringBuilder();
         for (Key key : config.getCorrectMinimalKeys()) {
@@ -25,8 +22,7 @@ public class NormalformDeterminationAnalyzer {
 		RDBDHelper.getLogger().log(Level.INFO, "Correct Minimal Keys: " + temp);
 		
 		//CHECK DEPENDENCIES
-		while (dependenciesIterator.hasNext()){
-			currDependency = dependenciesIterator.next();
+		for (FunctionalDependency currDependency : config.getRelation().getFunctionalDependencies()){
 			//RDBDHelper.getLogger().log(Level.INFO, "Check Dependency: " + currDependency);
 
 			if (NormalformAnalyzer.satisfiesFirstNormalform(analysis, currDependency, config)){
@@ -63,9 +59,7 @@ public class NormalformDeterminationAnalyzer {
 		Integer currID;
 		NormalformLevel foundViolatedLevel;
 		NormalformLevel correctViolatedLevel;
-		Iterator<FunctionalDependency> iter = config.getRelation().iterFunctionalDependencies();
-		while (iter.hasNext()){
-			currDependency = iter.next();
+		for (FunctionalDependency currDependency : config.getRelation().getFunctionalDependencies()){
 			currID = submission.getIDForDependency(currDependency);
 			RDBDHelper.getLogger().log(Level.INFO, "Check NF-Level of dependency: " + currDependency);
 			
