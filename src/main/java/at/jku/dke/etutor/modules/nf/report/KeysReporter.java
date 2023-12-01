@@ -13,8 +13,8 @@ import java.util.logging.Level;
 
 public class KeysReporter {
 
-	public static Report report(KeysAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Report report = new Report();
+	public static NFReport report(KeysAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
+		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE

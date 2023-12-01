@@ -15,8 +15,8 @@ import java.util.logging.Level;
 
 public class MinimalCoverReporter {
 
-	public static Report report(MinimalCoverAnalysis analysis, Grading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Report report = new Report();
+	public static NFReport report(MinimalCoverAnalysis analysis, Grading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
+		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE

@@ -14,8 +14,8 @@ import java.util.Locale;
 
 public class NormalformReporter {
 
-	public static Report report(NormalformDeterminationAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Report report = new Report();
+	public static NFReport report(NormalformDeterminationAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
+		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE

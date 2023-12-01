@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.core.evaluation;
 
 /**
- * Class implementing the Report interface that can be extended by the module´s
+ * Class implementing the NFReport interface that can be extended by the module´s
  */
 public class DefaultReport implements Report{
 	/**

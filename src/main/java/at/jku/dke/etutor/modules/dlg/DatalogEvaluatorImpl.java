@@ -226,7 +226,7 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
             }
         } else {
         	msg = new String();
-            msg += "Report processing was stopped.\n ";
+            msg += "NFReport processing was stopped.\n ";
             msg += "Passed '" + DatalogConstants.ATTR_ACTION + "' attribute '";
             msg += action + "' is not applicable.";
             LOGGER.error(msg);
@@ -288,7 +288,7 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
         diagnoseLevelStr = passedAttributes.get(DatalogConstants.ATTR_DIAGNOSE_LEVEL);
         if (diagnoseLevelStr == null) {
             msg = new String();
-            msg += "Report processing was stopped.\n";
+            msg += "NFReport processing was stopped.\n";
             msg += "Passed attribute " + DatalogConstants.ATTR_DIAGNOSE_LEVEL;
             msg += " is null or no String.";
             LOGGER.error(msg);
@@ -298,7 +298,7 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
             diagnoseLevel = Integer.parseInt(diagnoseLevelStr);
         } catch (NumberFormatException e) {
         	msg = new String();
-            msg += "Report processing was stopped.\n ";
+            msg += "NFReport processing was stopped.\n ";
             msg += "No valid diagnose level: " + diagnoseLevelStr + ".";
             LOGGER.error(msg);
             throw new ReportException(msg);
@@ -307,11 +307,11 @@ public class DatalogEvaluatorImpl implements DatalogEvaluator {
             fb = datalogAnalysis.getFeedback(datalogGrading, null, diagnoseLevel);
             return fb;
         } catch (ParameterException e) {
-            msg = "Report processing was stopped.";
+            msg = "NFReport processing was stopped.";
             LOGGER.error(msg, e);
             throw new ReportException(msg, e);
         } catch (Exception e) {
-            msg = "Report processing was stopped.";
+            msg = "NFReport processing was stopped.";
             LOGGER.error(msg, e);
             throw new ReportException(msg);
         }

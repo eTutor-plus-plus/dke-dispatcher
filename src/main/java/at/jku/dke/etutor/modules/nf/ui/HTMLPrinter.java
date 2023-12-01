@@ -12,7 +12,7 @@ import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.report.ErrorReport;
 import at.jku.dke.etutor.modules.nf.report.ErrorReportGroup;
-import at.jku.dke.etutor.modules.nf.report.Report;
+import at.jku.dke.etutor.modules.nf.report.NFReport;
 import at.jku.dke.etutor.modules.nf.report.ReportAtomType;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
@@ -105,11 +105,7 @@ public class HTMLPrinter implements MessageSourceAware {
 		return out.toString();
 	}
 
-	public static String printReport(Report report, int displayIndent, int codeIndent, Locale locale) throws IOException{
-		Vector<ErrorReport> errorReports;
-		Vector<ErrorReportGroup> errorReportGroups;
-		ErrorReport currErrorReport;
-		ErrorReportGroup currErrorReportGroup;
+	public static String printReport(NFReport report, int displayIndent, int codeIndent, Locale locale) throws IOException{
 		StringBuilder out = new StringBuilder();
 
 		out.append("<div style='margin-left:").append(displayIndent * OFFSET).append("px;'>").append(LINE_SEP);
@@ -128,8 +124,8 @@ public class HTMLPrinter implements MessageSourceAware {
 		}
 
 		//PRINT ERRORS
-		errorReports = report.getErrorReports();
-		errorReportGroups = report.getErrorReportGroups();
+		List<ErrorReport> errorReports = report.getErrorReports();
+		List<ErrorReportGroup> errorReportGroups = report.getErrorReportGroups();
 		
 		if ((!errorReports.isEmpty()) || (!errorReportGroups.isEmpty())){
 			out.append("		<tr>").append(LINE_SEP);
@@ -140,24 +136,20 @@ public class HTMLPrinter implements MessageSourceAware {
 			
 			//PRINT ERROR REPORTS
 			if (!errorReports.isEmpty()) {
-				for (int i=0; i<errorReports.size(); i++){
-					currErrorReport = errorReports.get(i);
-					out.append(printErrorReport(currErrorReport, displayIndent, codeIndent));
-					if (i < errorReports.size()-1){
-						out.append("						<div class='gap'></div>").append(LINE_SEP);
-					}
+				StringJoiner errorReportJoiner = new StringJoiner("						<div class='gap'></div>" + LINE_SEP);
+				for (ErrorReport currErrorReport: errorReports){
+					errorReportJoiner.add(printErrorReport(currErrorReport, displayIndent, codeIndent));
 				}
+				out.append(errorReportJoiner);
 			}
 
 			//PRINT ERROR REPORT GROUPS
 			if (!errorReportGroups.isEmpty()) {
-				for (int i=0; i<errorReportGroups.size(); i++){
-					currErrorReportGroup = errorReportGroups.get(i);
+				StringJoiner errorReportGroupJoiner = new StringJoiner("						<div class='gap'></div>" + LINE_SEP);
+				for (ErrorReportGroup currErrorReportGroup : errorReportGroups){
 					out.append(printErrorReportGroup(currErrorReportGroup, displayIndent + 1, codeIndent));
-					if (i < errorReports.size()-1){
-						out.append("						<div class='gap'></div>").append(LINE_SEP);
-					}
 				}
+				out.append(errorReportGroupJoiner);
 			}
 
 			out.append("					</div>").append(LINE_SEP);
@@ -1060,7 +1052,7 @@ public class HTMLPrinter implements MessageSourceAware {
 		return out.toString();
 	}
 
-	public static void createHTMLSiteForReport(Report report){
+	public static void createHTMLSiteForReport(NFReport report){
 
 		PrintWriter writer = null;
 		FileOutputStream out = null;
@@ -1320,7 +1312,7 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static void testReport(){
-		Report report = new Report();
+		NFReport report = new NFReport();
 		report.setPrologue("Congratulations! Everything is correct.");
 		report.setShowPrologue(true);
 		

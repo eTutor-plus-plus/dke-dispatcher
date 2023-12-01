@@ -1,10 +1,11 @@
 package at.jku.dke.etutor.modules.nf.report;
 
 import java.io.Serializable;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
+import at.jku.dke.etutor.core.evaluation.Report;
 
-public class Report implements at.jku.dke.etutor.core.evaluation.Report, Serializable {
+public class NFReport implements Report, Serializable {
 
 	private String prologue;
 
@@ -13,7 +14,7 @@ public class Report implements at.jku.dke.etutor.core.evaluation.Report, Seriali
 	private final Vector<ErrorReport> errorReports;
 	private final Vector<ErrorReportGroup> errorReportGroups;
 	
-	public Report() {
+	public NFReport() {
 		super();
 		this.prologue = null;
 		this.showPrologue = true;
@@ -38,7 +39,7 @@ public class Report implements at.jku.dke.etutor.core.evaluation.Report, Seriali
 		return this.prologue;
 	}
 
-	public Vector<ErrorReport> getErrorReports(){
+	public List<ErrorReport> getErrorReports(){
 		return (Vector<ErrorReport>)this.errorReports.clone();
 	}
 
@@ -46,7 +47,7 @@ public class Report implements at.jku.dke.etutor.core.evaluation.Report, Seriali
 		this.errorReports.add(report);
 	}
 
-	public Vector<ErrorReportGroup> getErrorReportGroups(){
+	public List<ErrorReportGroup> getErrorReportGroups(){
 		return (Vector<ErrorReportGroup>)this.errorReportGroups.clone();
 	}
 

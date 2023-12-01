@@ -3,7 +3,7 @@ package at.jku.dke.etutor.modules.uml.report;
 import at.jku.dke.etutor.core.evaluation.DefaultReport;
 
 /**
- * Report for UML tasks.
+ * NFReport for UML tasks.
  */
 public class UMLReport extends DefaultReport {
 

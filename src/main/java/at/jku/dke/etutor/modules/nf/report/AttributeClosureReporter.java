@@ -12,8 +12,8 @@ import java.util.logging.Level;
 
 public class AttributeClosureReporter {
 
-	public static Report report(AttributeClosureAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Report report = new Report();
+	public static NFReport report(AttributeClosureAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
+		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE

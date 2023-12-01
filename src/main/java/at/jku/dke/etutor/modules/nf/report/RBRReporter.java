@@ -12,8 +12,8 @@ import java.util.Locale;
 
 public class RBRReporter {
 	
-	public static Report report(RBRAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Report report = new Report();
+	public static NFReport report(RBRAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
+		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE

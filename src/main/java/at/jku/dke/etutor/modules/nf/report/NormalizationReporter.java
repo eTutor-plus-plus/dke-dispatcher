@@ -11,14 +11,13 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import org.springframework.context.MessageSource;
 
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.logging.Level;
 
 public class NormalizationReporter {
 
-	public static Report report(NormalizationAnalysis analysis, DefaultGrading grading, NormalizationReporterConfig config, MessageSource messageSource, Locale locale){
-		Report report = new Report();
+	public static NFReport report(NormalizationAnalysis analysis, DefaultGrading grading, NormalizationReporterConfig config, MessageSource messageSource, Locale locale){
+		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 		
 		//SET PROLOGUE

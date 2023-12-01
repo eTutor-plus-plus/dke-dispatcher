@@ -14,9 +14,9 @@ import java.util.logging.Level;
 
 public class DecomposeReporter {
 
-	public static Report report(DecomposeReporterConfig config, MessageSource messageSource, Locale locale){
+	public static NFReport report(DecomposeReporterConfig config, MessageSource messageSource, Locale locale){
 		ErrorReport reportAtom;
-		Report report = new Report();
+		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE

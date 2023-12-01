@@ -36,7 +36,7 @@ public interface Evaluator {
      * @param passedAttributes the passed attributes
      * @param passedParameters the passed parameters
      * @param locale the locale
-     * @return a Report instance
+     * @return a NFReport instance
      * @throws Exception if an error occurs
      */
     public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception;
