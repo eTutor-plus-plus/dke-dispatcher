@@ -5,6 +5,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -152,22 +153,14 @@ public class DynamicDroolsBuilder implements AutoCloseable {
     }
 
 
-    public KieContainer getKieContainer(String rules, EventProcessingOption processingOption) {
+    public Results checkDroolsSyntax(String rules) {
         // Load rules dynamically
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.write("src/main/resources/rules/DynamicRules.drl", rules);
-
-        // Build rules
-        KieBuilder kb = ks.newKieBuilder(kfs, this.classLoader).buildAll();
-        var res = kb.getResults();
-        if (res.hasMessages(Message.Level.ERROR))
-            throw new RuntimeException("Rule compilation errors: " + res);
-
-        // Set kie base event processing option
-        KieBaseConfiguration config = KieServices.Factory.get().newKieBaseConfiguration();
-        config.setOption(processingOption);
-        return ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+        KieBuilder kb = ks.newKieBuilder(kfs,this.classLoader).buildAll();
+        Results results = kb.getResults();
+        return results;
     }
 
     /**
