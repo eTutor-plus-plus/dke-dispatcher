@@ -2,6 +2,10 @@ package at.jku.dke.etutor.modules.nf;
 
 
 public class RDBDConstants {
+
+	private RDBDConstants() {
+		// This class is not meant to be instantiated. (Gerald Wimmer, 2023-12-01)
+	}
 	
     //USER INTERFACE ETUTOR-CORE CONSTANTS
     public static final String ATT_USER_ID = "userID";			//CoreConstants.ATTR_USER_ID

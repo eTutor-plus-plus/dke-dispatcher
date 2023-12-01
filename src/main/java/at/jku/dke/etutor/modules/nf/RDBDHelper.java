@@ -10,10 +10,6 @@ import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
 import at.jku.dke.etutor.modules.nf.ui.MalformedRelationIDException;
 import at.jku.dke.etutor.modules.nf.ui.SpecificationParser;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -21,7 +17,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.TreeSet;
@@ -45,7 +40,6 @@ public class RDBDHelper {
 	private static Logger rdbdLogger;
 	private static final Logger testLogger;
 	private static final Connection permanentConn;
-	private static DataSource dataSource;
 
 	static {
 		//INIT ELEMENT ID
@@ -100,10 +94,11 @@ public class RDBDHelper {
 		Connection conn = null;
 		
 		try {
-			//NOTE: enough connections must be available if multiple 
-			//connections are required within a single request at the same time
-			// conn = getDataSource().getConnection(); // Replaced with NFDataSource (Gerald Wimmer, 2023-11-30)
-			conn = NFDataSource.getConnection();
+			/*
+			 * NOTE: enough connections must be available if multiple connections are required within a single request
+			 *  at the same time
+			 */
+			conn = NFDataSource.getConnection(); // Replaced with NFDataSource (Gerald Wimmer, 2023-11-30)
 		} catch(SQLException e){
 			rdbdLogger.log(Level.SEVERE, "", e);
 		}
@@ -111,35 +106,6 @@ public class RDBDHelper {
 		return conn;
 	}
 
-	// TODO: Replace with HikariDataSource like in SQL module (Gerald Wimmer, 2023-11-12)
-	private static synchronized DataSource getDataSource() {
-		if (dataSource == null) {
-			try {
-				InitialContext ctx = new InitialContext();
-				Hashtable<?, ?> env = ctx.getEnvironment();
-				
-				String msg = "Main environment properties effectively set for JNDI context: \n";
-				msg += Context.INITIAL_CONTEXT_FACTORY + "=";
-				msg += env.get(Context.INITIAL_CONTEXT_FACTORY) + "\n";
-				msg += Context.PROVIDER_URL + "=";
-				msg += env.get(Context.PROVIDER_URL) + "\n";
-				rdbdLogger.log(Level.INFO, msg);
-	
-				msg = "Trying to lookup " + DataSource.class.getName() + " object at " + RDBDConstants.NAMING_DATASOURCE;
-				rdbdLogger.log(Level.INFO, msg);
-	
-				dataSource = (DataSource)ctx.lookup(RDBDConstants.NAMING_DATASOURCE);
-			} catch (NamingException e) {
-				String msg = "Exception when trying to retrieve a " + DataSource.class.getName()
-				+ " object from JNDI context, mapped to the context '" 
-				+ RDBDConstants.NAMING_DATASOURCE + "'. ";
-		        rdbdLogger.log(Level.SEVERE, msg, e);
-		    }
-		}
-
-		return dataSource;
-	}
-	
 	public static TreeSet<IdentifiedRelation> findSubRelations(String relationID, TreeSet<IdentifiedRelation> relations){
 		IdentifiedRelation currRelation;
 		Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
