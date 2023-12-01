@@ -85,11 +85,11 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		 * TODO: Receive submission as String instead of Serializable, pass it on to our new, shiny, parser, and receive
 		 *  what used to be passed in from this Serializable from the Parser, instead (Gerald Wimmer, 2023-11-12).
 		 */
-		// Serializable submission = (Serializable)passedAttributes.get(RDBDConstants.calcSubmissionIDFor(exerciseID));
-		Serializable submission = null; // NOTE: Temporary addition so IntelliJ doesn't complain about the uninitialized variable (Gerald Wimmer, 2023-11-12)
+		Serializable submission = passedAttributes.get(RDBDConstants.calcSubmissionIDFor(exerciseID));
+		// Serializable submission = null; // NOTE: Temporary addition so IntelliJ doesn't complain about the uninitialized variable (Gerald Wimmer, 2023-11-12)
 
 		// Source: https://datacadamia.com/antlr/getting_started (Gerald Wimmer, 2023-11-27)
-		submission = "#A,B,C#;#D,E,F#";
+		// submission = "#A,B,C#;#D,E,F#";
 		CharStream lexerInput = CharStreams.fromString((String)submission);
 		Lexer lexer = new NFLexer(lexerInput);
 		TokenStream parserInput = new CommonTokenStream(lexer);

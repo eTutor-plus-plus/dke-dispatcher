@@ -542,18 +542,15 @@ public class RDBDExercisesManager {
 	 * @throws Exception
 	 */
 	public static Serializable fetchSpecification(int exerciseID) throws Exception{
-		Blob blob;
-		String query;
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rset = null;
 		Serializable specification = null;
 		ObjectInputStream in = null;
-		
-		query = "";
-		query = query.concat("SELECT 	specification ");
-		query = query.concat("FROM 		exercises ");
-		query = query.concat("WHERE		id = " + exerciseID);
+
+		String query = 	"SELECT 	specification ";
+		query += 		"FROM 		exercises ";
+		query += 		"WHERE		id = " + exerciseID;
 
 		try {
 			conn = RDBDHelper.getPooledConnection();
@@ -563,7 +560,7 @@ public class RDBDExercisesManager {
 	
 			if (rset.next()) {
 				//TODO: resolve dependency on eTutor core classes
-				blob = getOracleBlob(rset, 1);
+				Blob blob = getOracleBlob(rset, 1);
 				//blob =((oracle.jdbc.OracleResultSet)rset).getBLOB("specification");
 				if(blob!=null){
 					in = new ObjectInputStream(blob.getBinaryStream());
@@ -625,7 +622,7 @@ public class RDBDExercisesManager {
 		Statement stmt = null;
 		ResultSet rset = null;
 		
-		try{
+		try {
 			conn = RDBDHelper.getPooledConnection();
 			stmt = conn.createStatement();
 			rset = stmt.executeQuery("SELECT rdbd_type FROM exercises WHERE id = " + exerciseID);
