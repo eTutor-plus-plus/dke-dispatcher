@@ -36,8 +36,7 @@ public class RDBDExercisesManager {
 	protected Logger logger;
 	protected int rdbdType;
 
-	public RDBDExercisesManager(int rdbdType) { 
-		super();
+	public RDBDExercisesManager(int rdbdType) {
 		try {
 			this.logger = Logger.getLogger("etutor.modules.rdbd");
 		} catch (Exception e){
@@ -50,8 +49,6 @@ public class RDBDExercisesManager {
 	}
 	
 	public int createExercise(Serializable editor, Map attributes, Map parameters) throws Exception {
-		String msg;
-		String sql;
 		BLOB blob = null;
 		ObjectOutputStream out = null;
 		RDBDSpecification specification;
@@ -62,14 +59,14 @@ public class RDBDExercisesManager {
 		ResultSet rset = null;
 		
 		if (editor == null) {
-			msg = "Expected object of type " + SpecificationEditor.class.getName();
+			String msg = "Expected object of type " + SpecificationEditor.class.getName();
 			msg += ", but passed object is " + editor;
 			logger.log(Level.SEVERE, msg);
 			throw new Exception(msg);
 		}
 		
 		if (!(editor instanceof SpecificationEditor)) {
-			msg = "Expected object of type " + SpecificationEditor.class.getName();
+			String msg = "Expected object of type " + SpecificationEditor.class.getName();
 			msg += ", but passed object is of type " + editor.getClass().getName();
 			logger.log(Level.SEVERE, msg);
 			throw new Exception(msg);
@@ -83,15 +80,14 @@ public class RDBDExercisesManager {
 
 			duplicateId = checkForDuplicate(this.rdbdType, specification, conn);
 			if (duplicateId > -1) {
-				msg = "Settings of the specified exercise are equal to those of existing exercise ";
+				String msg = "Settings of the specified exercise are equal to those of existing exercise ";
 				msg += "with ID " + duplicateId + ". Please change your settings and try again.";
 				throw new Exception(msg);
 			}
 			
 			//GET MAX ID FROM DB
-			sql = "SELECT MAX(id) FROM exercises";
-			msg = "";
-			msg = msg.concat("QUERY for select max id value:\n" + sql);
+			String sql = "SELECT MAX(id) FROM exercises";
+			String msg = "QUERY for select max id value:\n" + sql;
 			this.logger.log(Level.INFO, msg);
 			
 			stmt = conn.createStatement();
@@ -101,8 +97,7 @@ public class RDBDExercisesManager {
 				exerciseId = rs.getInt(1) + 1;
 			}
 			
-			sql = "";
-			sql = sql.concat("INSERT INTO exercises VALUES (");
+			sql = "INSERT INTO exercises VALUES (";
 			sql = sql.concat(exerciseId + ", ");
 			sql = sql.concat("empty_blob(), " + this.rdbdType + ")");
 
@@ -111,8 +106,7 @@ public class RDBDExercisesManager {
 			stmt= conn.createStatement();
 			stmt.execute(sql);
 
-			sql = "";
-			sql = sql.concat("SELECT specification ");
+			sql = "SELECT specification ";
 			sql = sql.concat("FROM	 exercises ");
 			sql = sql.concat("WHERE	 id=" + exerciseId + " for update");
 
@@ -120,7 +114,7 @@ public class RDBDExercisesManager {
 			
 			stmt.close();
 			stmt = null;
-			stmt= conn.createStatement();
+			stmt = conn.createStatement();
 			rset = stmt.executeQuery(sql);
 
 			if (rset.next()) {
@@ -542,24 +536,21 @@ public class RDBDExercisesManager {
 	 * @throws Exception
 	 */
 	public static String fetchSpecification(int exerciseID) throws Exception{
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rset = null;
 		String specification = null;
-		ObjectInputStream in = null;
 
-		try {
-			conn = RDBDHelper.getPooledConnection();
-			conn.setAutoCommit(false);
-			stmt= conn.createStatement();
-			rset = stmt.executeQuery("SELECT specification FROM exercises WHERE id = " + exerciseID);
-	
+		try (
+			Connection conn = RDBDHelper.getPooledConnection();
+			Statement stmt = conn.createStatement();
+			ResultSet rset = stmt.executeQuery("SELECT specification FROM exercises WHERE id = " + exerciseID)
+        ) {
+			// conn.setAutoCommit(false);
+
 			if (rset.next()) {
 				/*//TODO: resolve dependency on eTutor core classes
 				Blob blob = getOracleBlob(rset, 1);
 				//blob =((oracle.jdbc.OracleResultSet)rset).getBLOB("specification");
 				if(blob!=null){
-					in = new ObjectInputStream(blob.getBinaryStream());
+					in = new ObjectInputStream(blob.getBinaryStream()); // Note: "in" was variable of type ObjectInputStream
 					specification = (Serializable)in.readObject();
 					in.close();
 					in = null;
@@ -568,46 +559,17 @@ public class RDBDExercisesManager {
 				specification = rset.getString("specification");
 			}
 			
-			conn.commit(); // Note: Why do we commit after a query that changed nothing? (Gerald Wimmer, 2023-12-01)
+			// conn.commit(); // Note: Why would we commit a SELECT query that changed nothing? (Gerald Wimmer, 2023-12-01)
 		} catch (Exception e) {
-			if (conn != null) {
+			/*if (conn != null) {
 				try {
 					conn.rollback();
 				} catch (SQLException ex){
 					RDBDHelper.getLogger().log(Level.SEVERE, "", ex);
 				}
-			}
+			}*/ // Note: Again, why would we have to rollback() a SELECT query? (Gerald Wimmer, 2023-12-01)
+			RDBDHelper.getLogger().log(Level.SEVERE, "", e);
 			throw e;
-		} finally{
-			if (in != null){
-				try {
-					in.close();
-				} catch (IOException e) {
-					RDBDHelper.getLogger().log(Level.SEVERE, "", e);
-				}
-			}
-			if (rset != null){
-				try {
-					rset.close();
-				} catch (SQLException e){
-					RDBDHelper.getLogger().log(Level.SEVERE, "", e);
-				}
-
-			}
-			if (stmt != null){
-				try {
-					stmt.close();
-				} catch (SQLException e){
-					RDBDHelper.getLogger().log(Level.SEVERE, "", e);
-				}
-			}
-			if (conn != null){
-				try {
-					conn.close();
-				} catch (SQLException e){
-					RDBDHelper.getLogger().log(Level.SEVERE, "", e);
-				}
-			}
 		}
 
 		return specification;
