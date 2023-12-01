@@ -24,7 +24,7 @@ relation returns [IdentifiedRelation parsedRelation]
         $parsedRelation = new IdentifiedRelation();
     } :
         relationId {try {$parsedRelation.setID($relationId.text);} catch(Exception e) { e.printStackTrace();}} ':' '(' attributeSet {$parsedRelation.setAttributes($attributeSet.attributes);} ')' '(' keySet {$parsedRelation.setMinimalKeys($keySet.keys);} ')' '(' functionalDependencySet {$parsedRelation.setFunctionalDependencies($functionalDependencySet.functionalDependencies);} ')' ;
-relationId: 'R' Integer ('.' Integer)? ; // Todo: If the fact that the start is indistinguishable from AlphaNumericChain causes problems, add some unique prefix symbol (.e.g, '*'). (Gerald Wimmer, 2023-11-30)
+relationId: 'R' Integer ('.' Integer)? ; // Todo: If the fact that the start is indistinguishable from AlphaNumericChain causes problems, add some unique prefix symbol (e.g, '*'). (Gerald Wimmer, 2023-11-30)
 
 keySet returns [Set<Key> keys]                                                      // start rule
     @init {
