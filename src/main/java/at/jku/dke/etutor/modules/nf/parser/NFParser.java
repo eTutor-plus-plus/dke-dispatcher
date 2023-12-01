@@ -12,11 +12,8 @@ import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class NFParser extends Parser {
@@ -807,7 +804,7 @@ public class NFParser extends Parser {
 			{
 			setState(116);
 			((FunctionalDependencyContext)_localctx).attributeSet = attributeSet();
-			_localctx.fdObject.setLHSAttributes(((FunctionalDependencyContext)_localctx).attributeSet.attributes);
+			_localctx.fdObject.setLhsAttributes(((FunctionalDependencyContext)_localctx).attributeSet.attributes);
 			setState(118);
 			match(T__13);
 			setState(120);
@@ -824,7 +821,7 @@ public class NFParser extends Parser {
 			match(T__14);
 			setState(123);
 			((FunctionalDependencyContext)_localctx).attributeSet = attributeSet();
-			_localctx.fdObject.setRHSAttributes(((FunctionalDependencyContext)_localctx).attributeSet.attributes);
+			_localctx.fdObject.setRhsAttributes(((FunctionalDependencyContext)_localctx).attributeSet.attributes);
 			}
 		}
 		catch (RecognitionException re) {

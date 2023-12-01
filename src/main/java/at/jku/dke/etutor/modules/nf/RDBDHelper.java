@@ -538,7 +538,7 @@ public class RDBDHelper {
 		Iterator<FunctionalDependency> dependenciesIterator = relation.iterFunctionalDependencies();
 		while (dependenciesIterator.hasNext()){
 			dependency = dependenciesIterator.next();
-			if ((!attributes.containsAll(dependency.getLHSAttributes())) || (!attributes.containsAll(dependency.getRHSAttributes()))){			
+			if ((!attributes.containsAll(dependency.getLhsAttributes())) || (!attributes.containsAll(dependency.getRhsAttributes()))){
 				dependenciesIterator.remove();
 			}
 		}

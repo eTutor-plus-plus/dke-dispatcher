@@ -568,7 +568,7 @@ public class RDBDExercisesManager {
 				specification = rset.getString("specification");
 			}
 			
-			conn.commit();
+			conn.commit(); // Note: Why do we commit after a query that changed nothing? (Gerald Wimmer, 2023-12-01)
 		} catch (Exception e) {
 			if (conn != null) {
 				try {

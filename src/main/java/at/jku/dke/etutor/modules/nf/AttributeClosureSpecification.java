@@ -19,6 +19,7 @@ public class AttributeClosureSpecification implements Serializable, Cloneable, R
 		this.baseAttributes = new Vector<>();
 	}
 
+	@Override
 	public Object clone() throws CloneNotSupportedException {
 		AttributeClosureSpecification clone = (AttributeClosureSpecification)super.clone();
 		clone.baseAttributes = (Vector<String>)this.baseAttributes.clone();

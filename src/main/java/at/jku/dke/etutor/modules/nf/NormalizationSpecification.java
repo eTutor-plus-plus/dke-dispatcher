@@ -20,6 +20,7 @@ public class NormalizationSpecification implements Serializable, Cloneable, RDBD
 		this.baseRelation = new IdentifiedRelation();
  	}
 
+ 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		NormalizationSpecification clone = (NormalizationSpecification)super.clone();
 		if (this.baseRelation != null) {
@@ -69,7 +70,7 @@ public class NormalizationSpecification implements Serializable, Cloneable, RDBD
 			return false;
 		}
 		
-		if (!(spec.getMaxLostDependencies() == this.maxLostDependencies)){
+		if (spec.getMaxLostDependencies() != this.maxLostDependencies){
 			return false;
 		}
 

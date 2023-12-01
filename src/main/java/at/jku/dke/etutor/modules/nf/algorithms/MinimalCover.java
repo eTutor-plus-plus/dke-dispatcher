@@ -24,7 +24,7 @@ public class MinimalCover {
 			while (dependenciesIterator.hasNext()){
 				FunctionalDependency currFD = dependenciesIterator.next();
 				if (currFD.equals(keyFD)){
-					currFD.removeLHSAttributes(extraneusAttributes.get(keyFD));
+					currFD.removeLhsAttributes(extraneusAttributes.get(keyFD));
 				}
 			}
 		}
@@ -63,13 +63,13 @@ public class MinimalCover {
 		HashMap<FunctionalDependency, Vector<String>> extraneusAttributes = new HashMap<>();
 
         for (FunctionalDependency currFD : dependencies) {
-			for (String currAttribute : currFD.getLHSAttributes()) {
-                tempFD.setLHSAttributes(currFD.getLHSAttributes());
-                tempFD.setRHSAttributes(currFD.getRHSAttributes());
-                tempFD.removeLHSAttribute(currAttribute);
+			for (String currAttribute : currFD.getLhsAttributes()) {
+                tempFD.setLhsAttributes(currFD.getLhsAttributes());
+                tempFD.setRhsAttributes(currFD.getRhsAttributes());
+                tempFD.removeLhsAttribute(currAttribute);
 
                 if (extraneusAttributes.containsKey(currFD)) {
-                    tempFD.removeLHSAttributes(extraneusAttributes.get(currFD));
+                    tempFD.removeLhsAttributes(extraneusAttributes.get(currFD));
                 }
 
                 tempFDs.clear();
@@ -102,7 +102,7 @@ public class MinimalCover {
 					FunctionalDependency compDependency = (FunctionalDependency)dependencies.toArray()[j];
 
 					if (compareLHS(compDependency, currDependency)) {
-						currDependency.addAllRHSAttributes(compDependency.getRHSAttributes());
+						currDependency.addAllRhsAttributes(compDependency.getRhsAttributes());
 						processedDependencies.add(compDependency);
 					}
 				}
@@ -115,7 +115,7 @@ public class MinimalCover {
 	}
 
 	private static boolean compareLHS(FunctionalDependency fd1, FunctionalDependency fd2) {
-		return fd2.getLHSAttributes().containsAll(fd1.getLHSAttributes()) && fd1.getLHSAttributes().containsAll(fd2.getLHSAttributes());
+		return fd2.getLhsAttributes().containsAll(fd1.getLhsAttributes()) && fd1.getLhsAttributes().containsAll(fd2.getLhsAttributes());
 	}
 
 	public static HashSet<FunctionalDependency> unfold(Collection<FunctionalDependency> dependencies) {

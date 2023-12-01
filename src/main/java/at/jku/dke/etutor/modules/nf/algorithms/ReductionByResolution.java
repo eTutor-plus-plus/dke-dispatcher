@@ -145,11 +145,11 @@ public class ReductionByResolution {
 				FunctionalDependency currFD = resultIterator.next();
 
 				//HACK - VORIGE VERSION - WAR FALSCH
-				//if ((!subScheme.containsAll(currFD.getLHSAttributes())) || (!subScheme.containsAll(currFD.getRHSAttributes()))){
+				//if ((!subScheme.containsAll(currFD.getLhsAttributes())) || (!subScheme.containsAll(currFD.getRhsAttributes()))){
 				//	resultIterator.remove();
 				//} else {
 					//original code
-					if ((currFD.getLHSAttributes().contains(currAttribute))	|| (currFD.getRHSAttributes().contains(currAttribute))) {
+					if ((currFD.getLhsAttributes().contains(currAttribute))	|| (currFD.getRhsAttributes().contains(currAttribute))) {
 						resultIterator.remove();
 						//System.out.println("REMOVED DEPENDENCY: " + currFD);
 					}
@@ -208,11 +208,11 @@ public class ReductionByResolution {
 				FunctionalDependency currFD = resultIterator.next();
 
 				//HACK - VORIGE VERSION - WAR FALSCH
-				//if ((!subScheme.containsAll(currFD.getLHSAttributes())) || (!subScheme.containsAll(currFD.getRHSAttributes()))){
+				//if ((!subScheme.containsAll(currFD.getLhsAttributes())) || (!subScheme.containsAll(currFD.getRhsAttributes()))){
 				//	resultIterator.remove();
 				//} else {
 					//original code
-					if ((currFD.getLHSAttributes().contains(currAttribute))	|| (currFD.getRHSAttributes().contains(currAttribute))) {
+					if ((currFD.getLhsAttributes().contains(currAttribute))	|| (currFD.getRhsAttributes().contains(currAttribute))) {
 						resultIterator.remove();
 						//System.out.println("REMOVED DEPENDENCY: " + currFD);
 					}
@@ -239,20 +239,20 @@ public class ReductionByResolution {
 
         for (FunctionalDependency functionalDependency : dependencies) {
             currDependency = functionalDependency;
-            if (currDependency.getRHSAttributes().contains(a)) {
+            if (currDependency.getRhsAttributes().contains(a)) {
                 containingDependencies.add(currDependency);
             }
         }
 
         for (FunctionalDependency dependency : dependencies) {
             currDependency = dependency;
-            if (currDependency.getLHSAttributes().contains(a)) {
+            if (currDependency.getLhsAttributes().contains(a)) {
                 for (FunctionalDependency containingDependency : containingDependencies) {
                     FunctionalDependency resolvent = new FunctionalDependency();
-                    resolvent.addAllLHSAttributes(currDependency.getLHSAttributes());
-                    resolvent.removeLHSAttribute(a);
-                    resolvent.addAllLHSAttributes(containingDependency.getLHSAttributes());
-                    resolvent.addAllRHSAttributes(currDependency.getRHSAttributes());
+                    resolvent.addAllLhsAttributes(currDependency.getLhsAttributes());
+                    resolvent.removeLhsAttribute(a);
+                    resolvent.addAllLhsAttributes(containingDependency.getLhsAttributes());
+                    resolvent.addAllRhsAttributes(currDependency.getRhsAttributes());
 
                     if (!resolvent.isTrivial()) {
                         resolvents.add(resolvent);

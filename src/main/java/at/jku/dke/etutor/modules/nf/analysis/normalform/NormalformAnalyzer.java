@@ -8,7 +8,6 @@ import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevelComparator;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.logging.Level;
 
 public class NormalformAnalyzer {
@@ -130,7 +129,7 @@ public class NormalformAnalyzer {
 
 		//Deciding whether RHS comprises at least one non-prime attribute
 		boolean rhsComprisesNonPrimeAttribute = false;
-		for (String currAttribute : dependency.getRHSAttributes()) {
+		for (String currAttribute : dependency.getRhsAttributes()) {
 			if (!isPrimeAttribute(currAttribute, config.getCorrectMinimalKeys())) {
 				rhsComprisesNonPrimeAttribute = true;
 				violation.addNonPrimRHSAttribute(currAttribute);
@@ -145,9 +144,9 @@ public class NormalformAnalyzer {
 			isViolated = false;
 
             for (Key currKey : config.getCorrectMinimalKeys()) {
-                //RDBDHelper.getLogger().log(Level.INFO, "Check Key: " + currKey + " (Key: " + currKey.getAttributes().size() + " -  Dependency: " + dependency.getLHSAttributes().size() + ")");
+                //RDBDHelper.getLogger().log(Level.INFO, "Check Key: " + currKey + " (Key: " + currKey.getAttributes().size() + " -  Dependency: " + dependency.getLhsAttributes().size() + ")");
 
-                if ((currKey.getAttributes().containsAll(dependency.getLHSAttributes())) && (currKey.getAttributes().size() > dependency.getLHSAttributes().size())) {
+                if ((currKey.getAttributes().containsAll(dependency.getLhsAttributes())) && (currKey.getAttributes().size() > dependency.getLhsAttributes().size())) {
                     isViolated = true;
                 }
             }
@@ -157,8 +156,8 @@ public class NormalformAnalyzer {
 			keysIterator = config.getCorrectMinimalKeys().iterator();
 			while (keysIterator.hasNext()) {
 				currKey = (Key)keysIterator.next();
-				if ((currKey.getAttributes().containsAll(dependency.getLHSAttributes()))
-					&& (currKey.getAttributes().size() == dependency.getLHSAttributes().size())) {
+				if ((currKey.getAttributes().containsAll(dependency.getLhsAttributes()))
+					&& (currKey.getAttributes().size() == dependency.getLhsAttributes().size())) {
 					lhsIsKey = true;
 				}
 			}
@@ -167,7 +166,7 @@ public class NormalformAnalyzer {
 				partialKeysIterator = config.getCorrectPartialKeys().iterator();
 				while (partialKeysIterator.hasNext()) {
 					currPartialKey = (Key)partialKeysIterator.next();
-					if (dependency.getLHSAttributes().containsAll(currPartialKey.getAttributes())){
+					if (dependency.getLhsAttributes().containsAll(currPartialKey.getAttributes())){
 						isViolated = true;
 						violation.addComprisedPartialKey(currPartialKey);						
 					}
@@ -193,7 +192,7 @@ public class NormalformAnalyzer {
 
 		//Deciding whether RHS comprises at least one non-prime attribute
 		boolean rhsComprisesNonPrimeAttribute = false;
-		for (String currAttribute : dependency.getRHSAttributes()) {
+		for (String currAttribute : dependency.getRhsAttributes()) {
 			if (!isPrimeAttribute(currAttribute,config.getCorrectMinimalKeys())) {
 				rhsComprisesNonPrimeAttribute = true;
 				violation.addNonPrimRHSAttribute(currAttribute);
@@ -207,14 +206,14 @@ public class NormalformAnalyzer {
 			RDBDHelper.getLogger().log(Level.INFO, "RHS comprises non prim attribute. Is violated: " + isViolated);
 
 			for (Key currKey : config.getCorrectMinimalKeys()) {
-				//RDBDHelper.getLogger().log(Level.INFO, "Check Key: " + currKey + " (Key: " + currKey.getAttributes().size() + " -  Dependency: " + dependency.getLHSAttributes().size() + ")");
+				//RDBDHelper.getLogger().log(Level.INFO, "Check Key: " + currKey + " (Key: " + currKey.getAttributes().size() + " -  Dependency: " + dependency.getLhsAttributes().size() + ")");
 				/* OLD
-				if ((currKey.getAttributes().containsAll(dependency.getLHSAttributes()))
-					&& (currKey.getAttributes().size() == dependency.getLHSAttributes().size())) {
+				if ((currKey.getAttributes().containsAll(dependency.getLhsAttributes()))
+					&& (currKey.getAttributes().size() == dependency.getLhsAttributes().size())) {
 					isViolated = true;
 				}*/
 				
-				if (dependency.getLHSAttributes().containsAll(currKey.getAttributes())){
+				if (dependency.getLhsAttributes().containsAll(currKey.getAttributes())){
 					isViolated = false;
 					RDBDHelper.getLogger().log(Level.INFO, "LHS is a super key. Is violated: " + isViolated);
 					break;
@@ -236,12 +235,12 @@ public class NormalformAnalyzer {
 
         for (Key currKey : config.getCorrectMinimalKeys()) {
 			/* OLD
-			if ((currKey.getAttributes().containsAll(dependency.getLHSAttributes()))
-				&& (currKey.getAttributes().size() == dependency.getLHSAttributes().size())) {
+			if ((currKey.getAttributes().containsAll(dependency.getLhsAttributes()))
+				&& (currKey.getAttributes().size() == dependency.getLhsAttributes().size())) {
 				isViolated = true;
 			}*/
 
-            if (dependency.getLHSAttributes().containsAll(currKey.getAttributes())) {
+            if (dependency.getLhsAttributes().containsAll(currKey.getAttributes())) {
                 isViolated = false;
             }
         }

@@ -43,6 +43,7 @@ import at.jku.dke.etutor.modules.nf.report.NormalizationReporterConfig;
 import at.jku.dke.etutor.modules.nf.report.RBRReporter;
 import at.jku.dke.etutor.modules.nf.report.ReporterConfig;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -98,10 +99,10 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		int internalType = RDBDExercisesManager.fetchInternalType(exerciseID);
 		String specificationString = RDBDExercisesManager.fetchSpecification(exerciseID);
 
-		CharStream specificationLexerInput = CharStreams.fromString(specificationString);
+		/*CharStream specificationLexerInput = CharStreams.fromString(specificationString);
 		Lexer specificationLexer = new NFLexer(specificationLexerInput);
 		TokenStream specificationParserInput = new CommonTokenStream(specificationLexer);
-		NFParser specificationParser = new NFParser(specificationParserInput);
+		NFParser specificationParser = new NFParser(specificationParserInput);*/
 
 		/*
 		 * TODO: Pass the submission string on to the appropriate method of our new, shiny, parser (method could be
@@ -110,13 +111,18 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		 */
 		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION) {
 			//KEYS DETERMINATION
-			Relation specification = specificationParser.relation().parsedRelation;
+			//Relation specification = specificationParser.relation().parsedRelation;
+			Relation specification = null;
+			try {	// Source: https://mkyong.com/java/how-to-convert-java-object-to-from-json-jackson/
+				specification = new ObjectMapper().readValue(specificationString, Relation.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 			KeysAnalyzerConfig keysAnalyzerConfig = new KeysAnalyzerConfig();
 			KeysContainer correctKeys = KeysDeterminator.determineAllKeys(specification);
 			keysAnalyzerConfig.setCorrectMinimalKeys(correctKeys.getMinimalKeys());
 
-			// Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // Replaced with call to parser (Gerald Wimmer, 2023-11-27)
 			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
 			Relation relation = new Relation();
 			Set<Key> minimalKeys = submissionParser.keySet().keys;
@@ -129,9 +135,14 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER) {
 			//MINIMAL COVER
-			Relation specification = specificationParser.relation().parsedRelation;
+			// Relation specification = specificationParser.relation().parsedRelation;
+			Relation specification = null;
+			try {
+				specification = new ObjectMapper().readValue(specificationString, Relation.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
-			// Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // Replaced with call to parser (Gerald Wimmer, 2023-11-27)
 			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
 			Relation relation = new Relation();
 			Set<FunctionalDependency> functionalDependencies = submissionParser.functionalDependencySet().functionalDependencies;
@@ -144,8 +155,14 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) {
 			//ATTRIBUTE CLOSURE
-			AttributeClosureSpecification attributeClosureSpecification = (AttributeClosureSpecification)specification;
-			// Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // Replaced with call to parser (Gerald Wimmer, 2023-11-27)
+			// AttributeClosureSpecification attributeClosureSpecification = (AttributeClosureSpecification)specification;
+			AttributeClosureSpecification attributeClosureSpecification = null;
+			try {
+				attributeClosureSpecification = new ObjectMapper().readValue(specificationString, AttributeClosureSpecification.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
 			Relation relation = new Relation();
 			Set<String> attributes = submissionParser.attributeSet().attributes;
@@ -170,10 +187,17 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		}*/ else if (internalType == RDBDConstants.TYPE_DECOMPOSE) {	// Todo: Maybe remove and replace with Normalize, now that steps need not be validated
 			//DECOMPOSE
+			// DecomposeSpecification decomposeSpecification = (DecomposeSpecification)specification;
+			DecomposeSpecification decomposeSpecification = null;
+			try {
+				decomposeSpecification = new ObjectMapper().readValue(specificationString, DecomposeSpecification.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			StringBuilder temp;
 			
 			DecomposeAnalyzerConfig decomposeAnalyzerConfig = new DecomposeAnalyzerConfig();
-			DecomposeSpecification decomposeSpecification = (DecomposeSpecification)specification;
 
 			TreeSet<IdentifiedRelation> allRelations = new TreeSet<>(new IdentifiedRelationComparator());
 			allRelations.add(decomposeSpecification.getBaseRelation());
@@ -191,7 +215,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			if (passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION) != null && !passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION).isEmpty()){
 				baseRelationID = passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION);
 			} else {
-				baseRelationID = ((DecomposeSpecification)specification).getBaseRelation().getID();
+				baseRelationID = decomposeSpecification.getBaseRelation().getID();
 			}
 
 			decomposeAnalyzerConfig.setBaseRelation(RDBDHelper.findRelation(baseRelationID, allRelations));
@@ -224,9 +248,16 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION) { // Note: Could be identical to Decompose, now that you only have to specify the end result (Gerald Wimmer, 2023-11-27)
 			// TODO: Replace Decompose with THIS. (Gerald Wimmer, 2023-11-30)
 			//NORMALIZATION
+			// NormalizationSpecification normalizationSpecification = (NormalizationSpecification)specification;
+			NormalizationSpecification normalizationSpecification = null;
+			try {
+				normalizationSpecification = new ObjectMapper().readValue(specificationString, NormalizationSpecification.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			NormalizationAnalyzerConfig normalizationAnalyzerConfig = new NormalizationAnalyzerConfig();
-			NormalizationSpecification normalizationSpecification = (NormalizationSpecification)specification;
-			
+
 			normalizationAnalyzerConfig.setBaseRelation(normalizationSpecification.getBaseRelation());
 			normalizationAnalyzerConfig.setDesiredNormalformLevel(normalizationSpecification.getTargetLevel());
 			normalizationAnalyzerConfig.setMaxLostDependencies(normalizationSpecification.getMaxLostDependencies());
@@ -247,7 +278,14 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
 			//NORMALFORM DETERMINATION
-			Relation specification = specificationParser.relation().parsedRelation;
+			// Relation specification = specificationParser.relation().parsedRelation;
+			Relation specification = null;
+			try {
+				specification = new ObjectMapper().readValue(specificationString, Relation.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			NormalformDeterminationSubmission normalformDeterminationSubmission = (NormalformDeterminationSubmission)submission; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
 
 			//Set overall level

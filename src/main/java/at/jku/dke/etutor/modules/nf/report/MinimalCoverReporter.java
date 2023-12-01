@@ -529,7 +529,7 @@ public class MinimalCoverReporter {
 		boolean first = true;
 		String s = "";
 
-		for (String a : dependency.getLHSAttributes()){
+		for (String a : dependency.getLhsAttributes()){
 			if (first){
 				first = false;
 			} else {
@@ -541,7 +541,7 @@ public class MinimalCoverReporter {
 		s = s.concat(" &rarr; ");
 
 		first = true;
-		for (String a : dependency.getRHSAttributes()){
+		for (String a : dependency.getRhsAttributes()){
 			if (first){
 				first = false;
 			} else {

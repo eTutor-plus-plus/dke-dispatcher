@@ -178,8 +178,8 @@ public class KeysDeterminator {
 		//CALCULATING ATTRIBUTES THAT ARE PART OF EVERY KEY - RESTRICTING SET OF CANDIDATE ATTRIBUTES
         Set<String> constantAttributes = new HashSet<>(relation.getAttributes());
 		for (FunctionalDependency currDependency : relation.getFunctionalDependencies()){
-			constantAttributes.removeAll(currDependency.getLHSAttributes());
-			constantAttributes.removeAll(currDependency.getRHSAttributes());
+			constantAttributes.removeAll(currDependency.getLhsAttributes());
+			constantAttributes.removeAll(currDependency.getRhsAttributes());
 		}
 
         Set<String> candidateAttributes = new HashSet<>(relation.getAttributes());

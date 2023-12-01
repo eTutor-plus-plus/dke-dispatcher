@@ -24,10 +24,10 @@ public class Closure {
 			Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
 			while (dependenciesIterator.hasNext()) {
 				dependency = dependenciesIterator.next();
-				containsAllLHSAttributes = closure.containsAll(dependency.getLHSAttributes());
+				containsAllLHSAttributes = closure.containsAll(dependency.getLhsAttributes());
 				
 				if (containsAllLHSAttributes) {
-					closure.addAll(dependency.getRHSAttributes());
+					closure.addAll(dependency.getRhsAttributes());
 				}
 			}
 
@@ -35,8 +35,8 @@ public class Closure {
 			dependenciesIterator = dependencies.iterator();
 			while (dependenciesIterator.hasNext()) {
 				dependency = dependenciesIterator.next();
-				containsAllLHSAttributes = closure.containsAll(dependency.getLHSAttributes());
-				containsAllRHSAttributes = closure.containsAll(dependency.getRHSAttributes());
+				containsAllLHSAttributes = closure.containsAll(dependency.getLhsAttributes());
+				containsAllRHSAttributes = closure.containsAll(dependency.getRhsAttributes());
 				
 				if ((!containsAllRHSAttributes) && (containsAllLHSAttributes)){
 					again = true;

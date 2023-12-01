@@ -8,7 +8,6 @@ import at.jku.dke.etutor.modules.nf.analysis.CanonicalRepresentationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.ExtraneousAttributesAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.RedundantDependenciesAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.TrivialDependenciesAnalysis;
-import at.jku.dke.etutor.modules.nf.exercises.RDBDExercisesManager;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 
@@ -150,13 +149,13 @@ public class MinimalCoverAnalyzer {
 		while (dependenciesIterator.hasNext()) {
 			FunctionalDependency currDependency = dependenciesIterator.next();
 
-			for (String currAttribute : currDependency.getLHSAttributes()) {
-				tempDependency.setLHSAttributes(currDependency.getLHSAttributes());
-				tempDependency.setRHSAttributes(currDependency.getRHSAttributes());
-				tempDependency.removeLHSAttribute(currAttribute);
+			for (String currAttribute : currDependency.getLhsAttributes()) {
+				tempDependency.setLhsAttributes(currDependency.getLhsAttributes());
+				tempDependency.setRhsAttributes(currDependency.getRhsAttributes());
+				tempDependency.removeLhsAttribute(currAttribute);
 
 				if (analysis.getExtraneousAttributes().containsKey(currDependency)){
-					tempDependency.removeLHSAttributes(analysis.getExtraneousAttributes().get(currDependency));
+					tempDependency.removeLhsAttributes(analysis.getExtraneousAttributes().get(currDependency));
 				}
 
 				tempDependencies.clear();
@@ -197,7 +196,7 @@ public class MinimalCoverAnalyzer {
 		analysis.setSubmissionSuitsSolution(true);
 		
 		for (FunctionalDependency currDependency : dependencies){
-			if (currDependency.getRHSAttributes().size() > 1){
+			if (currDependency.getRhsAttributes().size() > 1){
 				analysis.addNotCanonicalDependency(currDependency);
 				RDBDHelper.getLogger().log(Level.INFO, "Found not canonically represented dependency.");
 				analysis.setSubmissionSuitsSolution(false);

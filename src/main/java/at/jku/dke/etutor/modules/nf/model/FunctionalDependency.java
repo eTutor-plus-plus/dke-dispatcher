@@ -2,7 +2,6 @@ package at.jku.dke.etutor.modules.nf.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -11,18 +10,18 @@ import java.util.TreeSet;
 
 public class FunctionalDependency implements Serializable{
 
-	private final TreeSet<String> lhs;
-	private final TreeSet<String> rhs;
+	private final TreeSet<String> lhsAttributes;
+	private final TreeSet<String> rhsAttributes;
 
 	public FunctionalDependency() {
-		this.lhs = new TreeSet<>(new AttributeCollator());
-		this.rhs = new TreeSet<>(new AttributeCollator());
+		this.lhsAttributes = new TreeSet<>(new AttributeCollator());
+		this.rhsAttributes = new TreeSet<>(new AttributeCollator());
 	}
 
-	public FunctionalDependency(Collection<String> lhs, Collection<String> rhs) {
+	public FunctionalDependency(Collection<String> lhsAttributes, Collection<String> rhsAttributes) {
 		this();
-		this.setLHSAttributes(lhs);
-		this.setRHSAttributes(rhs);
+		this.setLhsAttributes(lhsAttributes);
+		this.setRhsAttributes(rhsAttributes);
 	}
 
 	/**
@@ -37,8 +36,8 @@ public class FunctionalDependency implements Serializable{
 		 */
 		List<FunctionalDependency> unfoldedRepresentation = new LinkedList<>();
 
-        for (String rh : this.rhs) {
-            FunctionalDependency dependency = new FunctionalDependency(this.lhs, null);
+        for (String rh : this.rhsAttributes) {
+            FunctionalDependency dependency = new FunctionalDependency(this.lhsAttributes, null);
             dependency.addRHSAttribute(rh);
             if (!dependency.isTrivial()) {
                 unfoldedRepresentation.add(dependency);
@@ -49,7 +48,7 @@ public class FunctionalDependency implements Serializable{
 	}
 
 	public boolean isTrivial() {
-		return this.lhs.isEmpty() || this.rhs.isEmpty() || this.lhs.containsAll(this.rhs);
+		return this.lhsAttributes.isEmpty() || this.rhsAttributes.isEmpty() || this.lhsAttributes.containsAll(this.rhsAttributes);
 	}
 
 	@Override
@@ -66,35 +65,35 @@ public class FunctionalDependency implements Serializable{
 
 		dependency = (FunctionalDependency)obj;
 
-		if (!(dependency.getLHSAttributes().containsAll(this.lhs))) {
+		if (!(dependency.getLhsAttributes().containsAll(this.lhsAttributes))) {
 			return false;
 		}
 
-		if (!(dependency.getRHSAttributes().containsAll(this.rhs))) {
+		if (!(dependency.getRhsAttributes().containsAll(this.rhsAttributes))) {
 			return false;
 		}
 		
-		if (!(this.lhs.containsAll(dependency.getLHSAttributes()))) {
+		if (!(this.lhsAttributes.containsAll(dependency.getLhsAttributes()))) {
 			return false;
 		}
 
-        return this.rhs.containsAll(dependency.getRHSAttributes());
+        return this.rhsAttributes.containsAll(dependency.getRhsAttributes());
     }
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(lhs, rhs);
+		return Objects.hash(lhsAttributes, rhsAttributes);
 	}
 
 	@Override
 	public String toString() {
 		StringJoiner leftSide = new StringJoiner(" ");
-		for (String a : lhs){
+		for (String a : lhsAttributes){
 			leftSide.add(a);
 		}
 
 		StringJoiner rightSide = new StringJoiner(" ");
-		for (String a : rhs){
+		for (String a : rhsAttributes){
 			rightSide.add(a);
 		}
 
@@ -103,7 +102,7 @@ public class FunctionalDependency implements Serializable{
 
 	public boolean addLHSAttribute(String attribute) {
 		if (attribute != null) {
-			return this.lhs.add(attribute);
+			return this.lhsAttributes.add(attribute);
 		} else {
 			return false;
 		}
@@ -111,28 +110,26 @@ public class FunctionalDependency implements Serializable{
 
 	public boolean addRHSAttribute(String attribute) {
 		if (attribute != null) {
-			return this.rhs.add(attribute);
+			return this.rhsAttributes.add(attribute);
 		} else {
 			return false;
 		}
 	}
 
-	public void addAllLHSAttributes(Collection<String> attributes){
+	public void addAllLhsAttributes(Collection<String> attributes){
         for (String attribute : attributes) {
             this.addLHSAttribute(attribute);
         }
-		
 	}
 
-	public void addAllRHSAttributes(Collection<String> attributes){
+	public void addAllRhsAttributes(Collection<String> attributes){
         for (String attribute : attributes) {
             this.addRHSAttribute(attribute);
         }
-		
 	}
 
-	public void setLHSAttributes(Collection<String> attributes) {
-		this.lhs.clear();
+	public void setLhsAttributes(Collection<String> attributes) {
+		this.lhsAttributes.clear();
 		if (attributes != null) {
             for (String attribute : attributes) {
                 this.addLHSAttribute(attribute);
@@ -140,8 +137,8 @@ public class FunctionalDependency implements Serializable{
 		}
 	}
 
-	public void setRHSAttributes(Collection<String> attributes) {
-		this.rhs.clear();
+	public void setRhsAttributes(Collection<String> attributes) {
+		this.rhsAttributes.clear();
 		if (attributes != null) {
             for (String attribute : attributes) {
                 this.addRHSAttribute(attribute);
@@ -149,35 +146,35 @@ public class FunctionalDependency implements Serializable{
 		}
 	}
 
-	public boolean removeLHSAttribute(String attribute) {
-		return this.lhs.remove(attribute);
+	public boolean removeLhsAttribute(String attribute) {
+		return this.lhsAttributes.remove(attribute);
 	}
 
-	public boolean removeRHSAttribute(String attribute) {
-		return this.rhs.remove(attribute);
+	public boolean removeRhsAttribute(String attribute) {
+		return this.rhsAttributes.remove(attribute);
 	}
 
-	public void removeAllLHSAttributes() {
-		this.lhs.clear();
+	public void removeAllLhsAttributes() {
+		this.lhsAttributes.clear();
 	}
 
-	public void removeAllRHSAttributes() {
-		this.rhs.clear();
+	public void removeAllRhsAttributes() {
+		this.rhsAttributes.clear();
 	}
 
-	public void removeLHSAttributes(Collection<String> attributes) {
-		this.lhs.removeAll(attributes);
+	public void removeLhsAttributes(Collection<String> attributes) {
+		this.lhsAttributes.removeAll(attributes);
 	}
 
-	public void removeRHSAttributes(Collection<String> attributes) {
-		this.rhs.removeAll(attributes);
+	public void removeRhsAttributes(Collection<String> attributes) {
+		this.rhsAttributes.removeAll(attributes);
 	}
 
-	public TreeSet<String> getLHSAttributes(){
-		return (TreeSet<String>)this.lhs.clone();
+	public TreeSet<String> getLhsAttributes(){
+		return (TreeSet<String>)this.lhsAttributes.clone();
 	}
 
-	public TreeSet<String> getRHSAttributes(){
-		return (TreeSet<String>)this.rhs.clone();
+	public TreeSet<String> getRhsAttributes(){
+		return (TreeSet<String>)this.rhsAttributes.clone();
 	}
 }

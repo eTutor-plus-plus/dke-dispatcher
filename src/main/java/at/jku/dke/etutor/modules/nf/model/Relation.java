@@ -15,7 +15,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 
 	private String name;
 	private TreeSet<String> attributes;
-	private HashSet<FunctionalDependency> dependencies;
+	private HashSet<FunctionalDependency> functionalDependencies;
 
 	private HashSet<Key> subKeys;
 	private TreeSet<Key> superKeys;
@@ -25,7 +25,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		super();
 		this.name = "";
 		this.subKeys = new HashSet<>();
-		this.dependencies = new HashSet<>();
+		this.functionalDependencies = new HashSet<>();
 		this.superKeys = new TreeSet<>(new KeyComparator());
 		this.minimalKeys = new TreeSet<>(new KeyComparator());
 		this.attributes = new TreeSet<>(new AttributeCollator());
@@ -35,7 +35,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 	public Object clone() throws CloneNotSupportedException {
 		Relation clone = (Relation)super.clone();
 		clone.attributes = (TreeSet<String>)this.attributes.clone();
-		clone.dependencies = (HashSet<FunctionalDependency>)this.dependencies.clone();
+		clone.functionalDependencies = (HashSet<FunctionalDependency>)this.functionalDependencies.clone();
 		clone.minimalKeys = (TreeSet<Key>)this.minimalKeys.clone();
 		clone.subKeys = (HashSet<Key>)this.subKeys.clone();
 		clone.superKeys = (TreeSet<Key>)this.superKeys.clone();
@@ -52,10 +52,10 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 		e.printStackTrace();
 	}
 }
-	public Relation(Collection<String> attributes, Collection<FunctionalDependency> dependencies) {
+	public Relation(Collection<String> attributes, Collection<FunctionalDependency> functionalDependencies) {
 		this();
 		this.setAttributes(attributes);
-		this.setFunctionalDependencies(dependencies);
+		this.setFunctionalDependencies(functionalDependencies);
 	}
 
 	public Iterator<Key> iterMinimalKeys() {
@@ -63,7 +63,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 	}
 
 	public Iterator<FunctionalDependency> iterFunctionalDependencies() {
-		return this.dependencies.iterator();
+		return this.functionalDependencies.iterator();
 	}
 
 	public boolean addSubKey(Key subKey) {
@@ -100,7 +100,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 
 	public boolean addFunctionalDependency(FunctionalDependency functionalDependency) {
 		if (functionalDependency != null) {
-			return this.dependencies.add(functionalDependency);
+			return this.functionalDependencies.add(functionalDependency);
 		} else {
 			return false;
 		}
@@ -156,7 +156,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 	}
 
 	public void setFunctionalDependencies(Collection<FunctionalDependency> dependencies) {
-		this.dependencies.clear();
+		this.functionalDependencies.clear();
 
 		if (dependencies != null) {
 			for (FunctionalDependency fd : dependencies) {
@@ -182,7 +182,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 	}
 
 	public boolean removeFunctionalDependency(FunctionalDependency dependency) {
-		return this.dependencies.remove(dependency);
+		return this.functionalDependencies.remove(dependency);
 	}
 
 	public void removeAllSubKeys() {
@@ -202,7 +202,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 	}
 
 	public void removeAllFunctionalDependencies() {
-		this.dependencies.clear();
+		this.functionalDependencies.clear();
 	}
 	
 	public String getName(){
@@ -238,7 +238,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 	}
 	
 	public Set<FunctionalDependency> getFunctionalDependencies(){
-		return (Set<FunctionalDependency>)this.dependencies.clone();
+		return (Set<FunctionalDependency>)this.functionalDependencies.clone();
 	}
 
 	/*
@@ -261,7 +261,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 			return false;
 		}
 		
-		if (!rel.getFunctionalDependencies().containsAll(this.dependencies)){
+		if (!rel.getFunctionalDependencies().containsAll(this.functionalDependencies)){
 			return false;
 		}
 		
@@ -269,6 +269,6 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 			return false;
 		}
 
-        return this.dependencies.containsAll(rel.getFunctionalDependencies());
+        return this.functionalDependencies.containsAll(rel.getFunctionalDependencies());
     }
 }

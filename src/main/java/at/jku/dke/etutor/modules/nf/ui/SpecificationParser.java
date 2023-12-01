@@ -146,10 +146,10 @@ public class SpecificationParser implements Serializable {
             token = s.trim();
             if (lhs == null) {
                 lhs = token.trim();
-                dependency.setLHSAttributes(parseAttributes(lhs, qualifiers.get(QUALIFIER_DEPENDENCIES)));
+                dependency.setLhsAttributes(parseAttributes(lhs, qualifiers.get(QUALIFIER_DEPENDENCIES)));
             } else if (rhs == null) {
                 rhs = token.trim();
-                dependency.setRHSAttributes(parseAttributes(rhs, qualifiers.get(QUALIFIER_DEPENDENCIES)));
+                dependency.setRhsAttributes(parseAttributes(rhs, qualifiers.get(QUALIFIER_DEPENDENCIES)));
             } else {
                 msg = "Invalid dependency definition: " + txt;
                 throw new SpecificationParserException(msg);
@@ -234,8 +234,8 @@ public class SpecificationParser implements Serializable {
 
 		Set<String> attributeSet = new TreeSet<>();
         for (FunctionalDependency dependency : this.dependencies) {
-            attributeSet.addAll(getUnfoundedAttributes(dependency.getLHSAttributes()));
-            attributeSet.addAll(getUnfoundedAttributes(dependency.getRHSAttributes()));
+            attributeSet.addAll(getUnfoundedAttributes(dependency.getLhsAttributes()));
+            attributeSet.addAll(getUnfoundedAttributes(dependency.getRhsAttributes()));
         }
 		
 		if (!attributeSet.isEmpty()) {
