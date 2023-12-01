@@ -150,29 +150,7 @@ public class NormalformAnalyzer {
                     isViolated = true;
                 }
             }
-			
-			/* OLD
-			lhsIsKey = false;
-			keysIterator = config.getCorrectMinimalKeys().iterator();
-			while (keysIterator.hasNext()) {
-				currKey = (Key)keysIterator.next();
-				if ((currKey.getAttributes().containsAll(dependency.getLhsAttributes()))
-					&& (currKey.getAttributes().size() == dependency.getLhsAttributes().size())) {
-					lhsIsKey = true;
-				}
-			}
-
-			if (!lhsIsKey) {
-				partialKeysIterator = config.getCorrectPartialKeys().iterator();
-				while (partialKeysIterator.hasNext()) {
-					currPartialKey = (Key)partialKeysIterator.next();
-					if (dependency.getLhsAttributes().containsAll(currPartialKey.getAttributes())){
-						isViolated = true;
-						violation.addComprisedPartialKey(currPartialKey);						
-					}
-				}
-			}*/
-		} else {
+        } else {
 			isViolated = false;
 		}
 		
@@ -207,12 +185,6 @@ public class NormalformAnalyzer {
 
 			for (Key currKey : config.getCorrectMinimalKeys()) {
 				//RDBDHelper.getLogger().log(Level.INFO, "Check Key: " + currKey + " (Key: " + currKey.getAttributes().size() + " -  Dependency: " + dependency.getLhsAttributes().size() + ")");
-				/* OLD
-				if ((currKey.getAttributes().containsAll(dependency.getLhsAttributes()))
-					&& (currKey.getAttributes().size() == dependency.getLhsAttributes().size())) {
-					isViolated = true;
-				}*/
-				
 				if (dependency.getLhsAttributes().containsAll(currKey.getAttributes())){
 					isViolated = false;
 					RDBDHelper.getLogger().log(Level.INFO, "LHS is a super key. Is violated: " + isViolated);
@@ -234,12 +206,6 @@ public class NormalformAnalyzer {
 		boolean isViolated = true;
 
         for (Key currKey : config.getCorrectMinimalKeys()) {
-			/* OLD
-			if ((currKey.getAttributes().containsAll(dependency.getLhsAttributes()))
-				&& (currKey.getAttributes().size() == dependency.getLhsAttributes().size())) {
-				isViolated = true;
-			}*/
-
             if (dependency.getLhsAttributes().containsAll(currKey.getAttributes())) {
                 isViolated = false;
             }
