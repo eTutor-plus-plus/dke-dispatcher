@@ -38,7 +38,7 @@ public class ETutorDroolsController {
             String classes = resourceService.getClasses(id);
             if(classes.isEmpty()){
                 logger.info("Exit --> getClasses() with status 404");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find classes for task "+id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find classes for task " + id);
             }else{
                 logger.info("Exit --> getClasses() with status 200");
                 return ResponseEntity.status(HttpStatus.OK).body(classes);

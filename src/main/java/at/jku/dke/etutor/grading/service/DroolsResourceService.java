@@ -40,47 +40,42 @@ public class DroolsResourceService {
         PWD = applicationProperties.getDrools().getConnPwd();
     }
 
-    public String getClasses(int id) {
+    public String getClasses(int id) throws SQLException {
         logger.debug("getClasses(int id)");
-        JSONArray jsonArray = new JSONArray();
-        String query = "SELECT fullClassName, classContent FROM classes WHERE task_id = ?";
-        String[] columnNames = {"fullClassName", "classContent"};
+        String query = "SELECT full_classname, class_content FROM classes WHERE task_id = ?";
+        String[] columnNames = {"full_classname", "class_content"};
         return executeQueryAndReturnJSON(query, columnNames, id);
     }
 
-    public String getTestData(int id) {
+    public String getTestData(int id) throws SQLException {
         logger.debug("getTestData(int id)");
-        JSONArray jsonArray = new JSONArray();
-        String query = "SELECT testInput, expectedOutput FROM testdata WHERE task_id = ?";
-        String[] columnNames = {"testInput", "expectedOutput"};
+        String query = "SELECT input_classname, expected_output FROM testdata WHERE task_id = ?";
+        String[] columnNames = {"input_classname", "expected_output"};
         return executeQueryAndReturnJSON(query, columnNames, id);
     }
 
-    public String getFacts(int id) {
+    public String getFacts(int id) throws SQLException {
         logger.debug("getFacts(int id)");
-        JSONArray jsonArray = new JSONArray();
-        String query = "SELECT clazz, instanceName, parameters FROM facts WHERE task_id = ?";
-        String[] columnNames = {"clazz", "instanceName", "parameters"};
+        String query = "SELECT clazz, instance_name, parameters FROM facts WHERE task_id = ?";
+        String[] columnNames = {"clazz", "instance_name", "parameters"};
         return executeQueryAndReturnJSON(query, columnNames, id);
     }
 
-    public String getSolution(int id) {
+    public String getSolution(int id) throws SQLException {
         logger.debug("getSolution(int id)");
-        JSONArray jsonArray = new JSONArray();
-        String query = "SELECT solution FROM solutions WHERE task_id = ?";
+        String query = "SELECT solution FROM tasks WHERE id = ?";
         String[] columnNames = {"solution"};
         return executeQueryAndReturnJSON(query, columnNames, id);
     }
 
-    public String getEvents(int id) {
+    public String getEvents(int id) throws SQLException {
         logger.debug("getEvents(int id)");
-        JSONArray jsonArray = new JSONArray();
-        String query = "SELECT clazz, input, timestamp, instanceName FROM events WHERE task_id = ?";
-        String[] columnNames = {"clazz", "input", "timestamp", "instanceName"};
+        String query = "SELECT clazz, reference_name, timestamp, instance_name FROM events WHERE task_id = ?";
+        String[] columnNames = {"clazz", "reference_name", "timestamp", "instance_name"};
         return executeQueryAndReturnJSON(query, columnNames, id);
     }
 
-    private String executeQueryAndReturnJSON(String query, String[] columnNames, int id) {
+    private String executeQueryAndReturnJSON(String query, String[] columnNames, int id) throws SQLException {
         logger.debug("executeQueryAndReturnJSON() -" + " id: " + id + " - query: "+ query);
         JSONArray jsonArray = new JSONArray();
         try (Connection con = DriverManager.getConnection(URL, USER, PWD);
@@ -106,8 +101,8 @@ public class DroolsResourceService {
                 }
                 jsonArray.put(obj);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException | JSONException throwables) {
+            throw new SQLException(throwables);
         }
         return jsonArray.toString();
     }

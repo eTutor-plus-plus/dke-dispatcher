@@ -10,7 +10,7 @@
     </parent>
          
     <groupId>at.jku.dke.etutor</groupId>
-    <artifactId>dke-grading</artifactId>
+    <artifactId>dke-dispatcher</artifactId>
     <version>0.0.1</version>
     <name>eTutor-at.jku.dke.etutor.core.evaluation.Grading</name>
     <description>The eTutor grading component</description>

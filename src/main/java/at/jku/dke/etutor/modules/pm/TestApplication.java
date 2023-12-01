@@ -10,7 +10,6 @@ import at.jku.dke.etutor.modules.pm.grading.PmGrader;
 import at.jku.dke.etutor.modules.pm.grading.PmPartialSubmissionGrading;
 import at.jku.dke.etutor.modules.pm.plg.application.SimulationApplication;
 import at.jku.dke.etutor.modules.pm.report.PmReport;
-import at.jku.dke.etutor.modules.rt.analysis.RTAnalysis;
 
 import java.util.HashMap;
 import java.util.Locale;

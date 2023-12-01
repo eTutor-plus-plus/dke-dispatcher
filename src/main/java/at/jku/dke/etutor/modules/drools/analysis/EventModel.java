@@ -4,13 +4,13 @@ import java.util.Date;
 
 public class EventModel {
     private String clazz;
-    private Object referenceClass;
+    private Object referenceName;
     private Date timestamp;
     private String instanceName;
 
-    public EventModel(String clazz, Object referenceClass, String instanceName, Date timestamp) {
+    public EventModel(String clazz, Object referenceName, String instanceName, Date timestamp) {
         this.clazz = clazz;
-        this.referenceClass = referenceClass;
+        this.referenceName = referenceName;
         this.timestamp = timestamp;
         this.instanceName = instanceName;
     }
@@ -24,11 +24,11 @@ public class EventModel {
     }
 
     public Object getReferenceClass() {
-        return referenceClass;
+        return referenceName;
     }
 
     public void setReferenceClass(Object input) {
-        this.referenceClass = input;
+        this.referenceName = input;
     }
 
     public Date getTimestamp() {
