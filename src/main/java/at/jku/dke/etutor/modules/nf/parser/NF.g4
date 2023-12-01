@@ -34,12 +34,16 @@ key returns [Key keyObject]
     } :
         '#' attributeSet {$keyObject.addAllAttributes($attributeSet.attributes);} '#' ;
 
-normalFormSubmission: normalForm '.' (normalFormViolationSet)? ;                    // start rule
+normalFormSubmission returns [NormalformDeterminationSubmission submission]
+    @init {
+        $submission = new NormalformDeterminationSubmission();
+    } :
+        normalForm {$submission.setOverallLevel($normalForm.level);} '.' (normalFormViolationSet)? ;                    // start rule
 normalFormViolationSet : normalFormViolation (';' normalFormViolation)* ;
 /*
  * The original eTutor would pass in the IDs of violated functional dependencies, which had to be linked to their ids
  * on the UI side. As this is probably not possible on Moodle (or desired at all), the student instead enters the
- * actual dependency.
+ * actual dependency in String form.
 */
 normalFormViolation : functionalDependency ':' normalForm ;
 normalForm returns [NormalformLevel level] :
