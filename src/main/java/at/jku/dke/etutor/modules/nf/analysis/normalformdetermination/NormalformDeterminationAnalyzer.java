@@ -55,14 +55,12 @@ public class NormalformDeterminationAnalyzer {
 		}
 
 		//DETERMINE WRONG LEVELED DEPENDENCIES
-		Integer currID;
 		NormalformLevel foundViolatedLevel;
 		NormalformLevel correctViolatedLevel;
 		for (FunctionalDependency currDependency : config.getRelation().getFunctionalDependencies()){
-			currID = submission.getIDForDependency(currDependency);
 			RDBDHelper.getLogger().log(Level.INFO, "Check NF-Level of dependency: " + currDependency);
 			
-			foundViolatedLevel = submission.getViolatedNormalformLevel(currID);
+			foundViolatedLevel = submission.getViolatedNormalformLevel(currDependency);
 			correctViolatedLevel = analysis.getViolatedNormalformLevel(currDependency);
 			RDBDHelper.getLogger().log(Level.INFO, "Found: " + foundViolatedLevel + " Correct: " + correctViolatedLevel);
 			

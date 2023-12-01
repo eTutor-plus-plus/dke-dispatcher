@@ -3,7 +3,10 @@
 package at.jku.dke.etutor.modules.nf.parser ;
 
 import java.util.Set;
+import java.util.Map;
 import java.util.HashSet;
+import java.util.HashMap;
+import at.jku.dke.etutor.modules.nf.NormalformDeterminationSubmission;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
@@ -431,6 +434,9 @@ public class NFParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class NormalFormSubmissionContext extends ParserRuleContext {
+		public NormalformDeterminationSubmission submission;
+		public NormalFormContext normalForm;
+		public NormalFormViolationSetContext normalFormViolationSet;
 		public NormalFormContext normalForm() {
 			return getRuleContext(NormalFormContext.class,0);
 		}
@@ -454,21 +460,26 @@ public class NFParser extends Parser {
 	public final NormalFormSubmissionContext normalFormSubmission() throws RecognitionException {
 		NormalFormSubmissionContext _localctx = new NormalFormSubmissionContext(_ctx, getState());
 		enterRule(_localctx, 10, RULE_normalFormSubmission);
+
+		        ((NormalFormSubmissionContext)_localctx).submission =  new NormalformDeterminationSubmission();
+		    
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(75);
-			normalForm();
-			setState(76);
+			((NormalFormSubmissionContext)_localctx).normalForm = normalForm();
+			_localctx.submission.setOverallLevel(((NormalFormSubmissionContext)_localctx).normalForm.level);
+			setState(77);
 			match(T__5);
-			setState(78);
+			setState(81);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AlphaNumericChain) {
 				{
-				setState(77);
-				normalFormViolationSet();
+				setState(78);
+				((NormalFormSubmissionContext)_localctx).normalFormViolationSet = normalFormViolationSet();
+				_localctx.submission.setNormalformViolations(((NormalFormSubmissionContext)_localctx).normalFormViolationSet.violations); 
 				}
 			}
 
@@ -487,6 +498,8 @@ public class NFParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class NormalFormViolationSetContext extends ParserRuleContext {
+		public Map<FunctionalDependency, NormalformLevel> violations;
+		public NormalFormViolationContext normalFormViolation;
 		public List<NormalFormViolationContext> normalFormViolation() {
 			return getRuleContexts(NormalFormViolationContext.class);
 		}
@@ -510,25 +523,30 @@ public class NFParser extends Parser {
 	public final NormalFormViolationSetContext normalFormViolationSet() throws RecognitionException {
 		NormalFormViolationSetContext _localctx = new NormalFormViolationSetContext(_ctx, getState());
 		enterRule(_localctx, 12, RULE_normalFormViolationSet);
+
+		        ((NormalFormViolationSetContext)_localctx).violations =  new HashMap<>();
+		    
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(80);
-			normalFormViolation();
-			setState(85);
+			setState(83);
+			((NormalFormViolationSetContext)_localctx).normalFormViolation = normalFormViolation();
+			_localctx.violations.put(((NormalFormViolationSetContext)_localctx).normalFormViolation.funcDependency, ((NormalFormViolationSetContext)_localctx).normalFormViolation.level);
+			setState(91);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__0) {
 				{
 				{
-				setState(81);
+				setState(85);
 				match(T__0);
-				setState(82);
-				normalFormViolation();
+				setState(86);
+				((NormalFormViolationSetContext)_localctx).normalFormViolation = normalFormViolation();
+				_localctx.violations.put(((NormalFormViolationSetContext)_localctx).normalFormViolation.funcDependency, ((NormalFormViolationSetContext)_localctx).normalFormViolation.level);
 				}
 				}
-				setState(87);
+				setState(93);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -547,6 +565,10 @@ public class NFParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class NormalFormViolationContext extends ParserRuleContext {
+		public FunctionalDependency funcDependency;
+		public NormalformLevel level;
+		public FunctionalDependencyContext functionalDependency;
+		public NormalFormContext normalForm;
 		public FunctionalDependencyContext functionalDependency() {
 			return getRuleContext(FunctionalDependencyContext.class,0);
 		}
@@ -573,12 +595,14 @@ public class NFParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(88);
-			functionalDependency();
-			setState(89);
+			setState(94);
+			((NormalFormViolationContext)_localctx).functionalDependency = functionalDependency();
+			((NormalFormViolationContext)_localctx).funcDependency =  ((NormalFormViolationContext)_localctx).functionalDependency.fdObject;
+			setState(96);
 			match(T__1);
-			setState(90);
-			normalForm();
+			setState(97);
+			((NormalFormViolationContext)_localctx).normalForm = normalForm();
+			((NormalFormViolationContext)_localctx).level =  ((NormalFormViolationContext)_localctx).normalForm.level;
 			}
 		}
 		catch (RecognitionException re) {
@@ -613,13 +637,13 @@ public class NFParser extends Parser {
 		NormalFormContext _localctx = new NormalFormContext(_ctx, getState());
 		enterRule(_localctx, 16, RULE_normalForm);
 		try {
-			setState(100);
+			setState(108);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__7:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(92);
+				setState(100);
 				match(T__7);
 				((NormalFormContext)_localctx).level =  NormalformLevel.FIRST;
 				}
@@ -627,7 +651,7 @@ public class NFParser extends Parser {
 			case T__8:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(94);
+				setState(102);
 				match(T__8);
 				((NormalFormContext)_localctx).level =  NormalformLevel.SECOND;
 				}
@@ -635,7 +659,7 @@ public class NFParser extends Parser {
 			case T__9:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(96);
+				setState(104);
 				match(T__9);
 				((NormalFormContext)_localctx).level =  NormalformLevel.THIRD;
 				}
@@ -643,7 +667,7 @@ public class NFParser extends Parser {
 			case T__10:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(98);
+				setState(106);
 				match(T__10);
 				((NormalFormContext)_localctx).level =  NormalformLevel.BOYCE_CODD;
 				}
@@ -697,23 +721,23 @@ public class NFParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(102);
+			setState(110);
 			((FunctionalDependencySetContext)_localctx).functionalDependency = functionalDependency();
 			_localctx.functionalDependencies.add(((FunctionalDependencySetContext)_localctx).functionalDependency.fdObject);
-			setState(110);
+			setState(118);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__0) {
 				{
 				{
-				setState(104);
+				setState(112);
 				match(T__0);
-				setState(105);
+				setState(113);
 				((FunctionalDependencySetContext)_localctx).functionalDependency = functionalDependency();
 				_localctx.functionalDependencies.add(((FunctionalDependencySetContext)_localctx).functionalDependency.fdObject);
 				}
 				}
-				setState(112);
+				setState(120);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -764,24 +788,24 @@ public class NFParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(113);
+			setState(121);
 			((FunctionalDependencyContext)_localctx).attributeSet = attributeSet();
 			_localctx.fdObject.setLhsAttributes(((FunctionalDependencyContext)_localctx).attributeSet.attributes);
-			setState(115);
+			setState(123);
 			match(T__11);
-			setState(117);
+			setState(125);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__5) {
 				{
-				setState(116);
+				setState(124);
 				match(T__5);
 				}
 			}
 
-			setState(119);
+			setState(127);
 			match(T__12);
-			setState(120);
+			setState(128);
 			((FunctionalDependencyContext)_localctx).attributeSet = attributeSet();
 			_localctx.fdObject.setRhsAttributes(((FunctionalDependencyContext)_localctx).attributeSet.attributes);
 			}
@@ -831,23 +855,23 @@ public class NFParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(123);
+			setState(131);
 			((AttributeSetContext)_localctx).attribute = attribute();
 			_localctx.attributes.add((((AttributeSetContext)_localctx).attribute!=null?_input.getText(((AttributeSetContext)_localctx).attribute.start,((AttributeSetContext)_localctx).attribute.stop):null));
-			setState(131);
+			setState(139);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__13) {
 				{
 				{
-				setState(125);
+				setState(133);
 				match(T__13);
-				setState(126);
+				setState(134);
 				((AttributeSetContext)_localctx).attribute = attribute();
 				_localctx.attributes.add((((AttributeSetContext)_localctx).attribute!=null?_input.getText(((AttributeSetContext)_localctx).attribute.start,((AttributeSetContext)_localctx).attribute.stop):null));
 				}
 				}
-				setState(133);
+				setState(141);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -887,7 +911,7 @@ public class NFParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(134);
+			setState(142);
 			match(AlphaNumericChain);
 			}
 		}
@@ -903,7 +927,7 @@ public class NFParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0014\u0089\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
+		"\u0004\u0001\u0014\u0091\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
 		"\u0002\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004"+
 		"\u0002\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007"+
 		"\u0002\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b"+
@@ -915,69 +939,75 @@ public class NFParser extends Parser {
 		"\u0002\u0001\u0002\u0003\u0002:\b\u0002\u0001\u0003\u0001\u0003\u0001"+
 		"\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0005\u0003B\b\u0003\n\u0003"+
 		"\f\u0003E\t\u0003\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001"+
-		"\u0004\u0001\u0005\u0001\u0005\u0001\u0005\u0003\u0005O\b\u0005\u0001"+
-		"\u0006\u0001\u0006\u0001\u0006\u0005\u0006T\b\u0006\n\u0006\f\u0006W\t"+
-		"\u0006\u0001\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0001\b\u0001\b"+
-		"\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b\u0003\be\b\b\u0001\t"+
-		"\u0001\t\u0001\t\u0001\t\u0001\t\u0001\t\u0005\tm\b\t\n\t\f\tp\t\t\u0001"+
-		"\n\u0001\n\u0001\n\u0001\n\u0003\nv\b\n\u0001\n\u0001\n\u0001\n\u0001"+
-		"\n\u0001\u000b\u0001\u000b\u0001\u000b\u0001\u000b\u0001\u000b\u0001\u000b"+
-		"\u0005\u000b\u0082\b\u000b\n\u000b\f\u000b\u0085\t\u000b\u0001\f\u0001"+
-		"\f\u0001\f\u0000\u0000\r\u0000\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012"+
-		"\u0014\u0016\u0018\u0000\u0000\u0086\u0000\u001a\u0001\u0000\u0000\u0000"+
-		"\u0002%\u0001\u0000\u0000\u0000\u00045\u0001\u0000\u0000\u0000\u0006;"+
-		"\u0001\u0000\u0000\u0000\bF\u0001\u0000\u0000\u0000\nK\u0001\u0000\u0000"+
-		"\u0000\fP\u0001\u0000\u0000\u0000\u000eX\u0001\u0000\u0000\u0000\u0010"+
-		"d\u0001\u0000\u0000\u0000\u0012f\u0001\u0000\u0000\u0000\u0014q\u0001"+
-		"\u0000\u0000\u0000\u0016{\u0001\u0000\u0000\u0000\u0018\u0086\u0001\u0000"+
-		"\u0000\u0000\u001a\u001b\u0003\u0002\u0001\u0000\u001b\"\u0006\u0000\uffff"+
-		"\uffff\u0000\u001c\u001d\u0005\u0001\u0000\u0000\u001d\u001e\u0003\u0002"+
-		"\u0001\u0000\u001e\u001f\u0006\u0000\uffff\uffff\u0000\u001f!\u0001\u0000"+
-		"\u0000\u0000 \u001c\u0001\u0000\u0000\u0000!$\u0001\u0000\u0000\u0000"+
-		"\" \u0001\u0000\u0000\u0000\"#\u0001\u0000\u0000\u0000#\u0001\u0001\u0000"+
-		"\u0000\u0000$\"\u0001\u0000\u0000\u0000%&\u0003\u0004\u0002\u0000&\'\u0006"+
-		"\u0001\uffff\uffff\u0000\'(\u0005\u0002\u0000\u0000()\u0005\u0003\u0000"+
-		"\u0000)*\u0003\u0016\u000b\u0000*+\u0006\u0001\uffff\uffff\u0000+,\u0005"+
-		"\u0004\u0000\u0000,-\u0005\u0003\u0000\u0000-.\u0003\u0006\u0003\u0000"+
-		"./\u0006\u0001\uffff\uffff\u0000/0\u0005\u0004\u0000\u000001\u0005\u0003"+
-		"\u0000\u000012\u0003\u0012\t\u000023\u0006\u0001\uffff\uffff\u000034\u0005"+
-		"\u0004\u0000\u00004\u0003\u0001\u0000\u0000\u000056\u0005\u0005\u0000"+
-		"\u000069\u0005\u0011\u0000\u000078\u0005\u0006\u0000\u00008:\u0005\u0011"+
-		"\u0000\u000097\u0001\u0000\u0000\u00009:\u0001\u0000\u0000\u0000:\u0005"+
-		"\u0001\u0000\u0000\u0000;<\u0003\b\u0004\u0000<C\u0006\u0003\uffff\uffff"+
-		"\u0000=>\u0005\u0001\u0000\u0000>?\u0003\b\u0004\u0000?@\u0006\u0003\uffff"+
-		"\uffff\u0000@B\u0001\u0000\u0000\u0000A=\u0001\u0000\u0000\u0000BE\u0001"+
-		"\u0000\u0000\u0000CA\u0001\u0000\u0000\u0000CD\u0001\u0000\u0000\u0000"+
-		"D\u0007\u0001\u0000\u0000\u0000EC\u0001\u0000\u0000\u0000FG\u0005\u0007"+
-		"\u0000\u0000GH\u0003\u0016\u000b\u0000HI\u0006\u0004\uffff\uffff\u0000"+
-		"IJ\u0005\u0007\u0000\u0000J\t\u0001\u0000\u0000\u0000KL\u0003\u0010\b"+
-		"\u0000LN\u0005\u0006\u0000\u0000MO\u0003\f\u0006\u0000NM\u0001\u0000\u0000"+
-		"\u0000NO\u0001\u0000\u0000\u0000O\u000b\u0001\u0000\u0000\u0000PU\u0003"+
-		"\u000e\u0007\u0000QR\u0005\u0001\u0000\u0000RT\u0003\u000e\u0007\u0000"+
-		"SQ\u0001\u0000\u0000\u0000TW\u0001\u0000\u0000\u0000US\u0001\u0000\u0000"+
-		"\u0000UV\u0001\u0000\u0000\u0000V\r\u0001\u0000\u0000\u0000WU\u0001\u0000"+
-		"\u0000\u0000XY\u0003\u0014\n\u0000YZ\u0005\u0002\u0000\u0000Z[\u0003\u0010"+
-		"\b\u0000[\u000f\u0001\u0000\u0000\u0000\\]\u0005\b\u0000\u0000]e\u0006"+
-		"\b\uffff\uffff\u0000^_\u0005\t\u0000\u0000_e\u0006\b\uffff\uffff\u0000"+
-		"`a\u0005\n\u0000\u0000ae\u0006\b\uffff\uffff\u0000bc\u0005\u000b\u0000"+
-		"\u0000ce\u0006\b\uffff\uffff\u0000d\\\u0001\u0000\u0000\u0000d^\u0001"+
-		"\u0000\u0000\u0000d`\u0001\u0000\u0000\u0000db\u0001\u0000\u0000\u0000"+
-		"e\u0011\u0001\u0000\u0000\u0000fg\u0003\u0014\n\u0000gn\u0006\t\uffff"+
-		"\uffff\u0000hi\u0005\u0001\u0000\u0000ij\u0003\u0014\n\u0000jk\u0006\t"+
-		"\uffff\uffff\u0000km\u0001\u0000\u0000\u0000lh\u0001\u0000\u0000\u0000"+
-		"mp\u0001\u0000\u0000\u0000nl\u0001\u0000\u0000\u0000no\u0001\u0000\u0000"+
-		"\u0000o\u0013\u0001\u0000\u0000\u0000pn\u0001\u0000\u0000\u0000qr\u0003"+
-		"\u0016\u000b\u0000rs\u0006\n\uffff\uffff\u0000su\u0005\f\u0000\u0000t"+
-		"v\u0005\u0006\u0000\u0000ut\u0001\u0000\u0000\u0000uv\u0001\u0000\u0000"+
-		"\u0000vw\u0001\u0000\u0000\u0000wx\u0005\r\u0000\u0000xy\u0003\u0016\u000b"+
-		"\u0000yz\u0006\n\uffff\uffff\u0000z\u0015\u0001\u0000\u0000\u0000{|\u0003"+
-		"\u0018\f\u0000|\u0083\u0006\u000b\uffff\uffff\u0000}~\u0005\u000e\u0000"+
-		"\u0000~\u007f\u0003\u0018\f\u0000\u007f\u0080\u0006\u000b\uffff\uffff"+
-		"\u0000\u0080\u0082\u0001\u0000\u0000\u0000\u0081}\u0001\u0000\u0000\u0000"+
-		"\u0082\u0085\u0001\u0000\u0000\u0000\u0083\u0081\u0001\u0000\u0000\u0000"+
-		"\u0083\u0084\u0001\u0000\u0000\u0000\u0084\u0017\u0001\u0000\u0000\u0000"+
-		"\u0085\u0083\u0001\u0000\u0000\u0000\u0086\u0087\u0005\u000f\u0000\u0000"+
-		"\u0087\u0019\u0001\u0000\u0000\u0000\t\"9CNUdnu\u0083";
+		"\u0004\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001"+
+		"\u0005\u0003\u0005R\b\u0005\u0001\u0006\u0001\u0006\u0001\u0006\u0001"+
+		"\u0006\u0001\u0006\u0001\u0006\u0005\u0006Z\b\u0006\n\u0006\f\u0006]\t"+
+		"\u0006\u0001\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0001"+
+		"\u0007\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b"+
+		"\u0003\bm\b\b\u0001\t\u0001\t\u0001\t\u0001\t\u0001\t\u0001\t\u0005\t"+
+		"u\b\t\n\t\f\tx\t\t\u0001\n\u0001\n\u0001\n\u0001\n\u0003\n~\b\n\u0001"+
+		"\n\u0001\n\u0001\n\u0001\n\u0001\u000b\u0001\u000b\u0001\u000b\u0001\u000b"+
+		"\u0001\u000b\u0001\u000b\u0005\u000b\u008a\b\u000b\n\u000b\f\u000b\u008d"+
+		"\t\u000b\u0001\f\u0001\f\u0001\f\u0000\u0000\r\u0000\u0002\u0004\u0006"+
+		"\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018\u0000\u0000\u008e\u0000\u001a"+
+		"\u0001\u0000\u0000\u0000\u0002%\u0001\u0000\u0000\u0000\u00045\u0001\u0000"+
+		"\u0000\u0000\u0006;\u0001\u0000\u0000\u0000\bF\u0001\u0000\u0000\u0000"+
+		"\nK\u0001\u0000\u0000\u0000\fS\u0001\u0000\u0000\u0000\u000e^\u0001\u0000"+
+		"\u0000\u0000\u0010l\u0001\u0000\u0000\u0000\u0012n\u0001\u0000\u0000\u0000"+
+		"\u0014y\u0001\u0000\u0000\u0000\u0016\u0083\u0001\u0000\u0000\u0000\u0018"+
+		"\u008e\u0001\u0000\u0000\u0000\u001a\u001b\u0003\u0002\u0001\u0000\u001b"+
+		"\"\u0006\u0000\uffff\uffff\u0000\u001c\u001d\u0005\u0001\u0000\u0000\u001d"+
+		"\u001e\u0003\u0002\u0001\u0000\u001e\u001f\u0006\u0000\uffff\uffff\u0000"+
+		"\u001f!\u0001\u0000\u0000\u0000 \u001c\u0001\u0000\u0000\u0000!$\u0001"+
+		"\u0000\u0000\u0000\" \u0001\u0000\u0000\u0000\"#\u0001\u0000\u0000\u0000"+
+		"#\u0001\u0001\u0000\u0000\u0000$\"\u0001\u0000\u0000\u0000%&\u0003\u0004"+
+		"\u0002\u0000&\'\u0006\u0001\uffff\uffff\u0000\'(\u0005\u0002\u0000\u0000"+
+		"()\u0005\u0003\u0000\u0000)*\u0003\u0016\u000b\u0000*+\u0006\u0001\uffff"+
+		"\uffff\u0000+,\u0005\u0004\u0000\u0000,-\u0005\u0003\u0000\u0000-.\u0003"+
+		"\u0006\u0003\u0000./\u0006\u0001\uffff\uffff\u0000/0\u0005\u0004\u0000"+
+		"\u000001\u0005\u0003\u0000\u000012\u0003\u0012\t\u000023\u0006\u0001\uffff"+
+		"\uffff\u000034\u0005\u0004\u0000\u00004\u0003\u0001\u0000\u0000\u0000"+
+		"56\u0005\u0005\u0000\u000069\u0005\u0011\u0000\u000078\u0005\u0006\u0000"+
+		"\u00008:\u0005\u0011\u0000\u000097\u0001\u0000\u0000\u00009:\u0001\u0000"+
+		"\u0000\u0000:\u0005\u0001\u0000\u0000\u0000;<\u0003\b\u0004\u0000<C\u0006"+
+		"\u0003\uffff\uffff\u0000=>\u0005\u0001\u0000\u0000>?\u0003\b\u0004\u0000"+
+		"?@\u0006\u0003\uffff\uffff\u0000@B\u0001\u0000\u0000\u0000A=\u0001\u0000"+
+		"\u0000\u0000BE\u0001\u0000\u0000\u0000CA\u0001\u0000\u0000\u0000CD\u0001"+
+		"\u0000\u0000\u0000D\u0007\u0001\u0000\u0000\u0000EC\u0001\u0000\u0000"+
+		"\u0000FG\u0005\u0007\u0000\u0000GH\u0003\u0016\u000b\u0000HI\u0006\u0004"+
+		"\uffff\uffff\u0000IJ\u0005\u0007\u0000\u0000J\t\u0001\u0000\u0000\u0000"+
+		"KL\u0003\u0010\b\u0000LM\u0006\u0005\uffff\uffff\u0000MQ\u0005\u0006\u0000"+
+		"\u0000NO\u0003\f\u0006\u0000OP\u0006\u0005\uffff\uffff\u0000PR\u0001\u0000"+
+		"\u0000\u0000QN\u0001\u0000\u0000\u0000QR\u0001\u0000\u0000\u0000R\u000b"+
+		"\u0001\u0000\u0000\u0000ST\u0003\u000e\u0007\u0000T[\u0006\u0006\uffff"+
+		"\uffff\u0000UV\u0005\u0001\u0000\u0000VW\u0003\u000e\u0007\u0000WX\u0006"+
+		"\u0006\uffff\uffff\u0000XZ\u0001\u0000\u0000\u0000YU\u0001\u0000\u0000"+
+		"\u0000Z]\u0001\u0000\u0000\u0000[Y\u0001\u0000\u0000\u0000[\\\u0001\u0000"+
+		"\u0000\u0000\\\r\u0001\u0000\u0000\u0000][\u0001\u0000\u0000\u0000^_\u0003"+
+		"\u0014\n\u0000_`\u0006\u0007\uffff\uffff\u0000`a\u0005\u0002\u0000\u0000"+
+		"ab\u0003\u0010\b\u0000bc\u0006\u0007\uffff\uffff\u0000c\u000f\u0001\u0000"+
+		"\u0000\u0000de\u0005\b\u0000\u0000em\u0006\b\uffff\uffff\u0000fg\u0005"+
+		"\t\u0000\u0000gm\u0006\b\uffff\uffff\u0000hi\u0005\n\u0000\u0000im\u0006"+
+		"\b\uffff\uffff\u0000jk\u0005\u000b\u0000\u0000km\u0006\b\uffff\uffff\u0000"+
+		"ld\u0001\u0000\u0000\u0000lf\u0001\u0000\u0000\u0000lh\u0001\u0000\u0000"+
+		"\u0000lj\u0001\u0000\u0000\u0000m\u0011\u0001\u0000\u0000\u0000no\u0003"+
+		"\u0014\n\u0000ov\u0006\t\uffff\uffff\u0000pq\u0005\u0001\u0000\u0000q"+
+		"r\u0003\u0014\n\u0000rs\u0006\t\uffff\uffff\u0000su\u0001\u0000\u0000"+
+		"\u0000tp\u0001\u0000\u0000\u0000ux\u0001\u0000\u0000\u0000vt\u0001\u0000"+
+		"\u0000\u0000vw\u0001\u0000\u0000\u0000w\u0013\u0001\u0000\u0000\u0000"+
+		"xv\u0001\u0000\u0000\u0000yz\u0003\u0016\u000b\u0000z{\u0006\n\uffff\uffff"+
+		"\u0000{}\u0005\f\u0000\u0000|~\u0005\u0006\u0000\u0000}|\u0001\u0000\u0000"+
+		"\u0000}~\u0001\u0000\u0000\u0000~\u007f\u0001\u0000\u0000\u0000\u007f"+
+		"\u0080\u0005\r\u0000\u0000\u0080\u0081\u0003\u0016\u000b\u0000\u0081\u0082"+
+		"\u0006\n\uffff\uffff\u0000\u0082\u0015\u0001\u0000\u0000\u0000\u0083\u0084"+
+		"\u0003\u0018\f\u0000\u0084\u008b\u0006\u000b\uffff\uffff\u0000\u0085\u0086"+
+		"\u0005\u000e\u0000\u0000\u0086\u0087\u0003\u0018\f\u0000\u0087\u0088\u0006"+
+		"\u000b\uffff\uffff\u0000\u0088\u008a\u0001\u0000\u0000\u0000\u0089\u0085"+
+		"\u0001\u0000\u0000\u0000\u008a\u008d\u0001\u0000\u0000\u0000\u008b\u0089"+
+		"\u0001\u0000\u0000\u0000\u008b\u008c\u0001\u0000\u0000\u0000\u008c\u0017"+
+		"\u0001\u0000\u0000\u0000\u008d\u008b\u0001\u0000\u0000\u0000\u008e\u008f"+
+		"\u0005\u000f\u0000\u0000\u008f\u0019\u0001\u0000\u0000\u0000\t\"9CQ[l"+
+		"v}\u008b";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

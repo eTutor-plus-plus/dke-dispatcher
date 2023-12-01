@@ -4,7 +4,10 @@ grammar NF;
 package at.jku.dke.etutor.modules.nf.parser ;
 
 import java.util.Set;
+import java.util.Map;
 import java.util.HashSet;
+import java.util.HashMap;
+import at.jku.dke.etutor.modules.nf.NormalformDeterminationSubmission;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
@@ -38,14 +41,19 @@ normalFormSubmission returns [NormalformDeterminationSubmission submission]
     @init {
         $submission = new NormalformDeterminationSubmission();
     } :
-        normalForm {$submission.setOverallLevel($normalForm.level);} '.' (normalFormViolationSet)? ;                    // start rule
-normalFormViolationSet : normalFormViolation (';' normalFormViolation)* ;
+        normalForm {$submission.setOverallLevel($normalForm.level);} '.' (normalFormViolationSet {$submission.setNormalformViolations($normalFormViolationSet.violations); } )? ;                    // start rule
+normalFormViolationSet returns [Map<FunctionalDependency, NormalformLevel> violations]
+    @init {
+        $violations = new HashMap<>();
+    } :
+        normalFormViolation {$violations.put($normalFormViolation.funcDependency, $normalFormViolation.level);} (';' normalFormViolation {$violations.put($normalFormViolation.funcDependency, $normalFormViolation.level);} )* ;
 /*
  * The original eTutor would pass in the IDs of violated functional dependencies, which had to be linked to their ids
  * on the UI side. As this is probably not possible on Moodle (or desired at all), the student instead enters the
  * actual dependency in String form.
 */
-normalFormViolation : functionalDependency ':' normalForm ;
+normalFormViolation returns [FunctionalDependency funcDependency, NormalformLevel level] :
+    functionalDependency {$funcDependency = $functionalDependency.fdObject;} ':' normalForm {$level = $normalForm.level;} ;
 normalForm returns [NormalformLevel level] :
         '1' {$level = NormalformLevel.FIRST;}
     |   '2' {$level = NormalformLevel.SECOND;}

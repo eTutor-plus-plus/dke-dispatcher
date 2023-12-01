@@ -273,7 +273,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 				e.printStackTrace();
 			}
 
-			NormalformDeterminationSubmission normalformDeterminationSubmission = (NormalformDeterminationSubmission)submission; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			/*NormalformDeterminationSubmission normalformDeterminationSubmission = (NormalformDeterminationSubmission)submission; // Replaced with call to parser (Gerald Wimmer, 2023-12-01)
 
 			//Set overall level
 			String overallLevel = passedParameters.get(RDBDConstants.PARAM_NORMALFORM_LEVEL);
@@ -314,7 +314,9 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 				} else {
 					normalformDeterminationSubmission.setNormalformViolation(null, currID);
 				}
-			}
+			}*/
+
+			NormalformDeterminationSubmission normalformDeterminationSubmission = submissionParser.normalFormSubmission().submission;
 
 			NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();
 

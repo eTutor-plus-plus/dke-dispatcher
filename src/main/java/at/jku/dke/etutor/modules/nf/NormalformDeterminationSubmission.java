@@ -9,52 +9,24 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class NormalformDeterminationSubmission implements Serializable {
-
-	private final Map<Integer, FunctionalDependency> dependencyIDs;
 	private NormalformLevel overallLevel;
-	private final Map<Integer, NormalformLevel> normalformViolations;
+	private final Map<FunctionalDependency, NormalformLevel> normalformViolations;
 
 	public NormalformDeterminationSubmission() {
-		super();
-
-		this.dependencyIDs = new HashMap<>();
 		this.normalformViolations = new HashMap<>();
 		this.overallLevel = NormalformLevel.FIRST;
 	}
 
-	public Integer getIDForDependency(FunctionalDependency dependency) {
-		Integer currID;
-		FunctionalDependency currDependency;
-
-        for (Integer integer : this.dependencyIDs.keySet()) {
-            currID = integer;
-            currDependency = this.dependencyIDs.get(currID);
-            if (currDependency.equals(dependency)) {
-                return currID;
-            }
-        }
-
-		return null;
+	public void setNormalformViolations(Map<FunctionalDependency, NormalformLevel> normalformViolations) {
+		this.normalformViolations.putAll(normalformViolations);
 	}
 
-	public void setDependencyID(FunctionalDependency dependency, Integer id) {
-		this.dependencyIDs.put(id, dependency);
+	public void setNormalformViolation(NormalformLevel violatedLevel, FunctionalDependency dependency) {
+		this.normalformViolations.put(dependency, violatedLevel);
 	}
 
-	public FunctionalDependency getDependency(Integer id) {
-		return this.dependencyIDs.get(id);
-	}
-
-	public Iterator<Integer> iterDependencyIDs() {
-		return this.dependencyIDs.keySet().iterator();
-	}
-
-	public void setNormalformViolation(NormalformLevel violatedLevel, Integer dependencyID) {
-		this.normalformViolations.put(dependencyID, violatedLevel);
-	}
-
-	public NormalformLevel getViolatedNormalformLevel(Integer dependencyID) {
-		return this.normalformViolations.get(dependencyID);
+	public NormalformLevel getViolatedNormalformLevel(FunctionalDependency dependency) {
+		return this.normalformViolations.get(dependency);
 	}
 
 	public void setOverallLevel(NormalformLevel level) {
