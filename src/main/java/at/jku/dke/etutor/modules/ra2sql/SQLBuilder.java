@@ -97,7 +97,7 @@ public class SQLBuilder {
 					query = query.concat("SELECT " + this.printSchema(exp) + " ");
 					query = query.concat("FROM (");
 					query = query.concat(leftQuery);
-					query = query.concat(") AS minusLeftSideSubquery MINUS (");
+					query = query.concat(") AS minusLeftSideSubquery EXCEPT (");
 					query = query.concat(rightQuery);
 					query = query.concat(")");
 				}
