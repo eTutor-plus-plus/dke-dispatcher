@@ -24,7 +24,7 @@ public class MinimalCoverAnalyzer {
 		// This class is not meant to be instantiated.
 	}
 
-	public static MinimalCoverAnalysis analyze(Relation relation, int exerciseID){
+	/*public static MinimalCoverAnalysis analyze(Relation relation, int exerciseID){
 		MinimalCoverAnalysis analysis;
 		try {
 			analysis = analyze(relation, (Relation)RDBDExercisesManager.fetchSpecification(exerciseID));
@@ -34,7 +34,7 @@ public class MinimalCoverAnalyzer {
 			analysis.setSubmissionSuitsSolution(true);
 		}
 		return analysis;
-	}
+	}*/
 	
 	public static MinimalCoverAnalysis analyze(Relation relation, Relation specification){
 		//INIT LOCAL VARIABLES

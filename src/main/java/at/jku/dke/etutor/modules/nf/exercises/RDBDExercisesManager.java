@@ -541,25 +541,21 @@ public class RDBDExercisesManager {
 	 * @return The specification object 
 	 * @throws Exception
 	 */
-	public static Serializable fetchSpecification(int exerciseID) throws Exception{
+	public static String fetchSpecification(int exerciseID) throws Exception{
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rset = null;
-		Serializable specification = null;
+		String specification = null;
 		ObjectInputStream in = null;
-
-		String query = 	"SELECT 	specification ";
-		query += 		"FROM 		exercises ";
-		query += 		"WHERE		id = " + exerciseID;
 
 		try {
 			conn = RDBDHelper.getPooledConnection();
 			conn.setAutoCommit(false);
 			stmt= conn.createStatement();
-			rset = stmt.executeQuery(query);
+			rset = stmt.executeQuery("SELECT specification FROM exercises WHERE id = " + exerciseID);
 	
 			if (rset.next()) {
-				//TODO: resolve dependency on eTutor core classes
+				/*//TODO: resolve dependency on eTutor core classes
 				Blob blob = getOracleBlob(rset, 1);
 				//blob =((oracle.jdbc.OracleResultSet)rset).getBLOB("specification");
 				if(blob!=null){
@@ -567,7 +563,9 @@ public class RDBDExercisesManager {
 					specification = (Serializable)in.readObject();
 					in.close();
 					in = null;
-				}
+				}*/
+
+				specification = rset.getString("specification");
 			}
 			
 			conn.commit();
@@ -618,41 +616,17 @@ public class RDBDExercisesManager {
 	public static int fetchInternalType(int exerciseID) throws Exception {
 		int type = -1;
 		
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rset = null;
-		
-		try {
-			conn = RDBDHelper.getPooledConnection();
-			stmt = conn.createStatement();
-			rset = stmt.executeQuery("SELECT rdbd_type FROM exercises WHERE id = " + exerciseID);
+		try (
+			Connection conn = RDBDHelper.getPooledConnection();
+			Statement stmt = conn.createStatement();
+			ResultSet rset = stmt.executeQuery("SELECT rdbd_type FROM exercises WHERE id = " + exerciseID)
+		) {
 			if (rset.next()) {
 				type = rset.getInt("rdbd_type");
 			}
-		} catch (Exception e){
+		} catch (Exception e) {
+			RDBDHelper.getLogger().log(Level.SEVERE, "", e);
 			throw e;
-		} finally {
-			if (rset != null) {
-				try {
-					rset.close();
-				} catch (Exception e) {
-					RDBDHelper.getLogger().log(Level.SEVERE, "", e);
-				}
-			}
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (Exception e) {
-					RDBDHelper.getLogger().log(Level.SEVERE, "", e);
-				}
-			}
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (Exception e) {
-					RDBDHelper.getLogger().log(Level.SEVERE, "", e);
-				}
-			}
 		}
 
 		return type;

@@ -90,13 +90,18 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		// Source: https://datacadamia.com/antlr/getting_started (Gerald Wimmer, 2023-11-27)
 		// submission = "#A,B,C#;#D,E,F#";
-		CharStream lexerInput = CharStreams.fromString((String)submission);
-		Lexer lexer = new NFLexer(lexerInput);
-		TokenStream parserInput = new CommonTokenStream(lexer);
-		NFParser parser = new NFParser(parserInput);
+		CharStream submissionLexerInput = CharStreams.fromString((String)submission);
+		Lexer submissionLexer = new NFLexer(submissionLexerInput);
+		TokenStream submissionParserInput = new CommonTokenStream(submissionLexer);
+		NFParser submissionParser = new NFParser(submissionParserInput);
 
 		int internalType = RDBDExercisesManager.fetchInternalType(exerciseID);
-		Serializable specification = RDBDExercisesManager.fetchSpecification(exerciseID);
+		String specificationString = RDBDExercisesManager.fetchSpecification(exerciseID);
+
+		CharStream specificationLexerInput = CharStreams.fromString(specificationString);
+		Lexer specificationLexer = new NFLexer(specificationLexerInput);
+		TokenStream specificationParserInput = new CommonTokenStream(specificationLexer);
+		NFParser specificationParser = new NFParser(specificationParserInput);
 
 		/*
 		 * TODO: Pass the submission string on to the appropriate method of our new, shiny, parser (method could be
@@ -105,14 +110,16 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		 */
 		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION) {
 			//KEYS DETERMINATION
+			Relation specification = specificationParser.relation().parsedRelation;
+
 			KeysAnalyzerConfig keysAnalyzerConfig = new KeysAnalyzerConfig();
-			KeysContainer correctKeys = KeysDeterminator.determineAllKeys((Relation)specification);
+			KeysContainer correctKeys = KeysDeterminator.determineAllKeys(specification);
 			keysAnalyzerConfig.setCorrectMinimalKeys(correctKeys.getMinimalKeys());
 
 			// Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // Replaced with call to parser (Gerald Wimmer, 2023-11-27)
 			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
 			Relation relation = new Relation();
-			Set<Key> minimalKeys = parser.keySet().keys;
+			Set<Key> minimalKeys = submissionParser.keySet().keys;
 			relation.setMinimalKeys(minimalKeys);
 
 			analysis = KeysAnalyzer.analyze(relation, keysAnalyzerConfig);
@@ -122,15 +129,16 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER) {
 			//MINIMAL COVER
+			Relation specification = specificationParser.relation().parsedRelation;
+
 			// Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // Replaced with call to parser (Gerald Wimmer, 2023-11-27)
 			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
 			Relation relation = new Relation();
-			Set<FunctionalDependency> functionalDependencies = parser.functionalDependencySet().functionalDependencies;
+			Set<FunctionalDependency> functionalDependencies = submissionParser.functionalDependencySet().functionalDependencies;
 			relation.setFunctionalDependencies(functionalDependencies);
+			
+			analysis = MinimalCoverAnalyzer.analyze(relation, specification);
 
-			//TODO: pass specification itself instead of exerciseID? (2005-10-16, g.n.)
-			analysis = MinimalCoverAnalyzer.analyze(relation, exerciseID);
-				
 			//Set Submission
 			analysis.setSubmission(relation);
 
@@ -140,7 +148,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			// Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // Replaced with call to parser (Gerald Wimmer, 2023-11-27)
 			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
 			Relation relation = new Relation();
-			Set<String> attributes = parser.attributeSet().attributes;
+			Set<String> attributes = submissionParser.attributeSet().attributes;
 			relation.setAttributes(attributes);
 
 			analysis = AttributeClosureAnalyzer.analyze(
@@ -239,6 +247,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
 			//NORMALFORM DETERMINATION
+			Relation specification = specificationParser.relation().parsedRelation;
 			NormalformDeterminationSubmission normalformDeterminationSubmission = (NormalformDeterminationSubmission)submission; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
 
 			//Set overall level
@@ -283,8 +292,9 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			}
 
 			NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();
-			normalformAnalyzerConfig.setCorrectMinimalKeys(KeysDeterminator.determineMinimalKeys((Relation)specification));
-			normalformAnalyzerConfig.setRelation((Relation)specification);
+
+			normalformAnalyzerConfig.setCorrectMinimalKeys(KeysDeterminator.determineMinimalKeys(specification));
+			normalformAnalyzerConfig.setRelation(specification);
 			
 			analysis = NormalformDeterminationAnalyzer.analyze(normalformDeterminationSubmission, normalformAnalyzerConfig);
 
