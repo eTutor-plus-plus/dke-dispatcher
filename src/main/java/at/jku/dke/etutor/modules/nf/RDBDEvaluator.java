@@ -103,7 +103,6 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		 *  from the parser (Gerald Wimmer, 2023-11-12).
 		 */
 		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION) {
-			//KEYS DETERMINATION
 			//Relation specification = specificationParser.relation().parsedRelation;
 			Relation specification = null;
 			try {	// Source: https://mkyong.com/java/how-to-convert-java-object-to-from-json-jackson/
@@ -127,7 +126,6 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			analysis.setSubmission(relation);
 
 		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER) {
-			//MINIMAL COVER
 			// Relation specification = specificationParser.relation().parsedRelation;
 			Relation specification = null;
 			try {
@@ -147,7 +145,6 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			analysis.setSubmission(relation);
 
 		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) {
-			//ATTRIBUTE CLOSURE
 			// AttributeClosureSpecification attributeClosureSpecification = (AttributeClosureSpecification)specification;
 			AttributeClosureSpecification attributeClosureSpecification = null;
 			try {
@@ -179,7 +176,6 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			analysis.setSubmission(relation);
 
 		}*/ else if (internalType == RDBDConstants.TYPE_DECOMPOSE) {	// Todo: Maybe remove and replace with Normalize, now that steps need not be validated
-			//DECOMPOSE
 			// DecomposeSpecification decomposeSpecification = (DecomposeSpecification)specification;
 			DecomposeSpecification decomposeSpecification = null;
 			try {
@@ -240,7 +236,6 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION) { // Note: Could be identical to Decompose, now that you only have to specify the end result (Gerald Wimmer, 2023-11-27)
 			// TODO: Replace Decompose with THIS. (Gerald Wimmer, 2023-11-30)
-			//NORMALIZATION
 			// NormalizationSpecification normalizationSpecification = (NormalizationSpecification)specification;
 			NormalizationSpecification normalizationSpecification = null;
 			try {
@@ -270,7 +265,6 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			analysis.setSubmission(submissionTreeSet);
 
 		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
-			//NORMALFORM DETERMINATION
 			// Relation specification = specificationParser.relation().parsedRelation;
 			Relation specification = null;
 			try {

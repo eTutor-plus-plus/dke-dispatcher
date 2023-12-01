@@ -9,22 +9,14 @@ import java.util.TreeSet;
 
 public class Closure {
 
-	public static TreeSet<String> execute(Collection<String> attributes, Collection<FunctionalDependency> dependencies){
-		FunctionalDependency dependency;
-
-		boolean again;
-		boolean containsAllLHSAttributes;
-		boolean containsAllRHSAttributes;
-
-		again = true;
+	public static TreeSet<String> execute(Collection<String> attributes, Collection<FunctionalDependency> dependencies) {
+		boolean again = true;
 		TreeSet<String> closure = new TreeSet<>(Collator.getInstance());
 		closure.addAll(attributes);
 		
 		while (again) {
-			Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
-			while (dependenciesIterator.hasNext()) {
-				dependency = dependenciesIterator.next();
-				containsAllLHSAttributes = closure.containsAll(dependency.getLhsAttributes());
+			for (FunctionalDependency dependency : dependencies) {
+				boolean containsAllLHSAttributes = closure.containsAll(dependency.getLhsAttributes());
 				
 				if (containsAllLHSAttributes) {
 					closure.addAll(dependency.getRhsAttributes());
@@ -32,11 +24,9 @@ public class Closure {
 			}
 
 			again = false;
-			dependenciesIterator = dependencies.iterator();
-			while (dependenciesIterator.hasNext()) {
-				dependency = dependenciesIterator.next();
-				containsAllLHSAttributes = closure.containsAll(dependency.getLhsAttributes());
-				containsAllRHSAttributes = closure.containsAll(dependency.getRhsAttributes());
+			for (FunctionalDependency dependency : dependencies) {
+				boolean containsAllLHSAttributes = closure.containsAll(dependency.getLhsAttributes());
+				boolean containsAllRHSAttributes = closure.containsAll(dependency.getRhsAttributes());
 				
 				if ((!containsAllRHSAttributes) && (containsAllLHSAttributes)){
 					again = true;
