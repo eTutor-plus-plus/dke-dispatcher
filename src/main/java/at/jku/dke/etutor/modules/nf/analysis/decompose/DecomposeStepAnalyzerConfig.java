@@ -25,10 +25,6 @@ public class DecomposeStepAnalyzerConfig extends NormalizationAnalyzerConfig {
 		this.allRelations.add(relation);
 	}
 
-	public Iterator<IdentifiedRelation> iterAllRelations(){
-		return this.allRelations.iterator();
-	}
-	
 	public Vector<IdentifiedRelation> getAllRelations(){
 		return (Vector<IdentifiedRelation>)this.allRelations.clone();
 	}

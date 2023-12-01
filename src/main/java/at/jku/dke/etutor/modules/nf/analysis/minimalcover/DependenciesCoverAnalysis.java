@@ -29,16 +29,9 @@ public class DependenciesCoverAnalysis extends DefaultAnalysis implements Analys
 	public void addMissingDependency(FunctionalDependency dependency){
 		this.missingDependencies.add(dependency);
 	}
-	
-	public Iterator<FunctionalDependency> iterMissingDependencies(){
-		return this.missingDependencies.iterator();
-	}
-	
+
 	public void addAdditionalDependency(FunctionalDependency dependency){
 		this.additionalDependencies.add(dependency);
 	}
-	
-	public Iterator<FunctionalDependency> iterAdditionalDependencies(){
-		return this.additionalDependencies.iterator();
-	}
+
 }

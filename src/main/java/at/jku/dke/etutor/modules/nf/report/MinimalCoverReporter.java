@@ -119,10 +119,9 @@ public class MinimalCoverReporter {
 			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.dependenciesnotcanonical", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
-			Iterator<FunctionalDependency> it = analysis.iterNotCananonicalDependencies();
-			while (it.hasNext()){
+			for (FunctionalDependency fd : analysis.getNotCanonicalDependencies()){
 				description.append("<tr><td>");
-				description.append(printDependency(it.next()));
+				description.append(printDependency(fd));
 				description.append("</td></tr>");
 			}
 			description.append("</table>");
@@ -456,10 +455,9 @@ public class MinimalCoverReporter {
 				description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.missingdependencies", null, locale)).append(":</p>");
 				description.append("<table border='2' rules='all'>");
 
-				it = analysis.iterMissingDependencies();
-				while (it.hasNext()){
+				for (FunctionalDependency fd : analysis.getMissingDependencies()){
 					description.append("<tr><td>");
-					description.append(printDependency(it.next()));
+					description.append(printDependency(fd));
 					description.append("</td></tr>");
 				}
 				description.append("</table>");
@@ -487,10 +485,9 @@ public class MinimalCoverReporter {
 				description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.dependenciesnotderived", null, locale)).append(":</p>");
 				description.append("<table border='2' rules='all'>");
 
-				it = analysis.iterAdditionalDependencies();
-				while (it.hasNext()){
+				for (FunctionalDependency fd : analysis.getAdditionalDependencies()){
 					description.append("<tr><td>");
-					description.append(printDependency(it.next()));
+					description.append(printDependency(fd));
 					description.append("</td></tr>");
 				}
 				description.append("</table>");

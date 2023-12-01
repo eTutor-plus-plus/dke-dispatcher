@@ -28,11 +28,7 @@ public class NormalformDeterminationAnalysis extends NormalformAnalysis implemen
 
 		this.wrongLeveledDependencies.add(entry);
 	}
-	
-	public Iterator<Object[]> iterWrongLeveledDependencies(){
-		return this.wrongLeveledDependencies.iterator();
-	}
-	
+
 	public Vector<Object[]> getWrongLeveledDependencies(){
 		return (Vector<Object[]>)this.wrongLeveledDependencies.clone();
 	}

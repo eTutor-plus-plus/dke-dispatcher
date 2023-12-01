@@ -118,12 +118,8 @@ public class NormalformReporter {
 			description.append("		<td style='border-bottom:solid;border-bottom-width:thin;padding-left:10px;padding-right:10px'><i>").append(messageSource.getMessage("normalformreporter.violatednormalform", null, locale)).append("</i></td>");
 			description.append("		<td style='border-bottom:solid;border-bottom-width:thin;padding-left:10px;padding-right:10px'><i>").append(messageSource.getMessage("normalformreporter.yoursolution", null, locale)).append("</i></td>");
 			description.append("	</tr>");
-			
-			Object[] entry;
-			Iterator<Object[]> iter = analysis.iterWrongLeveledDependencies();
-			while (iter.hasNext()){
-				entry = iter.next();
-				
+
+			for (Object[] entry : analysis.getWrongLeveledDependencies()){
 				description.append("	<tr>");
 				description.append("		<td align='center'>").append(entry[0].toString().replaceAll("->", "&rarr;")).append("</td>");
 				description.append("		<td align='center'>").append(normalformLevelToString((NormalformLevel) entry[1], messageSource, locale)).append("</td>");
@@ -233,10 +229,9 @@ public class NormalformReporter {
 					description.append("<p>").append(messageSource.getMessage("normalformreporter.nonprimrightside", null, locale)).append("</p>");
 					description.append("<table border='2' rules='all'>");
 
-					it = secondNFViolation.iterNonPrimRHSAttributes();
-					while (it.hasNext()){
+					for (String a : secondNFViolation.getNonPrimRHSAttributes()){
 						description.append("<tr><td>");
-						description.append(it.next());
+						description.append(a);
 						description.append("</td></tr>");
 					}
 					description.append("</table>");
@@ -308,10 +303,9 @@ public class NormalformReporter {
 					description.append("<p>").append(messageSource.getMessage("normalformreporter.nonprimrightside", null, locale)).append("</p>");
 					description.append("<table border='2' rules='all'>");
 
-					it = thirdNFViolation.iterNonPrimRHSAttributes();
-					while (it.hasNext()){
+					for (String a : thirdNFViolation.getNonPrimRHSAttributes()){
 						description.append("<tr><td>");
-						description.append(it.next());
+						description.append(a);
 						description.append("</td></tr>");
 					}
 					description.append("</table>");

@@ -172,18 +172,16 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			decomposeAnalyzerConfig.setBaseRelation(RDBDHelper.findRelation(baseRelationID, allRelations));
 			RDBDHelper.getLogger().log(Level.INFO, "BaseRelation: '" + baseRelationID + "'."); 
 
-			Iterator<IdentifiedRelation> decomposedRelationsIterator = allRelations.iterator();
 			temp = new StringBuilder();
-			while(decomposedRelationsIterator.hasNext()){
-				temp.append("Relation '").append(((IdentifiedRelation) decomposedRelationsIterator.next()).getID()).append("' ");
+			for(IdentifiedRelation ir : allRelations){
+				temp.append("Relation '").append(ir.getID()).append("' ");
 			}
 			RDBDHelper.getLogger().log(Level.INFO, "All submitted Relations: " + temp + ".");
 
 			decomposeAnalyzerConfig.setDecomposedRelations(RDBDHelper.findSubRelations(baseRelationID, allRelations));
-			decomposedRelationsIterator = decomposeAnalyzerConfig.iterDecomposedRelations();
 			temp = new StringBuilder();
-			while(decomposedRelationsIterator.hasNext()){
-				temp.append("Relation '").append(((IdentifiedRelation) decomposedRelationsIterator.next()).getID()).append("' ");
+			for(IdentifiedRelation ir : decomposeAnalyzerConfig.getDecomposedRelations()){
+				temp.append("Relation '").append(ir.getID()).append("' ");
 			}
 			RDBDHelper.getLogger().log(Level.INFO, "Decomposed Relations: " + temp + ".");
 			

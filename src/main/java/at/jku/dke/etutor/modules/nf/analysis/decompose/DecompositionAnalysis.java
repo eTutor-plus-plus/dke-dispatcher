@@ -25,11 +25,7 @@ public class DecompositionAnalysis extends DefaultAnalysis implements Analysis {
 		this.missingAttributes.clear();
 		this.missingAttributes.addAll(attributes);
 	}
-	
-	public Iterator<String> iterMissingAttributes(){
-		return this.missingAttributes.iterator();
-	}
-	
+
 	public TreeSet<String> getMissingAttributes(){
 		return (TreeSet<String>)this.missingAttributes.clone();
 	}

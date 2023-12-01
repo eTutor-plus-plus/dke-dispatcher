@@ -73,9 +73,8 @@ public class NormalizationReporter {
 			}
 	
 			//ADD RELATION SPECIFIC ERROR REPORT GROUPS
-			Iterator<IdentifiedRelation> decomposedRelationsIterator = config.iterDecomposedRelations();
-			while (decomposedRelationsIterator.hasNext()){
-				ErrorReportGroup reportGroup = createRelationSpecificErrorReportsGroup(decomposedRelationsIterator.next().getID(), analysis, config, grading, messageSource, locale);
+			for (IdentifiedRelation ir : config.getDecomposedRelations()){
+				ErrorReportGroup reportGroup = createRelationSpecificErrorReportsGroup(ir.getID(), analysis, config, grading, messageSource, locale);
 				if (!reportGroup.getErrorReports().isEmpty()){
 					report.addErrorReportGroup(reportGroup);
 				}
@@ -184,10 +183,9 @@ public class NormalizationReporter {
 			description.append("<p>").append(messageSource.getMessage("normalizationreporter.dependencieslost", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
-			Iterator<FunctionalDependency> it = analysis.iterLostFunctionalDependencies();
-			while (it.hasNext()){
+			for (FunctionalDependency fd : analysis.getLostFunctionalDependencies()){
 				description.append("<tr><td>");
-				description.append(it.next().toString());
+				description.append(fd.toString());
 				description.append("</td></tr>");
 			}
 			description.append("</table>");
@@ -265,10 +263,9 @@ public class NormalizationReporter {
 			description.append("<p>").append(messageSource.getMessage("normalizationreporter.attributenotcomprised", null, locale)).append(":</p>");
 			description.append("<table border='2' rules='all'>");
 
-			Iterator<String> it = analysis.iterMissingAttributes();
-			while (it.hasNext()){
+			for (String a : analysis.getMissingAttributes()){
 				description.append("<tr><td>");
-				description.append(it.next());
+				description.append(a);
 				description.append("</td></tr>");
 			}
 			description.append("</table>");

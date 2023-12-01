@@ -41,10 +41,6 @@ public class NormalizationAnalyzerConfig {
 		this.normalizedRelations.add(normalizedRelation);
 	}
 
-	public Iterator<IdentifiedRelation> iterNormalizedRelations(){
-		return this.normalizedRelations.iterator();
-	}
-	
 	public TreeSet<IdentifiedRelation> getNormalizedRelations(){
 		return (TreeSet<IdentifiedRelation>)this.normalizedRelations.clone();
 	}

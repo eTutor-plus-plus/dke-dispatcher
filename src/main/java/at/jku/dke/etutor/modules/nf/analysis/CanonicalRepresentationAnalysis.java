@@ -20,11 +20,7 @@ public class CanonicalRepresentationAnalysis extends DefaultAnalysis implements 
 	public void addNotCanonicalDependency(FunctionalDependency dependency){
 		this.notCanonicalDependencies.add(dependency);
 	}
-	
-	public Iterator<FunctionalDependency> iterNotCananonicalDependencies(){
-		return this.notCanonicalDependencies.iterator();
-	}
-	
+
 	public HashSet<FunctionalDependency> getNotCanonicalDependencies(){
 		return (HashSet<FunctionalDependency>)this.notCanonicalDependencies.clone();
 	}

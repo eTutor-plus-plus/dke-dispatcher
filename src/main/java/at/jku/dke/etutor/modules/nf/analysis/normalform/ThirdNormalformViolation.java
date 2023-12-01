@@ -14,11 +14,7 @@ public class ThirdNormalformViolation extends NormalformViolation {
 	public void addNonPrimRHSAttribute(String attribute){
 		this.nonPrimRHSAttributes.add(attribute);
 	}
-	
-	public Iterator<String> iterNonPrimRHSAttributes(){
-		return this.nonPrimRHSAttributes.iterator();
-	}
-	
+
 	public Vector<String> getNonPrimRHSAttributes(){
 		return (Vector<String>)this.nonPrimRHSAttributes.clone();
 	}

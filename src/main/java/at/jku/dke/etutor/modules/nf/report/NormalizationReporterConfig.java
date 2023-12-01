@@ -40,7 +40,4 @@ public class NormalizationReporterConfig extends ReporterConfig {
 		this.decomposedRelations.add(relation);
 	}
 
-	public Iterator<IdentifiedRelation> iterDecomposedRelations(){
-		return this.decomposedRelations.iterator();
-	}
 }

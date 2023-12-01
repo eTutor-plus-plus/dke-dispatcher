@@ -41,11 +41,7 @@ public class Report implements at.jku.dke.etutor.core.evaluation.Report, Seriali
 	public Vector<ErrorReport> getErrorReports(){
 		return (Vector<ErrorReport>)this.errorReports.clone();
 	}
-	
-	public Iterator<ErrorReport> iterErrorReports(){
-		return this.errorReports.iterator();
-	}
-	
+
 	public void addErrorReport(ErrorReport report){
 		this.errorReports.add(report);
 	}
@@ -53,11 +49,7 @@ public class Report implements at.jku.dke.etutor.core.evaluation.Report, Seriali
 	public Vector<ErrorReportGroup> getErrorReportGroups(){
 		return (Vector<ErrorReportGroup>)this.errorReportGroups.clone();
 	}
-	
-	public Iterator<ErrorReportGroup> iterErrorReportGroups(){
-		return this.errorReportGroups.iterator();
-	}
-	
+
 	public void addErrorReportGroup(ErrorReportGroup reportGroup){
 		this.errorReportGroups.add(reportGroup);
 	}

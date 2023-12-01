@@ -57,10 +57,6 @@ public class DecomposeAnalyzerConfig implements Serializable {
 		this.decomposedRelations.add(decomposedRelation);
 	}
 
-	public Iterator<IdentifiedRelation> iterDecomposedRelations(){
-		return this.decomposedRelations.iterator();
-	}
-	
 	public TreeSet<IdentifiedRelation> getDecomposedRelations(){
 		return (TreeSet<IdentifiedRelation>)this.decomposedRelations.clone();
 	}

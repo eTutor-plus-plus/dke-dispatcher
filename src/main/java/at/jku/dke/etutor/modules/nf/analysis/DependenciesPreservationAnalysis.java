@@ -20,10 +20,6 @@ public class DependenciesPreservationAnalysis extends DefaultAnalysis implements
 		this.lostDependencies.add(lostDependency);
 	}
 
-	public Iterator<FunctionalDependency> iterLostFunctionalDependencies(){
-		return this.lostDependencies.iterator();
-	}
-	
 	public int lostFunctionalDependenciesCount(){
 		return this.lostDependencies.size();
 	}
