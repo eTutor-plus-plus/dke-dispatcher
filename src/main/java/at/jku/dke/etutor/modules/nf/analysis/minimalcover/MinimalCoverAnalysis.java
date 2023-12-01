@@ -37,11 +37,11 @@ public class MinimalCoverAnalysis extends DefaultAnalysis implements Analysis {
 		this.dependenciesCoverAnalysis = analysis;
 	}
 
-	public RedundantDependenciesAnalysis getRedundandDependenciesAnalysis(){
+	public RedundantDependenciesAnalysis getRedundantDependenciesAnalysis(){
 		return this.redundantDependenciesAnalysis;
 	}
 	
-	public void setRedundandDependenciesAnalysis(RedundantDependenciesAnalysis analysis){
+	public void setRedundantDependenciesAnalysis(RedundantDependenciesAnalysis analysis){
 		this.redundantDependenciesAnalysis = analysis;
 	}
 

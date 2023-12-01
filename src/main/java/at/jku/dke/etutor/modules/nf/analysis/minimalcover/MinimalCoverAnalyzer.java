@@ -56,7 +56,7 @@ public class MinimalCoverAnalyzer {
 		
 		//ANALYZE REDUNDANT FUNCTIONAL DEPENDENCIES
 		RedundantDependenciesAnalysis redundantDependenciesAnalysis = analyzeRedundantDependencies(submittedDependencies);
-		analysis.setRedundandDependenciesAnalysis(redundantDependenciesAnalysis);
+		analysis.setRedundantDependenciesAnalysis(redundantDependenciesAnalysis);
 		if (!redundantDependenciesAnalysis.submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
 			return analysis;

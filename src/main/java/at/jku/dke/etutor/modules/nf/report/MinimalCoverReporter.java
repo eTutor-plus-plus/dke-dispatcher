@@ -65,9 +65,9 @@ public class MinimalCoverReporter {
 			}
 			
 			//ADDING ERROR REPORT FOR REDUNDAND FUNCTIONAL DEPENDENCIES ANALYSIS, IF NECESSARY
-			if (analysis.getRedundandDependenciesAnalysis() != null){
-				if (!analysis.getRedundandDependenciesAnalysis().submissionSuitsSolution()){
-					report.addErrorReport(createRedundandDependenciesErrorReport(analysis.getRedundandDependenciesAnalysis(), config, messageSource, locale));
+			if (analysis.getRedundantDependenciesAnalysis() != null){
+				if (!analysis.getRedundantDependenciesAnalysis().submissionSuitsSolution()){
+					report.addErrorReport(createRedundandDependenciesErrorReport(analysis.getRedundantDependenciesAnalysis(), config, messageSource, locale));
 					RDBDHelper.getLogger().log(Level.INFO, "Added redundand dependencies error report");
 				}
 			}

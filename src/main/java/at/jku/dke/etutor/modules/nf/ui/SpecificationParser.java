@@ -484,7 +484,7 @@ public class SpecificationParser implements Serializable {
 		specification.setAttributes(parser.getRelationAttributes());
 		specification.setFunctionalDependencies(parser.getDependencies());
 		
-		HashSet<FunctionalDependency> correctDependencies = MinimalCover.execute(specification.getFunctionalDependencies());
+		Set<FunctionalDependency> correctDependencies = MinimalCover.execute(specification.getFunctionalDependencies());
 		
 		System.out.println("\tCorrect dependencies: ");
         for (FunctionalDependency correctDependency : correctDependencies) {

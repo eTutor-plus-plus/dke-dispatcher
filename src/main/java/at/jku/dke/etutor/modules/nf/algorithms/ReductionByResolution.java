@@ -107,7 +107,7 @@ public class ReductionByResolution {
 		
 	}
 	
-	public static HashSet<FunctionalDependency> execute_old(Relation rel, Collection<String> subScheme) {
+	public static Set<FunctionalDependency> execute_old(Relation rel, Collection<String> subScheme) {
 		Vector<String> attributes = new Vector<>();
 		for (String currAttribute : rel.getAttributes()) {
 			if (!subScheme.contains(currAttribute)) {
@@ -169,7 +169,7 @@ public class ReductionByResolution {
 	}
 	
 	
-	public static HashSet<FunctionalDependency> execute(Relation rel, Collection<String> subScheme) {
+	public static Set<FunctionalDependency> execute(Relation rel, Collection<String> subScheme) {
 		Vector<String> attributes = new Vector<>();
 
 		for (String currAttribute : rel.getAttributes()) {
@@ -231,7 +231,7 @@ public class ReductionByResolution {
 		return MinimalCover.fold(result);
 	}
 
-	public static HashSet<FunctionalDependency> calculateResolvents(String a, Collection<FunctionalDependency> dependencies) {
+	public static Set<FunctionalDependency> calculateResolvents(String a, Collection<FunctionalDependency> dependencies) {
 		FunctionalDependency currDependency;
 
 		HashSet<FunctionalDependency> resolvents = new HashSet<>();

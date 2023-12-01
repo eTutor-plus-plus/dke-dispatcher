@@ -6,25 +6,17 @@ import java.util.*;
 
 public class MinimalCover {
 	
-	public static HashSet<FunctionalDependency> execute(Collection<FunctionalDependency> dependencies){
-		Iterator<FunctionalDependency> keyFDsIterator;
-		Iterator<FunctionalDependency> dependenciesIterator;
-
+	public static Set<FunctionalDependency> execute(Collection<FunctionalDependency> dependencies){
 		//DERIVE CANONICAL FORM OF FUNCTIONAL DEPENDENCIES
-		HashSet<FunctionalDependency> minimalCover = unfold(dependencies);
+		Set<FunctionalDependency> minimalCover = unfold(dependencies);
 
-		//DELETING EXTRANEUS ATTRIBUTES
-		HashMap<FunctionalDependency, Vector<String>> extraneusAttributes = calculateExtraneusAttributes(minimalCover);
+		//DELETING EXTRANEOUS ATTRIBUTES
+		Map<FunctionalDependency, Vector<String>> extraneousAttributes = calculateExtraneousAttributes(minimalCover);
 
-		keyFDsIterator = extraneusAttributes.keySet().iterator();
-		while (keyFDsIterator.hasNext()){
-			FunctionalDependency keyFD = keyFDsIterator.next();
-			
-			dependenciesIterator = minimalCover.iterator();
-			while (dependenciesIterator.hasNext()){
-				FunctionalDependency currFD = dependenciesIterator.next();
+		for (FunctionalDependency keyFD : extraneousAttributes.keySet()){
+			for (FunctionalDependency currFD : minimalCover){
 				if (currFD.equals(keyFD)){
-					currFD.removeLhsAttributes(extraneusAttributes.get(keyFD));
+					currFD.removeLhsAttributes(extraneousAttributes.get(keyFD));
 				}
 			}
 		}
@@ -32,13 +24,13 @@ public class MinimalCover {
 		//DELETING DUPLICATES
 		minimalCover = new HashSet<>(minimalCover);
 	
-		//DELETING REDUNDAND FUNCTIONAL DEPENDENCIES
+		//DELETING REDUNDANT FUNCTIONAL DEPENDENCIES
 		minimalCover.removeAll(calculateRedundantFunctionalDependencies(minimalCover));
 
 		return minimalCover;
 	}
 
-	public static HashSet<FunctionalDependency> calculateRedundantFunctionalDependencies(Collection<FunctionalDependency> dependencies){
+	public static Set<FunctionalDependency> calculateRedundantFunctionalDependencies(Collection<FunctionalDependency> dependencies){
 		Vector<FunctionalDependency> tempDependencies = new Vector<>();
 		HashSet<FunctionalDependency> redundantDependencies = new HashSet<>();
 
@@ -57,10 +49,10 @@ public class MinimalCover {
 	}
 
 
-	public static HashMap<FunctionalDependency, Vector<String>> calculateExtraneusAttributes(Collection<FunctionalDependency> dependencies) {
-		Vector<FunctionalDependency> tempFDs = new Vector<>();
+	public static Map<FunctionalDependency, Vector<String>> calculateExtraneousAttributes (Collection<FunctionalDependency> dependencies) {
+		List<FunctionalDependency> tempFDs = new Vector<>();
 		FunctionalDependency tempFD = new FunctionalDependency();
-		HashMap<FunctionalDependency, Vector<String>> extraneusAttributes = new HashMap<>();
+		Map<FunctionalDependency, Vector<String>> extraneousAttributes = new HashMap<>();
 
         for (FunctionalDependency currFD : dependencies) {
 			for (String currAttribute : currFD.getLhsAttributes()) {
@@ -68,8 +60,8 @@ public class MinimalCover {
                 tempFD.setRhsAttributes(currFD.getRhsAttributes());
                 tempFD.removeLhsAttribute(currAttribute);
 
-                if (extraneusAttributes.containsKey(currFD)) {
-                    tempFD.removeLhsAttributes(extraneusAttributes.get(currFD));
+                if (extraneousAttributes.containsKey(currFD)) {
+                    tempFD.removeLhsAttributes(extraneousAttributes.get(currFD));
                 }
 
                 tempFDs.clear();
@@ -78,20 +70,20 @@ public class MinimalCover {
                 tempFDs.add(tempFD);
 
                 if (Cover.execute(dependencies, tempFDs)) {
-                    if (!extraneusAttributes.containsKey(currFD)) {
-                        extraneusAttributes.put(currFD, new Vector<>());
+                    if (!extraneousAttributes.containsKey(currFD)) {
+                        extraneousAttributes.put(currFD, new Vector<>());
                     }
-                    extraneusAttributes.get(currFD).add(currAttribute);
+                    extraneousAttributes.get(currFD).add(currAttribute);
                 }
             }
         }
 
-		return extraneusAttributes;
+		return extraneousAttributes;
 	}
 
-	public static HashSet<FunctionalDependency> fold(Collection<FunctionalDependency> dependencies) {
-		HashSet<FunctionalDependency> foldedDependencies = new HashSet<>();
-		Vector<FunctionalDependency> processedDependencies = new Vector<>();
+	public static Set<FunctionalDependency> fold(Collection<FunctionalDependency> dependencies) {
+		Set<FunctionalDependency> foldedDependencies = new HashSet<>();
+		List<FunctionalDependency> processedDependencies = new Vector<>();
 
 		for (int i = 0; i < dependencies.size(); i++) {
 			FunctionalDependency currDependency = (FunctionalDependency)dependencies.toArray()[i];
@@ -118,7 +110,7 @@ public class MinimalCover {
 		return fd2.getLhsAttributes().containsAll(fd1.getLhsAttributes()) && fd1.getLhsAttributes().containsAll(fd2.getLhsAttributes());
 	}
 
-	public static HashSet<FunctionalDependency> unfold(Collection<FunctionalDependency> dependencies) {
+	public static Set<FunctionalDependency> unfold(Collection<FunctionalDependency> dependencies) {
 		HashSet<FunctionalDependency> unfoldedDependencies = new HashSet<>();
 
         for (FunctionalDependency dependency : dependencies) {
