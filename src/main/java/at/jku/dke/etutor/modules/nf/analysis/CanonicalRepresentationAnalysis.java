@@ -6,7 +6,6 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 
 public class CanonicalRepresentationAnalysis extends DefaultAnalysis implements Analysis {
 

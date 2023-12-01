@@ -5,7 +5,6 @@ import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.TreeSet;
 
 public class NormalizationReporterConfig extends ReporterConfig {

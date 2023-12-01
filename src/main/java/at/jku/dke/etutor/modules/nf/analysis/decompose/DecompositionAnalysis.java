@@ -5,7 +5,6 @@ import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 
 import java.text.Collator;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.TreeSet;
 
 public class DecompositionAnalysis extends DefaultAnalysis implements Analysis {

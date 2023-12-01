@@ -5,7 +5,6 @@ import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.HashSet;
-import java.util.Iterator;
 
 public class TrivialDependenciesAnalysis extends DefaultAnalysis implements Analysis {
 

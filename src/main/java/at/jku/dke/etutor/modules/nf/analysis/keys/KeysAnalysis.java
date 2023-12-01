@@ -6,7 +6,6 @@ import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.KeyComparator;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.TreeSet;
 
 public class KeysAnalysis extends DefaultAnalysis implements Analysis {

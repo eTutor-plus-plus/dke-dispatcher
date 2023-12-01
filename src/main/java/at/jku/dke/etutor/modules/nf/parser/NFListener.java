@@ -2,13 +2,6 @@
 
 package at.jku.dke.etutor.modules.nf.parser ;
 
-import java.util.Set;
-import java.util.HashSet;
-import at.jku.dke.etutor.modules.nf.model.Key;
-import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
-import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
-import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
-
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**

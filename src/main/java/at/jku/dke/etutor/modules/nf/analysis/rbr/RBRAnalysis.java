@@ -4,7 +4,6 @@ import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
-import java.util.Iterator;
 import java.util.Vector;
 
 public class RBRAnalysis extends DefaultAnalysis implements Analysis {

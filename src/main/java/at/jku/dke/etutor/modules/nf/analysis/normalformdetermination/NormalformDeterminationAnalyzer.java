@@ -6,7 +6,6 @@ import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.model.*;
 
-import java.util.Iterator;
 import java.util.logging.Level;
 
 public class NormalformDeterminationAnalyzer {

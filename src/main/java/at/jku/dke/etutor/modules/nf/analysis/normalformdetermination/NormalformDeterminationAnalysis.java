@@ -5,7 +5,6 @@ import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
-import java.util.Iterator;
 import java.util.Vector;
 
 public class NormalformDeterminationAnalysis extends NormalformAnalysis implements Analysis {
