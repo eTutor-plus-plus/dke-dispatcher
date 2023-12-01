@@ -136,7 +136,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			Relation relation = new Relation();
 			Set<FunctionalDependency> functionalDependencies = submissionParser.functionalDependencySet().functionalDependencies;
 			relation.setFunctionalDependencies(functionalDependencies);
-			
+
 			analysis = MinimalCoverAnalyzer.analyze(relation, specification);
 
 			//Set Submission
@@ -188,8 +188,8 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			allRelations.addAll(submissionTreeSet);
 			
 			String baseRelationID;
-			if (passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION) != null && !((String) passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION)).isEmpty()){
-				baseRelationID = ((String)passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION));
+			if (passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION) != null && !passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION).isEmpty()){
+				baseRelationID = passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION);
 			} else {
 				baseRelationID = ((DecomposeSpecification)specification).getBaseRelation().getID();
 			}
@@ -251,7 +251,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			NormalformDeterminationSubmission normalformDeterminationSubmission = (NormalformDeterminationSubmission)submission; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
 
 			//Set overall level
-			String overallLevel = (String)passedParameters.get(RDBDConstants.PARAM_NORMALFORM_LEVEL);
+			String overallLevel = passedParameters.get(RDBDConstants.PARAM_NORMALFORM_LEVEL);
 			if (overallLevel.equalsIgnoreCase("1")){
 				normalformDeterminationSubmission.setOverallLevel(NormalformLevel.FIRST);
 			} else if (overallLevel.equalsIgnoreCase("2")){
@@ -269,7 +269,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 				Integer currID = iter.next();
 				
 				if (passedParameters.get(currID + "_violation") != null){
-					String violatedNF = (String)passedParameters.get(currID + "_violation");
+					String violatedNF = passedParameters.get(currID + "_violation");
 					
 					if (violatedNF.equalsIgnoreCase("1")){
 						normalformDeterminationSubmission.setNormalformViolation(NormalformLevel.FIRST, currID);
@@ -338,7 +338,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		ReporterConfig config;
 		
 		Report report;
-		String actionParam = (String)passedAttributes.get(RDBDConstants.PARAM_ACTION);
+		String actionParam = passedAttributes.get(RDBDConstants.PARAM_ACTION);
 		/*
 		 * NOTE: Whenever the parameter with the key RDBDConstants.ATT_EXERCISE_ID is queried, its .toString() value is
 		 *  passed into Integer.parseInt(). As Integer.parseInt() can only accept Strings (and only interpret those
@@ -347,7 +347,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		 *  (Gerald Wimmer, 2023-11-12).
 		 */
 		int exerciseIdParam = Integer.parseInt(passedAttributes.get(RDBDConstants.ATT_EXERCISE_ID));
-		String diagnoseLevelParam = (String)passedAttributes.get(RDBDConstants.PARAM_LEVEL);
+		String diagnoseLevelParam = passedAttributes.get(RDBDConstants.PARAM_LEVEL);
 
 		int diagnoseLevel = 2;
 		int internalType = RDBDExercisesManager.fetchInternalType(exerciseIdParam);
