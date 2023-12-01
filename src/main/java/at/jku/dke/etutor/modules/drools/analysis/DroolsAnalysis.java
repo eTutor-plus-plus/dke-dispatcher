@@ -45,8 +45,8 @@ public class DroolsAnalysis extends DefaultAnalysis {
 
             // Imports nicht notwendig, da gleiches package
             // hier nur damit Auto-Complete zumindest tlw. funktioniert
-            import at.jku.dke.jit.EnterParkingLotEvent
-            import at.jku.dke.jit.ExitParkingLotEvent
+            import at.jku.dke.etutor.modules.drools.jit.EnterParkingLotEvent
+            import at.jku.dke.etutor.modules.drools.jit.ExitParkingLotEvent
 
             // Konsolenausgaben sind nicht erforderlich; hier nur zum Debugging
             rule "Combine parking intervals if reentry within 15 min"
@@ -291,22 +291,26 @@ public class DroolsAnalysis extends DefaultAnalysis {
     }
 
     public boolean hasSyntaxError() throws IOException {
-        DynamicDroolsBuilder dyn = new DynamicDroolsBuilder();
-        KieContainer kieContainer = dyn.getKieContainer(this.inputRules, EventProcessingOption.CLOUD); //TODO: Richtige KieSession erstellen mit String rules 2023-11-24
-        Results results = kieContainer.verify();
+        try (DynamicDroolsBuilder dyn = new DynamicDroolsBuilder(this.javaClasses)) {
+            //TODO: Richtige KieSession erstellen mit String rules 2023-11-24
+            KieContainer kieContainer;
+            kieContainer = dyn.getKieContainer(this.inputRules, EventProcessingOption.CLOUD);
+            Results results = kieContainer.verify();
 
-        if (results.hasMessages(org.kie.api.builder.Message.Level.ERROR)) {
-            System.out.println("Syntax errors found:");
 
-            for (org.kie.api.builder.Message message : results.getMessages()) {
-                if (message.getLevel() == org.kie.api.builder.Message.Level.ERROR) {
-                    System.out.println("Error: " + message.getText());
+            if (results.hasMessages(org.kie.api.builder.Message.Level.ERROR)) {
+                System.out.println("Syntax errors found:");
+
+                for (org.kie.api.builder.Message message : results.getMessages()) {
+                    if (message.getLevel() == org.kie.api.builder.Message.Level.ERROR) {
+                        System.out.println("Error: " + message.getText());
+                    }
                 }
+                return true;
+            } else {
+                System.out.println("No syntax errors found. Rules are valid.");
+                return false;
             }
-            return true;
-        } else {
-            System.out.println("No syntax errors found. Rules are valid.");
-            return false;
         }
     }
 

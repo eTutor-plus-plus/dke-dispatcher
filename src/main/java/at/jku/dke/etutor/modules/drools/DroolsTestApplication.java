@@ -10,6 +10,9 @@ public class DroolsTestApplication {
 
         DroolsAnalysis analysis = new DroolsAnalysis(1,"");
 
+        if(analysis.hasSyntaxError()) System.out.println("Regeln haben Syntaxfehler.");
+        else System.out.println("Regeln haben keine Syntaxfehler.");
+
         System.out.println(analysis.toString());
     }
 }
