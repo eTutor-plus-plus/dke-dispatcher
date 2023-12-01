@@ -115,11 +115,23 @@ public class NormalformAnalyzer {
 		RDBDHelper.getLogger().log(Level.INFO, "FINISHED BC NF CHECK. Is violated: " + isViolated);
 		return !isViolated;	
 	}
-	
+
+	/**
+	 * Checks whether any attribute in the relation is not atomic (i.e., contains more than one value).
+	 * @param dependency FunctionalDependency which is to be examined for violating the first normal form
+	 * @param config
+	 * @return null, always, because all exercises have atomic attributes
+	 */
 	public static FirstNormalformViolation getFirstNormalformViolation(FunctionalDependency dependency, NormalformAnalyzerConfig config) {
 		return null;
 	}
 
+	/**
+	 * Checks if the right-hand-side of the supplied dependency is non-prime AND the left-hand-side is a partial key.
+	 * @param dependency FunctionalDependency which is to be examined for violating the second normal form
+	 * @param config
+	 * @return A <code>SecondNormalFormViolation</code> if dependency violates the second normal form, <code>null</code> otherwise.
+	 */
 	public static SecondNormalformViolation getSecondNormalformViolation(FunctionalDependency dependency, NormalformAnalyzerConfig config) {
 		boolean isViolated;
 
@@ -138,7 +150,6 @@ public class NormalformAnalyzer {
 
 		//Deciding whether LHS is a partial key
 		//Violated, if LHS is a partial key
-
 		if (rhsContainsNonPrimeAttribute) {
 			isViolated = false;
 
@@ -159,7 +170,13 @@ public class NormalformAnalyzer {
 		
 		return null;
 	}
-	
+
+	/**
+	 * Checks
+	 * @param dependency FunctionalDependency which is to be examined for violating the third normal form
+	 * @param config
+	 * @return A <code>ThirdNormalFormViolation</code> if dependency violates the third normal form, <code>null</code> otherwise.
+	 */
 	public static ThirdNormalformViolation getThirdNormalformViolation(FunctionalDependency dependency, NormalformAnalyzerConfig config) {
 
 		boolean isViolated = true;
@@ -201,6 +218,12 @@ public class NormalformAnalyzer {
 		return null;
 	}
 
+	/**
+	 * Checks
+	 * @param dependency FunctionalDependency which is to be examined for violating the Boyce-Codd normal form
+	 * @param config
+	 * @return A <code>BoyceCoddNormalFormViolation</code> if dependency violates the third normal form, <code>null</code> otherwise.
+	 */
 	public static BoyceCoddNormalformViolation getBoyceCoddNormalformViolation(FunctionalDependency dependency, NormalformAnalyzerConfig config) {
 		boolean isViolated = true;
 
