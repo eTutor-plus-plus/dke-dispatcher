@@ -12,6 +12,10 @@ import java.util.logging.Level;
 
 public class NormalformAnalyzer {
 
+	private NormalformAnalyzer() {
+		// This class is not meant to be instantiated. (Gerald Wimmer, 2023-12-01)
+	}
+	
 	public static NormalformAnalysis analyze(NormalformAnalyzerConfig config){
 		NormalformAnalysis analysis = new NormalformAnalysis();
 		analysis.setSubmissionSuitsSolution(false);
@@ -133,8 +137,6 @@ public class NormalformAnalyzer {
 	 * @return A <code>SecondNormalFormViolation</code> if dependency violates the second normal form, <code>null</code> otherwise.
 	 */
 	public static SecondNormalformViolation getSecondNormalformViolation(FunctionalDependency dependency, NormalformAnalyzerConfig config) {
-		boolean isViolated;
-
 		SecondNormalformViolation violation = new SecondNormalformViolation();
 		violation.setFunctionalDependency(dependency);
 
@@ -148,11 +150,22 @@ public class NormalformAnalyzer {
 			}
 		}
 
-		//Deciding whether LHS is a partial key
-		//Violated, if LHS is a partial key
-		if (rhsContainsNonPrimeAttribute) {
-			isViolated = false;
+		boolean isViolated = false;
 
+		//Deciding whether LHS is a partial key
+		//Violated, if LHS is a partial key (old comment, ca. 2005)
+		/*
+		 * What this literally does is, it checks (in this order):
+		 *  1) If the right side contains any non-prime attribute, and only if that's true
+		 *  2) if the left side is contained in (i.e., part of) a key, and only if that's true
+		 *  3) if there are any other attributes in said key, i.e., if the left hand side is only a partial key.
+		 *
+		 * If 2) is false, LHS is non-prime. If 3) is false, LHS is a "complete" key (i.e., NOT a partial key).
+		 * However, if 3) is true, LHS is a partial key, violating 2NF.
+		 *
+		 * (Gerald Wimmer, 2023-12-01)
+		 */
+		if (rhsContainsNonPrimeAttribute) {
             for (Key currKey : config.getCorrectMinimalKeys()) {
                 //RDBDHelper.getLogger().log(Level.INFO, "Check Key: " + currKey + " (Key: " + currKey.getAttributes().size() + " -  Dependency: " + dependency.getLhsAttributes().size() + ")");
 
@@ -160,9 +173,7 @@ public class NormalformAnalyzer {
                     isViolated = true;
                 }
             }
-        } else {
-			isViolated = false;
-		}
+        }
 		
 		if (isViolated){
 			return violation;
@@ -195,7 +206,18 @@ public class NormalformAnalyzer {
 		}
 
 		//Deciding whether LHS is a super key
-		//Violation, if LHS is not a super key
+		//Violation, if LHS is not a super key (old comment, ca. 2005)
+		/*
+		 * I'm not sure if this is really what this does. What it does is: If the right side contains any non-prime
+		 * attribute, it checks if the left side matches any MINIMAL key completely. If the left-hand-side matches
+		 * no minimal key completely, that means either
+		 * 	a) The left-hand-side is a partial key, violating 2NF, or
+		 *  b) The left-hand-side is not even a partial key, i.e., non-prime, violating 3NF.
+		 *
+		 * b) obviously violates 3NF, and a) violates it because 3NF requires 2NF to be fulfilled.
+		 *
+		 * (Gerald Wimmer, 2023-12-01)
+		 */
 		if (rhsContainsNonPrimeAttribute) {
 			RDBDHelper.getLogger().log(Level.INFO, "RHS comprises non prim attribute. Is violated: " + isViolated);
 
