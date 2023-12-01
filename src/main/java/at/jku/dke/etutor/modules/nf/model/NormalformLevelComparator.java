@@ -25,4 +25,14 @@ public class NormalformLevelComparator implements Comparator<NormalformLevel>, S
 		return Integer.compare(o1.hashCode(), o2.hashCode());
 
 	}
+
+	public static void main(String[] args) {
+		NormalformLevelComparator comparator = new NormalformLevelComparator();
+
+		System.out.println(comparator.compare(NormalformLevel.FIRST, NormalformLevel.FIRST) + "");
+		System.out.println(comparator.compare(NormalformLevel.FIRST, NormalformLevel.SECOND) + "");
+		System.out.println(comparator.compare(NormalformLevel.SECOND, NormalformLevel.FIRST) + "");
+		System.out.println(comparator.compare(NormalformLevel.FIRST, null) + "");
+		System.out.println(comparator.compare(null, NormalformLevel.FIRST) + "");
+	}
 }
