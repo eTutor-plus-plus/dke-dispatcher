@@ -1,8 +1,12 @@
 package at.jku.dke.etutor.modules.nf;
 
+import at.jku.dke.etutor.core.evaluation.Analysis;
+import at.jku.dke.etutor.core.evaluation.DefaultGrading;
+import at.jku.dke.etutor.core.evaluation.Evaluator;
+import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.core.evaluation.Report;
-import at.jku.dke.etutor.core.evaluation.*;
-import at.jku.dke.etutor.modules.nf.analysis.*;
+import at.jku.dke.etutor.modules.nf.analysis.KeysDeterminator;
+import at.jku.dke.etutor.modules.nf.analysis.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.closure.AttributeClosureAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.closure.AttributeClosureAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.decompose.DecomposeAnalysis;
@@ -19,17 +23,25 @@ import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalysis;
-import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalyzer;
 import at.jku.dke.etutor.modules.nf.exercises.RDBDExercisesManager;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.KeysContainer;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.parser.NFLexer;
 import at.jku.dke.etutor.modules.nf.parser.NFParser;
-import at.jku.dke.etutor.modules.nf.report.*;
-import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.report.AttributeClosureReporter;
+import at.jku.dke.etutor.modules.nf.report.DecomposeReporter;
+import at.jku.dke.etutor.modules.nf.report.DecomposeReporterConfig;
+import at.jku.dke.etutor.modules.nf.report.KeysReporter;
+import at.jku.dke.etutor.modules.nf.report.MinimalCoverReporter;
+import at.jku.dke.etutor.modules.nf.report.NormalformReporter;
+import at.jku.dke.etutor.modules.nf.report.NormalizationReporter;
+import at.jku.dke.etutor.modules.nf.report.NormalizationReporterConfig;
+import at.jku.dke.etutor.modules.nf.report.RBRReporter;
+import at.jku.dke.etutor.modules.nf.report.ReporterConfig;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -41,7 +53,11 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 
 public class RDBDEvaluator implements Evaluator, MessageSourceAware {
@@ -72,8 +88,9 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		// Serializable submission = (Serializable)passedAttributes.get(RDBDConstants.calcSubmissionIDFor(exerciseID));
 		Serializable submission = null; // NOTE: Temporary addition so IntelliJ doesn't complain about the uninitialized variable (Gerald Wimmer, 2023-11-12)
 
+		// Source: https://datacadamia.com/antlr/getting_started (Gerald Wimmer, 2023-11-27)
 		submission = "#A,B,C#;#D,E,F#";
-		CharStream lexerInput = CharStreams.fromString((String)submission);	// Source: https://datacadamia.com/antlr/getting_started (Gerald Wimmer, 2023-11-27)
+		CharStream lexerInput = CharStreams.fromString((String)submission);
 		Lexer lexer = new NFLexer(lexerInput);
 		TokenStream parserInput = new CommonTokenStream(lexer);
 		NFParser parser = new NFParser(parserInput);
@@ -319,7 +336,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		 *  casting it to String, which, I assume, it already is if it can be parsed by Integer.parseInt()).
 		 *  (Gerald Wimmer, 2023-11-12).
 		 */
-		int exerciseIdParam = Integer.parseInt(passedAttributes.get(RDBDConstants.ATT_EXERCISE_ID).toString());
+		int exerciseIdParam = Integer.parseInt(passedAttributes.get(RDBDConstants.ATT_EXERCISE_ID));
 		String diagnoseLevelParam = (String)passedAttributes.get(RDBDConstants.PARAM_LEVEL);
 
 		int diagnoseLevel = 2;

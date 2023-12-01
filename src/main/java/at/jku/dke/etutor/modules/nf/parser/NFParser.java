@@ -220,7 +220,7 @@ public class NFParser extends Parser {
 			{
 			setState(39);
 			((RelationContext)_localctx).relationId = relationId();
-			_localctx.parsedRelation.setID((((RelationContext)_localctx).relationId!=null?_input.getText(((RelationContext)_localctx).relationId.start,((RelationContext)_localctx).relationId.stop):null));
+			try {_localctx.parsedRelation.setID((((RelationContext)_localctx).relationId!=null?_input.getText(((RelationContext)_localctx).relationId.start,((RelationContext)_localctx).relationId.stop):null));} catch(Exception e) { e.printStackTrace();}
 			setState(41);
 			match(T__1);
 			setState(42);
