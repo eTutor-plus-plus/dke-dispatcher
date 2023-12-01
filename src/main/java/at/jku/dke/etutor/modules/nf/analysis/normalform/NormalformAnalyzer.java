@@ -65,7 +65,6 @@ public class NormalformAnalyzer {
 	}
 
 	private static boolean isPrimeAttribute(String attribute, Collection<Key> minimalKeys) {
-
         for (Key currMinimalKey : minimalKeys) {
             if (currMinimalKey.getAttributes().contains(attribute)) {
                 return true;
@@ -127,12 +126,12 @@ public class NormalformAnalyzer {
 		SecondNormalformViolation violation = new SecondNormalformViolation();
 		violation.setFunctionalDependency(dependency);
 
-		//Deciding whether RHS comprises at least one non-prime attribute
-		boolean rhsComprisesNonPrimeAttribute = false;
+		//Deciding whether RHS contains at least one non-prime attribute
+		boolean rhsContainsNonPrimeAttribute = false;
 		for (String currAttribute : dependency.getRhsAttributes()) {
 			if (!isPrimeAttribute(currAttribute, config.getCorrectMinimalKeys())) {
-				rhsComprisesNonPrimeAttribute = true;
-				violation.addNonPrimRHSAttribute(currAttribute);
+				rhsContainsNonPrimeAttribute = true;
+				violation.addNonPrimeRHSAttribute(currAttribute);
 				break;
 			}
 		}
@@ -140,7 +139,7 @@ public class NormalformAnalyzer {
 		//Deciding whether LHS is a partial key
 		//Violated, if LHS is a partial key
 
-		if (rhsComprisesNonPrimeAttribute) {
+		if (rhsContainsNonPrimeAttribute) {
 			isViolated = false;
 
             for (Key currKey : config.getCorrectMinimalKeys()) {
@@ -168,19 +167,19 @@ public class NormalformAnalyzer {
 		ThirdNormalformViolation violation = new ThirdNormalformViolation();
 		violation.setFunctionalDependency(dependency);
 
-		//Deciding whether RHS comprises at least one non-prime attribute
-		boolean rhsComprisesNonPrimeAttribute = false;
+		//Deciding whether RHS contains at least one non-prime attribute
+		boolean rhsContainsNonPrimeAttribute = false;
 		for (String currAttribute : dependency.getRhsAttributes()) {
 			if (!isPrimeAttribute(currAttribute,config.getCorrectMinimalKeys())) {
-				rhsComprisesNonPrimeAttribute = true;
-				violation.addNonPrimRHSAttribute(currAttribute);
+				rhsContainsNonPrimeAttribute = true;
+				violation.addNonPrimeRHSAttribute(currAttribute);
 				break;
 			}
 		}
 
 		//Deciding whether LHS is a super key
 		//Violation, if LHS is not a super key
-		if (rhsComprisesNonPrimeAttribute) {
+		if (rhsContainsNonPrimeAttribute) {
 			RDBDHelper.getLogger().log(Level.INFO, "RHS comprises non prim attribute. Is violated: " + isViolated);
 
 			for (Key currKey : config.getCorrectMinimalKeys()) {

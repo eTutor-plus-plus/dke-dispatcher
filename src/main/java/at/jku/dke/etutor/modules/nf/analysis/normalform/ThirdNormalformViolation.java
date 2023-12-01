@@ -10,7 +10,7 @@ public class ThirdNormalformViolation extends NormalformViolation {
 		this.nonPrimRHSAttributes = new Vector<>();
 	}
 
-	public void addNonPrimRHSAttribute(String attribute){
+	public void addNonPrimeRHSAttribute(String attribute){
 		this.nonPrimRHSAttributes.add(attribute);
 	}
 

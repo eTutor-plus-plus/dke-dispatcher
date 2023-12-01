@@ -12,7 +12,7 @@ public class SecondNormalformViolation extends NormalformViolation {
 		//this.comprisedPartialKeys = new Vector();
 	}
 
-	public void addNonPrimRHSAttribute(String attribute){
+	public void addNonPrimeRHSAttribute(String attribute){
 		this.nonPrimRHSAttributes.add(attribute);
 	}
 
