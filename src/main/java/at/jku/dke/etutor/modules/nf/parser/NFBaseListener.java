@@ -2,6 +2,13 @@
 
 package at.jku.dke.etutor.modules.nf.parser ;
 
+import java.util.Set;
+import java.util.HashSet;
+import at.jku.dke.etutor.modules.nf.model.Key;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
+
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -122,18 +129,6 @@ public class NFBaseListener implements NFListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNormalForm(NFParser.NormalFormContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAttributeClosure(NFParser.AttributeClosureContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAttributeClosure(NFParser.AttributeClosureContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

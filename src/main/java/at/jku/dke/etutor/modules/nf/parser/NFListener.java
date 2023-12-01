@@ -2,6 +2,13 @@
 
 package at.jku.dke.etutor.modules.nf.parser ;
 
+import java.util.Set;
+import java.util.HashSet;
+import at.jku.dke.etutor.modules.nf.model.Key;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
+
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -99,16 +106,6 @@ public interface NFListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNormalForm(NFParser.NormalFormContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link NFParser#attributeClosure}.
-	 * @param ctx the parse tree
-	 */
-	void enterAttributeClosure(NFParser.AttributeClosureContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link NFParser#attributeClosure}.
-	 * @param ctx the parse tree
-	 */
-	void exitAttributeClosure(NFParser.AttributeClosureContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NFParser#functionalDependencySet}.
 	 * @param ctx the parse tree

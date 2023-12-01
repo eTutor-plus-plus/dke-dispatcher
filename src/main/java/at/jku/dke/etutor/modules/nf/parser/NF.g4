@@ -48,20 +48,20 @@ normalForm returns [NormalformLevel level] :
     |   '3' {$level = NormalformLevel.THIRD;}
     |   'BCNF' {$level = NormalformLevel.BOYCE_CODD;} ;
 
-attributeClosure : '(' attributeSet ')+' '=' attributeSet ;                         // start rule
+// attributeClosure : '(' attributeSet ')+' '=' attributeSet ;                      // start rule // do we need this?
 
-// minimalCover : functionalDependencySet ;                                         // start rule // Do we even need this?
+// minimalCover : functionalDependencySet ;                                         // start rule // Do we need this?
 
 functionalDependencySet returns [Set<FunctionalDependency> functionalDependencies]  // start rule
     @init {
         $functionalDependencies = new HashSet<>();
     } :
-        functionalDependency {$functionalDependencies.add($functionalDependency.fdObject);} (';' functionalDependency {$functionalDependencies.add($functionalDependency.fdObject);}) ;
+        functionalDependency {$functionalDependencies.add($functionalDependency.fdObject);} (';' functionalDependency {$functionalDependencies.add($functionalDependency.fdObject);})* ;
 functionalDependency returns [FunctionalDependency fdObject]
     @init {
         $fdObject = new FunctionalDependency();
     } :
-        attributeSet {$fdObject.setLHSAttributes($attributeSet.attributes);} '-' ('.')? '>' attributeSet {$fdObject.setRHSAttributes($attributeSet.attributes);} ;
+        attributeSet {$fdObject.setLhsAttributes($attributeSet.attributes);} '-' ('.')? '>' attributeSet {$fdObject.setRhsAttributes($attributeSet.attributes);} ;
 
 attributeSet returns [Set<String> attributes]
     @init {

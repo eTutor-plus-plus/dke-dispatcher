@@ -23,19 +23,7 @@ public class MinimalCoverAnalyzer {
 		// This class is not meant to be instantiated.
 	}
 
-	/*public static MinimalCoverAnalysis analyze(Relation relation, int exerciseID){
-		MinimalCoverAnalysis analysis;
-		try {
-			analysis = analyze(relation, (Relation)RDBDExercisesManager.fetchSpecification(exerciseID));
-		} catch (Exception e) {
-			RDBDHelper.getLogger().log(Level.SEVERE, "Unable to determine correct dependencies.", e);
-			analysis = new MinimalCoverAnalysis();
-			analysis.setSubmissionSuitsSolution(true);
-		}
-		return analysis;
-	}*/
-	
-	public static MinimalCoverAnalysis analyze(Relation relation, Relation specification){
+    public static MinimalCoverAnalysis analyze(Relation relation, Relation specification){
 		//INIT LOCAL VARIABLES
 		MinimalCoverAnalysis analysis = new MinimalCoverAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
