@@ -41,7 +41,7 @@ public class CombinationGenerator {
 	}
 
 	public boolean hasMore() {
-		return numLeft.compareTo(BigInteger.ZERO) == 1;
+		return numLeft.compareTo(BigInteger.ZERO) > 0;
 	}
 
 	public BigInteger getTotal() {
