@@ -5,7 +5,6 @@ import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.TreeSet;
 
 public class DecomposeAnalyzerConfig implements Serializable {

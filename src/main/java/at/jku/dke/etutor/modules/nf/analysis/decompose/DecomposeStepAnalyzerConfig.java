@@ -4,7 +4,6 @@ import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Vector;
 
 public class DecomposeStepAnalyzerConfig extends NormalizationAnalyzerConfig {

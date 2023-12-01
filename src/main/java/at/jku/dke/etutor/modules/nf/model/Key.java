@@ -2,7 +2,6 @@ package at.jku.dke.etutor.modules.nf.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.TreeSet;
 
 public class Key implements Serializable {

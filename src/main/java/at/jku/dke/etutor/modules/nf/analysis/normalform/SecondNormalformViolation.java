@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.modules.nf.analysis.normalform;
 
-import java.util.Iterator;
 import java.util.Vector;
 
 public class SecondNormalformViolation extends NormalformViolation {
