@@ -53,6 +53,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -248,19 +249,24 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			normalizationAnalyzerConfig.setDesiredNormalformLevel(normalizationSpecification.getTargetLevel());
 			normalizationAnalyzerConfig.setMaxLostDependencies(normalizationSpecification.getMaxLostDependencies());
 			/*
-			 * TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
+			 * TODO: Replaced with call to parser (Gerald Wimmer, 2023-12-02)
 			 *
 			 * NOTE: Cast to TreeSet<IdentifiedRelation> should always work, because that is the actual type passed in
 			 *  by RDBDEditor.initPerformTask(). Also, it was cast (albeit needlessly) to TreeSet (without generics
 			 *  because there were none back then) for analysis.setSubmission(). (Gerald Wimmer, 2023-11-12)
 			 */
-			TreeSet<IdentifiedRelation> submissionTreeSet = (TreeSet<IdentifiedRelation>) submission;
-			normalizationAnalyzerConfig.setNormalizedRelations(submissionTreeSet);
+			// TreeSet<IdentifiedRelation> submissionTreeSet = (TreeSet<IdentifiedRelation>) submission;
+			Set<IdentifiedRelation> submissionSet = submissionParser.relationSet().relations;
+			normalizationAnalyzerConfig.setNormalizedRelations(submissionSet);
 			
 			analysis = NormalizationAnalyzer.analyze(normalizationAnalyzerConfig);
 			
 			//Set Submission
-			analysis.setSubmission(submissionTreeSet);
+			/*
+			 * Note: This cast works because submissionSet is instantiated as a HashSet inside submissionParser.
+			 *  (Gerald Wimmer, 2023-12-02)
+			 */
+			analysis.setSubmission((Serializable)submissionSet);
 
 		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
 			// Relation specification = specificationParser.relation().parsedRelation;
