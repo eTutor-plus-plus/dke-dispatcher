@@ -84,10 +84,10 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		 * TODO: Receive submission as String instead of Serializable, pass it on to our new, shiny, parser, and receive
 		 *  what used to be passed in from this Serializable from the Parser, instead (Gerald Wimmer, 2023-11-12).
 		 */
-		Serializable submission = passedAttributes.get(RDBDConstants.calcSubmissionIDFor(exerciseID));
+		Serializable submissionString = passedAttributes.get(RDBDConstants.calcSubmissionIDFor(exerciseID));
 
 		// Source: https://datacadamia.com/antlr/getting_started (Gerald Wimmer, 2023-11-27)
-		CharStream submissionLexerInput = CharStreams.fromString((String)submission);
+		CharStream submissionLexerInput = CharStreams.fromString((String)submissionString);
 		Lexer submissionLexer = new NFLexer(submissionLexerInput);
 		TokenStream submissionParserInput = new CommonTokenStream(submissionLexer);
 		NFParser submissionParser = new NFParser(submissionParserInput);
@@ -114,14 +114,14 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			keysAnalyzerConfig.setCorrectMinimalKeys(correctKeys.getMinimalKeys());
 
 			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
-			Relation relation = new Relation();
+			Relation submission = new Relation();
 			Set<Key> minimalKeys = submissionParser.keySet().keys;
-			relation.setMinimalKeys(minimalKeys);
+			submission.setMinimalKeys(minimalKeys);
 
-			analysis = KeysAnalyzer.analyze(relation, keysAnalyzerConfig);
+			analysis = KeysAnalyzer.analyze(submission, keysAnalyzerConfig);
 			
 			//Set Submission
-			analysis.setSubmission(relation);
+			analysis.setSubmission(submission);
 
 		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER) {
 			// Relation specification = specificationParser.relation().parsedRelation;
@@ -133,14 +133,14 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			}
 
 			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
-			Relation relation = new Relation();
+			Relation submission = new Relation();
 			Set<FunctionalDependency> functionalDependencies = submissionParser.functionalDependencySet().functionalDependencies;
-			relation.setFunctionalDependencies(functionalDependencies);
+			submission.setFunctionalDependencies(functionalDependencies);
 
-			analysis = MinimalCoverAnalyzer.analyze(relation, specification);
+			analysis = MinimalCoverAnalyzer.analyze(submission, specification);
 
 			//Set Submission
-			analysis.setSubmission(relation);
+			analysis.setSubmission(submission);
 
 		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) {
 			// AttributeClosureSpecification attributeClosureSpecification = (AttributeClosureSpecification)specification;
@@ -152,17 +152,17 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			}
 
 			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
-			Relation relation = new Relation();
+			Relation submission = new Relation();
 			Set<String> attributes = submissionParser.attributeSet().attributes;
-			relation.setAttributes(attributes);
+			submission.setAttributes(attributes);
 
 			analysis = AttributeClosureAnalyzer.analyze(
 					attributeClosureSpecification.getBaseRelation().getFunctionalDependencies(),
 					attributeClosureSpecification.getBaseAttributes(),
-					relation.getAttributes());
+					submission.getAttributes());
 				
 			//Set Submission
-			analysis.setSubmission(relation);
+			analysis.setSubmission(submission);
 
 		} /*else if (internalType == RDBDConstants.TYPE_RBR) { // Note: No longer necessary as its own task type, may be required for Decompose (Gerald Wimmer, 2023-11-27)
 			//RBR
@@ -195,7 +195,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			 *  by RDBDEditor.initPerformTask() (see the first if-statement there).
 			 *  (Gerald Wimmer, 2023-11-12)
 			 */
-			TreeSet<IdentifiedRelation> submissionTreeSet = (TreeSet<IdentifiedRelation>)submission;
+			TreeSet<IdentifiedRelation> submissionTreeSet = (TreeSet<IdentifiedRelation>)submissionString;
 			allRelations.addAll(submissionTreeSet);
 			
 			String baseRelationID;
