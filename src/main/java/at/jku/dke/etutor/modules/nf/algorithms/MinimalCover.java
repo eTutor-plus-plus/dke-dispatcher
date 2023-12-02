@@ -106,6 +106,12 @@ public class MinimalCover {
 		return foldedDependencies;
 	}
 
+	/**
+	 * Checks whether the supplied FunctionalDependencies have identical left-hand-sides. (Gerald Wimmer, 2023-12-02)
+	 * @param fd1 The second FunctionalDependency
+	 * @param fd2 The first FunctionalDependency
+	 * @return true if the left-hand-sides of both FunctionalDependencies are equal (i.e., contain the same attributes)
+	 */
 	private static boolean compareLHS(FunctionalDependency fd1, FunctionalDependency fd2) {
 		return fd2.getLhsAttributes().containsAll(fd1.getLhsAttributes()) && fd1.getLhsAttributes().containsAll(fd2.getLhsAttributes());
 	}
