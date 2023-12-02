@@ -5,14 +5,20 @@ import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 
 
+import at.jku.dke.etutor.objects.dispatcher.drools.DroolsTaskDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import springfox.documentation.swagger2.mappers.ModelMapper;
+
 import java.sql.Connection;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -26,11 +32,13 @@ public class DroolsResourceService {
     private ApplicationProperties applicationProperties;
     private SubmissionDispatcherService dispatcherService;
     private GradingDTORepository gradingDTORepository;
+    private final ModelMapper modelMapper;
 
 
     public DroolsResourceService(SubmissionDispatcherService dispatcherService,
                                  GradingDTORepository gradingDTORepository,
-                                 ApplicationProperties applicationProperties) {
+                                 ApplicationProperties applicationProperties,
+                                 ModelMapper modelMapper) {
         this.logger = (Logger) LoggerFactory.getLogger(DroolsResourceService.class);
         this.applicationProperties = applicationProperties;
         this.dispatcherService = dispatcherService;
@@ -38,6 +46,7 @@ public class DroolsResourceService {
         URL = applicationProperties.getDatasource().getUrl() + applicationProperties.getDrools().getConnUrl();
         USER = applicationProperties.getDrools().getConnUser();
         PWD = applicationProperties.getDrools().getConnPwd();
+        this.modelMapper = modelMapper;
     }
 
     public String getClasses(int id) throws SQLException {
@@ -75,18 +84,26 @@ public class DroolsResourceService {
         return executeQueryAndReturnJSON(query, columnNames, id);
     }
 
+    public String getTask(int id) throws SQLException {
+        logger.debug("getTask(int id)");
+        String query = "SELECT id, solution, max_points FROM tasks WHERE id = ?";
+        String[] columnNames = {"id", "solution", "max_points"};
+        return executeQueryAndReturnJSON(query, columnNames, id);
+    }
+
     private String executeQueryAndReturnJSON(String query, String[] columnNames, int id) throws SQLException {
-        logger.debug("executeQueryAndReturnJSON() -" + " id: " + id + " - query: "+ query);
+        logger.debug("executeQueryAndReturnJSON() -" + " id: " + id + " - query: " + query);
         JSONArray jsonArray = new JSONArray();
         try (Connection con = DriverManager.getConnection(URL, USER, PWD);
              PreparedStatement stmt = con.prepareStatement(query)) {
 
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
+            if(!rs.isBeforeFirst()) return "";
             while (rs.next()) {
                 JSONObject obj = new JSONObject();
                 for (String columnName : columnNames) {
-                    if(columnName.equals("parameters")){
+                    if (columnName.equals("parameters")) {
                         String paramValue = rs.getString(columnName);
                         try {
                             JSONArray paramsArray = new JSONArray(paramValue);
@@ -95,17 +112,139 @@ public class DroolsResourceService {
                             // In case it's not an array, treat it as a regular value
                             obj.put(columnName, paramValue);
                         }
-                    } else{
+                    } else {
                         obj.put(columnName, rs.getString(columnName));
                     }
                 }
                 jsonArray.put(obj);
             }
+            return jsonArray.toString();
         } catch (SQLException | JSONException throwables) {
             throw new SQLException(throwables);
         }
-        return jsonArray.toString();
     }
 
+    /**
+     * Fetches an available exercise id
+     *
+     * @return the exercise id
+     * @throws DatabaseException if an SQLException occurs
+     */
+    public int getAvailableExerciseId() throws DatabaseException {
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD);) {
+            con.setAutoCommit(false);
+            return getAvailableExerciseIdUtil(con);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new DatabaseException(throwables);
+        }
+    }
 
+    private int getAvailableExerciseIdUtil(Connection con) throws DatabaseException {
+        String fetchMaxIdQuery = "SELECT max(id) as id from tasks";
+        int maxId = -1;
+
+        try (PreparedStatement fetchMaxIdStmt = con.prepareStatement(fetchMaxIdQuery);
+             ResultSet maxIdSet = fetchMaxIdStmt.executeQuery();
+        ) {
+            if (maxIdSet.next()) {
+                maxId = maxIdSet.getInt("id");
+                maxId++;
+            } else throw new DatabaseException("Internal Error: could not fetch exercise id");
+
+            con.commit();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+            throw new DatabaseException(throwables);
+        }
+        return maxId;
+    }
+
+    public int addTask(DroolsTaskDTO taskDTO) throws DatabaseException, SQLException { //TODO: Exception??
+        logger.debug("Enter: Creating task");
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
+            con.setAutoCommit(false);
+            int taskId = getAvailableExerciseId();
+            int maxPoints = taskDTO.getMaxPoints();
+            String solution = taskDTO.getSolution();
+
+            PreparedStatement createTaskStmt = con.prepareStatement("INSERT INTO tasks (id, solution, max_points) VALUES(?,?,?)");
+            createTaskStmt.setInt(1, taskId);
+            createTaskStmt.setString(2, solution);
+            createTaskStmt.setInt(3, maxPoints);
+            logger.debug("Statement for creating task: {} ", createTaskStmt);
+            int rowsInserted = createTaskStmt.executeUpdate();
+            if(rowsInserted > 0){
+                logger.debug("Task created");
+                con.commit();
+                return taskId;
+            }
+            con.rollback();
+            return -1;
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+            throw new DatabaseException(throwables);
+        }
+    }
+
+    public void deleteTask(int id) throws SQLException {
+        logger.debug("Enter: Deleting task");
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
+            con.setAutoCommit(false);
+            //TODO: Prüfen ob Task existiert?? 20231202
+
+            PreparedStatement statement = con.prepareStatement("DELETE FROM tasks WHERE id = ?");
+            statement.setInt(1, id);
+
+            logger.debug("Statement for deleting task: {} ", statement);
+            int rowsDeleted = statement.executeUpdate();
+            if(rowsDeleted > 0){
+                logger.debug("Task deleted");
+                con.commit();
+                return;
+            }
+            con.rollback();
+        } catch (SQLException throwable) {
+            logger.error(throwable.getMessage(), throwable);
+            throw new SQLException(throwable);
+        }
+    }
+
+    public void editTask(int id, DroolsTaskDTO taskDTO) throws SQLException {
+        logger.debug("Enter: editTask()");
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD)){
+            con.setAutoCommit(false);
+            String newSolution = taskDTO.getSolution();
+            int newMaxPoints = taskDTO.getMaxPoints();
+            //TODO: Fehleingabe crashed das Programm (z.B "lösung" statt 'lösung')
+            StringBuilder queryBuilder = new StringBuilder("UPDATE tasks SET ");
+            List<Object> parameters = new ArrayList<>();
+
+            if(newSolution != null && !newSolution.isEmpty()) {
+                queryBuilder.append("solution = ?, ");
+                parameters.add(taskDTO.getSolution());
+            }
+
+            if(newMaxPoints > 0 ) { //TODO: braucht es jemals 0 Punkte bei einer Aufgabe? derzeit über update nicht möglich. 20231202 Lukas Knogler
+                queryBuilder.append("max_points = ?, ");
+                parameters.add(taskDTO.getMaxPoints());
+            }
+
+            queryBuilder.delete(queryBuilder.length() - 2, queryBuilder.length());
+
+            queryBuilder.append(" WHERE id = ?");
+
+            PreparedStatement statement = con.prepareStatement(queryBuilder.toString());
+            for (int i = 0; i < parameters.size(); i++) {
+                statement.setObject(i + 1, parameters.get(i));
+            }
+
+            statement.setInt(parameters.size() + 1, id);
+            statement.executeUpdate();
+
+            con.commit();
+        }
+
+
+    }
 }
