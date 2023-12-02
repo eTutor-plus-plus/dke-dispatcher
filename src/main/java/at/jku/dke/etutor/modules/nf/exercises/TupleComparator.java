@@ -53,7 +53,7 @@ public class TupleComparator implements Comparator<int[]>, Serializable {
     	System.out.println("equal");
     } else if (result > 0){
     	System.out.println("1 is grater than 2");
-    } else if (result < 0){
+    } else {
 			System.out.println("1 is smaller than 2");
     }
 

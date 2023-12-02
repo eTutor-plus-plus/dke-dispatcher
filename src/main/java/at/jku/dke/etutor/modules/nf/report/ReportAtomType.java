@@ -25,7 +25,7 @@ public class ReportAtomType implements Serializable {
 
 	public boolean equals(Object o){
 		if (o == null){
-			return this == null;
+			return false;
 		}
 
 		if (o instanceof ReportAtomType){
