@@ -13,7 +13,7 @@ import java.sql.SQLException;
  */
 @Configuration
 public class NFDataSource {
-    private static HikariConfig config = new HikariConfig();
+    private static final HikariConfig config = new HikariConfig();
     private static HikariDataSource ds;
 
 

@@ -48,7 +48,7 @@ public class RDBDExercisesManager {
 	private RDBDExercisesManager() { 
 	}
 	
-	public int createExercise(Serializable editor, Map attributes, Map parameters) throws Exception {
+	public int createExercise(Serializable editor) throws Exception {
 		BLOB blob = null;
 		ObjectOutputStream out = null;
 		RDBDSpecification specification;
@@ -179,7 +179,7 @@ public class RDBDExercisesManager {
 		return -1;
 	}
 
-	public boolean modifyExercise(int exerciseId, Serializable editor, Map attributes, Map parameters) throws Exception {
+	public boolean modifyExercise(int exerciseId, Serializable editor) throws Exception {
 		String msg;
 		String sql;
 		BLOB blob = null;

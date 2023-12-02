@@ -28,7 +28,6 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.KeysContainer;
-import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.parser.NFLexer;
 import at.jku.dke.etutor.modules.nf.parser.NFParser;
@@ -54,7 +53,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;

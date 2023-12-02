@@ -4,7 +4,6 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.text.Collator;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.TreeSet;
 
 public class Closure {

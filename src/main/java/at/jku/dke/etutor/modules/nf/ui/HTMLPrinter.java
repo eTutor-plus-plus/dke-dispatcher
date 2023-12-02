@@ -262,17 +262,17 @@ public class HTMLPrinter implements MessageSourceAware {
 
 		StringBuilder keys = new StringBuilder();
 		for (Key k : relation.getMinimalKeys()) {
-			keys.append(k + ";");
+			keys.append(k).append(";");
 		}
 
 		StringBuilder attributes = new StringBuilder();
 		for (String a : relation.getAttributes()) {
-			attributes.append(a + ";");
+			attributes.append(a).append(";");
 		}
 
 		StringBuilder dependencies = new StringBuilder();
 		for (FunctionalDependency fd : relation.getFunctionalDependencies()) {
-			dependencies.append(fd + ";");
+			dependencies.append(fd).append(";");
 		}
 
 		StringBuilder out = new StringBuilder();

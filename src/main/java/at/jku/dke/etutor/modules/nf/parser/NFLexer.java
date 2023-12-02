@@ -2,24 +2,9 @@
 
 package at.jku.dke.etutor.modules.nf.parser ;
 
-import java.util.Set;
-import java.util.Map;
-import java.util.HashSet;
-import java.util.HashMap;
-import at.jku.dke.etutor.modules.nf.NormalformDeterminationSubmission;
-import at.jku.dke.etutor.modules.nf.model.Key;
-import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
-import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
-import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
-
-import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
 public class NFLexer extends Lexer {

@@ -389,13 +389,13 @@ public class RDBDHelper {
             for (IdentifiedRelation relation : relations) {
                 currRelation = relation;
                 if (currRelation.getID().equals(relationID)) {
-                    delDependencies(currRelation, rhsAttributes, lhsAttributes, dependenciesToDelete);
+                    delDependencies(currRelation, dependenciesToDelete);
                 }
             }
 		}
 	}
 	
-	public static void delDependencies(Relation relation, String[] rhsAttributes, String[] lhsAttributes, String[] dependenciesToDelete) throws Exception {
+	public static void delDependencies(Relation relation, String[] dependenciesToDelete) throws Exception {
 		String currDependency;
 		FunctionalDependency dependencyToDelete;
 
@@ -403,8 +403,8 @@ public class RDBDHelper {
             currDependency = s;
             dependencyToDelete = new FunctionalDependency();
 
-            lhsAttributes = currDependency.substring(0, currDependency.indexOf("->")).split(" ");
-            rhsAttributes = currDependency.substring(currDependency.indexOf("->") + 3).split(" ");
+			String[] lhsAttributes = currDependency.substring(0, currDependency.indexOf("->")).split(" ");
+			String[] rhsAttributes = currDependency.substring(currDependency.indexOf("->") + 3).split(" ");
 
             for (String lhsAttribute : lhsAttributes) {
                 dependencyToDelete.addLHSAttribute(lhsAttribute);
@@ -459,20 +459,20 @@ public class RDBDHelper {
                 currRelation = relation;
                 if (currRelation.getID().equals(relationID)) {
                     RDBDHelper.getLogger().log(Level.INFO, "FOUND RELATION '" + relationID + "'");
-                    delKeys(currRelation, attributes, keysToDelete);
+                    delKeys(currRelation, keysToDelete);
                 }
             }
 		}
 	}
 	
-	public static void delKeys(Relation relation, String[] attributes, String[] keysToDelete) throws Exception {
+	public static void delKeys(Relation relation, String[] keysToDelete) throws Exception {
 		Key keyToDelete;
 
         for (String s : keysToDelete) {
             RDBDHelper.getLogger().log(Level.INFO, "DELETING NEXT KEY");
 
             keyToDelete = new Key();
-            attributes = s.split(" ");
+			String[] attributes = s.split(" ");
             for (String attribute : attributes) {
                 keyToDelete.addAttribute(attribute);
             }
@@ -558,6 +558,7 @@ public class RDBDHelper {
                 for (int j = 0; !remove && j < attributesToDelete.length; j++) {
                     if (attributesToDelete[j].equals(attribute)) {
                         remove = true;
+                        break;
                     }
                 }
                 if (!remove) {
@@ -572,6 +573,7 @@ public class RDBDHelper {
                 for (int j = 0; !remove && j < attributesToDelete.length; j++) {
                     if (attributesToDelete[j].equals(attribute)) {
                         remove = true;
+                        break;
                     }
                 }
                 if (!remove) {

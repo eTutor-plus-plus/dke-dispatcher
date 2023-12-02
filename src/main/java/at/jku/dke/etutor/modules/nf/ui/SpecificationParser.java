@@ -324,15 +324,15 @@ public class SpecificationParser implements Serializable {
 		}
 		
 		if (relation != null && qualifiers.get(QUALIFIER_ATTRIBUTES_RELATION) != null) {
-			print(relation.getAttributes(), (String)qualifiers.get(QUALIFIER_ATTRIBUTES_RELATION), " ", buffer);
+			print(relation.getAttributes(), qualifiers.get(QUALIFIER_ATTRIBUTES_RELATION), " ", buffer);
 			buffer.append(LINE_SEP);
 		}
 		if (relation != null && qualifiers.get(QUALIFIER_DEPENDENCIES) != null) {
-			print(relation.getFunctionalDependencies(), (String)qualifiers.get(QUALIFIER_DEPENDENCIES), ", ", buffer);
+			print(relation.getFunctionalDependencies(), qualifiers.get(QUALIFIER_DEPENDENCIES), ", ", buffer);
 			buffer.append(LINE_SEP);
 		}
 		if (baseAttributes != null && qualifiers.get(QUALIFIER_ATTRIBUTES_BASE) != null) {
-			print(baseAttributes, (String)qualifiers.get(QUALIFIER_ATTRIBUTES_BASE), " ", buffer);
+			print(baseAttributes, qualifiers.get(QUALIFIER_ATTRIBUTES_BASE), " ", buffer);
 			buffer.append(LINE_SEP);
 		}
 		

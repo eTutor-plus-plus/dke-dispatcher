@@ -5,7 +5,6 @@ import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class NormalformDeterminationSubmission implements Serializable {
