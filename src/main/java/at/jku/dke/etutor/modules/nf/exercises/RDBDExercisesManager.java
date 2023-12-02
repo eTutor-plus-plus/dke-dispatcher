@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  * Since exercise IDs of existing exercises are mapped to the internal type,
  * a single class to process tasks for all RDBD types would be sufficient 
  * (like the RDBDEvaluator implementation). Nevertheless, based on the exercise ID, 
- * passed as argument to method {@link #createExercise(int, Serializable, Map, Map)},
+ * passed as argument to method {@link #createExercise(Serializable) createExercise},
  * the retrieval of the appropriate internal type is not possible. This is why
  * each RDBD type has its own implementation which is registered with the eTutor core. 
  *  

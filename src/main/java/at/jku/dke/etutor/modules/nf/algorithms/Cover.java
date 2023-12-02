@@ -3,7 +3,6 @@ package at.jku.dke.etutor.modules.nf.algorithms;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 public class Cover {
 
