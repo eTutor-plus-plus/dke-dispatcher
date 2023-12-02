@@ -39,7 +39,6 @@ public class RDBDHelper {
 	private static int elementID;
 	private static Logger rdbdLogger;
 	private static final Logger testLogger;
-	private static final Connection permanentConn;
 
 	static {
 		//INIT ELEMENT ID
@@ -54,9 +53,6 @@ public class RDBDHelper {
 		} catch (Exception e){
 			e.printStackTrace();		
 		}
-
-		//INIT PERMANENT CONNECTION TO RDBD DATABASE
-		permanentConn = getNewConnection(); 
 	}
 
 	public static String getNextElementID(){
@@ -72,24 +68,7 @@ public class RDBDHelper {
 		return testLogger;
 	}
 
-	public static Connection getPermanentConnection(){
-		return permanentConn;
-	}
 
-	public static Connection getNewConnection(){
-		Connection conn = null;
-		
-		try {
-			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-			conn = DriverManager.getConnection(RDBDConstants.CONN_STRING, RDBDConstants.CONN_USER, RDBDConstants.CONN_PWD);
-		} catch(SQLException e){
-			rdbdLogger.log(Level.SEVERE, "", e);
-		}
-		
-		return conn;
-	}
-
-	
 	public static synchronized Connection getPooledConnection() {
 		Connection conn = null;
 		
