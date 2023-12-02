@@ -6,6 +6,7 @@ import at.jku.dke.etutor.modules.nf.model.Relation;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
@@ -108,7 +109,7 @@ public class ReductionByResolution {
 	}
 	
 	public static Set<FunctionalDependency> execute_old(Relation rel, Collection<String> subScheme) {
-		Vector<String> attributes = new Vector<>();
+		List<String> attributes = new Vector<>();
 		for (String currAttribute : rel.getAttributes()) {
 			if (!subScheme.contains(currAttribute)) {
 				attributes.add(currAttribute);
@@ -118,9 +119,8 @@ public class ReductionByResolution {
 		Set<FunctionalDependency> dependencies = rel.getFunctionalDependencies();
 		Set<FunctionalDependency> result = MinimalCover.unfold(dependencies);
 
-		String currAttribute;
 		while (!attributes.isEmpty()) {
-			currAttribute = attributes.get(0);
+			String currAttribute = attributes.get(0);
 			
 			/*
 			System.out.println("Processing Attribute '" + currAttribute + "'");
