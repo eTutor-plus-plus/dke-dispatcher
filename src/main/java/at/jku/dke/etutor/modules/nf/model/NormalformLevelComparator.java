@@ -12,11 +12,11 @@ public class NormalformLevelComparator implements Comparator<NormalformLevel>, S
 	public int compare(NormalformLevel o1, NormalformLevel o2) {
 		if ((o1 == null) && (o2 == null)) {
 			return 0;
-		} 
+		}
 		
 		if (o1 == null) {
 			return 1;
-		} 
+		}
 		
 		if (o2 == null) {
 			return -1;
