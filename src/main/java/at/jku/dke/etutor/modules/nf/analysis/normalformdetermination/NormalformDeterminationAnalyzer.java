@@ -64,18 +64,10 @@ public class NormalformDeterminationAnalyzer {
 			correctViolatedLevel = analysis.getViolatedNormalformLevel(currDependency);
 			RDBDHelper.getLogger().log(Level.INFO, "Found: " + foundViolatedLevel + " Correct: " + correctViolatedLevel);
 			
-			if (correctViolatedLevel == null){
-				if (foundViolatedLevel != null){
-					RDBDHelper.getLogger().log(Level.INFO, "ADD WRONG LEVELD DEPENDENCY");
-					analysis.addWrongLeveledDependency(currDependency, correctViolatedLevel, foundViolatedLevel);
-					analysis.setSubmissionSuitsSolution(false);							
-				}
-			} else {
-				if (!correctViolatedLevel.equals(foundViolatedLevel)){
-					RDBDHelper.getLogger().log(Level.INFO, "ADD WRONG LEVELD DEPENDENCY");
-					analysis.addWrongLeveledDependency(currDependency, correctViolatedLevel, foundViolatedLevel);
-					analysis.setSubmissionSuitsSolution(false);							
-				}
+			if (foundViolatedLevel != correctViolatedLevel) { // Note: Simplified because NormalFormLevel is now an enum. (Gerald Wimmer, 2023-12-02)
+				RDBDHelper.getLogger().log(Level.INFO, "ADD WRONG LEVELED DEPENDENCY");
+				analysis.addWrongLeveledDependency(currDependency, correctViolatedLevel, foundViolatedLevel);
+				analysis.setSubmissionSuitsSolution(false);
 			}
 		}
 		
