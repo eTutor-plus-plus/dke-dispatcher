@@ -23,8 +23,9 @@ relation returns [IdentifiedRelation parsedRelation]
     @init {
         $parsedRelation = new IdentifiedRelation();
     } :
-        relationId {try {$parsedRelation.setID($relationId.text);} catch(Exception e) { e.printStackTrace();}} ':' '(' attributeSet {$parsedRelation.setAttributes($attributeSet.attributes);} ')' '(' keySet {$parsedRelation.setMinimalKeys($keySet.keys);} ')' '(' functionalDependencySet {$parsedRelation.setFunctionalDependencies($functionalDependencySet.functionalDependencies);} ')' ;
-relationId: 'R' Integer ('.' Integer)? ; // Todo: If the fact that the start is indistinguishable from AlphaNumericChain causes problems, add some unique prefix symbol (e.g, '*'). (Gerald Wimmer, 2023-11-30)
+        relationId {try {$parsedRelation.setID($relationId.idString);} catch(Exception e) { e.printStackTrace();}} ':' '(' attributeSet {$parsedRelation.setAttributes($attributeSet.attributes);} ')' '(' keySet {$parsedRelation.setMinimalKeys($keySet.keys);} ')' '(' functionalDependencySet {$parsedRelation.setFunctionalDependencies($functionalDependencySet.functionalDependencies);} ')' ;
+relationId returns [String idString]:
+        '*' Integer {$idString = $Integer.text;}; // Note: As we needn't specify how we got to the solution, neither is there a need for subindices. ; // ('.' Integer)? ; // Todo: If the fact that the start 'R' is indistinguishable from AlphaNumericChain causes problems, add some unique prefix symbol (e.g, '*'). (Gerald Wimmer, 2023-11-30)
 
 keySet returns [Set<Key> keys]                                                      // start rule
     @init {
@@ -55,9 +56,9 @@ normalFormViolationSet returns [Map<FunctionalDependency, NormalformLevel> viola
 normalFormViolation returns [FunctionalDependency funcDependency, NormalformLevel level] :
     functionalDependency {$funcDependency = $functionalDependency.fdObject;} ':' normalForm {$level = $normalForm.level;} ;
 normalForm returns [NormalformLevel level] :
-        '1' {$level = NormalformLevel.FIRST;}
-    |   '2' {$level = NormalformLevel.SECOND;}
-    |   '3' {$level = NormalformLevel.THIRD;}
+        '1NF' {$level = NormalformLevel.FIRST;}
+    |   '2NF' {$level = NormalformLevel.SECOND;}
+    |   '3NF' {$level = NormalformLevel.THIRD;}
     |   'BCNF' {$level = NormalformLevel.BOYCE_CODD;} ;
 
 // attributeClosure : '(' attributeSet ')+' '=' attributeSet ;                      // start rule // do we need this?
@@ -82,9 +83,10 @@ attributeSet returns [Set<String> attributes]
         attribute {$attributes.add($attribute.text);} (',' attribute {$attributes.add($attribute.text);})* ;
 attribute : AlphaNumericChain ;
 
-AlphaNumericChain : AlphaNumericChar+ ;
-AlphaNumericChar : Digit | Letter ;
+// Lexer rules
+
 Integer : Digit+ ;
+AlphaNumericChain : Letter (Letter | Digit)* ; // Note: Has to start with letter, to distinguish it from Integer
 Digit : '0' .. '9' ;
 Letter : 'A' .. 'Z' | 'a' .. 'z' ;
 
