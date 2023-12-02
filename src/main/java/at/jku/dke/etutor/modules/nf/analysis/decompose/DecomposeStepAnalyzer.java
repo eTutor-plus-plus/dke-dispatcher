@@ -82,11 +82,11 @@ public class DecomposeStepAnalyzer {
 			}
 		}
 		
-		//ANALYZE REDUNDAND FUNCTIONAL DEPENDENCIES
+		//ANALYZE REDUNDANT FUNCTIONAL DEPENDENCIES
 		for(IdentifiedRelation currRelation : config.getNormalizedRelations()) {
 
-			analysis.addRedundandDependenciesAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeRedundantDependencies(currRelation.getFunctionalDependencies()));
-			if (!analysis.getRedundandDependenciesAnalysis(currRelation.getID()).submissionSuitsSolution()){
+			analysis.addRedundantDependenciesAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeRedundantDependencies(currRelation.getFunctionalDependencies()));
+			if (!analysis.getRedundantDependenciesAnalysis(currRelation.getID()).submissionSuitsSolution()){
 				analysis.setSubmissionSuitsSolution(false);
 				return analysis;
 			}

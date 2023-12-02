@@ -64,11 +64,11 @@ public class MinimalCoverReporter {
 				}
 			}
 			
-			//ADDING ERROR REPORT FOR REDUNDAND FUNCTIONAL DEPENDENCIES ANALYSIS, IF NECESSARY
+			//ADDING ERROR REPORT FOR REDUNDANT FUNCTIONAL DEPENDENCIES ANALYSIS, IF NECESSARY
 			if (analysis.getRedundantDependenciesAnalysis() != null){
 				if (!analysis.getRedundantDependenciesAnalysis().submissionSuitsSolution()){
-					report.addErrorReport(createRedundandDependenciesErrorReport(analysis.getRedundantDependenciesAnalysis(), config, messageSource, locale));
-					RDBDHelper.getLogger().log(Level.INFO, "Added redundand dependencies error report");
+					report.addErrorReport(createRedundantDependenciesErrorReport(analysis.getRedundantDependenciesAnalysis(), config, messageSource, locale));
+					RDBDHelper.getLogger().log(Level.INFO, "Added redundant dependencies error report");
 				}
 			}
 			
@@ -323,7 +323,7 @@ public class MinimalCoverReporter {
 		return report;
 	}
 	
-	public static ErrorReport createRedundandDependenciesErrorReport(RedundantDependenciesAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
+	public static ErrorReport createRedundantDependenciesErrorReport(RedundantDependenciesAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
 		int count = analysis.getRedundantDependencies().size();

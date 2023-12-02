@@ -138,10 +138,10 @@ public class DecomposeReporter {
 			}
 		}
 
-		//ADD REDUNDAND_DEPENDENCIES REPORT_ATOM
-		if (analysis.getRedundandDependenciesAnalysis(relationID) != null){
-			if (!analysis.getRedundandDependenciesAnalysis(relationID).submissionSuitsSolution()){
-				group.addErrorReport(MinimalCoverReporter.createRedundandDependenciesErrorReport(analysis.getRedundandDependenciesAnalysis(relationID), config, messageSource, locale));
+		//ADD REDUNDANT_DEPENDENCIES REPORT_ATOM
+		if (analysis.getRedundantDependenciesAnalysis(relationID) != null){
+			if (!analysis.getRedundantDependenciesAnalysis(relationID).submissionSuitsSolution()){
+				group.addErrorReport(MinimalCoverReporter.createRedundantDependenciesErrorReport(analysis.getRedundantDependenciesAnalysis(relationID), config, messageSource, locale));
 			}
 		}
 

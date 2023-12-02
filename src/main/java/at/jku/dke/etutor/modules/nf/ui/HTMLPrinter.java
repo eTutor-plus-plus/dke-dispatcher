@@ -540,10 +540,9 @@ public class HTMLPrinter implements MessageSourceAware {
 	
 	public static String printTargetLevelRow(RDBDSpecification spec, int indent, Locale locale) throws IOException {
 		String offset;
-		String content;
-		NormalformLevel level;
 		StringBuilder out = new StringBuilder();
-		
+
+		NormalformLevel level;
 		if (spec instanceof NormalizationSpecification) {
 			level = ((NormalizationSpecification)spec).getTargetLevel();
 		} else if (spec instanceof DecomposeSpecification) {
@@ -554,17 +553,13 @@ public class HTMLPrinter implements MessageSourceAware {
 		
 		offset = getOffset(indent);
 
-		if (NormalformLevel.FIRST.equals(level)){
-			content = messageSource.getMessage("printtargetlevelrow.first", null, locale);
-		} else if (NormalformLevel.SECOND.equals(level)){
-			content = messageSource.getMessage("printtargetlevelrow.second", null, locale);
-		} else if (NormalformLevel.THIRD.equals(level)){
-			content = messageSource.getMessage("printtargetlevelrow.third", null, locale);
-		} else if (NormalformLevel.BOYCE_CODD.equals(level)){
-			content = messageSource.getMessage("printtargetlevelrow.boycecodd", null, locale);
-		} else {
-			content = "";
-		}
+		String content = switch (level) {
+			case FIRST -> messageSource.getMessage("printtargetlevelrow.first", null, locale);
+			case SECOND -> messageSource.getMessage("printtargetlevelrow.second", null, locale);
+			case THIRD -> messageSource.getMessage("printtargetlevelrow.third", null, locale);
+			case BOYCE_CODD -> messageSource.getMessage("printtargetlevelrow.boycecodd", null, locale);
+			default -> "";
+		};
 		
 		out.append(offset).append("<tr>").append(LINE_SEP);
 		out.append(offset).append("	<td class='label_td'>").append(messageSource.getMessage("printtargetlevelrow.normalform", null, locale)).append(":</td>").append(LINE_SEP);
@@ -916,7 +911,7 @@ public class HTMLPrinter implements MessageSourceAware {
 			out.append(offset).append("	und alle redundanten Attribute in den linken Seiten der Funktionalen Abh&auml;ngigkeiten. ").append(LINE_SEP);
 		} else {
 			out.append(offset).append("	Indicate a minimal cover for <b>F</b>. Eliminate all redundant functional ").append(LINE_SEP);
-			out.append(offset).append("	dependencies and redundand attributes at left hand sides of functional dependencies. ").append(LINE_SEP);
+			out.append(offset).append("	dependencies and redundant attributes at left hand sides of functional dependencies. ").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
 		out.append(offset).append("<table rules=\"none\" frame=\"void\">").append(LINE_SEP);

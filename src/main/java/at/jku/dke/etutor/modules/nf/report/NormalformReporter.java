@@ -326,7 +326,7 @@ public class NormalformReporter {
 			}
 		}
 
-		//REPORTING BOYCE COTT NORMALFORM VIOLATIONS IF NECESSARY
+		//REPORTING BOYCE CODD NORMALFORM VIOLATIONS IF NECESSARY
 		if (comparator.compare(config.getDesiredNormalformLevel(), NormalformLevel.BOYCE_CODD) >= 0){
 			if (!analysis.getBoyceCoddNormalformViolations().isEmpty()){
 				if (appendLineBreak){

@@ -109,11 +109,11 @@ public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
 		this.extraneousAttributesAnalyses.put(relationID, analysis); 
 	}
 
-	public RedundantDependenciesAnalysis getRedundandDependenciesAnalysis(String relationID){
+	public RedundantDependenciesAnalysis getRedundantDependenciesAnalysis(String relationID){
 		return this.redundantDependenciesAnalyses.get(relationID);
 	}
 	
-	public void addRedundandDependenciesAnalysis(String relationID, RedundantDependenciesAnalysis analysis){
+	public void addRedundantDependenciesAnalysis(String relationID, RedundantDependenciesAnalysis analysis){
 		this.redundantDependenciesAnalyses.put(relationID, analysis);
 	}
 
