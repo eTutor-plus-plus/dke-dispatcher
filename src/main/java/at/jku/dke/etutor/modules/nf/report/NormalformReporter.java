@@ -150,7 +150,6 @@ public class NormalformReporter {
 
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
-		NormalformLevelComparator comparator = new NormalformLevelComparator();
 
         //SET ERROR
 		report.setError(messageSource.getMessage("normalformreporter.insufficientnormalformlevel", new Object[]{normalformLevelToString(config.getDesiredNormalformLevel(), messageSource, locale),  normalformLevelToString(analysis.getOverallNormalformLevel(), messageSource, locale)}, locale));
@@ -160,6 +159,8 @@ public class NormalformReporter {
 		//SET DESCRIPTION
 
 		//REPORTING FIRST NORMALFORM VIOLATIONS IF NECESSARY
+		// Note: config.getDesiredNormalformLevel() could be null. (Gerald Wimmer, 2023-12-02)
+		NormalformLevelComparator comparator = new NormalformLevelComparator();
 		if (comparator.compare(config.getDesiredNormalformLevel(), NormalformLevel.FIRST) >= 0){
 			if (!analysis.getFirstNormalformViolations().isEmpty()){
 				appendLineBreak = true;

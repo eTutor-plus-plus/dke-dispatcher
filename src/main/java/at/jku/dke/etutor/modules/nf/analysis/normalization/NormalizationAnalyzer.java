@@ -118,6 +118,7 @@ public class NormalizationAnalyzer {
 		}
 
 		//ANALYZE NORMALFORM LEVELS
+		// Note: Why is this not (or no longer?) in its own method? (Gerald Wimmer, 2023-12-02)
 		NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();
 		for (IdentifiedRelation currRelation : config.getNormalizedRelations()) {
 			normalformAnalyzerConfig.setRelation(currRelation);

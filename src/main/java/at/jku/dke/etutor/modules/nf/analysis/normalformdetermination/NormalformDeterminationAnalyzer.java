@@ -72,6 +72,7 @@ public class NormalformDeterminationAnalyzer {
 		}
 		
 		//DETERMINE CORRECTNESS OF OVERALL NF LEVEL
+		// Note: Neither of the two compared NormalFormLevels would be null under normal circumstances. (Gerald Wimmer, 2023-12-02)
 		NormalformLevelComparator comparator = new NormalformLevelComparator();
 		analysis.setSubmittedLevel(submission.getOverallLevel());
 		if (comparator.compare(analysis.getOverallNormalformLevel(), analysis.getSubmittedLevel()) != 0){

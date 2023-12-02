@@ -59,7 +59,8 @@ public class NormalformAnalyzer {
 			if (!analysis.getSecondNormalformViolations().isEmpty()){
 				analysis.setOverallNormalformLevel(NormalformLevel.FIRST);
 			}
-		
+
+			// Note: config.getDesiredNormalformLevel() could be null. (Gerald Wimmer, 2023-12-02)
 			NormalformLevelComparator comparator = new NormalformLevelComparator();
 			if (comparator.compare(analysis.getOverallNormalformLevel(), config.getDesiredNormalformLevel()) >= 0){
 				analysis.setSubmissionSuitsSolution(true);			
