@@ -1,12 +1,10 @@
 package at.jku.dke.etutor.modules.nf.model;
 
-import at.jku.dke.etutor.modules.nf.RDBDSpecification;
 import at.jku.dke.etutor.modules.nf.ui.MalformedRelationIDException;
 
-import java.io.Serializable;
 import java.util.Collection;
 
-public class IdentifiedRelation extends Relation implements Serializable, Cloneable, RDBDSpecification {
+public class IdentifiedRelation extends Relation {
 
 	private static final long serialVersionUID = -8880131949030576416L;
 	private String id;
@@ -16,22 +14,13 @@ public class IdentifiedRelation extends Relation implements Serializable, Clonea
 		this.id = "";
 	}
 
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-	}
-
 	public IdentifiedRelation(Collection<String> attributes, Collection<FunctionalDependency> dependencies) {
 		super(attributes, dependencies);
 	}
 	
 	public void setID(String id) throws MalformedRelationIDException {
-		if (id != null){
-			if (id.matches("(?idmsux)\\d*(\\.\\d*)*")) { // Todo: Make sure this doesn't cause problems with the "R*[.*]" scheme used now. (Gerald Wimmer, 2023-11-30)
-				this.id = id;
-			} else {
-				throw new MalformedRelationIDException("ID '" + id + "' is malformed!");
-			}
+		if (id != null && id.matches("(?idmsux)\\d*(\\.\\d*)*")) { // Todo: Make sure this doesn't cause problems with the "R*[.*]" scheme used now. (Gerald Wimmer, 2023-11-30)
+			this.id = id;
 		} else {
 			throw new MalformedRelationIDException("ID '" + id + "' is malformed!");
 		}
@@ -67,7 +56,8 @@ public class IdentifiedRelation extends Relation implements Serializable, Clonea
 		
 		return toString;
 	}
-	
+
+	@Override
 	public boolean semanticallyEquals(Object obj){
 		if (obj == null) {
 			return false;
