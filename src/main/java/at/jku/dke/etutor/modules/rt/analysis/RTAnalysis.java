@@ -37,9 +37,11 @@ public class RTAnalysis extends DefaultAnalysis {
 
     private boolean hasSyntaxError = false;
 
-    private boolean hasSemantikError = false;
+    private boolean hasSemantikError = true;
 
     private String errorLogSyntax="";
+
+    private String errorLogSemantik="";
 
     public RTAnalysis(int id, String inputSolution) throws SQLException {
         super();
@@ -48,6 +50,7 @@ public class RTAnalysis extends DefaultAnalysis {
         setDataBaseProperties();
         setSolutionStudent();
         initAnalyse();
+        checkRelations();
     }
 
     public void initAnalyse(){
@@ -58,12 +61,7 @@ public class RTAnalysis extends DefaultAnalysis {
         for (RTSolution rtSolution : this.solution){
             rtSolution.initAnalyse(this.solutionStudent);
             countRalations = countRalations + rtSolution.getRtSemanticsAnalysis().getRelations().size();
-            System.err.println(rtSolution);
-        }
-        int countRalationsStudent = solution.get(0).getRtSemanticsAnalysis().getRelationsStudent().size();
-        if (countRalations != countRalationsStudent){
-            System.err.println("Error");
-            this.hasSyntaxError = true;
+            this.errorLogSemantik = errorLogSemantik.concat(rtSolution.getRtSemanticsAnalysis().getErrorLogSemantik());
         }
     }
 
@@ -88,6 +86,22 @@ public class RTAnalysis extends DefaultAnalysis {
             }
         }
         return checkSuccess;
+    }
+
+    public void checkRelations(){
+        int solutionStudent = this.solutionStudent.size();
+        int solution = 0;
+        for (RTSolution rtSolution : this.solution){
+            solution += rtSolution.getRtSemanticsAnalysis().getRelations().size();
+            if(!rtSolution.getRtSemanticsAnalysis().getErrorLogSyntax().isBlank() && !rtSolution.getRtSemanticsAnalysis().getErrorLogSyntax().isEmpty()){
+                this.hasSyntaxError = true;
+                this.errorLogSyntax = errorLogSyntax.concat(rtSolution.getRtSemanticsAnalysis().getErrorLogSyntax());
+            }
+        }
+        if(solution != solutionStudent){
+            this.errorLogSyntax = errorLogSyntax.concat("<br>Redundante oder fehlende Relation!");
+            this.hasSyntaxError = true;
+        }
     }
 
     public void setDataBaseProperties() throws SQLException {
@@ -143,6 +157,22 @@ public class RTAnalysis extends DefaultAnalysis {
         }
         return rtObject;
     }
+    public double calcPoints(){
+        if (this.getHasSyntaxError()){
+            return 0;
+        }
+        else{
+            int points = 0;
+            for(RTSolution rtSolution : getSolution()){
+                points = points + rtSolution.getRtSemanticsAnalysis().getTotalPoints();
+            }
+            if(points == this.maxPoints){
+                this.setSubmissionSuitsSolution(true);
+                this.hasSemantikError = false;
+            }
+            return points;
+        }
+    }
     public int getMaxPoints() {
         return maxPoints;
     }
@@ -157,5 +187,9 @@ public class RTAnalysis extends DefaultAnalysis {
 
     public String getErrorLogSyntax() {
         return errorLogSyntax;
+    }
+
+    public String getErrorLogSemantik() {
+        return errorLogSemantik;
     }
 }

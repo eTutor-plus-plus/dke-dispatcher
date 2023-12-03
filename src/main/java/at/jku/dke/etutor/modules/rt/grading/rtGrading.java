@@ -16,17 +16,7 @@ public class rtGrading extends DefaultGrading{
     }
 
     public void doGrading(){
-        if (this.rtAnalysis.getHasSyntaxError()){
-            this.setPoints(0);
-        }
-        else{
-            int points = 0;
-            for(RTSolution rtSolution : this.rtAnalysis.getSolution()){
-                points = points + rtSolution.getRtSemanticsAnalysis().getTotalPoints();
-            }
-            System.err.println(points);
-            this.setPoints(points);
-        }
+        this.setPoints(rtAnalysis.calcPoints());
     }
 
 

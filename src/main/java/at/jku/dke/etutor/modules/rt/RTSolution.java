@@ -124,15 +124,7 @@ public class RTSolution {
     @Override
     public String toString() {
         return "RTSolution{" +
-                "gesamtGewichtung=" + gesamtGewichtung +
-                ", punktePK=" + Arrays.toString(punktePK) +
-                ", punkteAtt=" + Arrays.toString(punkteAtt) +
-                ", punkteInk=" + Arrays.toString(punkteInk) +
-                ", solution=" + solution +
-                ", maxPoints=" + maxPoints +
-                ", points=" + points +
-                ", solutionStudent=" + solutionStudent +
-                ", rtSemanticsAnalysis=" + rtSemanticsAnalysis +
+                "rtSemanticsAnalysis=" + rtSemanticsAnalysis +
                 '}';
     }
 }

@@ -18,24 +18,20 @@ public class rtReport extends DefaultReport implements Serializable {
         this.passedAttributes = passedAttributes;
     }
 
-    public void getReport(){
-        return;
-        /*if(this.rtAnalysis.getHasSyntaxError()){
+    public void getReport() {
+        if (this.rtAnalysis.getHasSyntaxError()) {
             this.setShowErrorDescription(true);
             this.errorMessage = "Die Abfrage wurde aufgrund von Syntax-Fehlern abgebrochen!";
-            if (this.rtAnalysis.getErrorLogSyntax() != null){
+            if (this.rtAnalysis.getErrorLogSyntax() != null) {
                 this.errorMessage = errorMessage + this.rtAnalysis.getErrorLogSyntax();
-            }
-            if (this.rtAnalysis.getRtSemanticsAnalysis().getErrorLogSyntax() != null){
-                this.errorMessage = errorMessage + this.rtAnalysis.getRtSemanticsAnalysis().getErrorLogSyntax();
             }
             this.setError(errorMessage);
         }
-        if (!this.rtAnalysis.getHasSyntaxError() && !this.passedAttributes.get("diagnoseLevel").equals("0") && this.rtAnalysis.getHasSemantikError()){
+        if (!this.rtAnalysis.getHasSyntaxError() && !this.passedAttributes.get("diagnoseLevel").equals("0") && this.rtAnalysis.getHasSemantikError()) {
             this.setShowHint(true);
             this.hintMessage = "Die Abgabe enthält semantische Fehler!";
-            this.hintMessage = hintMessage + this.rtAnalysis.getRtSemanticsAnalysis().getErrorLogSemantik();
+            this.hintMessage = hintMessage + this.rtAnalysis.getErrorLogSemantik();
             this.setHint(hintMessage);
-        }*/
+        }
     }
 }

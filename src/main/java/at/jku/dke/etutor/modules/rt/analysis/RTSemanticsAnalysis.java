@@ -71,7 +71,7 @@ public class RTSemanticsAnalysis {
     public boolean checkRelation(){
         for(String str : this.relations){
             if(!this.relationsStudent.contains(str)){
-                this.errorLogSyntax = this.errorLogSyntax.concat("<br>Falsche Relation: " + str);
+                this.errorLogSyntax = this.errorLogSyntax.concat("<br>Falsche Relation! (Tipp: Rechtschreibung prüfen!)");
                 return false;
             }
         }
@@ -84,7 +84,7 @@ public class RTSemanticsAnalysis {
             String solution = entry.getValue();
             String student = this.pkStudent.get(entry.getKey());
             if (!solution.equals(student)) {
-                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falscher Primärschlüssel: " + student);
+                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falscher Primärschlüssel!");
                 check = false;
             }
             else {
@@ -100,7 +100,7 @@ public class RTSemanticsAnalysis {
             String solution = entry.getValue();
             String student = this.attributesStudent.get(entry.getKey());
             if (!solution.equals(student)) {
-                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falsche/s, redundante/s oder fehlende/s Attributt/e: " + student);
+                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falsche/s, redundante/s oder fehlende/s Attributt/e!");
                 check = false;
             }
             else {
@@ -116,7 +116,7 @@ public class RTSemanticsAnalysis {
             String solution = entry.getValue();
             String student = this.dependenciesStudent.get(entry.getKey());
             if (!solution.equals(student)) {
-                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falsche, redundante oder fehlende Inklusions-Abhängigkeit/en: " + student);
+                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falsche, redundante oder fehlende Inklusions-Abhängigkeit/en!");
                 check = false;
             }
             else{
@@ -258,12 +258,10 @@ public class RTSemanticsAnalysis {
     @Override
     public String toString() {
         return "RTSemanticsAnalysis{" +
-                "errorLogSemantik='" + errorLogSemantik + '\'' +
-                ", errorLogSyntax='" + errorLogSyntax + '\'' +
-                ", weighting=" + Arrays.toString(weighting) +
-                ", pointsPK=" + pointsPK +
-                ", pointsAtt=" + pointsAtt +
-                ", pointsDep=" + pointsDep +
+                "studentSolution=" + studentSolution +
+                ", solution=" + solution +
+                ", relationsStudent=" + relationsStudent +
+                ", relations=" + relations +
                 '}';
     }
 }
