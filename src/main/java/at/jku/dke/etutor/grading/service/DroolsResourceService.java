@@ -5,7 +5,7 @@ import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 
 
-import at.jku.dke.etutor.objects.dispatcher.drools.DroolsTaskDTO;
+import at.jku.dke.etutor.objects.dispatcher.drools.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
@@ -244,7 +244,130 @@ public class DroolsResourceService {
 
             con.commit();
         }
-
-
     }
+
+
+
+    public String addEvent(DroolsEventDTO eventDTO) throws DatabaseException, SQLException { //TODO: Exception??
+        logger.debug("Enter: Creating event");
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
+            con.setAutoCommit(false);
+            int taskId = eventDTO.getTaskID();
+            String clazz = eventDTO.getEventClazz();
+            String referenceName = eventDTO.getEventReferenceName();
+            String timestamp = eventDTO.getEventTimestamp();
+            String instanceName = eventDTO.getEventInstanceName();
+
+            PreparedStatement createTaskStmt = con.prepareStatement("INSERT INTO events (task_id, clazz, " +
+                    "reference_name, timestamp, instance_name) VALUES(?,?,?,?,?)");
+            createTaskStmt.setInt(1, taskId);
+            createTaskStmt.setString(2, clazz);
+            createTaskStmt.setString(3, referenceName);
+            createTaskStmt.setString(4, timestamp);
+            createTaskStmt.setString(5, instanceName);
+
+            logger.debug("Statement for creating event: {} ", createTaskStmt);
+            int rowsInserted = createTaskStmt.executeUpdate();
+            if(rowsInserted > 0){
+                logger.debug("Event created");
+                con.commit();
+                return clazz;
+            }
+            con.rollback(); //TODO: benötigt?? 20231203 LK
+            return "";
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+            throw new DatabaseException(throwables);
+        }
+    }
+
+    public String addClass(DroolsClassDTO classDTO) throws DatabaseException, SQLException { //TODO: Exception??
+        logger.debug("Enter: Creating class");
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
+            con.setAutoCommit(false);
+            int taskId = classDTO.getTaskID();
+            String fullClassname = classDTO.getClassFullClassname();
+            String classContent = classDTO.getClassContent();
+
+            PreparedStatement createTaskStmt = con.prepareStatement("INSERT INTO classes (task_id, full_classname, " +
+                    "class_content) VALUES(?,?,?)");
+            createTaskStmt.setInt(1, taskId);
+            createTaskStmt.setString(2, fullClassname);
+            createTaskStmt.setString(3, classContent);
+
+            logger.debug("Statement for creating class: {} ", createTaskStmt);
+            int rowsInserted = createTaskStmt.executeUpdate();
+            if(rowsInserted > 0){
+                logger.debug("Event created");
+                con.commit();
+                return fullClassname;
+            }
+            con.rollback(); //TODO: benötigt?? 20231203 LK
+            return "";
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+            throw new DatabaseException(throwables);
+        }
+    }
+
+    public String addFact(DroolsFactDTO factDTO) throws DatabaseException, SQLException { //TODO: Exception??
+        logger.debug("Enter: Creating fact");
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
+            con.setAutoCommit(false);
+            int taskId = factDTO.getTaskID();
+            String factClazz = factDTO.getFactClazz();
+            String factInstanceName = factDTO.getFactInstanceName();
+            String[] factParameters = factDTO.getFactParameters();
+
+            PreparedStatement createTaskStmt = con.prepareStatement("INSERT INTO facts (task_id, clazz, " +
+                    "instance_name, parameters) VALUES(?,?,?,?)");
+            createTaskStmt.setInt(1, taskId);
+            createTaskStmt.setString(2, factClazz);
+            createTaskStmt.setString(3, factInstanceName);
+            Array array = con.createArrayOf("text", factParameters);
+            createTaskStmt.setArray(4, array);
+
+            logger.debug("Statement for creating fact: {} ", createTaskStmt);
+            int rowsInserted = createTaskStmt.executeUpdate();
+            if(rowsInserted > 0){
+                logger.debug("Fact created");
+                con.commit();
+                return factClazz;
+            }
+            con.rollback(); //TODO: benötigt?? 20231203 LK
+            return "";
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+            throw new DatabaseException(throwables);
+        }
+    }
+
+    public int addTestdata(DroolsTestDTO testDTO) throws DatabaseException, SQLException { //TODO: Exception??
+        logger.debug("Enter: Creating Testdata");
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
+            con.setAutoCommit(false);
+            int taskId = testDTO.getTaskID();
+            String inputClassname = testDTO.getTestInputClassname();
+            String expectedOutput = testDTO.getTestExpectedOutput();
+
+            PreparedStatement createTaskStmt = con.prepareStatement("INSERT INTO testdata (task_id, input_classname, expected_output) VALUES(?,?,?)");
+            createTaskStmt.setInt(1, taskId);
+            createTaskStmt.setString(2, inputClassname);
+            createTaskStmt.setString(3, expectedOutput);
+
+            logger.debug("Statement for creating testdata: {} ", createTaskStmt);
+            int rowsInserted = createTaskStmt.executeUpdate();
+            if(rowsInserted > 0){
+                logger.debug("Testdata created");
+                con.commit();
+                return taskId;
+            }
+            con.rollback(); //TODO: benötigt?? 20231203 LK
+            return -1;
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+            throw new DatabaseException(throwables);
+        }
+    }
+
 }
