@@ -111,13 +111,34 @@ public class RTSemanticsAnalysis {
     }
 
     public boolean checkDependendcies(){
+        List<String> solutionList = null;
+        List<String> studentList = null;
         boolean check = true;
         for (Map.Entry<String,String> entry : this.dependencies.entrySet()){
             String solution = entry.getValue();
             String student = this.dependenciesStudent.get(entry.getKey());
-            if (!solution.equals(student)) {
-                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falsche, redundante oder fehlende Inklusions-Abhängigkeit/en!");
-                check = false;
+            if(solution != null) {
+                solutionList = Arrays.asList(solution.split("\\s*,\\s*"));
+            }
+            if (student != null) {
+                studentList = Arrays.asList(student.split("\\s*,\\s*"));
+            }
+            
+            if (!solutionList.equals(studentList)) {
+                if(studentList != null && solutionList != null) {
+                    int pointsForRightAnswer = weighting[2] / countRelations / solutionList.size();
+                    this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falsche, redundante oder fehlende Inklusions-Abhängigkeit/en!");
+                    for (String elem : studentList) {
+                        if (solutionList.contains(elem)) {
+                            pointsDep += pointsForRightAnswer;
+                        }
+                    }
+                    int sizeDifference = studentList.size() - solutionList.size();
+                    if (pointsDep > 0 && sizeDifference > 0) {
+                        pointsDep -= pointsForRightAnswer;
+                    }
+                    check = false;
+                }
             }
             else{
                 pointsDep = pointsDep + (weighting[2] / countRelations);

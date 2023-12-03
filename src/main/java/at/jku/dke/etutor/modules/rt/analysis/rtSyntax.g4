@@ -4,5 +4,5 @@ grammar rtSyntax;
     STRING: [A-Za-z]+;
     ATT_BLOCK: STRING (',' STRING)*;
     INK: ' 'STRING'('STRING') -> 'STRING'('STRING')';
-    INK_BLOCK: INK (INK)*;
+    INK_BLOCK: INK (','INK)*;
 

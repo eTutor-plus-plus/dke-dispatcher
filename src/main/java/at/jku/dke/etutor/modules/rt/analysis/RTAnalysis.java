@@ -50,7 +50,6 @@ public class RTAnalysis extends DefaultAnalysis {
         setDataBaseProperties();
         setSolutionStudent();
         initAnalyse();
-        checkRelations();
     }
 
     public void initAnalyse(){
@@ -63,6 +62,7 @@ public class RTAnalysis extends DefaultAnalysis {
             countRalations = countRalations + rtSolution.getRtSemanticsAnalysis().getRelations().size();
             this.errorLogSemantik = errorLogSemantik.concat(rtSolution.getRtSemanticsAnalysis().getErrorLogSemantik());
         }
+        checkRelations();
     }
 
     public boolean checkSyntax() {
@@ -89,7 +89,13 @@ public class RTAnalysis extends DefaultAnalysis {
     }
 
     public void checkRelations(){
-        int solutionStudent = this.solutionStudent.size();
+        int blank = 0;
+        for (String elem : solutionStudent){
+            if (elem.isEmpty() || elem.isBlank()){
+                blank++;
+            }
+        }
+        int solutionStudent = this.solutionStudent.size() - blank;
         int solution = 0;
         for (RTSolution rtSolution : this.solution){
             solution += rtSolution.getRtSemanticsAnalysis().getRelations().size();
