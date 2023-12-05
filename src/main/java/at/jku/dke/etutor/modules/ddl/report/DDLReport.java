@@ -23,6 +23,8 @@ public class DDLReport extends DefaultReport implements Report, Serializable {
     private List<ErrorTupel> surplusPrimaryKeys;
     private List<ErrorTupel> missingForeignKeys;
     private List<ErrorTupel> surplusForeignKeys;
+    private List<ErrorTupel> wrongUpdateForeignKeys;
+    private List<ErrorTupel> wrongDeleteForeignKeys;
 
 
     private String prologue;
@@ -162,6 +164,22 @@ public class DDLReport extends DefaultReport implements Report, Serializable {
 
     public void setSurplusForeignKeys(List<ErrorTupel> surplusForeignKeys) {
         this.surplusForeignKeys = surplusForeignKeys;
+    }
+
+    public List<ErrorTupel> getWrongUpdateForeignKeys() {
+        return wrongUpdateForeignKeys;
+    }
+
+    public void setWrongUpdateForeignKeys(List<ErrorTupel> wrongUpdateForeignKeys) {
+        this.wrongUpdateForeignKeys = wrongUpdateForeignKeys;
+    }
+
+    public List<ErrorTupel> getWrongDeleteForeignKeys() {
+        return wrongDeleteForeignKeys;
+    }
+
+    public void setWrongDeleteForeignKeys(List<ErrorTupel> wrongDeleteForeignKeys) {
+        this.wrongDeleteForeignKeys = wrongDeleteForeignKeys;
     }
 
     public String getPrologue() {

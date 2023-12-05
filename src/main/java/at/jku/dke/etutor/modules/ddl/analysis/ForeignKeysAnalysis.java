@@ -10,11 +10,15 @@ public class ForeignKeysAnalysis extends AbstractDDLCriterionAnalysis implements
     //region Fields
     private List<ErrorTupel> missingForeignKeys;
     private List<ErrorTupel> surplusForeignKeys;
+    private List<ErrorTupel> wrongUpdateForeignKeys;
+    private List<ErrorTupel> wrongDeleteForeignKeys;
     //endregion
 
     public ForeignKeysAnalysis() {
         missingForeignKeys = new ArrayList<>();
         surplusForeignKeys = new ArrayList<>();
+        wrongUpdateForeignKeys = new ArrayList<>();
+        wrongDeleteForeignKeys = new ArrayList<>();
     }
 
     public boolean isMissingForeignKeysEmpty() {
@@ -25,12 +29,28 @@ public class ForeignKeysAnalysis extends AbstractDDLCriterionAnalysis implements
         return this.surplusForeignKeys.isEmpty();
     }
 
+    public boolean isWrongUpdateForeignKeysEmpty() {
+        return this.wrongUpdateForeignKeys.isEmpty();
+    }
+
+    public boolean isWrongDeleteForeignKeysEmpty() {
+        return this.wrongDeleteForeignKeys.isEmpty();
+    }
+
     public Iterator<ErrorTupel> iterMissingForeignKeys() {
         return this.missingForeignKeys.iterator();
     }
 
     public Iterator<ErrorTupel> iterSurplusForeignKeys() {
         return this.surplusForeignKeys.iterator();
+    }
+
+    public Iterator<ErrorTupel> iterWrongUpdateForeignKeys() {
+        return this.wrongUpdateForeignKeys.iterator();
+    }
+
+    public Iterator<ErrorTupel> iterWrongDeleteForeignKeys() {
+        return this.wrongDeleteForeignKeys.iterator();
     }
 
     @Override
@@ -61,6 +81,30 @@ public class ForeignKeysAnalysis extends AbstractDDLCriterionAnalysis implements
 
     public void addSurplusForeignKey(ErrorTupel foreignKey) {
         this.surplusForeignKeys.add(foreignKey);
+    }
+
+    public List<ErrorTupel> getWrongUpdateForeignKeys() {
+        return wrongUpdateForeignKeys;
+    }
+
+    public void setWrongUpdateForeignKeys(List<ErrorTupel> wrongUpdateForeignKeys) {
+        this.wrongUpdateForeignKeys = wrongUpdateForeignKeys;
+    }
+
+    public void addWrongUpdateForeignKey(ErrorTupel foreignKey) {
+        this.wrongUpdateForeignKeys.add(foreignKey);
+    }
+
+    public List<ErrorTupel> getWrongDeleteForeignKeys() {
+        return wrongDeleteForeignKeys;
+    }
+
+    public void setWrongDeleteForeignKeys(List<ErrorTupel> wrongDeleteForeignKeys) {
+        this.wrongDeleteForeignKeys = wrongDeleteForeignKeys;
+    }
+
+    public void addWrongDeleteForeignKey(ErrorTupel foreignKey) {
+        this.wrongDeleteForeignKeys.add(foreignKey);
     }
     //endregion
 }

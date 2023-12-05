@@ -538,6 +538,8 @@ public class DDLReporter {
                     // Get number of wrong columns
                     int missingForeignKeysCount = foreignKeysAnalysis.getMissingForeignKeys().size();
                     int surplusForeignKeysCount = foreignKeysAnalysis.getSurplusForeignKeys().size();
+                    int wrongUpdateForeignKeysCount = foreignKeysAnalysis.getWrongUpdateForeignKeys().size();
+                    int wrongDeleteForeignKeysCount = foreignKeysAnalysis.getWrongDeleteForeignKeys().size();
 
                     // Check on diagnose level
                     if(config.getDiagnoseLevel() == 1) {
@@ -549,15 +551,30 @@ public class DDLReporter {
                             }
                         }
 
-                        if(!foreignKeysAnalysis.isMissingForeignKeysEmpty() && !foreignKeysAnalysis.isSurplusForeignKeysEmpty()) {
-                            description.append(LS);
-                        }
-
                         if(!foreignKeysAnalysis.isSurplusForeignKeysEmpty()) {
+                            description.append(LS);
                             if(isGermanLocale(locale)) {
                                 description.append("Es sind zu viele Fremdschlüssel in den Tabellen.");
                             } else {
                                 description.append("There are too much foreign keys in the tables.");
+                            }
+                        }
+
+                        if(!foreignKeysAnalysis.isWrongUpdateForeignKeysEmpty()) {
+                            description.append(LS);
+                            if(isGermanLocale(locale)) {
+                                description.append("Es gibt Fremdschlüssel mit falschen Update Constraints in den Tabellen.");
+                            } else {
+                                description.append("There are foreign keys with wrong update constraints in the tables.");
+                            }
+                        }
+
+                        if(!foreignKeysAnalysis.isWrongDeleteForeignKeysEmpty()) {
+                            description.append(LS);
+                            if(isGermanLocale(locale)) {
+                                description.append("Es gibt Fremdschlüssel mit falschen Delete Constraints in den Tabellen.");
+                            } else {
+                                description.append("There are foreign keys with wrong delete constraints in the tables.");
                             }
                         }
                     }
@@ -571,15 +588,30 @@ public class DDLReporter {
                             }
                         }
 
-                        if(!foreignKeysAnalysis.isMissingForeignKeysEmpty() && !foreignKeysAnalysis.isSurplusForeignKeysEmpty()) {
-                            description.append(LS);
-                        }
-
                         if(!foreignKeysAnalysis.isSurplusForeignKeysEmpty()) {
+                            description.append(LS);
                             if(isGermanLocale(locale)) {
                                 description.append("Es sind ").append(surplusForeignKeysCount).append(" Fremdschlüssel zu viel in den Tabellen.");
                             } else {
                                 description.append("There are ").append(surplusForeignKeysCount).append(" foreign keys too much in the tables.");
+                            }
+                        }
+
+                        if(!foreignKeysAnalysis.isWrongUpdateForeignKeysEmpty()) {
+                            description.append(LS);
+                            if(isGermanLocale(locale)) {
+                                description.append("Es gibt ").append(wrongUpdateForeignKeysCount).append(" Fremdschlüssel mit falschen Update Constraints in den Tabellen.");
+                            } else {
+                                description.append("There are ").append(wrongUpdateForeignKeysCount).append(" foreign keys with wrong update constraints in the tables.");
+                            }
+                        }
+
+                        if(!foreignKeysAnalysis.isWrongDeleteForeignKeysEmpty()) {
+                            description.append(LS);
+                            if(isGermanLocale(locale)) {
+                                description.append("Es gibt ").append(wrongDeleteForeignKeysCount).append(" Fremdschlüssel mit falschen Delete Constraints in den Tabellen.");
+                            } else {
+                                description.append("There are ").append(wrongDeleteForeignKeysCount).append(" foreign keys with wrong delete constraints in the tables.");
                             }
                         }
                     }
@@ -607,11 +639,8 @@ public class DDLReporter {
                             description.append("</table>");
                         }
 
-                        if(!foreignKeysAnalysis.isMissingForeignKeysEmpty() && !foreignKeysAnalysis.isSurplusForeignKeysEmpty()) {
-                            description.append(LS).append(LS);
-                        }
-
                         if(!foreignKeysAnalysis.isSurplusForeignKeysEmpty()) {
+                            description.append(LS).append(LS);
                             if(isGermanLocale(locale)) {
                                 description.append("Die folgenden ").append(surplusForeignKeysCount).append(" Fremdschlüssel sind zu viel: ").append(LS);
                                 header1 = TABELLE;
@@ -625,6 +654,52 @@ public class DDLReporter {
                             report.setSurplusForeignKeys(foreignKeysAnalysis.getSurplusForeignKeys());
 
                             foreignKeysIterator = foreignKeysAnalysis.iterSurplusForeignKeys();
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
+                            while(foreignKeysIterator.hasNext()) {
+                                ErrorTupel tupel = foreignKeysIterator.next();
+                                description.append("<tr>").append("<td>").append(tupel.getSource()).append("</td><td>").append(tupel.getError()).append("</td></tr>");
+                            }
+                            description.append("</table>");
+                        }
+
+                        if(!foreignKeysAnalysis.isWrongUpdateForeignKeysEmpty()) {
+                            description.append(LS).append(LS);
+                            if(isGermanLocale(locale)) {
+                                description.append("Die folgenden ").append(wrongUpdateForeignKeysCount).append(" Fremdschlüssel haben falsche Update Constraints: ").append(LS);
+                                header1 = TABELLE;
+                                header2 = SPALTE;
+                            } else {
+                                description.append("The following ").append(wrongUpdateForeignKeysCount).append(" foreign keys have wrong update constraints: ").append(LS);
+                                header1 = TABLE;
+                                header2 = COLUMN;
+                            }
+
+                            report.setWrongUpdateForeignKeys(foreignKeysAnalysis.getWrongUpdateForeignKeys());
+
+                            foreignKeysIterator = foreignKeysAnalysis.iterWrongUpdateForeignKeys();
+                            description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
+                            while(foreignKeysIterator.hasNext()) {
+                                ErrorTupel tupel = foreignKeysIterator.next();
+                                description.append("<tr>").append("<td>").append(tupel.getSource()).append("</td><td>").append(tupel.getError()).append("</td></tr>");
+                            }
+                            description.append("</table>");
+                        }
+
+                        if(!foreignKeysAnalysis.isWrongDeleteForeignKeysEmpty()) {
+                            description.append(LS).append(LS);
+                            if(isGermanLocale(locale)) {
+                                description.append("Die folgenden ").append(wrongDeleteForeignKeysCount).append(" Fremdschlüssel haben falsche Delete Constraints: ").append(LS);
+                                header1 = TABELLE;
+                                header2 = SPALTE;
+                            } else {
+                                description.append("The following ").append(wrongDeleteForeignKeysCount).append(" foreign keys have wrong delete constraints: ").append(LS);
+                                header1 = TABLE;
+                                header2 = COLUMN;
+                            }
+
+                            report.setWrongDeleteForeignKeys(foreignKeysAnalysis.getWrongDeleteForeignKeys());
+
+                            foreignKeysIterator = foreignKeysAnalysis.iterWrongDeleteForeignKeys();
                             description.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\"><tr><th>").append(header1).append("</th><th>").append(header2).append("</th></tr>");
                             while(foreignKeysIterator.hasNext()) {
                                 ErrorTupel tupel = foreignKeysIterator.next();
@@ -720,7 +795,7 @@ public class DDLReporter {
                         // Check for unique constraints
                         if(!constraintsAnalysis.isMissingConstraintsEmpty()) {
                             if(isGermanLocale(locale)) {
-                                description.append("Die folgenden ").append(missingConstraintsCount).append(" unique Constraints sind zu viel: ").append(LS);
+                                description.append("Die folgenden ").append(missingConstraintsCount).append(" unique Constraints sind zu wenig: ").append(LS);
                                 header1 = TABELLE;
                                 header2 = SPALTE;
                             } else {

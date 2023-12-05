@@ -367,7 +367,11 @@ public class DDLEvaluator implements Evaluator {
             // Add syntax exception if there is one
             SyntaxAnalysis correctSyntaxCriterion = (SyntaxAnalysis) ddlAnalysis.getCriterionAnalysis(DDLEvaluationCriterion.CORRECT_SYNTAX);
             if(!correctSyntaxCriterion.isCriterionSatisfied()) {
-                result.append("<br><strong>").append(correctSyntaxCriterion.getErrorDescription()).append("</strong>").append("<br>");
+                if(locale == Locale.GERMAN) {
+                    result.append("<strong>Query konnte nicht ausgeführt werden!</strong>");
+                } else {
+                    result.append("<strong>Query could not be executed!</strong>");
+                }
                 return result.toString();
             }
 

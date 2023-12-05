@@ -24,6 +24,7 @@ public class DDLAnalyzer {
     private DatabaseMetaData exerciseMetadata;
     private String userSchema;
     private String exerciseSchema;
+    private boolean isEveryCriterionSatisfied;
     //endregion
 
     public DDLAnalyzer() {
@@ -122,6 +123,8 @@ public class DDLAnalyzer {
             return analysis;
         }
 
+        isEveryCriterionSatisfied = true;
+
         // Check tables
         if(config.isCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_TABLES)) {
             criterionAnalysis = this.analyzeTables();
@@ -190,11 +193,15 @@ public class DDLAnalyzer {
         try {
             // Execute query to check the correctness of the syntax
             Statement stmt = userConn.createStatement();
-            stmt.executeQuery(submittedQuery);
+
+            // Call executeUpdate to prevent "Query does not return results" exception
+            stmt.executeUpdate(submittedQuery);
         } catch (SQLException ex) {
             syntaxAnalysis.setFoundError(true);
             syntaxAnalysis.setCriterionIsSatisfied(false);
             syntaxAnalysis.setErrorDescription(ex.toString());
+            syntaxAnalysis.setAnalysisException(new AnalysisException(ex.toString()));
+            return syntaxAnalysis;
         }
 
         syntaxAnalysis.setCriterionIsSatisfied(true);
@@ -277,6 +284,7 @@ public class DDLAnalyzer {
 
         // Set submission is correct for this criterion
         tablesAnalysis.setCriterionIsSatisfied(tablesAnalysis.isMissingTablesEmpty() && tablesAnalysis.isSurplusTablesEmpty());
+        isEveryCriterionSatisfied = isEveryCriterionSatisfied && tablesAnalysis.isCriterionSatisfied();
         this.logger.info("Finished table analysis. Criterion satisfied: " + tablesAnalysis.isCriterionSatisfied());
         return tablesAnalysis;
     }
@@ -336,9 +344,12 @@ public class DDLAnalyzer {
                             String systemDefault = systemColumns.getString("COLUMN_DEF");
                             String userDefault = userColumns.getString("COLUMN_DEF");
 
+
                             // Check like this and not with equals to avoid null exception
                             if(systemDefault != userDefault) {
-                                columnsAnalysis.addWrongDefaultColumn(new ErrorTupel(tableName, systemColumn));
+                                if(systemDefault == null || userDefault == null || !systemDefault.equals(userDefault)) {
+                                    columnsAnalysis.addWrongDefaultColumn(new ErrorTupel(tableName, systemColumn));
+                                }
                             }
 
                             break;
@@ -392,6 +403,7 @@ public class DDLAnalyzer {
         }
 
         columnsAnalysis.setCriterionIsSatisfied(columnsAnalysis.isMissingColumnsEmpty() && columnsAnalysis.isSurplusColumnsEmpty() && columnsAnalysis.isWrongNullColumnsEmpty() && columnsAnalysis.isWrongDatatypeColumnsEmpty() && columnsAnalysis.isWrongDefaultColumnsEmpty());
+        isEveryCriterionSatisfied = isEveryCriterionSatisfied && columnsAnalysis.isCriterionSatisfied();
         this.logger.info("Finished column analysis. Criterion satisfied: " + columnsAnalysis.isCriterionSatisfied());
         return columnsAnalysis;
     }
@@ -513,8 +525,19 @@ public class DDLAnalyzer {
                         short userDeleteConstraint = userForeignKeys.getShort("DELETE_RULE");
 
                         // Compare foreign key column and table names and the delete/update rules
-                        if(userColumn.equalsIgnoreCase(systemColumn) && userTable.equalsIgnoreCase(systemTable) && userUpdateConstraint == systemUpdateConstraint && userDeleteConstraint == systemDeleteConstraint) {
+                        if(userColumn.equalsIgnoreCase(systemColumn) && userTable.equalsIgnoreCase(systemTable)) {
                             exists = true;
+
+                            // Compare update rules
+                            if(userUpdateConstraint != systemUpdateConstraint) {
+                                foreignKeysAnalysis.addWrongUpdateForeignKey(new ErrorTupel(tableName, systemColumn));
+                            }
+
+                            // Compare delete rules
+                            if(userDeleteConstraint != systemDeleteConstraint) {
+                                foreignKeysAnalysis.addWrongDeleteForeignKey(new ErrorTupel(tableName, systemColumn));
+                            }
+
                             break;
                         }
                     }
@@ -565,7 +588,7 @@ public class DDLAnalyzer {
             foreignKeysAnalysis.setAnalysisException(new AnalysisException(msg, ex));
         }
 
-        foreignKeysAnalysis.setCriterionIsSatisfied(foreignKeysAnalysis.isMissingForeignKeysEmpty() && foreignKeysAnalysis.isSurplusForeignKeysEmpty());
+        foreignKeysAnalysis.setCriterionIsSatisfied(foreignKeysAnalysis.isMissingForeignKeysEmpty() && foreignKeysAnalysis.isSurplusForeignKeysEmpty() && foreignKeysAnalysis.isWrongUpdateForeignKeysEmpty() && foreignKeysAnalysis.isWrongDeleteForeignKeysEmpty());
         this.logger.info("Finished foreign key analysis. Criterion satisfied: " + foreignKeysAnalysis.isCriterionSatisfied());
         return foreignKeysAnalysis;
     }
@@ -580,6 +603,7 @@ public class DDLAnalyzer {
 
         ConstraintsAnalysis constraintsAnalysis = new ConstraintsAnalysis();
         boolean exists = false;
+        boolean satisfied = false;
 
         Statement systemStmt;
         Statement userStmt;
@@ -610,7 +634,7 @@ public class DDLAnalyzer {
 
                     // Check if the table exists
                     if(!exists) {
-                        constraintsAnalysis.addMissingConstraint(new ErrorTupel(tableName, systemColumn));
+                        constraintsAnalysis.addMissingConstraint(new ErrorTupel(tableName, systemConstraints.getString("COLUMN_NAME")));
                     }
 
                     // Reset variables
@@ -636,7 +660,7 @@ public class DDLAnalyzer {
 
                     // Check if the table exists
                     if(!exists) {
-                        constraintsAnalysis.addSurplusConstraint(new ErrorTupel(tableName, userColumn));
+                        constraintsAnalysis.addSurplusConstraint(new ErrorTupel(tableName, userConstraints.getString("COLUMN_NAME")));
                     }
 
                     // Reset variables
@@ -645,18 +669,34 @@ public class DDLAnalyzer {
                 }
             }
 
-            // Analyze check constraints
-            for(String stmt : config.getDmlStatements()) {
-                // Execute the DML statements
-                systemStmt = exerciseConn.createStatement();
-                int systemAffects = systemStmt.executeUpdate(stmt);
+            satisfied = constraintsAnalysis.isMissingConstraintsEmpty() && constraintsAnalysis.isSurplusConstraintsEmpty();
 
-                userStmt = userConn.createStatement();
-                int userAffects = userStmt.executeUpdate(stmt);
+            // Only check check-constraints when every other criterion is satisfied
+            if(isEveryCriterionSatisfied) {
+                int systemAffects;
+                int userAffects;
 
-                // Check if the row count for the affected rows is the same
-                if(systemAffects != userAffects) {
-                    constraintsAnalysis.addDmlStatementWithMistake(stmt);
+                // Analyze check constraints
+                for(String stmt : config.getDmlStatements()) {
+                    // Execute the DML statements
+                    try {
+                        systemStmt = exerciseConn.createStatement();
+                        systemAffects = systemStmt.executeUpdate(stmt);
+                    } catch (SQLException e) {
+                        systemAffects = -1;
+                    }
+
+                    try {
+                        userStmt = userConn.createStatement();
+                        userAffects = userStmt.executeUpdate(stmt);
+                    } catch (SQLException e) {
+                        userAffects = -1;
+                    }
+
+                    // Check if the row count for the affected rows is the same
+                    if(systemAffects != userAffects) {
+                        constraintsAnalysis.addDmlStatementWithMistake(stmt);
+                    }
                 }
             }
         } catch (SQLException ex) {
@@ -669,7 +709,7 @@ public class DDLAnalyzer {
             constraintsAnalysis.setAnalysisException(new AnalysisException(msg, ex));
         }
 
-        constraintsAnalysis.setCriterionIsSatisfied(constraintsAnalysis.isMissingConstraintsEmpty() && constraintsAnalysis.isSurplusConstraintsEmpty() && constraintsAnalysis.isDmlStatementsWithMistakesEmpty());
+        constraintsAnalysis.setCriterionIsSatisfied(satisfied && constraintsAnalysis.isDmlStatementsWithMistakesEmpty());
         this.logger.info("Finished constraint analysis. Criterion satisfied: " + constraintsAnalysis.isCriterionSatisfied());
         return constraintsAnalysis;
     }
