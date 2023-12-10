@@ -27,13 +27,13 @@ public class RDBDConstants {
 	public final static String EXERCISE_SPEC_CMD_CANCEL = "cancel";
 	
 	//BUSINESS LOGIC RDBD-CONSTANTS
-	public static final int TYPE_RBR = 4;
-	public static final int TYPE_DECOMPOSE = 5;
+	public static final int TYPE_RBR = 5;
+	public static final int TYPE_DECOMPOSE = 6;
 	public static final int TYPE_NORMALIZATION = 1;
 	public static final int TYPE_MINIMAL_COVER = 2;
 	public static final int TYPE_ATTRIBUTE_CLOSURE = 3;
 	public static final int TYPE_KEYS_DETERMINATION = 0;
-	public static final int TYPE_NORMALFORM_DETERMINATION = 6;
+	public static final int TYPE_NORMALFORM_DETERMINATION = 4;
 
 	public static final int LEVEL_NONE = 0;
 	public static final int LEVEL_LOW = 1;
@@ -122,6 +122,10 @@ public class RDBDConstants {
 	}
 
 	public enum Type {
-		KEYS_DETERMINATION, NORMALIZATION, MINIMAL_COVER, ATTRIBUTE_CLOSURE, NORMALFORM_DETERMINATION
+		KEYS_DETERMINATION,			// 0
+		NORMALIZATION,				// 1
+		MINIMAL_COVER,				// 2
+		ATTRIBUTE_CLOSURE,			// 3
+		NORMALFORM_DETERMINATION	// 4
 	}
 }
