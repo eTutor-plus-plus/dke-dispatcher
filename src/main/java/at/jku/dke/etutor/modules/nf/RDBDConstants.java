@@ -120,4 +120,8 @@ public class RDBDConstants {
 	public static String calcSpecificationIDFor(int exerciseId){
 		return PREFIX_SPECIFICATION_ATT + exerciseId;
 	}
+
+	public enum Type {
+		KEYS_DETERMINATION, NORMALIZATION, MINIMAL_COVER, ATTRIBUTE_CLOSURE, NORMALFORM_DETERMINATION
+	}
 }
