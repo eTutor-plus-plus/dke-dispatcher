@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.modules.nf.analysis.cover;
 
-import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
