@@ -25,7 +25,7 @@ relation returns [IdentifiedRelation parsedRelation]
     } :
         relationId {try {$parsedRelation.setID($relationId.idString);} catch(Exception e) { e.printStackTrace();}} ':' '(' attributeSet {$parsedRelation.setAttributes($attributeSet.attributes);} ')' '(' keySet {$parsedRelation.setMinimalKeys($keySet.keys);} ')' '(' functionalDependencySet {$parsedRelation.setFunctionalDependencies($functionalDependencySet.functionalDependencies);} ')' ;
 relationId returns [String idString]:
-        '*' Integer {$idString = $Integer.text;}; // Note: As we needn't specify how we got to the solution, neither is there a need for subindices. ; // ('.' Integer)? ; // Todo: If the fact that the start 'R' is indistinguishable from AlphaNumericChain causes problems, add some unique prefix symbol (e.g, '*'). (Gerald Wimmer, 2023-11-30)
+        '*' Integer {$idString = $Integer.text;}; // Note: As we needn't specify how we got to the solution, neither is there a need for subindices. ; // ('.' Integer)? ;
 
 keySet returns [Set<Key> keys]                                                      // start rule
     @init {
@@ -86,8 +86,8 @@ attribute : AlphaNumericChain ;
 // Lexer rules
 
 Integer : Digit+ ;
-AlphaNumericChain : Letter (Letter | Digit)* ; // Note: Has to start with letter, to distinguish it from Integer
+AlphaNumericChain : Letter (Letter | Digit | '_'{})* ; // Note: Has to start with letter, to distinguish it from Integer
 Digit : '0' .. '9' ;
-Letter : 'A' .. 'Z' | 'a' .. 'z' ;
+Letter : 'A' .. 'Z' | 'a' .. 'z';
 
 WhiteSpace : [ \r\t\n]+ -> skip ;
