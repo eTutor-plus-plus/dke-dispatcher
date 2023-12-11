@@ -1,11 +1,12 @@
 package at.jku.dke.etutor.modules.nf.analysis.decompose;
 
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
-import at.jku.dke.etutor.modules.nf.analysis.*;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.MinimalCoverAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
+import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalyzer;

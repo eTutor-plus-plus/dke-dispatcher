@@ -4,10 +4,6 @@ import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.algorithms.Cover;
 import at.jku.dke.etutor.modules.nf.algorithms.Member;
 import at.jku.dke.etutor.modules.nf.algorithms.MinimalCover;
-import at.jku.dke.etutor.modules.nf.analysis.CanonicalRepresentationAnalysis;
-import at.jku.dke.etutor.modules.nf.analysis.ExtraneousAttributesAnalysis;
-import at.jku.dke.etutor.modules.nf.analysis.RedundantDependenciesAnalysis;
-import at.jku.dke.etutor.modules.nf.analysis.TrivialDependenciesAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 

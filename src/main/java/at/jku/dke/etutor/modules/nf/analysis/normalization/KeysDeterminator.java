@@ -1,6 +1,7 @@
-package at.jku.dke.etutor.modules.nf.analysis;
+package at.jku.dke.etutor.modules.nf.analysis.normalization;
 
 import at.jku.dke.etutor.modules.nf.algorithms.Closure;
+import at.jku.dke.etutor.modules.nf.analysis.CombinationGenerator;
 import at.jku.dke.etutor.modules.nf.exercises.TupleSet;
 import at.jku.dke.etutor.modules.nf.model.*;
 

@@ -2,9 +2,7 @@ package at.jku.dke.etutor.modules.nf.analysis.normalization;
 
 import at.jku.dke.etutor.modules.nf.algorithms.Closure;
 import at.jku.dke.etutor.modules.nf.algorithms.Member;
-import at.jku.dke.etutor.modules.nf.analysis.DependenciesPreservationAnalysis;
-import at.jku.dke.etutor.modules.nf.analysis.KeysDeterminator;
-import at.jku.dke.etutor.modules.nf.analysis.NormalformAnalyzerConfig;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.decompose.DecompositionAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzerConfig;

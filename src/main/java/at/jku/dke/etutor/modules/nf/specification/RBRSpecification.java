@@ -4,6 +4,7 @@ import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -29,7 +30,7 @@ public class RBRSpecification implements Serializable, Cloneable, RDBDSpecificat
 		return clone;
 	}
 	
-	public Vector<String> getBaseAttributes() {
+	public List<String> getBaseAttributes() {
 		checkAttributes();
 		return (Vector<String>)this.baseAttributes.clone();
 	}

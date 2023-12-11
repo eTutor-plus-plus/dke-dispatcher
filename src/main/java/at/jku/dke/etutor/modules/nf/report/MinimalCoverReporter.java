@@ -3,9 +3,12 @@ package at.jku.dke.etutor.modules.nf.report;
 import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.modules.nf.RDBDConstants;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
-import at.jku.dke.etutor.modules.nf.analysis.*;
+import at.jku.dke.etutor.modules.nf.analysis.minimalcover.CanonicalRepresentationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.DependenciesCoverAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.minimalcover.ExtraneousAttributesAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.MinimalCoverAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.minimalcover.RedundantDependenciesAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.minimalcover.TrivialDependenciesAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import org.springframework.context.MessageSource;
 

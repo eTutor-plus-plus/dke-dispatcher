@@ -8,15 +8,12 @@ import java.util.Collection;
 import java.util.TreeSet;
 
 public class NormalizationAnalyzerConfig {
-
-
 	private int maxLostDependencies;
 	private final TreeSet<IdentifiedRelation> normalizedRelations;
 	private IdentifiedRelation baseRelation;
 	private NormalformLevel desiredNormalformLevel;
 	
 	public NormalizationAnalyzerConfig() {
-		super();
 		this.baseRelation = null;
 		this.maxLostDependencies = 0;
 		this.desiredNormalformLevel = NormalformLevel.FIRST;

@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.nf.analysis;
+package at.jku.dke.etutor.modules.nf.analysis.normalization;
 
 import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;

@@ -4,7 +4,7 @@ import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.nf.RDBDConstants;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.decompose.DecompositionAnalysis;
-import at.jku.dke.etutor.modules.nf.analysis.DependenciesPreservationAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.normalization.DependenciesPreservationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.LosslessAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;

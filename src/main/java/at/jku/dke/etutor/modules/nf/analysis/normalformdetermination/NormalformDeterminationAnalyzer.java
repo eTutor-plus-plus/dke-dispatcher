@@ -3,7 +3,7 @@ package at.jku.dke.etutor.modules.nf.analysis.normalformdetermination;
 import at.jku.dke.etutor.modules.nf.NormalformDeterminationSubmission;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
-import at.jku.dke.etutor.modules.nf.analysis.NormalformAnalyzerConfig;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.model.*;
 
 import java.util.logging.Level;

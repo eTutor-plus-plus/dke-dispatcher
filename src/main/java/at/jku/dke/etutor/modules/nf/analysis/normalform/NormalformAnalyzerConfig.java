@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.nf.analysis;
+package at.jku.dke.etutor.modules.nf.analysis.normalform;
 
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.KeyComparator;
@@ -15,7 +15,6 @@ public class NormalformAnalyzerConfig {
 	private NormalformLevel desiredLevel;
 	
 	public NormalformAnalyzerConfig() {
-		super();
 		this.relation = new Relation();
 		this.desiredLevel = NormalformLevel.FIRST;
 		this.correctMinimalKeys = new TreeSet<>(new KeyComparator());

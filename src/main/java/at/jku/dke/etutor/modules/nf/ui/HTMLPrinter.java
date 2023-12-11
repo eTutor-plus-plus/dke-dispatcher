@@ -1,10 +1,11 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
 import at.jku.dke.etutor.modules.nf.*;
-import at.jku.dke.etutor.modules.nf.analysis.*;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformViolation;
+import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelationComparator;

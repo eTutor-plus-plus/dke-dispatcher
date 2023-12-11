@@ -4,10 +4,11 @@ import at.jku.dke.etutor.modules.nf.*;
 import at.jku.dke.etutor.modules.nf.algorithms.Closure;
 import at.jku.dke.etutor.modules.nf.algorithms.MinimalCover;
 import at.jku.dke.etutor.modules.nf.algorithms.ReductionByResolution;
-import at.jku.dke.etutor.modules.nf.analysis.*;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformViolation;
+import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
@@ -306,7 +307,7 @@ public class SpecificationParser implements Serializable {
 		String msg;
 		Relation relation;
 
-		Vector<String> baseAttributes = null;
+		List<String> baseAttributes = null;
 		StringBuilder buffer = new StringBuilder();
 		
 		//RDBD TYPE SPECIFIC TASKS

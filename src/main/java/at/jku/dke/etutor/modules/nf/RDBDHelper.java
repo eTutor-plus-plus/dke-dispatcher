@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -528,7 +529,7 @@ public class RDBDHelper {
 	}
 	
 	public static void delBaseAttributes(Serializable spec, String[] attributesToDelete) {
-		Vector<String> attributes;
+		List<String> attributes;
 		boolean remove;
 		if (attributesToDelete == null || attributesToDelete.length < 1) {
 			return;

@@ -2,7 +2,7 @@ package at.jku.dke.etutor.modules.nf.analysis.decompose;
 
 import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
-import at.jku.dke.etutor.modules.nf.analysis.DependenciesPreservationAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.normalization.DependenciesPreservationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;

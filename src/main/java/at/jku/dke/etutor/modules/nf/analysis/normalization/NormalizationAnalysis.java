@@ -1,9 +1,12 @@
 package at.jku.dke.etutor.modules.nf.analysis.normalization;
 
 import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
-import at.jku.dke.etutor.modules.nf.analysis.*;
 import at.jku.dke.etutor.modules.nf.analysis.decompose.DecompositionAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.minimalcover.CanonicalRepresentationAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.minimalcover.ExtraneousAttributesAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.minimalcover.RedundantDependenciesAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.minimalcover.TrivialDependenciesAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalysis;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;

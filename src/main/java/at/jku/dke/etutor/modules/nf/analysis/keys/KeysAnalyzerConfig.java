@@ -10,7 +10,6 @@ public class KeysAnalyzerConfig {
 	private TreeSet<Key> correctMinimalKeys;
 
 	public KeysAnalyzerConfig() {
-		super();
 		this.correctMinimalKeys = new TreeSet<>(new KeyComparator());
 	}
 
