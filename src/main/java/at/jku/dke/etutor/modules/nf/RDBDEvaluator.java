@@ -256,50 +256,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 				e.printStackTrace();
 			}
 
-			/*NormalformDeterminationSubmission normalformDeterminationSubmission = (NormalformDeterminationSubmission)submission; // Replaced with call to parser (Gerald Wimmer, 2023-12-01)
-
-			//Set overall level
-			String overallLevel = passedParameters.get(RDBDConstants.PARAM_NORMALFORM_LEVEL);
-			if (overallLevel.equalsIgnoreCase("1")){
-				normalformDeterminationSubmission.setOverallLevel(NormalformLevel.FIRST);
-			} else if (overallLevel.equalsIgnoreCase("2")){
-				normalformDeterminationSubmission.setOverallLevel(NormalformLevel.SECOND);
-			} else if (overallLevel.equalsIgnoreCase("3")){
-				normalformDeterminationSubmission.setOverallLevel(NormalformLevel.THIRD);
-			} else if (overallLevel.equalsIgnoreCase("4")){
-				normalformDeterminationSubmission.setOverallLevel(NormalformLevel.BOYCE_CODD);
-			}
-			RDBDHelper.getLogger().log(Level.INFO, "OVERALL LEVEL: " + normalformDeterminationSubmission.getOverallLevel());
-
-			//Set normalform violations
-			Iterator<Integer> iter = normalformDeterminationSubmission.iterDependencyIDs();
-			while (iter.hasNext()) {
-				Integer currID = iter.next();
-				
-				if (passedParameters.get(currID + "_violation") != null){
-					String violatedNF = passedParameters.get(currID + "_violation");
-					
-					if (violatedNF.equalsIgnoreCase("1")){
-						normalformDeterminationSubmission.setNormalformViolation(NormalformLevel.FIRST, currID);
-						//RDBDHelper.getLogger().log(Level.INFO, "Dependency '" + normalformDeterminationSubmission.getDependency(currID) + "' violates FIRST NF.");
-					} else if (violatedNF.equalsIgnoreCase("2")){
-						normalformDeterminationSubmission.setNormalformViolation(NormalformLevel.SECOND, currID);
-						//RDBDHelper.getLogger().log(Level.INFO, "Dependency '" + normalformDeterminationSubmission.getDependency(currID) + "' violates SECOND NF.");
-					} else if (violatedNF.equalsIgnoreCase("3")){
-						normalformDeterminationSubmission.setNormalformViolation(NormalformLevel.THIRD, currID);
-						//RDBDHelper.getLogger().log(Level.INFO, "Dependency '" + normalformDeterminationSubmission.getDependency(currID) + "' violates THIRD NF.");
-					} else if (violatedNF.equalsIgnoreCase("4")){
-						normalformDeterminationSubmission.setNormalformViolation(NormalformLevel.BOYCE_CODD, currID);
-						//RDBDHelper.getLogger().log(Level.INFO, "Dependency '" + normalformDeterminationSubmission.getDependency(currID) + "' violates BOYCE CODD NF.");
-					} else {
-						normalformDeterminationSubmission.setNormalformViolation(null, currID);
-					}
-				} else {
-					normalformDeterminationSubmission.setNormalformViolation(null, currID);
-				}
-			}*/
-
-			// Get submission from input String. (Gerald Wimmer, 2023-12-02)
+            // Get submission from input String. (Gerald Wimmer, 2023-12-02)
 			NormalformDeterminationSubmission normalformDeterminationSubmission = submissionParser.normalFormSubmission().submission;
 
 			NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();
