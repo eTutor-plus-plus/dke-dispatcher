@@ -7,7 +7,7 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class ExtraneousAttributesAnalysis extends DefaultAnalysis implements Analysis {
+public class ExtraneousAttributesAnalysis extends DefaultAnalysis {
 
 	private final HashMap<FunctionalDependency, Vector<String>> extraneousAttributes;
 

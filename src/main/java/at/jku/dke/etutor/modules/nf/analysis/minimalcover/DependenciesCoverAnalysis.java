@@ -6,7 +6,7 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.Vector;
 
-public class DependenciesCoverAnalysis extends DefaultAnalysis implements Analysis {
+public class DependenciesCoverAnalysis extends DefaultAnalysis {
 
 	final Vector<FunctionalDependency> missingDependencies;
 	final Vector<FunctionalDependency> additionalDependencies;

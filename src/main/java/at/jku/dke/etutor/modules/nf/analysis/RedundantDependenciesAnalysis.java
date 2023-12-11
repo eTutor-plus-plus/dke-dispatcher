@@ -7,7 +7,7 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class RedundantDependenciesAnalysis extends DefaultAnalysis implements Analysis {
+public class RedundantDependenciesAnalysis extends DefaultAnalysis {
 
 	private final HashSet<FunctionalDependency> redundantDependencies;
 

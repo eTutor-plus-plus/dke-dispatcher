@@ -11,9 +11,14 @@ import org.springframework.context.MessageSource;
 
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.StringJoiner;
 import java.util.logging.Level;
 
 public class MinimalCoverReporter {
+
+	private MinimalCoverReporter() {
+		// This class is not meant to be instantiated
+	}
 
 	public static NFReport report(MinimalCoverAnalysis analysis, Grading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
 		NFReport report = new NFReport();
@@ -526,30 +531,16 @@ public class MinimalCoverReporter {
 	}
 	
 	public static String printDependency(FunctionalDependency dependency){
-		boolean first = true;
-		String s = "";
-
+		StringJoiner lhsJoiner = new StringJoiner(" ");
 		for (String a : dependency.getLhsAttributes()){
-			if (first){
-				first = false;
-			} else {
-				s = s.concat(" ");
-			}
-			s = s.concat(a);
+			lhsJoiner.add(a);
 		}
 
-		s = s.concat(" &rarr; ");
-
-		first = true;
+		StringJoiner rhsJoiner = new StringJoiner(" ");
 		for (String a : dependency.getRhsAttributes()){
-			if (first){
-				first = false;
-			} else {
-				s = s.concat(" ");
-			}
-			s = s.concat(a);
+			rhsJoiner.add(a);
 		}
-		
-		return s;
+
+		return lhsJoiner + " &rarr; " + rhsJoiner;
 	}
 }

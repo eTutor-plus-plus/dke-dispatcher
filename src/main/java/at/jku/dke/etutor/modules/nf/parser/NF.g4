@@ -61,7 +61,7 @@ normalForm returns [NormalformLevel level] :
     |   '3NF' {$level = NormalformLevel.THIRD;}
     |   'BCNF' {$level = NormalformLevel.BOYCE_CODD;} ;
 
-// attributeClosure : '(' attributeSet ')+' '=' attributeSet ;                      // start rule // do we need this?
+// attributeClosure : '(' attributeSet ')+' '=' attributeSet ;                      // start rule // Do we need this?
 
 // minimalCover : functionalDependencySet ;                                         // start rule // Do we need this?
 

@@ -7,7 +7,7 @@ import java.text.Collator;
 import java.util.Collection;
 import java.util.TreeSet;
 
-public class DecompositionAnalysis extends DefaultAnalysis implements Analysis {
+public class DecompositionAnalysis extends DefaultAnalysis {
 
 	private final TreeSet<String> missingAttributes;
 

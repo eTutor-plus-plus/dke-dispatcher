@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.nf.ui;
+package at.jku.dke.etutor.modules.nf.model;
 
 public class MalformedRelationIDException extends Exception {
 

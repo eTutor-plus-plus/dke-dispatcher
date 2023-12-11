@@ -4,7 +4,7 @@ import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.*;
 
-public class MinimalCoverAnalysis extends DefaultAnalysis implements Analysis {
+public class MinimalCoverAnalysis extends DefaultAnalysis {
 
 	DependenciesCoverAnalysis dependenciesCoverAnalysis;
 	TrivialDependenciesAnalysis trivialDependenciesAnalysis;

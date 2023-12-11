@@ -1,9 +1,9 @@
 package at.jku.dke.etutor.modules.nf.exercises;
 
-import at.jku.dke.etutor.modules.nf.DecomposeSpecification;
-import at.jku.dke.etutor.modules.nf.NormalizationSpecification;
+import at.jku.dke.etutor.modules.nf.specification.DecomposeSpecification;
+import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
-import at.jku.dke.etutor.modules.nf.RDBDSpecification;
+import at.jku.dke.etutor.modules.nf.specification.RDBDSpecification;
 import at.jku.dke.etutor.modules.nf.ui.SpecificationEditor;
 import oracle.jdbc.OracleResultSet;
 import oracle.sql.BLOB;
@@ -15,7 +15,6 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.Locale;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

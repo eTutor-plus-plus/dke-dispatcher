@@ -1,7 +1,8 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
-import at.jku.dke.etutor.modules.nf.RDBDSpecification;
+import at.jku.dke.etutor.modules.nf.specification.RDBDSpecification;
+import at.jku.dke.etutor.modules.nf.model.MalformedRelationIDException;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;

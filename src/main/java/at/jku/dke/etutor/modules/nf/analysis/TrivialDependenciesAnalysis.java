@@ -6,7 +6,7 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.HashSet;
 
-public class TrivialDependenciesAnalysis extends DefaultAnalysis implements Analysis {
+public class TrivialDependenciesAnalysis extends DefaultAnalysis {
 
 	private HashSet<FunctionalDependency> trivialDependencies;
 

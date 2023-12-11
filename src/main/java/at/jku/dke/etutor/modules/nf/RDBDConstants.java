@@ -126,6 +126,12 @@ public class RDBDConstants {
 		NORMALIZATION,				// 1
 		MINIMAL_COVER,				// 2
 		ATTRIBUTE_CLOSURE,			// 3
-		NORMALFORM_DETERMINATION	// 4
+		NORMALFORM_DETERMINATION,	// 4
+		RBR,						// 5
+		DECOMPOSE					// 6
+	}
+
+	public enum EvalAction {
+		SUBMIT, CHECK, DIAGNOSE;
 	}
 }

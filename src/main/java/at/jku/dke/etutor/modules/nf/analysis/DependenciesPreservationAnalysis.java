@@ -6,7 +6,7 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.HashSet;
 
-public class DependenciesPreservationAnalysis extends DefaultAnalysis implements Analysis {
+public class DependenciesPreservationAnalysis extends DefaultAnalysis {
 
 	private final HashSet<FunctionalDependency> lostDependencies;
 

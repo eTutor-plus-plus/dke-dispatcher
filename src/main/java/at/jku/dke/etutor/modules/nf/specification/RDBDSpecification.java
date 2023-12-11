@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.nf;
+package at.jku.dke.etutor.modules.nf.specification;
 
 import java.io.Serializable;
 

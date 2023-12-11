@@ -11,7 +11,7 @@ import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
 import java.util.HashMap;
 
-public class NormalizationAnalysis extends DefaultAnalysis implements Analysis {
+public class NormalizationAnalysis extends DefaultAnalysis {
 
 	private int maxLostDependencies;
 

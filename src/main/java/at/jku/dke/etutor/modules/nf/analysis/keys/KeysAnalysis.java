@@ -8,7 +8,7 @@ import at.jku.dke.etutor.modules.nf.model.KeyComparator;
 import java.util.Collection;
 import java.util.TreeSet;
 
-public class KeysAnalysis extends DefaultAnalysis implements Analysis {
+public class KeysAnalysis extends DefaultAnalysis {
 
 	private final TreeSet<Key> missingKeys;
 	private final TreeSet<Key> additionalKeys;

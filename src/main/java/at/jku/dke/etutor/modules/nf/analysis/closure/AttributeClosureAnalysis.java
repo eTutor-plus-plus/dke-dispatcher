@@ -1,13 +1,12 @@
 package at.jku.dke.etutor.modules.nf.analysis.closure;
 
-import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 
 import java.text.Collator;
 import java.util.Collection;
 import java.util.TreeSet;
 
-public class AttributeClosureAnalysis extends DefaultAnalysis implements Analysis {
+public class AttributeClosureAnalysis extends DefaultAnalysis {
 
 	private final TreeSet<String> missingAttributes;
 	private final TreeSet<String> additionalAttributes;

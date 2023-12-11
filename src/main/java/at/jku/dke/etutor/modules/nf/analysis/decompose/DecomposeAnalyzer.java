@@ -4,7 +4,7 @@ import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
-import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelationComparator;
 
 import java.util.Iterator;
 import java.util.TreeSet;

@@ -4,10 +4,15 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
+import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
+import at.jku.dke.etutor.modules.nf.specification.DecomposeSpecification;
+import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
+import at.jku.dke.etutor.modules.nf.specification.RBRSpecification;
+import at.jku.dke.etutor.modules.nf.specification.RDBDSpecification;
 import at.jku.dke.etutor.modules.nf.ui.HTMLPrinter;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
-import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
-import at.jku.dke.etutor.modules.nf.ui.MalformedRelationIDException;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelationComparator;
+import at.jku.dke.etutor.modules.nf.model.MalformedRelationIDException;
 import at.jku.dke.etutor.modules.nf.ui.SpecificationParser;
 
 import java.io.IOException;

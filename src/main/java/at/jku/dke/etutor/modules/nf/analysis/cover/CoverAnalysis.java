@@ -6,7 +6,7 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.TreeSet;
 
-public class CoverAnalysis extends DefaultAnalysis implements Analysis {
+public class CoverAnalysis extends DefaultAnalysis {
 
 	private final TreeSet<FunctionalDependency> missingDependenciesInSet1;
 	private final TreeSet<FunctionalDependency> missingDependenciesInSet2;

@@ -39,6 +39,8 @@ import at.jku.dke.etutor.modules.nf.report.NormalizationReporter;
 import at.jku.dke.etutor.modules.nf.report.NormalizationReporterConfig;
 import at.jku.dke.etutor.modules.nf.report.RBRReporter;
 import at.jku.dke.etutor.modules.nf.report.ReporterConfig;
+import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
+import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -87,13 +89,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		String specificationString = RDBDExercisesManager.fetchSpecification(exerciseID);
 
 		Analysis analysis;
-        /*
-		 * TODO: Pass the submission string on to the appropriate method of our new, shiny, parser (method could be
-		 *  selected inside the if statement) and receive the appropriate data (TreeSet, IdentifiedRelation, Vector)
-		 *  from the parser (Gerald Wimmer, 2023-11-12).
-		 */
 		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION) {
-			//Relation specification = specificationParser.relation().parsedRelation;
 			Relation specification = null;
 			try {	// Source: https://mkyong.com/java/how-to-convert-java-object-to-from-json-jackson/
 				specification = new ObjectMapper().readValue(specificationString, Relation.class);
@@ -116,7 +112,6 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			analysis.setSubmission(submission);
 
 		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER) {
-			// Relation specification = specificationParser.relation().parsedRelation;
 			Relation specification = null;
 			try {
 				specification = new ObjectMapper().readValue(specificationString, Relation.class);
@@ -135,7 +130,6 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			analysis.setSubmission(submission);
 
 		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) {
-			// AttributeClosureSpecification attributeClosureSpecification = (AttributeClosureSpecification)specification;
 			AttributeClosureSpecification attributeClosureSpecification = null;
 			try {
 				attributeClosureSpecification = new ObjectMapper().readValue(specificationString, AttributeClosureSpecification.class);
@@ -221,8 +215,6 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			analysis.setSubmission(submissionTreeSet);
 
 		}*/ else if (internalType == RDBDConstants.TYPE_NORMALIZATION) { // Note: Could be identical to Decompose, now that you only have to specify the end result (Gerald Wimmer, 2023-11-27)
-			// TODO: Replace Decompose with THIS. (Gerald Wimmer, 2023-11-30)
-			// NormalizationSpecification normalizationSpecification = (NormalizationSpecification)specification;
 			NormalizationSpecification normalizationSpecification = null;
 			try {
 				normalizationSpecification = new ObjectMapper().readValue(specificationString, NormalizationSpecification.class);
@@ -257,7 +249,6 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			analysis.setSubmission((Serializable)submissionSet);
 
 		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
-			// Relation specification = specificationParser.relation().parsedRelation;
 			Relation specification = null;
 			try {
 				specification = new ObjectMapper().readValue(specificationString, Relation.class);

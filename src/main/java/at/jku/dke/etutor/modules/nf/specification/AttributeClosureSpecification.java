@@ -1,51 +1,36 @@
-package at.jku.dke.etutor.modules.nf;
+package at.jku.dke.etutor.modules.nf.specification;
 
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.TreeSet;
 import java.util.Vector;
 
-public class RBRSpecification implements Serializable, Cloneable, RDBDSpecification{
+public class AttributeClosureSpecification implements Serializable, Cloneable, RDBDSpecification{
 
-	private static final long serialVersionUID = 2025183566330710558L;
+	private static final long serialVersionUID = 7948740045298387409L;
 
 	private Vector<String> baseAttributes;
 	private IdentifiedRelation baseRelation;
 
-	public RBRSpecification() {
+	public AttributeClosureSpecification() {
 		super();
 		this.baseRelation = null;
 		this.baseAttributes = new Vector<>();
 	}
 
+	@Override
 	public Object clone() throws CloneNotSupportedException {
-		RBRSpecification clone = (RBRSpecification)super.clone();
+		AttributeClosureSpecification clone = (AttributeClosureSpecification)super.clone();
 		clone.baseAttributes = (Vector<String>)this.baseAttributes.clone();
 		if (this.baseRelation != null) {
 			clone.baseRelation = (IdentifiedRelation)this.baseRelation.clone();
 		}
 		return clone;
 	}
-	
+
 	public Vector<String> getBaseAttributes() {
-		checkAttributes();
 		return (Vector<String>)this.baseAttributes.clone();
-	}
-	
-	/**
-	 * Removing duplicates and not anymore existing attributes of the base relation 
-	 */
-	private void checkAttributes() {
-		TreeSet<String> attributeSet = new TreeSet<>();
-		for (int i = 0; baseAttributes != null && i < baseAttributes.size(); i++) {
-			if (this.baseRelation.getAttributes().contains(baseAttributes.get(i))) {
-				attributeSet.add(baseAttributes.get(i));
-			}
-		}
-		this.baseAttributes = new Vector<>();
-		this.baseAttributes.addAll(attributeSet);
 	}
 
 	public void setBaseAttributes(Collection<String> attributeCombination) {
@@ -64,20 +49,20 @@ public class RBRSpecification implements Serializable, Cloneable, RDBDSpecificat
 	public void setBaseRelation(IdentifiedRelation relation) {
 		baseRelation = relation;
 	}
-	
+
 	public boolean semanticallyEquals(Object obj) {
-		RBRSpecification spec;
+		AttributeClosureSpecification spec;
 		
 		if (obj == null) {
 			return false;
 		}
 
-		if (!(obj instanceof RBRSpecification)) {
+		if (!(obj instanceof AttributeClosureSpecification)) {
 			return false;
 		}
 
-		spec = (RBRSpecification)obj;
-		checkAttributes();
+		spec = (AttributeClosureSpecification)obj;
+		
 		if (!(spec.getBaseAttributes().containsAll(this.baseAttributes))){
 			return false;
 		}
@@ -89,12 +74,21 @@ public class RBRSpecification implements Serializable, Cloneable, RDBDSpecificat
         return this.baseRelation.semanticallyEquals(spec.getBaseRelation());
     }
 
+	@Override
 	public String toString(){
-		StringBuilder buffer = new StringBuilder();
-		checkAttributes();
-		buffer.append("BASE ATTRIBUTES: ").append(this.baseAttributes).append("\n");
-		buffer.append("BASE RELATION:\n").append(this.baseRelation).append("\n");
-		
-		return buffer.toString();
+        return "BASE ATTRIBUTES: " + this.baseAttributes + "\n" +
+				"BASE RELATION:\n" + this.baseRelation + "\n";
+	}
+	
+	public static void main(String[] args) {
+		AttributeClosureSpecification spec1 = new AttributeClosureSpecification();
+		spec1.setBaseRelation(new IdentifiedRelation());
+		try {
+			AttributeClosureSpecification spec2 = (AttributeClosureSpecification)spec1.clone();
+			System.out.println(spec1.getBaseRelation().equals(spec2.getBaseRelation()));
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

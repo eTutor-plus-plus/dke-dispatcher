@@ -1,6 +1,4 @@
-package at.jku.dke.etutor.modules.nf.ui;
-
-import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
+package at.jku.dke.etutor.modules.nf.model;
 
 import java.io.Serializable;
 import java.util.Comparator;

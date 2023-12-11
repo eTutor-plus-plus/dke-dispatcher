@@ -6,7 +6,7 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.Vector;
 
-public class RBRAnalysis extends DefaultAnalysis implements Analysis {
+public class RBRAnalysis extends DefaultAnalysis {
 
 	private final Vector<FunctionalDependency> missingFunctionalDependencies;
 	private final Vector<FunctionalDependency> additionalFunctionalDependencies;

@@ -2,7 +2,7 @@ package at.jku.dke.etutor.modules.nf.analysis.decompose;
 
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
-import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelationComparator;
 
 import java.io.Serializable;
 import java.util.TreeSet;

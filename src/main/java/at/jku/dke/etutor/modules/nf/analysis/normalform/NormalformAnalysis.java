@@ -7,7 +7,7 @@ import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
 import java.util.Vector;
 
-public class NormalformAnalysis extends DefaultAnalysis implements Analysis {
+public class NormalformAnalysis extends DefaultAnalysis {
 
 
 	private final Vector<FirstNormalformViolation> firstNormalFormViolations;

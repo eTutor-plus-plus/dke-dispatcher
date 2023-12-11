@@ -12,6 +12,11 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
+import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
+import at.jku.dke.etutor.modules.nf.specification.DecomposeSpecification;
+import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
+import at.jku.dke.etutor.modules.nf.specification.RBRSpecification;
+import at.jku.dke.etutor.modules.nf.specification.RDBDSpecification;
 
 import java.io.Serializable;
 import java.util.*;

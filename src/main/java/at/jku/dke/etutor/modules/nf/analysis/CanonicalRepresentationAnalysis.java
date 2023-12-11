@@ -6,8 +6,9 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
-public class CanonicalRepresentationAnalysis extends DefaultAnalysis implements Analysis {
+public class CanonicalRepresentationAnalysis extends DefaultAnalysis {
 
 	private final HashSet<FunctionalDependency> notCanonicalDependencies;
 
@@ -20,8 +21,8 @@ public class CanonicalRepresentationAnalysis extends DefaultAnalysis implements 
 		this.notCanonicalDependencies.add(dependency);
 	}
 
-	public HashSet<FunctionalDependency> getNotCanonicalDependencies(){
-		return (HashSet<FunctionalDependency>)this.notCanonicalDependencies.clone();
+	public Set<FunctionalDependency> getNotCanonicalDependencies() {
+		return new HashSet<>(this.notCanonicalDependencies);
 	}
 	
 	public void setNotCanonicalDependencies(Collection<FunctionalDependency> c){

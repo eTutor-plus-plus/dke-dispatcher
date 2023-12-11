@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.nf;
+package at.jku.dke.etutor.modules.nf.specification;
 
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;

@@ -1,7 +1,5 @@
 package at.jku.dke.etutor.modules.nf.model;
 
-import at.jku.dke.etutor.modules.nf.ui.MalformedRelationIDException;
-
 import java.util.Collection;
 
 public class IdentifiedRelation extends Relation {

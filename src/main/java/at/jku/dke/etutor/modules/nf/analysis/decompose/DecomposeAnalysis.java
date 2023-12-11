@@ -6,7 +6,7 @@ import at.jku.dke.etutor.modules.nf.analysis.DependenciesPreservationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
-import at.jku.dke.etutor.modules.nf.ui.IdentifiedRelationComparator;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelationComparator;
 
 import java.io.Serializable;
 import java.util.*;
