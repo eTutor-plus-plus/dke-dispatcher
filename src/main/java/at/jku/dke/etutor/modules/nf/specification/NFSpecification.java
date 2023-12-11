@@ -35,4 +35,6 @@ public abstract class NFSpecification implements Serializable, Cloneable, HasSem
 
 		return clone;
 	}
+
+	public abstract void getTotalPoints();
 }
