@@ -8,6 +8,10 @@ import java.util.Vector;
 
 public class AttributeClosureSpecification extends NFSpecification implements Cloneable {
 
+	private int pointsDeductedForMissingAttribute;
+
+	private int pointsDeductedForAdditionalAttribute;
+
 	@Serial
 	private static final long serialVersionUID = 7948740045298387409L;
 
@@ -35,6 +39,22 @@ public class AttributeClosureSpecification extends NFSpecification implements Cl
 	public void setBaseAttributes(Collection<String> attributeCombination) {
 		this.baseAttributes.clear();
 		this.baseAttributes.addAll(attributeCombination);
+	}
+
+	public int getPointsDeductedForMissingAttribute() {
+		return pointsDeductedForMissingAttribute;
+	}
+
+	public void setPointsDeductedForMissingAttribute(int pointsDeductedForMissingAttribute) {
+		this.pointsDeductedForMissingAttribute = pointsDeductedForMissingAttribute;
+	}
+
+	public int getPointsDeductedForAdditionalAttribute() {
+		return pointsDeductedForAdditionalAttribute;
+	}
+
+	public void setPointsDeductedForAdditionalAttribute(int pointsDeductedForAdditionalAttribute) {
+		this.pointsDeductedForAdditionalAttribute = pointsDeductedForAdditionalAttribute;
 	}
 
 	public void addBaseAttribute(String attribute){

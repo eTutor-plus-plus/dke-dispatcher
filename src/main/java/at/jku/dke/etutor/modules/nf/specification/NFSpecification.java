@@ -5,11 +5,17 @@ import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import java.io.Serializable;
 
 public abstract class NFSpecification implements Serializable, Cloneable, HasSemanticEquality {
-
 	protected IdentifiedRelation baseRelation;
+
+	/**
+	 * The number of points which each subdivision of this exercise gives you (e.g, points per leaf relation, per key,
+	 * per correct functional dependency ...)
+	 */
+	private int pointsPerSubdivision;
 
 	protected NFSpecification(IdentifiedRelation baseRelation) {
 		this.baseRelation = baseRelation;
+		this.pointsPerSubdivision = 1;
 	}
 
 	public IdentifiedRelation getBaseRelation() {
