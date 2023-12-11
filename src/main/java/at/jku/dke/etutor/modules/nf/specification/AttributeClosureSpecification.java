@@ -2,20 +2,19 @@ package at.jku.dke.etutor.modules.nf.specification;
 
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 
-import java.io.Serializable;
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Vector;
 
-public class AttributeClosureSpecification implements Serializable, Cloneable, RDBDSpecification{
+public class AttributeClosureSpecification extends NFSpecification implements Cloneable {
 
+	@Serial
 	private static final long serialVersionUID = 7948740045298387409L;
 
 	private Vector<String> baseAttributes;
-	private IdentifiedRelation baseRelation;
 
 	public AttributeClosureSpecification() {
-		super();
-		this.baseRelation = null;
+		super(null);
 		this.baseAttributes = new Vector<>();
 	}
 
@@ -40,14 +39,6 @@ public class AttributeClosureSpecification implements Serializable, Cloneable, R
 
 	public void addBaseAttribute(String attribute){
 		this.baseAttributes.add(attribute);
-	}
-
-	public IdentifiedRelation getBaseRelation() {
-		return this.baseRelation;
-	}
-
-	public void setBaseRelation(IdentifiedRelation relation) {
-		baseRelation = relation;
 	}
 
 	public boolean semanticallyEquals(Object obj) {

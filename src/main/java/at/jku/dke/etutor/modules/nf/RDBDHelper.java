@@ -6,9 +6,12 @@ import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
 import at.jku.dke.etutor.modules.nf.specification.DecomposeSpecification;
+import at.jku.dke.etutor.modules.nf.specification.KeysDeterminationSpecification;
+import at.jku.dke.etutor.modules.nf.specification.MinimalCoverSpecification;
+import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
+import at.jku.dke.etutor.modules.nf.specification.NormalformDeterminationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.RBRSpecification;
-import at.jku.dke.etutor.modules.nf.specification.RDBDSpecification;
 import at.jku.dke.etutor.modules.nf.ui.HTMLPrinter;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelationComparator;
@@ -31,7 +34,7 @@ import java.util.logging.Logger;
 
 /**
  * Provides central resources for the RDBD module (loggers and database connections) 
- * and helper methods for dealing with all different kinds of {@link RDBDSpecification}
+ * and helper methods for dealing with all different kinds of {@link NFSpecification}
  * implementations within the RDBD module. This includes manipulation of specification objects, 
  * conversions between object and String representations of specifications, and helper methods 
  * aimed at common aspects of all specification implementations which are not part of the interface yet.
@@ -40,6 +43,10 @@ import java.util.logging.Logger;
  *
  */
 public class RDBDHelper {
+
+	private RDBDHelper() {
+		// This class is not meant to be instantiated
+	}
 	
 	private static int elementID;
 	private static Logger rdbdLogger;
@@ -566,36 +573,21 @@ public class RDBDHelper {
             }
 		}
 	}
-	
-	public static Relation getRelation(RDBDSpecification spec, int rdbdType) {
-        return switch (rdbdType) {
-            case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION) -> (Relation) spec;
-            case (RDBDConstants.TYPE_KEYS_DETERMINATION) -> (IdentifiedRelation) spec;
-            case (RDBDConstants.TYPE_MINIMAL_COVER) -> (IdentifiedRelation) spec;
-            case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) -> ((AttributeClosureSpecification) spec).getBaseRelation();
-            case (RDBDConstants.TYPE_RBR) -> ((RBRSpecification) spec).getBaseRelation();
-            case (RDBDConstants.TYPE_NORMALIZATION) -> ((NormalizationSpecification) spec).getBaseRelation();
-            case (RDBDConstants.TYPE_DECOMPOSE) -> ((DecomposeSpecification) spec).getBaseRelation();
-            default -> throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
-        };
-	}
 
-	public static RDBDSpecification clone(RDBDSpecification specToClone, int rdbdType) throws MalformedRelationIDException {
-		//TODO: add clone() to interface RDBDSpecification (compatible with serialized specifications?)
+	public static NFSpecification clone(NFSpecification specToClone, int rdbdType) throws MalformedRelationIDException {
+		//TODO: add clone() to interface NFSpecification (compatible with serialized specifications?)
 		try {
             return switch (rdbdType) {
-                case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION) -> (Relation) ((Relation) specToClone).clone();
-                case (RDBDConstants.TYPE_KEYS_DETERMINATION) ->
-                        (IdentifiedRelation) ((IdentifiedRelation) specToClone).clone();
-                case (RDBDConstants.TYPE_MINIMAL_COVER) ->
-                        (IdentifiedRelation) ((IdentifiedRelation) specToClone).clone();
+                case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION) -> (NormalformDeterminationSpecification) specToClone.clone();
+                case (RDBDConstants.TYPE_KEYS_DETERMINATION) -> (KeysDeterminationSpecification) specToClone.clone();
+                case (RDBDConstants.TYPE_MINIMAL_COVER) -> (MinimalCoverSpecification) specToClone.clone();
                 case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) ->
-                        (AttributeClosureSpecification) ((AttributeClosureSpecification) specToClone).clone();
-                case (RDBDConstants.TYPE_RBR) -> (RBRSpecification) ((RBRSpecification) specToClone).clone();
+                        (AttributeClosureSpecification) specToClone.clone();
+                case (RDBDConstants.TYPE_RBR) -> (RBRSpecification) specToClone.clone();
                 case (RDBDConstants.TYPE_NORMALIZATION) ->
-                        (NormalizationSpecification) ((NormalizationSpecification) specToClone).clone();
+                        (NormalizationSpecification) specToClone.clone();
                 case (RDBDConstants.TYPE_DECOMPOSE) ->
-                        (DecomposeSpecification) ((DecomposeSpecification) specToClone).clone();
+                        (DecomposeSpecification) specToClone.clone();
                 default -> throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
             };
 		} catch (CloneNotSupportedException e) {
@@ -603,62 +595,72 @@ public class RDBDHelper {
 		}
 	}
 	
-	public static RDBDSpecification initSpecification(int rdbdType) throws MalformedRelationIDException {
-		RDBDSpecification spec;
-		Relation relation;
+	public static NFSpecification initSpecification(int rdbdType) throws MalformedRelationIDException {
+		NFSpecification spec;
+		IdentifiedRelation relation;
 		switch (rdbdType) {
 			case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION): {
-				relation = new Relation();
+				relation = new IdentifiedRelation();
 				relation.setName("R");
-				spec = relation;
+
+				spec = new NormalformDeterminationSpecification();
+				spec.setBaseRelation(relation);
 				break;
 			}
 			case (RDBDConstants.TYPE_KEYS_DETERMINATION): {
 				relation = new IdentifiedRelation();
-				((IdentifiedRelation)relation).setID("0");
+				relation.setID("0");
 				relation.setName("R0");
-				spec = relation;
+
+				spec = new KeysDeterminationSpecification();
+				spec.setBaseRelation(relation);
 				break;
 			}
 			case (RDBDConstants.TYPE_MINIMAL_COVER): {
 				relation = new IdentifiedRelation();
-				((IdentifiedRelation)relation).setID("0");
+				relation.setID("0");
 				relation.setName("R0");
-				spec = relation;
+
+				spec = new MinimalCoverSpecification();
+				spec.setBaseRelation(relation);
 				break;
 			}
 			case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE): {
-				spec = new AttributeClosureSpecification();
 				relation = new IdentifiedRelation();
-				((IdentifiedRelation)relation).setID("0");
+				relation.setID("0");
 				relation.setName("R0");
-				((AttributeClosureSpecification)spec).setBaseRelation((IdentifiedRelation)relation);
+
+				spec = new AttributeClosureSpecification();
+				spec.setBaseRelation(relation);
 				break;
 			}
 			case (RDBDConstants.TYPE_RBR): {
-				spec = new RBRSpecification();
 				relation = new IdentifiedRelation();
-				((IdentifiedRelation)relation).setID("0");
+				relation.setID("0");
 				relation.setName("R0");
-				((RBRSpecification)spec).setBaseRelation((IdentifiedRelation)relation);
+
+				spec = new RBRSpecification();
+				spec.setBaseRelation(relation);
 				break;
 			}
 			case (RDBDConstants.TYPE_NORMALIZATION): {
-				spec = new NormalizationSpecification();
 				relation = new IdentifiedRelation();
-				((IdentifiedRelation)relation).setID("0");
+				relation.setID("0");
 				relation.setName("R0");
-				((NormalizationSpecification)spec).setBaseRelation((IdentifiedRelation)relation);
+
+				spec = new NormalizationSpecification();
+				spec.setBaseRelation(relation);
 				((NormalizationSpecification)spec).setMaxLostDependencies(0);
 				((NormalizationSpecification)spec).setTargetLevel(NormalformLevel.THIRD);
 				break;
 			}
 			case (RDBDConstants.TYPE_DECOMPOSE): {
-				spec = new DecomposeSpecification();
 				relation = new IdentifiedRelation();
-				((IdentifiedRelation)relation).setID("1");
+				relation.setID("1");
 				relation.setName("R1");
-				((DecomposeSpecification)spec).setBaseRelation((IdentifiedRelation)relation);
+
+				spec = new DecomposeSpecification();
+				spec.setBaseRelation(relation);
 				((DecomposeSpecification)spec).setMaxLostDependencies(0);
 				((DecomposeSpecification)spec).setTargetLevel(NormalformLevel.THIRD);
 				break;
@@ -684,14 +686,14 @@ public class RDBDHelper {
         };
 	}
 
-	public static boolean isOfRdbdType(RDBDSpecification spec, int rdbdType) {
+	public static boolean isOfRdbdType(NFSpecification spec, int rdbdType) {
 		if (spec == null) {
 			return true;
 		}
         return switch (rdbdType) {
-            case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION) -> spec instanceof Relation;
-            case (RDBDConstants.TYPE_KEYS_DETERMINATION) -> spec instanceof IdentifiedRelation;
-            case (RDBDConstants.TYPE_MINIMAL_COVER) -> spec instanceof IdentifiedRelation;
+            case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION) -> spec instanceof NormalformDeterminationSpecification;
+            case (RDBDConstants.TYPE_KEYS_DETERMINATION) -> spec instanceof KeysDeterminationSpecification;
+            case (RDBDConstants.TYPE_MINIMAL_COVER) -> spec instanceof MinimalCoverSpecification;
             case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) -> spec instanceof AttributeClosureSpecification;
             case (RDBDConstants.TYPE_RBR) -> spec instanceof RBRSpecification;
             case (RDBDConstants.TYPE_NORMALIZATION) -> spec instanceof NormalizationSpecification;
@@ -700,19 +702,19 @@ public class RDBDHelper {
         };
 	}
 	
-	public static String getAssignmentText(RDBDSpecification specTmp, int indent, Locale locale, int rdbdType) throws IOException {
+	public static String getAssignmentText(NFSpecification specTmp, int indent, Locale locale, int rdbdType) throws IOException {
 		StringWriter writer = new StringWriter();
 		switch (rdbdType) {
 			case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION): {
-				writer.append(HTMLPrinter.printAssignmentForNormalformDetermination((Relation)specTmp, indent, locale));
+				writer.append(HTMLPrinter.printAssignmentForNormalformDetermination(specTmp.getBaseRelation(), indent, locale));
 				break;
 			}
 			case (RDBDConstants.TYPE_KEYS_DETERMINATION): {
-				writer.append(HTMLPrinter.printAssignmentForKeysDetermination((IdentifiedRelation)specTmp, indent, locale));
+				writer.append(HTMLPrinter.printAssignmentForKeysDetermination(specTmp.getBaseRelation(), indent, locale));
 				break;
 			}
 			case (RDBDConstants.TYPE_MINIMAL_COVER): {
-				writer.append(HTMLPrinter.printAssignmentForMinimalCover((IdentifiedRelation)specTmp, indent, locale));
+				writer.append(HTMLPrinter.printAssignmentForMinimalCover(specTmp.getBaseRelation(), indent, locale));
 				break;
 			}
 			case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE): {

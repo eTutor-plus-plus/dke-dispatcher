@@ -1,9 +1,9 @@
 package at.jku.dke.etutor.modules.nf.exercises;
 
 import at.jku.dke.etutor.modules.nf.specification.DecomposeSpecification;
+import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
-import at.jku.dke.etutor.modules.nf.specification.RDBDSpecification;
 import at.jku.dke.etutor.modules.nf.ui.SpecificationEditor;
 import oracle.jdbc.OracleResultSet;
 import oracle.sql.BLOB;
@@ -50,7 +50,7 @@ public class RDBDExercisesManager {
 	public int createExercise(Serializable editor) throws Exception {
 		BLOB blob = null;
 		ObjectOutputStream out = null;
-		RDBDSpecification specification;
+		NFSpecification specification;
 		int duplicateId;
 		
 		Connection conn = null;
@@ -183,7 +183,7 @@ public class RDBDExercisesManager {
 		String sql;
 		BLOB blob = null;
 		ObjectOutputStream out = null;
-		RDBDSpecification specification;
+		NFSpecification specification;
 		int duplicateId;
 		
 		Connection conn = null;
@@ -351,7 +351,7 @@ public class RDBDExercisesManager {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rset = null;
-		RDBDSpecification specification = null;
+		NFSpecification specification = null;
 		ObjectInputStream in = null;
 		SpecificationEditor editor = null;
 
@@ -375,7 +375,7 @@ public class RDBDExercisesManager {
 				if(blob!=null){
 					System.out.println("Found entry ...");
 					in = new ObjectInputStream(blob.getBinaryStream());
-					specification = (RDBDSpecification)in.readObject();
+					specification = (NFSpecification)in.readObject();
 					in.close();
 					in = null;
 					editor = new SpecificationEditor(this.rdbdType);
@@ -458,17 +458,17 @@ public class RDBDExercisesManager {
 		return editor;
 	}
 	
-	public int checkForDuplicate(int rdbdType, RDBDSpecification specification, Connection conn) throws Exception {
+	public int checkForDuplicate(int rdbdType, NFSpecification specification, Connection conn) throws Exception {
 		return checkForDuplicate(rdbdType, null, specification, conn);
 	}
 
-	public int checkForDuplicate(int rdbdType, Integer exclusiveId, RDBDSpecification specification, Connection conn) throws Exception {
+	public int checkForDuplicate(int rdbdType, Integer exclusiveId, NFSpecification specification, Connection conn) throws Exception {
 		Blob blob;
 		String sql;
 		Statement stmt = null;
 		ResultSet rset = null;
 		ObjectInputStream in = null;
-		RDBDSpecification refSpecification;
+		NFSpecification refSpecification;
 		
 		int duplicateExerciseID = -1;
 		
@@ -490,7 +490,7 @@ public class RDBDExercisesManager {
 				//blob =((oracle.jdbc.OracleResultSet)rset).getBLOB("specification");
 				if(blob != null){
 					in = new ObjectInputStream(blob.getBinaryStream());
-					refSpecification = (RDBDSpecification)in.readObject();
+					refSpecification = (NFSpecification)in.readObject();
 					in.close();
 					in = null;
 					if (refSpecification.semanticallyEquals(specification)) {

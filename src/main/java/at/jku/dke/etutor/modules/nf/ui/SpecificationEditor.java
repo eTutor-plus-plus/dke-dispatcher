@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
-import at.jku.dke.etutor.modules.nf.specification.RDBDSpecification;
+import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
 import at.jku.dke.etutor.modules.nf.model.MalformedRelationIDException;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import org.springframework.beans.factory.annotation.Required;
@@ -30,8 +30,8 @@ public class SpecificationEditor implements MessageSourceAware, Serializable {
 	private NormalformLevel targetLevel;
 	private String maxLostDependencies;
 	private SpecificationParser parser;
-	private RDBDSpecification spec;
-	private RDBDSpecification specTmp;
+	private NFSpecification spec;
+	private NFSpecification specTmp;
 	private Locale locale;
 	private final int rdbdType;
 	private static MessageSource messageSource;
@@ -66,11 +66,11 @@ public class SpecificationEditor implements MessageSourceAware, Serializable {
 		}
 	}
 
-	public RDBDSpecification getSpec() {
+	public NFSpecification getSpec() {
 		return spec;
 	}
 
-	public void setSpec(RDBDSpecification spec) {
+	public void setSpec(NFSpecification spec) {
 		check(spec);
 		this.spec = spec;
 	}
@@ -85,11 +85,11 @@ public class SpecificationEditor implements MessageSourceAware, Serializable {
 		}
 	}
 
-	public RDBDSpecification getSpecTmp() {
+	public NFSpecification getSpecTmp() {
 		return specTmp;
 	}
 
-	public void setSpecTmp(RDBDSpecification specTmp) {
+	public void setSpecTmp(NFSpecification specTmp) {
 		check(spec);
 		this.specTmp = specTmp;
 	}
@@ -106,7 +106,7 @@ public class SpecificationEditor implements MessageSourceAware, Serializable {
 		return rdbdType;
 	}
 
-	protected void check(RDBDSpecification spec) {
+	protected void check(NFSpecification spec) {
 		String msg;
 		if (!RDBDHelper.isOfRdbdType(spec, this.rdbdType)) {
 			msg = "The passed specification should be of a type appropriate for RDBD type "+ this.rdbdType + ". ";

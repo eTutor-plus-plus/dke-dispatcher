@@ -18,9 +18,9 @@ import at.jku.dke.etutor.modules.nf.report.NFReport;
 import at.jku.dke.etutor.modules.nf.report.ReportAtomType;
 import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
 import at.jku.dke.etutor.modules.nf.specification.DecomposeSpecification;
+import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.RBRSpecification;
-import at.jku.dke.etutor.modules.nf.specification.RDBDSpecification;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
@@ -509,7 +509,7 @@ public class HTMLPrinter implements MessageSourceAware {
 		return out.toString();
 	}
 
-	public static String printMaxLostRow(RDBDSpecification spec, int indent, Locale locale) throws IOException {
+	public static String printMaxLostRow(NFSpecification spec, int indent, Locale locale) throws IOException {
 		String offset;
 		String content;
 		int maxLost;
@@ -545,7 +545,7 @@ public class HTMLPrinter implements MessageSourceAware {
 		return out.toString();
 	}
 	
-	public static String printTargetLevelRow(RDBDSpecification spec, int indent, Locale locale) throws IOException {
+	public static String printTargetLevelRow(NFSpecification spec, int indent, Locale locale) throws IOException {
 		String offset;
 		StringBuilder out = new StringBuilder();
 

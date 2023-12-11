@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.model;
 
-import at.jku.dke.etutor.modules.nf.specification.RDBDSpecification;
+import at.jku.dke.etutor.modules.nf.specification.HasSemanticEquality;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Relation implements Serializable, Cloneable, RDBDSpecification {
+public class Relation implements Serializable, Cloneable, HasSemanticEquality {
 
 	private static final long serialVersionUID = 7982386529581622533L;
 
@@ -244,6 +244,7 @@ public class Relation implements Serializable, Cloneable, RDBDSpecification {
 	/*
 	 * name wird nicht ueberprueft
 	 */
+	@Override
 	public boolean semanticallyEquals(Object obj){
 		Relation rel;
 		

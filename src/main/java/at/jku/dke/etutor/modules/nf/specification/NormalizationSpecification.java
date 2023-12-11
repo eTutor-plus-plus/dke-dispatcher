@@ -1,23 +1,22 @@
 package at.jku.dke.etutor.modules.nf.specification;
 
-import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
-import java.io.Serializable;
+import java.io.Serial;
 
-public class NormalizationSpecification implements Serializable, Cloneable, RDBDSpecification{
+public class NormalizationSpecification extends NFSpecification implements Cloneable {
 
+	@Serial
 	private static final long serialVersionUID = -8591463798404619419L;
 	
-	private int maxLostDependencies;
-	private NormalformLevel targetLevel;
-	private IdentifiedRelation baseRelation;
+	protected int maxLostDependencies;
+	protected NormalformLevel targetLevel;
 
 	public NormalizationSpecification() {
-		super();
+		super(new IdentifiedRelation());
 		this.maxLostDependencies = 0;
 		this.targetLevel = NormalformLevel.THIRD;
-		this.baseRelation = new IdentifiedRelation();
  	}
 
  	@Override
@@ -27,14 +26,6 @@ public class NormalizationSpecification implements Serializable, Cloneable, RDBD
 			clone.baseRelation = (IdentifiedRelation)this.baseRelation.clone();
 		}
 		return clone;
-	}
-	
-	public IdentifiedRelation getBaseRelation() {
-		return baseRelation;
-	}
-
-	public void setBaseRelation(IdentifiedRelation relation) {
-		baseRelation = relation;
 	}
 
 	public void setMaxLostDependencies(int maxLostDependencies){

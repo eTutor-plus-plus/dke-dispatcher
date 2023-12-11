@@ -2,22 +2,22 @@ package at.jku.dke.etutor.modules.nf.specification;
 
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 
-import java.io.Serializable;
+import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.Vector;
 
-public class RBRSpecification implements Serializable, Cloneable, RDBDSpecification{
+public class RBRSpecification extends NFSpecification implements Cloneable {
 
+	@Serial
 	private static final long serialVersionUID = 2025183566330710558L;
 
 	private Vector<String> baseAttributes;
 	private IdentifiedRelation baseRelation;
 
 	public RBRSpecification() {
-		super();
-		this.baseRelation = null;
+		super(null);
 		this.baseAttributes = new Vector<>();
 	}
 
@@ -58,14 +58,7 @@ public class RBRSpecification implements Serializable, Cloneable, RDBDSpecificat
 		this.baseAttributes.add(attribute);
 	}
 
-	public IdentifiedRelation getBaseRelation() {
-		return this.baseRelation;
-	}
-
-	public void setBaseRelation(IdentifiedRelation relation) {
-		baseRelation = relation;
-	}
-	
+	@Override
 	public boolean semanticallyEquals(Object obj) {
 		RBRSpecification spec;
 		

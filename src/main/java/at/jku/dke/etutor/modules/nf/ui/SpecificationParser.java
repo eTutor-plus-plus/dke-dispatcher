@@ -14,10 +14,8 @@ import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
-import at.jku.dke.etutor.modules.nf.specification.DecomposeSpecification;
-import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.RBRSpecification;
-import at.jku.dke.etutor.modules.nf.specification.RDBDSpecification;
+import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
 
 import java.io.Serializable;
 import java.util.*;
@@ -303,7 +301,7 @@ public class SpecificationParser implements Serializable {
 		buffer.append("}");
 	}
 
-	public String getText(RDBDSpecification specification) {
+	public String getText(NFSpecification specification) {
 		String msg;
 		Relation relation;
 
@@ -311,7 +309,8 @@ public class SpecificationParser implements Serializable {
 		StringBuilder buffer = new StringBuilder();
 		
 		//RDBD TYPE SPECIFIC TASKS
-		if (specification instanceof Relation) {
+		relation = specification.getBaseRelation();
+		/*if (specification instanceof Relation) {
 			relation = (Relation)specification;
 		} else if (specification instanceof AttributeClosureSpecification) {
 			relation = ((AttributeClosureSpecification)specification).getBaseRelation();
@@ -327,7 +326,7 @@ public class SpecificationParser implements Serializable {
 			msg = "Passed serializable is not of any valid RDBD specification type: ";
 			msg += specification == null ? "null" : specification.getClass().getName();
 			throw new RuntimeException(msg);
-		}
+		}*/
 		
 		if (relation != null && qualifiers.get(QUALIFIER_ATTRIBUTES_RELATION) != null) {
 			print(relation.getAttributes(), qualifiers.get(QUALIFIER_ATTRIBUTES_RELATION), " ", buffer);
@@ -428,13 +427,13 @@ public class SpecificationParser implements Serializable {
 		SpecificationParser parser = RDBDHelper.initParser(RDBDConstants.TYPE_NORMALFORM_DETERMINATION);
 		parser.parse("R	{A B C D E }	F {A B -> C, C -> D, D E -> B, E -> C }");
 
-		Relation specification = (Relation)RDBDHelper.initSpecification(RDBDConstants.TYPE_NORMALFORM_DETERMINATION);
-		specification.setAttributes(parser.getRelationAttributes());
-		specification.setFunctionalDependencies(parser.getDependencies());
+		Relation specificationRelation = RDBDHelper.initSpecification(RDBDConstants.TYPE_NORMALFORM_DETERMINATION).getBaseRelation();
+		specificationRelation.setAttributes(parser.getRelationAttributes());
+		specificationRelation.setFunctionalDependencies(parser.getDependencies());
 		
 		NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();
-		normalformAnalyzerConfig.setCorrectMinimalKeys(KeysDeterminator.determineMinimalKeys(specification));
-		normalformAnalyzerConfig.setRelation(specification);
+		normalformAnalyzerConfig.setCorrectMinimalKeys(KeysDeterminator.determineMinimalKeys(specificationRelation));
+		normalformAnalyzerConfig.setRelation(specificationRelation);
 		
 		System.out.println("Minimal keys: ");
         for (Key key : normalformAnalyzerConfig.getCorrectMinimalKeys()) {
@@ -471,7 +470,7 @@ public class SpecificationParser implements Serializable {
 		SpecificationParser parser = RDBDHelper.initParser(RDBDConstants.TYPE_KEYS_DETERMINATION);
 		parser.parse("R{A B C D E} F{A B -> C, C -> D, D E -> B, E -> C }");
 
-		Relation specification = (Relation)RDBDHelper.initSpecification(RDBDConstants.TYPE_KEYS_DETERMINATION);
+		Relation specification = RDBDHelper.initSpecification(RDBDConstants.TYPE_KEYS_DETERMINATION).getBaseRelation();
 		specification.setAttributes(parser.getRelationAttributes());
 		specification.setFunctionalDependencies(parser.getDependencies());
 
@@ -486,7 +485,7 @@ public class SpecificationParser implements Serializable {
 	private static void testMinimalCover() throws Exception {
 		SpecificationParser parser = RDBDHelper.initParser(RDBDConstants.TYPE_MINIMAL_COVER);
 		parser.parse("R	{A B C D E }	F {A -> B C E, C E -> D, C D E -> B }");
-		Relation specification = (Relation)RDBDHelper.initSpecification(RDBDConstants.TYPE_MINIMAL_COVER);
+		Relation specification = RDBDHelper.initSpecification(RDBDConstants.TYPE_MINIMAL_COVER).getBaseRelation();
 		specification.setAttributes(parser.getRelationAttributes());
 		specification.setFunctionalDependencies(parser.getDependencies());
 		
