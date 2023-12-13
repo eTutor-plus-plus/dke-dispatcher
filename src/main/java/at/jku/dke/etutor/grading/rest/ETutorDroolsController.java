@@ -1,8 +1,12 @@
 
 package at.jku.dke.etutor.grading.rest;
 
+import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.DroolsResourceService;
 
+import at.jku.dke.etutor.grading.service.ExerciseNotValidException;
+import at.jku.dke.etutor.objects.dispatcher.drools.DroolsTaskDTO;
+import at.jku.dke.etutor.objects.dispatcher.sql.SQLExerciseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -33,117 +37,147 @@ public class ETutorDroolsController {
      */
     @GetMapping("/task/getClasses/{id}")
     public ResponseEntity<String> getClasses(@PathVariable int id) throws RuntimeException {
-        logger.info("getClasses()");
+        logger.info("Enter: getClasses()");
         try{
             String classes = resourceService.getClasses(id);
-            if(classes.isEmpty()){
-                logger.info("Exit --> getClasses() with status 404");
+            if(classes.equals("")){
+                logger.info("Exit: getClasses() with status 404");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find classes for task " + id);
             }else{
-                logger.info("Exit --> getClasses() with status 200");
+                logger.info("Exit: getClasses() with status 200");
                 return ResponseEntity.status(HttpStatus.OK).body(classes);
             }
         } catch (Exception e) {
-            logger.info("Exit --> getClasses() - Internal Server Error - Code 500");
+            logger.info("Exit: getClasses() - Internal Server Error - Code 500");
             throw new RuntimeException(e);
         }
     }
 
     @GetMapping("/task/getTestData/{id}")
     public ResponseEntity<String> getTestData(@PathVariable int id) throws RuntimeException {
-        logger.info("getTestData()");
+        logger.info("Enter: getTestData()");
         try{
             String testData = resourceService.getTestData(id);
-            if(testData.isEmpty()){
-                logger.info("Exit --> getTestData() with status 404");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find test-data for task "+id);
+            if(testData.equals("")){
+                logger.info("Exit: getTestData() with status 404");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find test-data for task " + id);
             }else{
-                logger.info("Exit --> getTestData() with status 200");
+                logger.info("Exit: getTestData() with status 200");
                 return ResponseEntity.status(HttpStatus.OK).body(testData);
             }
         } catch (Exception e) {
-            logger.info("Exit --> getTestData() - Internal Server Error - Code 500");
+            logger.info("Exit: getTestData() - Internal Server Error - Code 500");
             throw new RuntimeException(e);
         }
     }
     @GetMapping("/task/getEvents/{id}")
     public ResponseEntity<String> getEvents(@PathVariable int id) throws RuntimeException {
-        logger.info("getEvents()");
+        logger.info("Enter: getEvents()");
         try{
             String events = resourceService.getEvents(id);
-            if(events.isEmpty()){
-                logger.info("Exit --> getEvents() with status 404");
+            if(events.equals("")){
+                logger.info("Exit: getEvents() with status 404");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find events for task "+id);
             }else{
-                logger.info("Exit --> getEvents() with status 200");
+                logger.info("Exit: getEvents() with status 200");
                 return ResponseEntity.status(HttpStatus.OK).body(events);
             }
         } catch (Exception e) {
-            logger.info("Exit --> getEvents() - Internal Server Error - Code 500");
+            logger.info("Exit: getEvents() - Internal Server Error - Code 500");
             throw new RuntimeException(e);
         }
     }
     @GetMapping("/task/getSolution/{id}")
     public ResponseEntity<String> getSolution(@PathVariable int id) throws RuntimeException {
-        logger.info("getSolution()");
+        logger.info("Enter: getSolution()");
         try{
             String solution = resourceService.getSolution(id);
-            if(solution.isEmpty()){
-                logger.info("Exit --> getSolution() with status 404");
+            if(solution.equals("")){
+                logger.info("Exit: getSolution() with status 404");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find solution for task "+id);
             }else{
-                logger.info("Exit --> getSolution() with status 200");
+                logger.info("Exit: getSolution() with status 200");
                 return ResponseEntity.status(HttpStatus.OK).body(solution);
             }
         } catch (Exception e) {
-            logger.info("Exit --> getSolution() - Internal Server Error - Code 500");
+            logger.info("Enter: getSolution() - Internal Server Error - Code 500");
             throw new RuntimeException(e);
         }
     }
     @GetMapping("/task/getFacts/{id}")
     public ResponseEntity<String> getFacts(@PathVariable int id) throws RuntimeException {
-        logger.info("getFacts()");
+        logger.info("Enter: getFacts()");
         try{
             String facts = resourceService.getFacts(id);
-            if(facts.isEmpty()){
-                logger.info("Exit --> getFacts() with status 404");
+            if(facts.equals("")){
+                logger.info("Exit: getFacts() with status 404");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find facts for task "+id);
             }else{
-                logger.info("Exit --> getFacts() with status 200");
+                logger.info("Exit: getFacts() with status 200");
                 return ResponseEntity.status(HttpStatus.OK).body(facts);
             }
         } catch (Exception e) {
-            logger.info("Exit --> getFacts() - Internal Server Error - Code 500");
+            logger.info("Exit: getFacts() - Internal Server Error - Code 500");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/task/getTask/{id}")
+    public ResponseEntity<String> getTask(@PathVariable int id) throws RuntimeException {
+        logger.info("Enter: getTask()");
+        try{
+            String task = resourceService.getTask(id);
+            if(task.equals("")){
+                logger.info("Exit: getTask() with status 404");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find task "+id);
+            }else{
+                logger.info("Exit: getTask() with status 200");
+                return ResponseEntity.status(HttpStatus.OK).body(task);
+            }
+        } catch (Exception e) {
+            logger.info("Exit: getTask() - Internal Server Error - Code 500");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/task/addTask")
+    public ResponseEntity<Integer> addTask(@RequestBody DroolsTaskDTO taskDTO) throws ApiException {
+        logger.info("Enter: addTask()");
+        try {
+            int id = resourceService.addTask(taskDTO);
+
+            //TODO: Eventuell Syntax der Regeln vor dem erstellen Prüfen? 20231202
+
+            logger.info("Exit: addTask() for id: {} with Status Code 200", id);
+            return ResponseEntity.ok(id);
+        } catch (DatabaseException e) {
+            logger.error("Exit: assTask() with Status Code 500", e);
+            logger.info("Rollback. Deleting task.");
+            throw new ApiException(500, e.toString(), null);
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
 
-//    @PostMapping("/task/addTask")
-//    public Long getTask(@RequestBody String elem) throws SQLException, ParseException {
-//        RTObject rtObject = resourceService.getRTObject(elem);
-//        String solution = rtObject.getSolution().toString();
-//        solution = solution = solution.substring(1, solution.length() - 1);
-//        return this.resourceService.insertTask(solution, rtObject.getMaxPoints());
-//    }
-//
-//    @PutMapping("/task/editTask")
-//    public void editTask(@RequestBody String elem) throws SQLException, ParseException {
-//        RTObject rtObject = resourceService.getRTObject(elem);
-//        String solution = rtObject.getSolution().toString();
-//        solution = solution = solution.substring(1, solution.length() - 1);
-//        this.resourceService.editTask(solution, rtObject.getMaxPoints(), rtObject.getId());
-//    }
-//
-//    @DeleteMapping("/task/deleteTask/{id}")
-//    public void deleteTask(@PathVariable Integer id) throws SQLException {
-//        resourceService.deleteTask(id);
-//    }
-//
-//    @GetMapping("/task/getTask/{id}")
-//    public RTObject getTask(@PathVariable Integer id) throws SQLException {
-//        return resourceService.getTask(id);
-//    }
+    @PutMapping("/task/editTask/{id}")
+    public ResponseEntity<String> editTask(@PathVariable int id, @RequestBody DroolsTaskDTO taskDTO){
+        logger.info("Enter: editTask() task_id: {}", id);
+        try{
+            resourceService.editTask(id, taskDTO);
+            logger.info("Exit: editTask() with Status Code 200");
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @DeleteMapping("/task/deleteTask/{id}")
+    public void deleteTask(@PathVariable int id) throws SQLException {
+        resourceService.deleteTask(id);
+    }
+
+
 
 
 }

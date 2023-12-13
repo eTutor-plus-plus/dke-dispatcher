@@ -4,11 +4,13 @@ import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import org.junit.Assert;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Results;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
+
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
@@ -293,10 +295,8 @@ public class DroolsAnalysis extends DefaultAnalysis {
     public boolean hasSyntaxError() throws IOException {
         try (DynamicDroolsBuilder dyn = new DynamicDroolsBuilder(this.javaClasses)) {
             //TODO: Richtige KieSession erstellen mit String rules 2023-11-24
-            KieContainer kieContainer;
-            kieContainer = dyn.getKieContainer(this.inputRules, EventProcessingOption.CLOUD);
-            Results results = kieContainer.verify();
 
+            Results results = dyn.checkDroolsSyntax(this.inputRules);
 
             if (results.hasMessages(org.kie.api.builder.Message.Level.ERROR)) {
                 System.out.println("Syntax errors found:");
