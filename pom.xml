@@ -163,11 +163,6 @@
         </dependency>
         <dependency>
             <groupId>at.jku.dke.etutor</groupId>
-            <artifactId>legacy.javax.parsersv2</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>at.jku.dke.etutor</groupId>
             <artifactId>legacy.javax.xerces</artifactId>
             <version>1.0</version>
         </dependency>

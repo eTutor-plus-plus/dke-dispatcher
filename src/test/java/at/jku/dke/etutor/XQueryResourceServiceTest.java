@@ -4,7 +4,6 @@ import at.jku.dke.etutor.grading.ETutorGradingApplication;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.objects.dispatcher.xq.XMLDefinitionDTO;
 import at.jku.dke.etutor.objects.dispatcher.xq.XQExerciseDTO;
-import at.jku.dke.etutor.grading.service.XQueryResourceService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
