@@ -563,18 +563,18 @@ public class DDLReporter {
                         if(!foreignKeysAnalysis.isWrongUpdateForeignKeysEmpty()) {
                             description.append(LS);
                             if(isGermanLocale(locale)) {
-                                description.append("Es gibt Fremdschlüssel mit falschen Update Constraints in den Tabellen.");
+                                description.append("Es gibt Fremdschlüssel mit falschen Update Verhalten in den Tabellen.");
                             } else {
-                                description.append("There are foreign keys with wrong update constraints in the tables.");
+                                description.append("There are foreign keys with wrong update behavior in the tables.");
                             }
                         }
 
                         if(!foreignKeysAnalysis.isWrongDeleteForeignKeysEmpty()) {
                             description.append(LS);
                             if(isGermanLocale(locale)) {
-                                description.append("Es gibt Fremdschlüssel mit falschen Delete Constraints in den Tabellen.");
+                                description.append("Es gibt Fremdschlüssel mit falschen Delete Verhalten in den Tabellen.");
                             } else {
-                                description.append("There are foreign keys with wrong delete constraints in the tables.");
+                                description.append("There are foreign keys with wrong delete behavior in the tables.");
                             }
                         }
                     }
@@ -600,18 +600,18 @@ public class DDLReporter {
                         if(!foreignKeysAnalysis.isWrongUpdateForeignKeysEmpty()) {
                             description.append(LS);
                             if(isGermanLocale(locale)) {
-                                description.append("Es gibt ").append(wrongUpdateForeignKeysCount).append(" Fremdschlüssel mit falschen Update Constraints in den Tabellen.");
+                                description.append("Es gibt ").append(wrongUpdateForeignKeysCount).append(" Fremdschlüssel mit falschen Update Verhalten in den Tabellen.");
                             } else {
-                                description.append("There are ").append(wrongUpdateForeignKeysCount).append(" foreign keys with wrong update constraints in the tables.");
+                                description.append("There are ").append(wrongUpdateForeignKeysCount).append(" foreign keys with wrong update behavior in the tables.");
                             }
                         }
 
                         if(!foreignKeysAnalysis.isWrongDeleteForeignKeysEmpty()) {
                             description.append(LS);
                             if(isGermanLocale(locale)) {
-                                description.append("Es gibt ").append(wrongDeleteForeignKeysCount).append(" Fremdschlüssel mit falschen Delete Constraints in den Tabellen.");
+                                description.append("Es gibt ").append(wrongDeleteForeignKeysCount).append(" Fremdschlüssel mit falschen Delete Verhalten in den Tabellen.");
                             } else {
-                                description.append("There are ").append(wrongDeleteForeignKeysCount).append(" foreign keys with wrong delete constraints in the tables.");
+                                description.append("There are ").append(wrongDeleteForeignKeysCount).append(" foreign keys with wrong delete behavior in the tables.");
                             }
                         }
                     }
@@ -665,11 +665,11 @@ public class DDLReporter {
                         if(!foreignKeysAnalysis.isWrongUpdateForeignKeysEmpty()) {
                             description.append(LS).append(LS);
                             if(isGermanLocale(locale)) {
-                                description.append("Die folgenden ").append(wrongUpdateForeignKeysCount).append(" Fremdschlüssel haben falsche Update Constraints: ").append(LS);
+                                description.append("Die folgenden ").append(wrongUpdateForeignKeysCount).append(" Fremdschlüssel haben falsche Update Verhalten: ").append(LS);
                                 header1 = TABELLE;
                                 header2 = SPALTE;
                             } else {
-                                description.append("The following ").append(wrongUpdateForeignKeysCount).append(" foreign keys have wrong update constraints: ").append(LS);
+                                description.append("The following ").append(wrongUpdateForeignKeysCount).append(" foreign keys have wrong update behavior: ").append(LS);
                                 header1 = TABLE;
                                 header2 = COLUMN;
                             }
@@ -688,11 +688,11 @@ public class DDLReporter {
                         if(!foreignKeysAnalysis.isWrongDeleteForeignKeysEmpty()) {
                             description.append(LS).append(LS);
                             if(isGermanLocale(locale)) {
-                                description.append("Die folgenden ").append(wrongDeleteForeignKeysCount).append(" Fremdschlüssel haben falsche Delete Constraints: ").append(LS);
+                                description.append("Die folgenden ").append(wrongDeleteForeignKeysCount).append(" Fremdschlüssel haben falsche Delete Verhalten: ").append(LS);
                                 header1 = TABELLE;
                                 header2 = SPALTE;
                             } else {
-                                description.append("The following ").append(wrongDeleteForeignKeysCount).append(" foreign keys have wrong delete constraints: ").append(LS);
+                                description.append("The following ").append(wrongDeleteForeignKeysCount).append(" foreign keys have wrong delete behavior: ").append(LS);
                                 header1 = TABLE;
                                 header2 = COLUMN;
                             }
