@@ -316,10 +316,9 @@ public class DDLEvaluator implements Evaluator {
      * @param passedParameters the passed parameters
      * @param locale the locale Specifies the locale of the user
      * @return Returns the report object
-     * @throws Exception if an error occurs
      */
     @Override
-    public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
+    public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) {
         // Log analysis and max points
         logger.info("analysis: {}" , analysis);
         logger.info("grading: {}" ,  grading);

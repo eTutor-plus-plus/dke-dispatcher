@@ -13,7 +13,6 @@ import java.util.Objects;
 @Service
 public class DDLResourceService {
     //region Constants
-
     private final String DDL_BASE_URL;
     private final String DDL_DATABASE_URL;
     private final String CONN_DDL_SYSTEM_USER;
@@ -24,7 +23,7 @@ public class DDLResourceService {
     private final SubmissionDispatcherService dispatcherService;
     private final GradingDTORepository gradingDTORepository;
 
-    private ApplicationProperties properties;
+    private final ApplicationProperties properties;
     private final Logger logger;
     //endregion
 
@@ -35,10 +34,10 @@ public class DDLResourceService {
         this.properties = properties;
 
         // Initialize constants
-        this.DDL_BASE_URL = properties.getDatasource().getUrl();
-        this.DDL_DATABASE_URL = this.DDL_BASE_URL + properties.getDdl().getConnUrl();
-        this.CONN_DDL_SYSTEM_USER = properties.getDdl().getSystemConnUser();
-        this.CONN_DDL_SYSTEM_PWD = properties.getDdl().getSystemConnPwd();
+        this.DDL_BASE_URL = this.properties.getDatasource().getUrl();
+        this.DDL_DATABASE_URL = this.DDL_BASE_URL + this.properties.getDdl().getConnUrl();
+        this.CONN_DDL_SYSTEM_USER = this.properties.getDdl().getSystemConnUser();
+        this.CONN_DDL_SYSTEM_PWD = this.properties.getDdl().getSystemConnPwd();
     }
 
     /**

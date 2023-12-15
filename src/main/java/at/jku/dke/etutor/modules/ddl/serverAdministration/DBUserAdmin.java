@@ -84,7 +84,7 @@ public class DBUserAdmin {
     /**
      * Function to get a free user
      * @return Returns the user or null if something went wrong
-     * @throws IllegalStateException if not initalized
+     * @throws IllegalStateException if not initialized
      */
     public synchronized String getUser() throws IllegalStateException {
         if(!initialized)

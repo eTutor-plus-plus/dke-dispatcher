@@ -24,7 +24,6 @@ public class DDLReporter {
         DDLErrorReport errorReport;
         DDLCriterionAnalysis criterionAnalysis;
 
-        SyntaxAnalysis syntaxAnalysis;
         TablesAnalysis tablesAnalysis;
         ColumnsAnalysis columnsAnalysis;
         PrimaryKeysAnalysis primaryKeysAnalysis;
@@ -888,7 +887,7 @@ public class DDLReporter {
     }
 
     /**
-     * Returns wheter the locale equals Locale.GERMAN
+     * Returns whether the locale equals Locale.GERMAN
      * @param locale Locale information
      * @return Returns a boolean
      */

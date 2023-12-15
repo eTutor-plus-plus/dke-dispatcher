@@ -11,7 +11,7 @@ public class DDLEvaluationCriterion {
     //endregion
 
     //region Fields
-    private String name;
+    private final String name;
     //endregion
 
     protected DDLEvaluationCriterion(String name) {

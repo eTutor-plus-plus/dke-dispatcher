@@ -11,7 +11,7 @@ public class DDLEvaluationAction {
     //endregion
 
     //region Fields
-    private String action;
+    private final String action;
     //endregion
 
     protected DDLEvaluationAction(String action) {

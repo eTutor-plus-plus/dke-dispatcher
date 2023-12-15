@@ -114,7 +114,6 @@ public class DBHelper {
 
     /**
      * Function to close the system connection
-     * @throws SQLException if an error occurs in the closing process
      */
     public static synchronized void closeSystemConnection() {
         if(conn != null) {
@@ -129,7 +128,6 @@ public class DBHelper {
 
     /**
      * Function to close the system connection
-     * @throws SQLException if an error occurs in the closing process
      */
     public static synchronized void closeSystemConnectionWithSchema() {
         if(connWithSchema != null) {
@@ -142,7 +140,7 @@ public class DBHelper {
     }
 
     /**
-     * Function to get the conncetion for a specified user
+     * Function to get the connection for a specified user
      * @param user Specifies the username
      * @param pwd Specifies the password
      * @return Returns the established connection
@@ -171,9 +169,7 @@ public class DBHelper {
             HikariDataSource userDatasource = new HikariDataSource(userConfig);
             userDatasources.put(user, userDatasource);
 
-            Connection userConn = userDatasource.getConnection();
-
-            return userConn;
+            return userDatasource.getConnection();
         } catch (SQLException ex) {
             logger.error("Error when creating user connection.", ex);
         }
@@ -182,7 +178,7 @@ public class DBHelper {
     }
 
     /**
-     * Funciton to reset the schema for a specified connection and close it
+     * Function to reset the schema for a specified connection and close it
      * @param userConn Specifies the connection
      */
     public static void resetUserConnection(Connection userConn, String user) {
@@ -198,7 +194,7 @@ public class DBHelper {
                 userDatasources.get(user).close();
             }
         } catch (SQLException ex) {
-            logger.error("Error when reseting user connection.", ex);
+            logger.error("Error while resetting user connection.", ex);
         }
     }
 

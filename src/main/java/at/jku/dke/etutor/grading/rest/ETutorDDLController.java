@@ -28,7 +28,7 @@ public class ETutorDDLController {
     /**
      * Function to get the current solution for the specified exercise
      * @param id Specifies the exercise
-     * @return
+     * @return Returns the solution for the exercise
      */
     @GetMapping("/exercise/{id}/solution")
     public ResponseEntity<String> getSolution(@PathVariable int id) throws ApiException {
@@ -51,8 +51,8 @@ public class ETutorDDLController {
     /**
      * Function to create a new exercise
      * @param exerciseDTO Specifies the {@link DDLExerciseDTO} wrapping the schema-name and solution
-     * @return
-     * @throws ApiException
+     * @return Returns the exercise id
+     * @throws ApiException when an exception occures while saving the exercise
      */
     @PutMapping("/exercise")
     public ResponseEntity<Integer> createExercise(@RequestBody DDLExerciseDTO exerciseDTO) throws ApiException {
@@ -72,7 +72,7 @@ public class ETutorDDLController {
     /**
      * Function to delete an existing exercise
      * @param id Specifies the exercise
-     * @return
+     * @return Returns the status code of the operation
      */
     @DeleteMapping("/exercise/{id}")
     public ResponseEntity<Void> deleteExercise(@PathVariable int id) throws ApiException {
@@ -91,7 +91,7 @@ public class ETutorDDLController {
      * Function to change the solution for an exercise
      * @param id Specifies the exercise
      * @param exerciseDTO Specifies the new exercise element
-     * @return
+     * @return Returns the status code of the operation
      */
     @PostMapping("/exercise/{id}")
     public ResponseEntity<Void> updateExerciseSolution(@PathVariable int id, @RequestBody DDLExerciseDTO exerciseDTO) throws ApiException {

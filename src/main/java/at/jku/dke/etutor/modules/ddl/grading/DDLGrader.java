@@ -79,7 +79,7 @@ public class DDLGrader {
             }
         }
 
-        // Check again for the constraint criterion - constraints are only fully tested if tables and column criterions are correct
+        // Check again for the constraint criterion - constraints are only fully tested if tables and column criterion is correct
         evaluationCriterionIterator = graderConfig.iterCriterionsToGrade();
         while (evaluationCriterionIterator.hasNext()) {
             criterion = evaluationCriterionIterator.next();

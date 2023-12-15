@@ -38,8 +38,8 @@ public class DDLAnalyzer {
     /**
      * Function to analyse the submitted solution according to the configuration
      * @param submission Specifies the submitted solution
-     * @param config Specifies the analyse configuration
-     * @return Returns the analyse object
+     * @param config Specifies the analysis configuration
+     * @return Returns the analysis object
      */
     public DDLAnalysis analyze(Serializable submission, DDLAnalyzerConfig config) throws SQLException {
         String msg;
@@ -51,7 +51,7 @@ public class DDLAnalyzer {
         // Check if submission is null
         if(submission == null) {
             msg ="";
-            msg = msg.concat("Analsis stopped with errors. ");
+            msg = msg.concat("Analysis stopped with errors. ");
             msg = msg.concat("Submission is empty. ");
             msg = msg.concat(INTERNAL_ERROR);
             msg = msg.concat(CONTACT_ADMIN);
@@ -114,7 +114,7 @@ public class DDLAnalyzer {
             userMetadata = userConn.getMetaData();
         } catch (SQLException ex) {
             msg = "";
-            msg = msg.concat("Error encounted while getting metadata. ");
+            msg = msg.concat("Error encountered while getting metadata. ");
             msg = msg.concat(INTERNAL_ERROR);
             msg = msg.concat(CONTACT_ADMIN);
 
@@ -274,7 +274,7 @@ public class DDLAnalyzer {
             }
         } catch (SQLException ex) {
             msg = "";
-            msg = msg.concat("Error encounted while analyzing tables. ");
+            msg = msg.concat("Error encountered while analyzing tables. ");
             msg = msg.concat(INTERNAL_ERROR);
             msg = msg.concat(CONTACT_ADMIN);
 
@@ -347,7 +347,7 @@ public class DDLAnalyzer {
 
                             // Check like this and not with equals to avoid null exception
                             if(systemDefault != userDefault) {
-                                if(systemDefault == null || userDefault == null || !systemDefault.equals(userDefault)) {
+                                if(systemDefault == null || !systemDefault.equals(userDefault)) {
                                     columnsAnalysis.addWrongDefaultColumn(new ErrorTupel(tableName, systemColumn));
                                 }
                             }
@@ -394,7 +394,7 @@ public class DDLAnalyzer {
             }
         } catch (SQLException ex) {
             String msg = "";
-            msg = msg.concat("Error encounted while analyzing columns. ");
+            msg = msg.concat("Error encountered while analyzing columns. ");
             msg = msg.concat(INTERNAL_ERROR);
             msg = msg.concat(CONTACT_ADMIN);
 
@@ -479,7 +479,7 @@ public class DDLAnalyzer {
             }
         } catch (SQLException ex) {
             String msg = "";
-            msg = msg.concat("Error encounted while analyzing primary keys. ");
+            msg = msg.concat("Error encountered while analyzing primary keys. ");
             msg = msg.concat(INTERNAL_ERROR);
             msg = msg.concat(CONTACT_ADMIN);
 
@@ -580,7 +580,7 @@ public class DDLAnalyzer {
             }
         } catch (SQLException ex) {
             String msg = "";
-            msg = msg.concat("Error encounted while analyzing foreign keys. ");
+            msg = msg.concat("Error encountered while analyzing foreign keys. ");
             msg = msg.concat(INTERNAL_ERROR);
             msg = msg.concat(CONTACT_ADMIN);
 
@@ -701,7 +701,7 @@ public class DDLAnalyzer {
             }
         } catch (SQLException ex) {
             String msg = "";
-            msg = msg.concat("Error encounted while analyzing constraints. ");
+            msg = msg.concat("Error encountered while analyzing constraints. ");
             msg = msg.concat(INTERNAL_ERROR);
             msg = msg.concat(CONTACT_ADMIN);
 
