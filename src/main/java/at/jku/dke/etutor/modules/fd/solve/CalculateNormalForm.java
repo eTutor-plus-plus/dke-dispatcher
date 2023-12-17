@@ -50,7 +50,7 @@ public class CalculateNormalForm {
             if (primeAttributes.containsAll(Set.of(dependency.getRightSide()))) {
                 continue;
             }
-            /** Check ob die rechte Seite kein Schlüsselkandidat ist, aber vollständig in einem Schlüsselkandidaten
+            /** Check ob die linke Seite kein Schlüsselkandidat ist, aber vollständig in einem Schlüsselkandidaten
               * enthalten ist */
             for (Key key: relation.getKeys()) {
                 if (!Arrays.equals(dependency.getLeftSide(), key.getLeftSide())
