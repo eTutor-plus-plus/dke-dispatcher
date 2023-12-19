@@ -19,14 +19,13 @@ abstractModifier: 'abstract';
 className: Identifier;
 parentClassName: Identifier;
 attributeName: Identifier;
-label: Identifier*;
+label: Identifier+;
 //##prob absolete## dataType: Identifier;
 labelMultiplicity: ('*' | '?' | '+'|'>'|'<')?;
-
+cardinality: Integer;
 // Skip white spaces and newlines
 WS: [ \t\r\n]+ -> skip;
 Identifier: [a-zA-Z_][a-zA-Z0-9_]*;
-cardinality: Integer;
-Integer : [0-9]*;
+Integer : [0-9]+;
 // Parser entry point
 start: classDiagram;
