@@ -6,6 +6,8 @@ import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 
 
 import at.jku.dke.etutor.objects.dispatcher.drools.DroolsTaskDTO;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
@@ -141,14 +143,14 @@ public class DroolsResourceService {
     }
 
     private int getAvailableExerciseIdUtil(Connection con) throws DatabaseException {
-        String fetchMaxIdQuery = "SELECT max(id) as id from tasks";
+        String fetchMaxIdQuery = "SELECT max(task_id) as task_id from tasks";
         int maxId = -1;
 
         try (PreparedStatement fetchMaxIdStmt = con.prepareStatement(fetchMaxIdQuery);
              ResultSet maxIdSet = fetchMaxIdStmt.executeQuery();
         ) {
             if (maxIdSet.next()) {
-                maxId = maxIdSet.getInt("id");
+                maxId = maxIdSet.getInt("task_id");
                 maxId++;
             } else throw new DatabaseException("Internal Error: could not fetch exercise id");
 
@@ -168,7 +170,7 @@ public class DroolsResourceService {
             int maxPoints = taskDTO.getMaxPoints();
             String solution = taskDTO.getSolution();
 
-            PreparedStatement createTaskStmt = con.prepareStatement("INSERT INTO tasks (id, solution, max_points) VALUES(?,?,?)");
+            PreparedStatement createTaskStmt = con.prepareStatement("INSERT INTO tasks (task_id, solution, max_points) VALUES(?,?,?)");
             createTaskStmt.setInt(1, taskId);
             createTaskStmt.setString(2, solution);
             createTaskStmt.setInt(3, maxPoints);
@@ -176,7 +178,7 @@ public class DroolsResourceService {
             int rowsInserted = createTaskStmt.executeUpdate();
             if(rowsInserted > 0){
                 logger.debug("Task created");
-                con.commit();
+                createClasses(taskDTO, taskId);
                 return taskId;
             }
             con.rollback();
@@ -210,7 +212,7 @@ public class DroolsResourceService {
         }
     }
 
-    public void editTask(int id, DroolsTaskDTO taskDTO) throws SQLException {
+    public void editTask(int id, DroolsTaskDTO taskDTO) throws SQLException, DatabaseException {
         logger.debug("Enter: editTask()");
         try (Connection con = DriverManager.getConnection(URL, USER, PWD)){
             con.setAutoCommit(false);
@@ -245,6 +247,43 @@ public class DroolsResourceService {
             con.commit();
         }
 
+    }
 
+    public int createClasses(DroolsTaskDTO taskDTO, int taskId) throws DatabaseException, SQLException { //TODO: Exception??
+        logger.debug("Enter: Creating classes");
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
+            con.setAutoCommit(false);
+            String classesArray = taskDTO.getClasses();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(classesArray);
+
+            PreparedStatement statement = con.prepareStatement("INSERT INTO classes (class_id, full_classname, class_content, task_id) VALUES(?,?,?,?)");
+
+            for (JsonNode node : jsonNode) {
+                int classId = node.get("class_id").asInt();
+                String fullClassName = node.get("full_classname").asText();
+                String classContent = node.get("class_content").asText();
+
+                statement.setInt(1, classId);
+                statement.setString(2, fullClassName);
+                statement.setString(3, classContent);
+                statement.setInt(4, taskId);
+                statement.addBatch();
+                logger.debug("Added statement batch for creating classes: {} ", statement);
+            }
+            int[] rowsInserted = statement.executeBatch();
+            if(rowsInserted.length > 0){
+                logger.debug("{} classes created", rowsInserted.length);
+                con.commit();
+                return rowsInserted.length;
+            }
+            con.rollback();
+            return -1;
+
+        } catch (Exception throwables) {
+            logger.error(throwables.getMessage(), throwables);
+            throw new DatabaseException(throwables);
+        }
     }
 }

@@ -14,5 +14,6 @@ public class DroolsTestApplication {
         else System.out.println("Regeln haben keine Syntaxfehler.");
 
         System.out.println(analysis.toString());
+
     }
 }
