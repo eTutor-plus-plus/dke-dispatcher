@@ -1,9 +1,11 @@
 grammar PlantUML_ATG;
 
 // Parser Rules
-classDiagram: '@startuml' (classDefinition | relationship)* '@enduml';
+classDiagram: '@startuml' (classDefinition | relationship | multiRelationship )* '@enduml';
 
 classDefinition: visibility? abstractModifier? 'class' className ('extends' parentClassName)? '{' (attribute*) '}';
+multiRelationship: 'diamond' multiRelationshipName;
+
 moreDefinitions: '{ID(' attribute (',' attribute)? ')}';
 attribute:  attributeName attributeModifier?|moreDefinitions;
 attributeModifier: '{ID}';
@@ -20,6 +22,7 @@ className: Identifier;
 parentClassName: Identifier;
 attributeName: Identifier;
 label: Identifier+;
+multiRelationshipName: Identifier;
 //##prob absolete## dataType: Identifier;
 labelMultiplicity: ('*' | '?' | '+'|'>'|'<')?;
 cardinality: Integer;
