@@ -145,7 +145,7 @@ public class DDLEvaluator implements Evaluator {
         analyzerConfig.setUserConn(userConn);
 
         // Configure analyzer
-        if(action.equalsIgnoreCase(DDLEvaluationAction.RUN.toString())) {
+        if(action.equalsIgnoreCase(DDLEvaluationAction.CHECK.toString())) {
             analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_SYNTAX);
             analyzerConfig.setDiagnoseLevel(1);
         } else {
