@@ -163,6 +163,7 @@ public class DynamicDroolsBuilder implements AutoCloseable {
         return results;
     }
 
+    //TODO: Am ende aufrufen und den ordner löschen
     /**
      * Deletes all temporary files.
      *

@@ -16,7 +16,10 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import springfox.documentation.swagger2.mappers.ModelMapper;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.*;
 import java.util.ArrayList;
@@ -170,7 +173,9 @@ public class DroolsResourceService {
             int maxPoints = taskDTO.getMaxPoints();
             String solution = taskDTO.getSolution();
 
-            PreparedStatement createTaskStmt = con.prepareStatement("INSERT INTO tasks (task_id, solution, max_points) VALUES(?,?,?)");
+            PreparedStatement createTaskStmt = con.prepareStatement("INSERT INTO tasks " +
+                    "(task_id, solution, max_points) " +
+                    "VALUES(?,?,?)");
             createTaskStmt.setInt(1, taskId);
             createTaskStmt.setString(2, solution);
             createTaskStmt.setInt(3, maxPoints);
@@ -258,7 +263,9 @@ public class DroolsResourceService {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(classesArray);
 
-            PreparedStatement statement = con.prepareStatement("INSERT INTO classes (class_id, full_classname, class_content, task_id) VALUES(?,?,?,?)");
+            PreparedStatement statement = con.prepareStatement("INSERT INTO classes " +
+                    "(class_id, full_classname, class_content, task_id) " +
+                    "VALUES(?,?,?,?)");
 
             for (JsonNode node : jsonNode) {
                 int classId = node.get("class_id").asInt();
@@ -275,6 +282,53 @@ public class DroolsResourceService {
             int[] rowsInserted = statement.executeBatch();
             if(rowsInserted.length > 0){
                 logger.debug("{} classes created", rowsInserted.length);
+                createObjects(taskDTO, taskId);
+                return rowsInserted.length;
+            }
+            con.rollback();
+            return -1;
+
+        } catch (Exception throwables) {
+            logger.error(throwables.getMessage(), throwables);
+            throw new DatabaseException(throwables);
+        }
+    }
+    public int createObjects(DroolsTaskDTO taskDTO, int taskId) throws DatabaseException { //TODO: CSV Exception einbauen LK
+        logger.debug("Enter: Creating objects");
+        String objectsCsv = taskDTO.getObjects();
+
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD);
+             CSVReader reader = new CSVReader(new StringReader(objectsCsv))) {
+
+            con.setAutoCommit(false);
+            reader.readNext(); //Header überspringen
+
+            List<String[]> rows = reader.readAll();
+
+            PreparedStatement statement = con.prepareStatement("INSERT INTO objects " +
+                    "(object_id, parameter, submission_type, class_id, object_type, task_id) " +
+                    "VALUES (?, ?, ?, ?, ?, ?)");
+
+            for (String[] row : rows) {
+                int objectId = Integer.parseInt(row[0]);
+                String[] parameterArray = {row[1]};
+                String submissionType = row[2];
+                int classId = Integer.parseInt(row[3]);
+                String objectType = row[4];
+
+                statement.setInt(1, objectId);
+                statement.setArray(2, con.createArrayOf("json", parameterArray));
+                statement.setString(3, submissionType);
+                statement.setInt(4, classId);
+                statement.setString(5, objectType);
+                statement.setInt(6, taskId);
+
+                statement.addBatch();
+                logger.debug("Added statement batch for creating objects: {} ", statement);
+            }
+            int[] rowsInserted = statement.executeBatch();
+            if(rowsInserted.length > 0){
+                logger.debug("{} objects created", rowsInserted.length);
                 con.commit();
                 return rowsInserted.length;
             }

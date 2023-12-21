@@ -359,6 +359,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
             for (Object invoice : ks.getObjects(obj -> obj.getClass().equals(inputClass))) {
                 Assert.assertEquals(invoice.getClass().getMethod("price").invoke(invoice), (Double) expectedOutput);
             }
+            //TODO: wird die anzahl der testdaten vs facten verglichen? 20231205 LK
 
 
         } catch (ReflectiveOperationException | IOException e) {
