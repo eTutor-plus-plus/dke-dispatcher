@@ -6,8 +6,6 @@ import at.jku.dke.etutor.core.evaluation.Evaluator;
 import at.jku.dke.etutor.grading.rest.model.entities.Grading;
 import at.jku.dke.etutor.grading.rest.model.entities.Report;
 import at.jku.dke.etutor.grading.rest.model.entities.Submission;
-import at.jku.dke.etutor.modules.dlg.analysis.DatalogAnalysis;
-import at.jku.dke.etutor.modules.xquery.analysis.XQAnalysis;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -64,7 +62,7 @@ public class SubmissionDispatcherService {
             Grading gradingEntity = new Grading(submission.getSubmissionId(), grading);
             gradingEntity.setResult(evaluator.generateHTMLResult( analysis, submission.getPassedAttributes(), locale));
             gradingEntity.setSubmissionSuitsSolution(analysis.submissionSuitsSolution());
-            if((gradingEntity.getPoints()<gradingEntity.getMaxPoints() || gradingEntity.getPoints() == 0 ) && !(analysis instanceof XQAnalysis) && !(analysis instanceof DatalogAnalysis)) { // For XQ and DLG, the report is included in the result by default
+            if((gradingEntity.getPoints()<gradingEntity.getMaxPoints() || gradingEntity.getPoints() == 0 )) { // For XQ and DLG, the report is included in the result by default
                     logger.info("Requesting report");
                     DefaultReport report = getReport(evaluator, grading, analysis, submission, locale);
                     logger.debug("Received report");

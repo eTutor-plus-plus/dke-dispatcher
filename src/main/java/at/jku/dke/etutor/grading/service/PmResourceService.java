@@ -3,7 +3,6 @@ package at.jku.dke.etutor.grading.service;
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.objects.dispatcher.processmining.PmExerciseConfigDTO;
 import at.jku.dke.etutor.objects.dispatcher.processmining.PmExerciseLogDTO;
-import at.jku.dke.etutor.modules.dlg.ExerciseManagementException;
 import at.jku.dke.etutor.modules.pm.AlphaAlgo.AlphaAlgorithm;
 import at.jku.dke.etutor.modules.pm.AlphaAlgo.Arc;
 import at.jku.dke.etutor.modules.pm.AlphaAlgo.Log;
@@ -464,7 +463,7 @@ public class PmResourceService {
      * Returns an existing configuration
      * @param id the dispatcher id of the configuration
      * @return the configuration
-     * @throws ExerciseManagementException
+     *
      */
     public PmExerciseConfigDTO fetchExerciseConfiguration(int id) throws DatabaseException{
         logger.debug("Fetching Configuration {}", id);

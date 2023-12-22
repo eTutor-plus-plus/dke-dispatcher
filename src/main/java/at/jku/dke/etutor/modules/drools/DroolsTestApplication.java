@@ -19,5 +19,6 @@ public class DroolsTestApplication {
         analysis.hasSemantikError(input,output);
 
         System.out.println(analysis.toString());
+
     }
 }

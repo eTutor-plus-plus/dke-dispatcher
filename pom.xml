@@ -26,6 +26,7 @@
         <objects.version>1.1</objects.version>
         <drools.version>8.44.0.Final</drools.version>
         <testNG.version>7.8.0</testNG.version>
+        <openCSV.version>5.9</openCSV.version>
     </properties>
 
     <dependencyManagement>
@@ -65,6 +66,12 @@
             <version>${testNG.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>${openCSV.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -178,11 +185,6 @@
         </dependency>
 
 <!--        //TODO FEHLER FÜR DROOLS -> LUKAS KNOGLER-->
-        <dependency>
-            <groupId>at.jku.dke.etutor</groupId>
-            <artifactId>legacy.javax.parsersv2</artifactId>
-            <version>1.0</version>
-        </dependency>
         <dependency>
             <groupId>at.jku.dke.etutor</groupId>
             <artifactId>legacy.javax.xerces</artifactId>
