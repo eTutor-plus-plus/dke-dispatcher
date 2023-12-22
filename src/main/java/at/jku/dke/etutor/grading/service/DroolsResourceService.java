@@ -264,18 +264,16 @@ public class DroolsResourceService {
             JsonNode jsonNode = objectMapper.readTree(classesArray);
 
             PreparedStatement statement = con.prepareStatement("INSERT INTO classes " +
-                    "(class_id, full_classname, class_content, task_id) " +
-                    "VALUES(?,?,?,?)");
+                    "(full_classname, class_content, task_id) " +
+                    "VALUES(?,?,?)");
 
             for (JsonNode node : jsonNode) {
-                int classId = node.get("class_id").asInt();
                 String fullClassName = node.get("full_classname").asText();
                 String classContent = node.get("class_content").asText();
 
-                statement.setInt(1, classId);
-                statement.setString(2, fullClassName);
-                statement.setString(3, classContent);
-                statement.setInt(4, taskId);
+                statement.setString(1, fullClassName);
+                statement.setString(2, classContent);
+                statement.setInt(3, taskId);
                 statement.addBatch();
                 logger.debug("Added statement batch for creating classes: {} ", statement);
             }
@@ -311,13 +309,13 @@ public class DroolsResourceService {
 
             for (String[] row : rows) {
                 int objectId = Integer.parseInt(row[0]);
-                String[] parameterArray = {row[1]};
+                String[] parameterArray = new String[]{row[1]};
                 String submissionType = row[2];
                 int classId = Integer.parseInt(row[3]);
                 String objectType = row[4];
 
                 statement.setInt(1, objectId);
-                statement.setArray(2, con.createArrayOf("json", parameterArray));
+                statement.setArray(2, con.createArrayOf("jsonb", parameterArray));
                 statement.setString(3, submissionType);
                 statement.setInt(4, classId);
                 statement.setString(5, objectType);
