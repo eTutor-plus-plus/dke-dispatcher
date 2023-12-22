@@ -52,11 +52,17 @@ public class DroolsResourceService {
         this.modelMapper = modelMapper;
     }
 
-    public String getClasses(int id) throws SQLException {
-        logger.debug("getClasses(int id)");
+    /**
+     * Fetches the required classes for the selected task
+     * @param taskId
+     * @return
+     * @throws SQLException
+     */
+    public String getClasses(int taskId) throws SQLException {
+        logger.debug("getClasses(int taskId)");
         String query = "SELECT full_classname, class_content FROM classes WHERE task_id = ?";
         String[] columnNames = {"full_classname", "class_content"};
-        return executeQueryAndReturnJSON(query, columnNames, id);
+        return executeQueryAndReturnJSON(query, columnNames, taskId);
     }
 
     public String getTestData(int id) throws SQLException {
@@ -66,26 +72,41 @@ public class DroolsResourceService {
         return executeQueryAndReturnJSON(query, columnNames, id);
     }
 
-    public String getFacts(int id) throws SQLException {
-        logger.debug("getFacts(int id)");
-        String query = "SELECT clazz, instance_name, parameters FROM facts WHERE task_id = ?";
-        String[] columnNames = {"clazz", "instance_name", "parameters"};
-        return executeQueryAndReturnJSON(query, columnNames, id);
+    /**
+     * Fetches all input facts and events for the selected task
+     * @param taskId
+     * @return JSON with the required columns
+     * @throws SQLException
+     */
+    public String getFacts(int taskId) throws SQLException { //TODO: diagnose and submit LK
+        logger.debug("getFacts(int taskId)");
+        String query = "SELECT object_id, full_classname, parameter " +
+                "FROM objects " +
+                "WHERE task_id = 1 AND data_type = 'input' " +
+                "ORDER BY object_id";
+        String[] columnNames = {"object_id", "full_classname", "parameter"};
+        return executeQueryAndReturnJSON(query, columnNames, taskId);
     }
 
-    public String getSolution(int id) throws SQLException {
-        logger.debug("getSolution(int id)");
-        String query = "SELECT solution FROM tasks WHERE id = ?";
+    /**
+     * Fetches the uploaded solution (rules) from the selected task
+     * @param taskId
+     * @return JSON with the solution rules
+     * @throws SQLException
+     */
+    public String getSolution(int taskId) throws SQLException {
+        logger.debug("getSolution(int taskId)");
+        String query = "SELECT solution FROM tasks WHERE task_id = ?";
         String[] columnNames = {"solution"};
-        return executeQueryAndReturnJSON(query, columnNames, id);
+        return executeQueryAndReturnJSON(query, columnNames, taskId);
     }
 
-    public String getEvents(int id) throws SQLException {
-        logger.debug("getEvents(int id)");
-        String query = "SELECT clazz, reference_name, timestamp, instance_name FROM events WHERE task_id = ?";
-        String[] columnNames = {"clazz", "reference_name", "timestamp", "instance_name"};
-        return executeQueryAndReturnJSON(query, columnNames, id);
-    }
+//    public String getEvents(int id) throws SQLException {
+//        logger.debug("getEvents(int id)");
+//        String query = "SELECT clazz, reference_name, timestamp, instance_name FROM events WHERE task_id = ?";
+//        String[] columnNames = {"clazz", "reference_name", "timestamp", "instance_name"};
+//        return executeQueryAndReturnJSON(query, columnNames, id);
+//    }
 
     public String getTask(int id) throws SQLException {
         logger.debug("getTask(int id)");
@@ -163,6 +184,13 @@ public class DroolsResourceService {
         return maxId;
     }
 
+    /**
+     * Method to create a new task in the database
+     * @param taskDTO
+     * @return taskId
+     * @throws DatabaseException
+     * @throws SQLException
+     */
     public int addTask(DroolsTaskDTO taskDTO) throws DatabaseException, SQLException { //TODO: Exception??
         logger.debug("Enter: Creating task");
         try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
@@ -192,6 +220,15 @@ public class DroolsResourceService {
         }
     }
 
+    /**
+     * Create the classes in the database for the selected task
+     * @param taskDTO
+     * @param taskId
+     * @param con
+     * @return
+     * @throws DatabaseException
+     * @throws SQLException
+     */
     public int createClasses(DroolsTaskDTO taskDTO, int taskId, Connection con) throws DatabaseException, SQLException { //TODO: Exception??
         logger.debug("Enter: Creating classes");
         try {
@@ -228,6 +265,15 @@ public class DroolsResourceService {
             throw new DatabaseException(throwables);
         }
     }
+
+    /**
+     * Create new objects in the database for the selected task
+     * @param taskDTO
+     * @param taskId
+     * @param con
+     * @return
+     * @throws DatabaseException
+     */
     public int createObjects(DroolsTaskDTO taskDTO, int taskId, Connection con) throws DatabaseException { //TODO: CSV Exception einbauen LK
         logger.debug("Enter: Creating objects");
         String objectsCsv = taskDTO.getObjects();
@@ -242,13 +288,14 @@ public class DroolsResourceService {
 
             PreparedStatement statement = con.prepareStatement("INSERT INTO objects " +
                     "(object_id, parameter, submission_type, full_classname, data_type, task_id) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)");
+                    "VALUES (?, ?::JSON, ?, ?, ?, ?)");
 
             for(CSVRecord record : parser) {
 
                 int objectId = Integer.parseInt(record.get(0));
                 String jsonParameter = record.get(1);
-                Object jsonbParameter = con.createArrayOf("jsonb", new String[]{jsonParameter});
+                JSONArray parameterArray = new JSONArray(jsonParameter);
+
                 String submissionType = record.get(2);
                 String fullClassname = record.get(3);
                 //jeder Eintrag, der über die Eingabe erzeugt wird, ist immer ein "input".
@@ -256,7 +303,7 @@ public class DroolsResourceService {
                 String dataType = "input";
 
                 statement.setInt(1, objectId);
-                statement.setObject(2, jsonbParameter);
+                statement.setString(2, parameterArray.toString());
                 statement.setString(3, submissionType);
                 statement.setString(4, fullClassname);
                 statement.setString(5, dataType);
@@ -275,12 +322,17 @@ public class DroolsResourceService {
             con.rollback();
             return -1;
 
-        } catch (IndexOutOfBoundsException | IOException | SQLException e) {
+        } catch (IndexOutOfBoundsException | IOException | SQLException | JSONException e) {
             logger.error(e.getMessage(), e);
             throw new DatabaseException(e);
         }
     }
 
+    /**
+     * Delete a task from teh database
+     * @param id
+     * @throws SQLException
+     */
     public void deleteTask(int id) throws SQLException {
         logger.debug("Enter: Deleting task");
         try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
@@ -304,6 +356,13 @@ public class DroolsResourceService {
         }
     }
 
+    /**
+     * Edit a task in the database
+     * @param id
+     * @param taskDTO
+     * @throws SQLException
+     * @throws DatabaseException
+     */
     public void editTask(int id, DroolsTaskDTO taskDTO) throws SQLException, DatabaseException {
         logger.debug("Enter: editTask()");
         try (Connection con = DriverManager.getConnection(URL, USER, PWD)){

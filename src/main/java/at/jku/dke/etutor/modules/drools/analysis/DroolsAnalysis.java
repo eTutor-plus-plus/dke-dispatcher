@@ -108,13 +108,13 @@ public class DroolsAnalysis extends DefaultAnalysis {
     public void loadJavaClasses() {
         List<SourceFileModel> classList = new ArrayList<>();
 
-        final HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create(route+"/drools/task/getClasses/" + this.exerciseID);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .GET()
-                .build();
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
+            URI uri = URI.create(route + "/drools/task/getClasses/" + this.exerciseID);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .GET()
+                    .build();
+
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JSONArray jsonArray = new JSONArray(response.body());
 
@@ -140,13 +140,13 @@ public class DroolsAnalysis extends DefaultAnalysis {
     public void loadTestDataFromDatabase(){
         List<Object[]> testDataList = new ArrayList<>();
 
-        final HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create(route + "/drools/task/getTestData/" + this.exerciseID);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .GET()
-                .build();
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
+            URI uri = URI.create(route + "/drools/task/getTestData/" + this.exerciseID);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .GET()
+                    .build();
+
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JSONArray jsonArray = new JSONArray(response.body());
 
@@ -157,6 +157,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
 
                 testDataList.add(new Object[]{inputClassname, expectedOutput});
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -185,13 +186,13 @@ public class DroolsAnalysis extends DefaultAnalysis {
     public void loadFacts(){
         List<FactModel> factList = new ArrayList<>();
 
-        final HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create(route + "/drools/task/getFacts/" + this.exerciseID);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .GET()
-                .build();
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
+            URI uri = URI.create(route + "/drools/task/getFacts/" + this.exerciseID);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .GET()
+                    .build();
+
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JSONArray jsonArray = new JSONArray(response.body());
 
@@ -241,13 +242,13 @@ public class DroolsAnalysis extends DefaultAnalysis {
     public void loadSolution() {
         String solution = "";
 
-        final HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create(route + "/drools/task/getSolution/" + this.exerciseID);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .GET()
-                .build();
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
+            URI uri = URI.create(route + "/drools/task/getSolution/" + this.exerciseID);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .GET()
+                    .build();
+
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JSONArray jsonArray = new JSONArray(response.body());
             JSONObject obj = jsonArray.getJSONObject(0);
@@ -261,13 +262,13 @@ public class DroolsAnalysis extends DefaultAnalysis {
     public void loadEvents(){
         List<EventModel> eventList = new ArrayList<>();
 
-        final HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create(route + "/drools/task/getEvents/" + this.exerciseID);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .GET()
-                .build();
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
+            URI uri = URI.create(route + "/drools/task/getEvents/" + this.exerciseID);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .GET()
+                    .build();
+
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JSONArray jsonArray = new JSONArray(response.body());
 
@@ -286,10 +287,9 @@ public class DroolsAnalysis extends DefaultAnalysis {
             EventModel eventModel = new EventModel(clazz, referenceName, instanceName, timestamp);
             eventList.add(eventModel);
         } catch (Exception e) {
-            e.printStackTrace();
+                e.printStackTrace();
         }
         this.events = eventList;
-
     }
 
     public boolean hasSyntaxError() throws IOException {
