@@ -3,24 +3,22 @@ package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
-
-
 import at.jku.dke.etutor.objects.dispatcher.drools.DroolsTaskDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import springfox.documentation.swagger2.mappers.ModelMapper;
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvException;
 
+import java.io.IOException;
 import java.io.StringReader;
-import java.sql.Connection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -181,9 +179,9 @@ public class DroolsResourceService {
             createTaskStmt.setInt(3, maxPoints);
             logger.debug("Statement for creating task: {} ", createTaskStmt);
             int rowsInserted = createTaskStmt.executeUpdate();
-            if(rowsInserted > 0){
+            if (rowsInserted > 0) {
                 logger.debug("Task created");
-                createClasses(taskDTO, taskId);
+                createClasses(taskDTO, taskId, con);
                 return taskId;
             }
             con.rollback();
@@ -191,6 +189,95 @@ public class DroolsResourceService {
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
             throw new DatabaseException(throwables);
+        }
+    }
+
+    public int createClasses(DroolsTaskDTO taskDTO, int taskId, Connection con) throws DatabaseException, SQLException { //TODO: Exception??
+        logger.debug("Enter: Creating classes");
+        try {
+            String classesJson = taskDTO.getClasses();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode[] classesArray = objectMapper.readValue(classesJson, JsonNode[].class);
+
+            PreparedStatement statement = con.prepareStatement("INSERT INTO classes " +
+                    "(full_classname, class_content, task_id) " +
+                    "VALUES(?,?,?)");
+
+            for (JsonNode node : classesArray) {
+                String fullClassName = node.get("full_classname").asText();
+                String classContent = node.get("class_content").asText();
+
+                statement.setString(1, fullClassName);
+                statement.setString(2, classContent);
+                statement.setInt(3, taskId);
+                statement.addBatch();
+                logger.debug("Added statement batch for creating classes: {} ", statement);
+            }
+            int[] rowsInserted = statement.executeBatch();
+            if(rowsInserted.length > 0){
+                logger.debug("{} classes created", rowsInserted.length);
+                createObjects(taskDTO, taskId, con);
+                return rowsInserted.length;
+            }
+            con.rollback();
+            return -1;
+
+        } catch (Exception throwables) {
+            logger.error(throwables.getMessage(), throwables);
+            throw new DatabaseException(throwables);
+        }
+    }
+    public int createObjects(DroolsTaskDTO taskDTO, int taskId, Connection con) throws DatabaseException { //TODO: CSV Exception einbauen LK
+        logger.debug("Enter: Creating objects");
+        String objectsCsv = taskDTO.getObjects();
+
+        try (CSVParser parser = CSVParser.parse(objectsCsv, CSVFormat.DEFAULT.builder()
+                .setHeader("object_id", "parameter", "submission_type", "full_classname", "data_type", "task_id")
+                .setIgnoreEmptyLines(true)
+                .setSkipHeaderRecord(true)
+                .setDelimiter(';')
+                .setQuote('"')
+                .build())){
+
+            PreparedStatement statement = con.prepareStatement("INSERT INTO objects " +
+                    "(object_id, parameter, submission_type, full_classname, data_type, task_id) " +
+                    "VALUES (?, ?, ?, ?, ?, ?)");
+
+            for(CSVRecord record : parser) {
+
+                int objectId = Integer.parseInt(record.get(0));
+                String jsonParameter = record.get(1);
+                Object jsonbParameter = con.createArrayOf("jsonb", new String[]{jsonParameter});
+                String submissionType = record.get(2);
+                String fullClassname = record.get(3);
+                //jeder Eintrag, der über die Eingabe erzeugt wird, ist immer ein "input".
+                // Outputs werden durch Anwenden der Regeln erzeugt
+                String dataType = "input";
+
+                statement.setInt(1, objectId);
+                statement.setObject(2, jsonbParameter);
+                statement.setString(3, submissionType);
+                statement.setString(4, fullClassname);
+                statement.setString(5, dataType);
+                statement.setInt(6, taskId);
+
+                statement.addBatch();
+                logger.debug("Added statement batch for creating objects: {} ", statement);
+            }
+
+            int[] rowsInserted = statement.executeBatch();
+            if(rowsInserted.length > 0){
+                logger.debug("{} objects created", rowsInserted.length);
+                con.commit();
+                return rowsInserted.length;
+            }
+            con.rollback();
+            return -1;
+
+        } catch (IndexOutOfBoundsException | IOException | SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -250,92 +337,6 @@ public class DroolsResourceService {
             statement.executeUpdate();
 
             con.commit();
-        }
-
-    }
-
-    public int createClasses(DroolsTaskDTO taskDTO, int taskId) throws DatabaseException, SQLException { //TODO: Exception??
-        logger.debug("Enter: Creating classes");
-        try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
-            con.setAutoCommit(false);
-            String classesArray = taskDTO.getClasses();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(classesArray);
-
-            PreparedStatement statement = con.prepareStatement("INSERT INTO classes " +
-                    "(full_classname, class_content, task_id) " +
-                    "VALUES(?,?,?)");
-
-            for (JsonNode node : jsonNode) {
-                String fullClassName = node.get("full_classname").asText();
-                String classContent = node.get("class_content").asText();
-
-                statement.setString(1, fullClassName);
-                statement.setString(2, classContent);
-                statement.setInt(3, taskId);
-                statement.addBatch();
-                logger.debug("Added statement batch for creating classes: {} ", statement);
-            }
-            int[] rowsInserted = statement.executeBatch();
-            if(rowsInserted.length > 0){
-                logger.debug("{} classes created", rowsInserted.length);
-                createObjects(taskDTO, taskId);
-                return rowsInserted.length;
-            }
-            con.rollback();
-            return -1;
-
-        } catch (Exception throwables) {
-            logger.error(throwables.getMessage(), throwables);
-            throw new DatabaseException(throwables);
-        }
-    }
-    public int createObjects(DroolsTaskDTO taskDTO, int taskId) throws DatabaseException { //TODO: CSV Exception einbauen LK
-        logger.debug("Enter: Creating objects");
-        String objectsCsv = taskDTO.getObjects();
-
-        try (Connection con = DriverManager.getConnection(URL, USER, PWD);
-             CSVReader reader = new CSVReader(new StringReader(objectsCsv))) {
-
-            con.setAutoCommit(false);
-            reader.readNext(); //Header überspringen
-
-            List<String[]> rows = reader.readAll();
-
-            PreparedStatement statement = con.prepareStatement("INSERT INTO objects " +
-                    "(object_id, parameter, submission_type, class_id, object_type, task_id) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)");
-
-            for (String[] row : rows) {
-                int objectId = Integer.parseInt(row[0]);
-                String[] parameterArray = new String[]{row[1]};
-                String submissionType = row[2];
-                int classId = Integer.parseInt(row[3]);
-                String objectType = row[4];
-
-                statement.setInt(1, objectId);
-                statement.setArray(2, con.createArrayOf("jsonb", parameterArray));
-                statement.setString(3, submissionType);
-                statement.setInt(4, classId);
-                statement.setString(5, objectType);
-                statement.setInt(6, taskId);
-
-                statement.addBatch();
-                logger.debug("Added statement batch for creating objects: {} ", statement);
-            }
-            int[] rowsInserted = statement.executeBatch();
-            if(rowsInserted.length > 0){
-                logger.debug("{} objects created", rowsInserted.length);
-                con.commit();
-                return rowsInserted.length;
-            }
-            con.rollback();
-            return -1;
-
-        } catch (Exception throwables) {
-            logger.error(throwables.getMessage(), throwables);
-            throw new DatabaseException(throwables);
         }
     }
 }

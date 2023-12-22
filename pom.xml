@@ -67,10 +67,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>${openCSV.version}</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.10.0</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

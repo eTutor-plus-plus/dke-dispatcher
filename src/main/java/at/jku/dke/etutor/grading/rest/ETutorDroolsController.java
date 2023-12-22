@@ -174,81 +174,81 @@ public class ETutorDroolsController {
         resourceService.deleteTask(id);
     }
 
-    @PostMapping("/task/addClass")
-    public ResponseEntity<String> addClass(@RequestBody DroolsClassDTO classDTO) throws ApiException {
-        logger.info("Enter: addClass()");
-        try {
-            String className = resourceService.addClass(classDTO);
+//    @PostMapping("/task/addClass")
+//    public ResponseEntity<String> addClass(@RequestBody DroolsClassDTO classDTO) throws ApiException {
+//        logger.info("Enter: addClass()");
+//        try {
+//            String className = resourceService.addTask(classDTO);
+//
+//            //TODO: Eventuell Syntax vor dem erstellen Prüfen? 20231203
+//
+//            logger.info("Exit: addClass() for className: {} with Status Code 200", className);
+//            return ResponseEntity.ok(className);
+//        } catch (DatabaseException e) {
+//            logger.error("Exit: addClass() with Status Code 500", e);
+//            logger.info("Rollback. Deleting class.");
+//            throw new ApiException(500, e.toString(), null);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
-            //TODO: Eventuell Syntax vor dem erstellen Prüfen? 20231203
+//    @PostMapping("/task/addEvent")
+//    public ResponseEntity<String> addEvent(@RequestBody DroolsEventDTO eventDTO) throws ApiException {
+//        logger.info("Enter: addEvent()");
+//        try {
+//            String eventName = resourceService.addEvent(eventDTO);
+//
+//            //TODO: Eventuell Syntax vor dem erstellen Prüfen? 20231203
+//
+//            logger.info("Exit: addEvent() for eventName: {} with Status Code 200", eventName);
+//            return ResponseEntity.ok(eventName);
+//        } catch (DatabaseException e) {
+//            logger.error("Exit: addEvent() with Status Code 500", e);
+//            logger.info("Rollback. Deleting event.");
+//            throw new ApiException(500, e.toString(), null);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
-            logger.info("Exit: addClass() for className: {} with Status Code 200", className);
-            return ResponseEntity.ok(className);
-        } catch (DatabaseException e) {
-            logger.error("Exit: addClass() with Status Code 500", e);
-            logger.info("Rollback. Deleting class.");
-            throw new ApiException(500, e.toString(), null);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @PostMapping("/task/addEvent")
-    public ResponseEntity<String> addEvent(@RequestBody DroolsEventDTO eventDTO) throws ApiException {
-        logger.info("Enter: addEvent()");
-        try {
-            String eventName = resourceService.addEvent(eventDTO);
-
-            //TODO: Eventuell Syntax vor dem erstellen Prüfen? 20231203
-
-            logger.info("Exit: addEvent() for eventName: {} with Status Code 200", eventName);
-            return ResponseEntity.ok(eventName);
-        } catch (DatabaseException e) {
-            logger.error("Exit: addEvent() with Status Code 500", e);
-            logger.info("Rollback. Deleting event.");
-            throw new ApiException(500, e.toString(), null);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @PostMapping("/task/addFact")
-    public ResponseEntity<String> addFact(@RequestBody DroolsFactDTO factDTO) throws ApiException {
-        logger.info("Enter: addFact()");
-        try {
-            String factName = resourceService.addFact(factDTO);
-
-            //TODO: Eventuell Syntax vor dem erstellen Prüfen? 20231203
-
-            logger.info("Exit: addFact() for factName: {} with Status Code 200", factName);
-            return ResponseEntity.ok(factName);
-        } catch (DatabaseException e) {
-            logger.error("Exit: addFact() with Status Code 500", e);
-            logger.info("Rollback. Deleting fact.");
-            throw new ApiException(500, e.toString(), null);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @PostMapping("/task/addTestdata")
-    public ResponseEntity<Integer> addTestdata(@RequestBody DroolsTestDTO testDTO) throws ApiException {
-        logger.info("Enter: addTestdata()");
-        try {
-            int taskId = resourceService.addTestdata(testDTO);
-
-            //TODO: Eventuell Syntax vor dem erstellen Prüfen? 20231203
-
-            logger.info("Exit: addTestdata() for taskId: {} with Status Code 200", taskId);
-            return ResponseEntity.ok(taskId);
-        } catch (DatabaseException e) {
-            logger.error("Exit: addTestdata() with Status Code 500", e);
-            logger.info("Rollback. Deleting testdata.");
-            throw new ApiException(500, e.toString(), null);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @PostMapping("/task/addFact")
+//    public ResponseEntity<String> addFact(@RequestBody DroolsFactDTO factDTO) throws ApiException {
+//        logger.info("Enter: addFact()");
+//        try {
+//            String factName = resourceService.addFact(factDTO);
+//
+//            //TODO: Eventuell Syntax vor dem erstellen Prüfen? 20231203
+//
+//            logger.info("Exit: addFact() for factName: {} with Status Code 200", factName);
+//            return ResponseEntity.ok(factName);
+//        } catch (DatabaseException e) {
+//            logger.error("Exit: addFact() with Status Code 500", e);
+//            logger.info("Rollback. Deleting fact.");
+//            throw new ApiException(500, e.toString(), null);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//
+//    @PostMapping("/task/addTestdata")
+//    public ResponseEntity<Integer> addTestdata(@RequestBody DroolsTestDTO testDTO) throws ApiException {
+//        logger.info("Enter: addTestdata()");
+//        try {
+//            int taskId = resourceService.addTestdata(testDTO);
+//
+//            //TODO: Eventuell Syntax vor dem erstellen Prüfen? 20231203
+//
+//            logger.info("Exit: addTestdata() for taskId: {} with Status Code 200", taskId);
+//            return ResponseEntity.ok(taskId);
+//        } catch (DatabaseException e) {
+//            logger.error("Exit: addTestdata() with Status Code 500", e);
+//            logger.info("Rollback. Deleting testdata.");
+//            throw new ApiException(500, e.toString(), null);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 
 
