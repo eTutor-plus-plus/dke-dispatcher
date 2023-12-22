@@ -71,7 +71,7 @@ public class DDLReporter {
                     if(isGermanLocale(locale)) {
                         error.append("<strong>Die Tabellen in der Datenbank sind nicht richtig.</strong>");
                     } else {
-                        error.append("<strong>The tables in the database are not correct</strong>");
+                        error.append("<strong>The tables in the database are not correct.</strong>");
                     }
 
                     // Get number of missing/surplus tables
@@ -173,7 +173,7 @@ public class DDLReporter {
                     if(isGermanLocale(locale)) {
                         error.append("<strong>Die Spalten einer Tabelle sind nicht richtig.</strong>");
                     } else {
-                        error.append("<strong>The columns in a table are not correct</strong>");
+                        error.append("<strong>The columns in a table are not correct.</strong>");
                     }
 
                     // Get number of wrong columns
@@ -421,7 +421,7 @@ public class DDLReporter {
                     if(isGermanLocale(locale)) {
                         error.append("<strong>Die Primärschlüssel in den Tabellen sind nicht richtig.</strong>");
                     } else {
-                        error.append("<strong>The primary keys in the tables are not correct</strong>");
+                        error.append("<strong>The primary keys in the tables are not correct.</strong>");
                     }
 
                     // Get number of wrong primary keys
@@ -531,7 +531,7 @@ public class DDLReporter {
                     if(isGermanLocale(locale)) {
                         error.append("<strong>Die Fremdschlüssel in den Tabellen sind nicht richtig.</strong>");
                     } else {
-                        error.append("<strong>The foreign keys in the tables are not correct</strong>");
+                        error.append("<strong>The foreign keys in the tables are not correct.</strong>");
                     }
 
                     // Get number of wrong columns
@@ -712,11 +712,21 @@ public class DDLReporter {
                 if(criterionAnalysis instanceof ConstraintsAnalysis) {
                     constraintsAnalysis = (ConstraintsAnalysis) criterionAnalysis;
 
-                    // Append error type
-                    if(isGermanLocale(locale)) {
-                        error.append("<strong>Die Constraints in den Tabellen sind nicht richtig.</strong>");
-                    } else {
-                        error.append("<strong>The constraints in the tables are not correct</strong>");
+                    if(!constraintsAnalysis.isMissingConstraintsEmpty() || !constraintsAnalysis.isSurplusConstraintsEmpty()) {
+                        // Append error type
+                        if(isGermanLocale(locale)) {
+                            error.append("<strong>Die Constraints in den Tabellen sind nicht richtig.</strong>");
+                        } else {
+                            error.append("<strong>The constraints in the tables are not correct.</strong>");
+                        }
+                    }
+
+                    if(!constraintsAnalysis.isInsertStatementsChecked()) {
+                        if(isGermanLocale(locale)) {
+                            error.append("<strong>Check-Constraints konnten aufgrund des falschen Datenbankschemas nicht überprüft werden.</strong>");
+                        } else {
+                            error.append("<strong>Check constraints could not be checked due to incorrect database schema.</strong>");
+                        }
                     }
 
                     // Get number of wrong columns

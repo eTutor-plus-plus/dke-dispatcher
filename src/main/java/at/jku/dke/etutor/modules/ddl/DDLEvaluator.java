@@ -157,7 +157,7 @@ public class DDLEvaluator implements Evaluator {
             analyzerConfig.addCriterionToAnalyze(DDLEvaluationCriterion.CORRECT_CONSTRAINTS);
 
             if (action.equalsIgnoreCase(DDLEvaluationAction.SUBMIT.toString())) {
-                analyzerConfig.setDiagnoseLevel(1);
+                analyzerConfig.setDiagnoseLevel(0);
             } else {
                 analyzerConfig.setDiagnoseLevel(diagnoseLevel);
             }
@@ -181,7 +181,7 @@ public class DDLEvaluator implements Evaluator {
         analysis.setSubmissionSuitsSolution(ok);
 
         // Reset user schema and release user
-        DBHelper.resetUserConnection(userConn, user);
+        DBHelper.resetUserConnection(userConn, user, userSchema);
         admin.releaseUser(user);
 
         // Set the exercise id in the analysis object
@@ -354,10 +354,6 @@ public class DDLEvaluator implements Evaluator {
      */
     @Override
     public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
-        // Check if action is submit -> return - no html result
-        if(passedAttributes.get("action").equalsIgnoreCase(DDLEvaluationAction.SUBMIT.toString()))
-            return null;
-
         // Check if analysis object is DDLAnalysis
         if(analysis instanceof DDLAnalysis ddlAnalysis) {
             // Initialize variables

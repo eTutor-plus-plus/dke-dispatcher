@@ -7,6 +7,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -181,12 +182,20 @@ public class DBHelper {
      * Function to reset the schema for a specified connection and close it
      * @param userConn Specifies the connection
      */
-    public static void resetUserConnection(Connection userConn, String user) {
+    public static void resetUserConnection(Connection userConn, String user, String schemaName) {
         try {
             if(userConn == null || userConn.isClosed())
                 return;
 
-            userConn.rollback();
+            // Reset database schema
+            String query = "DROP SCHEMA IF EXISTS " + schemaName + " CASCADE";
+            PreparedStatement dropStmt = userConn.prepareStatement(query);
+            dropStmt.execute();
+
+            query = "CREATE SCHEMA IF NOT EXISTS " + schemaName + " AUTHORIZATION " + user;
+            PreparedStatement createSchemaStmt = userConn.prepareStatement(query);
+            createSchemaStmt.execute();
+
             userConn.close();
 
             // Close datasource

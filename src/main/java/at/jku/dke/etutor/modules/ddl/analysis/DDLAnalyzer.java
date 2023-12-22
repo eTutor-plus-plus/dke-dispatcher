@@ -14,6 +14,7 @@ public class DDLAnalyzer {
     private final String INTERNAL_ERROR = "This is an internal system error.";
     private final String CONTACT_ADMIN = "Please contact the system administrator.";
     private final String VARCHAR = "varchar";
+    private final String DECIMAL = "decimal";
     //endregion
 
     //region Fields
@@ -327,7 +328,7 @@ public class DDLAnalyzer {
                                 // Check if both datatypes are varchar -> every varchar should be treated as equal
                                 String sd = systemColumns.getString("TYPE_NAME");
                                 String ud = userColumns.getString("TYPE_NAME");
-                                if(!(sd.toLowerCase().contains(VARCHAR) && ud.toLowerCase().contains(VARCHAR))) {
+                                if(!(sd.toLowerCase().contains(VARCHAR) && ud.toLowerCase().contains(VARCHAR)) || !(sd.toLowerCase().contains(DECIMAL) && ud.toLowerCase().contains(DECIMAL))) {
                                     columnsAnalysis.addWrongDatatypeColumn(new ErrorTupel(tableName, systemColumn));
                                 }
                             }
@@ -673,6 +674,8 @@ public class DDLAnalyzer {
 
             // Only check check-constraints when every other criterion is satisfied
             if(isEveryCriterionSatisfied) {
+                constraintsAnalysis.setInsertStatementsChecked(true);
+
                 int systemAffects;
                 int userAffects;
 
@@ -709,7 +712,7 @@ public class DDLAnalyzer {
             constraintsAnalysis.setAnalysisException(new AnalysisException(msg, ex));
         }
 
-        constraintsAnalysis.setCriterionIsSatisfied(satisfied && constraintsAnalysis.isDmlStatementsWithMistakesEmpty());
+        constraintsAnalysis.setCriterionIsSatisfied(satisfied && constraintsAnalysis.isDmlStatementsWithMistakesEmpty() && constraintsAnalysis.isInsertStatementsChecked());
         this.logger.info("Finished constraint analysis. Criterion satisfied: " + constraintsAnalysis.isCriterionSatisfied());
         return constraintsAnalysis;
     }

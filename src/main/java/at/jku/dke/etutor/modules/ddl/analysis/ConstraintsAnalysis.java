@@ -8,6 +8,7 @@ import java.util.List;
 
 public class ConstraintsAnalysis extends AbstractDDLCriterionAnalysis implements DDLCriterionAnalysis {
     //region Fields
+    private boolean insertStatementsChecked;
     private List<ErrorTupel> missingConstraints;
     private List<ErrorTupel> surplusConstraints;
     private List<String> dmlStatementsWithMistakes;
@@ -17,6 +18,15 @@ public class ConstraintsAnalysis extends AbstractDDLCriterionAnalysis implements
         missingConstraints = new ArrayList<>();
         surplusConstraints = new ArrayList<>();
         dmlStatementsWithMistakes = new ArrayList<>();
+        insertStatementsChecked = false;
+    }
+
+    public boolean isInsertStatementsChecked() {
+        return insertStatementsChecked;
+    }
+
+    public void setInsertStatementsChecked(boolean insertStatementsChecked) {
+        this.insertStatementsChecked = insertStatementsChecked;
     }
 
     public boolean isMissingConstraintsEmpty() {
