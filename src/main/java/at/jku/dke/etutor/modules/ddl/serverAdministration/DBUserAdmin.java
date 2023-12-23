@@ -112,6 +112,7 @@ public class DBUserAdmin {
 
         if(info != null) {
             busyUsers.add(info);
+            DBHelper.getLogger().info("Selected user: " + info[0]);
             return info[0];
         }
 

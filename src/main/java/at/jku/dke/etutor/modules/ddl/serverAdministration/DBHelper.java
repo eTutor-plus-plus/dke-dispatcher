@@ -6,9 +6,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -187,15 +185,21 @@ public class DBHelper {
             if(userConn == null || userConn.isClosed())
                 return;
 
+            //todo Check why this does not work or current solution is ok
+            /*String query = "select 'drop table if exists "+ schemaName + ".' || tablename || ' cascade;' \n" +
+                    "  from pg_tables\n" +
+                    " where schemaname = '" + schemaName + "';";
+            PreparedStatement dropTables = userConn.prepareStatement(query);
+            ResultSet rs = dropTables.executeQuery();
+
+            while (rs.next()) {
+                logger.info(rs.getString(1));
+                Statement ps = userConn.createStatement();
+                logger.info("" + ps.executeUpdate(rs.getString(1)));
+            }*/
+
             // Reset database schema
-            String query = "DROP SCHEMA IF EXISTS " + schemaName + " CASCADE";
-            PreparedStatement dropStmt = userConn.prepareStatement(query);
-            dropStmt.execute();
-
-            query = "CREATE SCHEMA IF NOT EXISTS " + schemaName + " AUTHORIZATION " + user;
-            PreparedStatement createSchemaStmt = userConn.prepareStatement(query);
-            createSchemaStmt.execute();
-
+            userConn.rollback();
             userConn.close();
 
             // Close datasource

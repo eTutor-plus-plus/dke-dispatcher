@@ -65,6 +65,9 @@ public class DDLAnalyzer {
         // Check if the submission is a string
         if (submission instanceof String) {
             submittedQuery = (String)submission;
+
+            // Remove all commits in submission
+            submittedQuery = submittedQuery.toLowerCase().replace("commit;", "").replace("commit", "");
         } else {
             msg = "";
             msg = msg.concat("Analysis stopped with errors. ");
