@@ -2,28 +2,28 @@ package at.jku.dke.etutor.modules.nf.specification;
 
 public class NormalformDeterminationSpecification extends NFSpecification {
 
-    private boolean wrongOverallLevelInvalidatesEverything;
+    private int pointsDeductedForWrongNFOverall;
 
-    private int pointsDeductedForWrongNFLevel;
+    private int pointsDeductedForWrongNFDependency;
 
     public NormalformDeterminationSpecification() {
-        super(null);
+        super();
     }
 
-    public boolean isWrongOverallLevelInvalidatesEverything() {
-        return wrongOverallLevelInvalidatesEverything;
+    public int getPointsDeductedForWrongNFOverall() {
+        return pointsDeductedForWrongNFOverall;
     }
 
-    public void setWrongOverallLevelInvalidatesEverything(boolean wrongOverallLevelInvalidatesEverything) {
-        this.wrongOverallLevelInvalidatesEverything = wrongOverallLevelInvalidatesEverything;
+    public void setPointsDeductedForWrongNFOverall(int pointsDeductedForWrongNFOverall) {
+        this.pointsDeductedForWrongNFOverall = pointsDeductedForWrongNFOverall;
     }
 
-    public int getPointsDeductedForWrongNFLevel() {
-        return pointsDeductedForWrongNFLevel;
+    public int getPointsDeductedForWrongNFDependency() {
+        return pointsDeductedForWrongNFDependency;
     }
 
-    public void setPointsDeductedForWrongNFLevel(int pointsDeductedForWrongNFLevel) {
-        this.pointsDeductedForWrongNFLevel = pointsDeductedForWrongNFLevel;
+    public void setPointsDeductedForWrongNFDependency(int pointsDeductedForWrongNFDependency) {
+        this.pointsDeductedForWrongNFDependency = pointsDeductedForWrongNFDependency;
     }
 
     @Override

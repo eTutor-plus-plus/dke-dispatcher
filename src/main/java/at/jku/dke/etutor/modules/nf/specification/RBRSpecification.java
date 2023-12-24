@@ -17,7 +17,7 @@ public class RBRSpecification extends NFSpecification implements Cloneable {
 	private IdentifiedRelation baseRelation;
 
 	public RBRSpecification() {
-		super(null);
+		super();
 		this.baseAttributes = new Vector<>();
 	}
 

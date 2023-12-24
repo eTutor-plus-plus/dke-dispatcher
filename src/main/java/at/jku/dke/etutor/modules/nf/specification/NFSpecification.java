@@ -7,15 +7,16 @@ import java.io.Serializable;
 public abstract class NFSpecification implements Serializable, Cloneable, HasSemanticEquality {
 	protected IdentifiedRelation baseRelation;
 
-	/**
-	 * The number of points which each subdivision of this exercise gives you (e.g, points per leaf relation, per key,
-	 * per correct functional dependency ...)
-	 */
-	private int pointsPerSubdivision;
+	private int totalPoints;
 
-	protected NFSpecification(IdentifiedRelation baseRelation) {
+	protected NFSpecification() {
+		this.baseRelation = null;
+		this.totalPoints = 0;
+	}
+
+	protected NFSpecification(IdentifiedRelation baseRelation, int totalPoints) {
 		this.baseRelation = baseRelation;
-		this.pointsPerSubdivision = 1;
+		this.totalPoints = totalPoints;
 	}
 
 	public IdentifiedRelation getBaseRelation() {
@@ -24,6 +25,14 @@ public abstract class NFSpecification implements Serializable, Cloneable, HasSem
 
 	public void setBaseRelation(IdentifiedRelation baseRelation) {
 		this.baseRelation = baseRelation;
+	}
+
+	public int getTotalPoints() {
+		return totalPoints;
+	}
+
+	public void setTotalPoints(int totalPoints) {
+		this.totalPoints = totalPoints;
 	}
 
 	@Override
@@ -35,6 +44,4 @@ public abstract class NFSpecification implements Serializable, Cloneable, HasSem
 
 		return clone;
 	}
-
-	public abstract void getTotalPoints();
 }

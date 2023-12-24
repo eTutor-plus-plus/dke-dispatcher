@@ -7,26 +7,33 @@ import java.io.Serial;
 
 public class NormalizationSpecification extends NFSpecification implements Cloneable {
 
-	private int pointsDeductedForMissingAttribute;
-
-	private int pointsDeductedForAdditionalAttribute;
-
-	private int pointsDeductedForMissingDependency;
-
-	private int pointsDeductedForAdditionalDependency;
-
-	private int pointsDeductedForMissingKey;
-
-	private int pointsDeductedForAdditionalKey;
-
 	@Serial
 	private static final long serialVersionUID = -8591463798404619419L;
-	
+
+	// Start of point deduction variables
+	private int pointsDeductedForEachWrongNFRelation;
+
+	private int pointsDeductedForEveryLostAttribute;
+
+	private int pointsDeductedForEveryExcessiveLostFunctionalDependency;
+
+	/**
+	 * Points deducted for every functional dependency that would have to exist in a resulting relation but does not
+	 */
+	private int pointsDeductedForEveryMissedNewFunctionalDependency;
+
+	private int pointsDeductedForEveryWrongNewFunctionalDependency;
+
+	private int pointsDeductedForEveryMissingKey;
+
+	private int pointsDeductedForEveryWrongKey;
+	// End of point deduction variables
+
 	protected int maxLostDependencies;
 	protected NormalformLevel targetLevel;
 
 	public NormalizationSpecification() {
-		super(new IdentifiedRelation());
+		super(new IdentifiedRelation(), 0);
 		this.maxLostDependencies = 0;
 		this.targetLevel = NormalformLevel.THIRD;
  	}
@@ -54,54 +61,6 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 
 	public void setTargetLevel(NormalformLevel level) {
 		targetLevel = level;
-	}
-
-	public int getPointsDeductedForMissingAttribute() {
-		return pointsDeductedForMissingAttribute;
-	}
-
-	public void setPointsDeductedForMissingAttribute(int pointsDeductedForMissingAttribute) {
-		this.pointsDeductedForMissingAttribute = pointsDeductedForMissingAttribute;
-	}
-
-	public int getPointsDeductedForAdditionalAttribute() {
-		return pointsDeductedForAdditionalAttribute;
-	}
-
-	public void setPointsDeductedForAdditionalAttribute(int pointsDeductedForAdditionalAttribute) {
-		this.pointsDeductedForAdditionalAttribute = pointsDeductedForAdditionalAttribute;
-	}
-
-	public int getPointsDeductedForMissingDependency() {
-		return pointsDeductedForMissingDependency;
-	}
-
-	public void setPointsDeductedForMissingDependency(int pointsDeductedForMissingDependency) {
-		this.pointsDeductedForMissingDependency = pointsDeductedForMissingDependency;
-	}
-
-	public int getPointsDeductedForAdditionalDependency() {
-		return pointsDeductedForAdditionalDependency;
-	}
-
-	public void setPointsDeductedForAdditionalDependency(int pointsDeductedForAdditionalDependency) {
-		this.pointsDeductedForAdditionalDependency = pointsDeductedForAdditionalDependency;
-	}
-
-	public int getPointsDeductedForMissingKey() {
-		return pointsDeductedForMissingKey;
-	}
-
-	public void setPointsDeductedForMissingKey(int pointsDeductedForMissingKey) {
-		this.pointsDeductedForMissingKey = pointsDeductedForMissingKey;
-	}
-
-	public int getPointsDeductedForAdditionalKey() {
-		return pointsDeductedForAdditionalKey;
-	}
-
-	public void setPointsDeductedForAdditionalKey(int pointsDeductedForAdditionalKey) {
-		this.pointsDeductedForAdditionalKey = pointsDeductedForAdditionalKey;
 	}
 
 	public boolean semanticallyEquals(Object obj) {

@@ -18,7 +18,7 @@ public class AttributeClosureSpecification extends NFSpecification implements Cl
 	private Vector<String> baseAttributes;
 
 	public AttributeClosureSpecification() {
-		super(null);
+		super();
 		this.baseAttributes = new Vector<>();
 	}
 

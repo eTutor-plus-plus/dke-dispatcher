@@ -7,7 +7,7 @@ public class MinimalCoverSpecification extends NFSpecification {
     private int pointsDeductedForAdditionalDependency;
 
     public MinimalCoverSpecification() {
-        super(null);
+        super();
     }
 
     public int getPointsDeductedForMissingDependency() {

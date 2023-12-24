@@ -1,14 +1,12 @@
 package at.jku.dke.etutor.modules.nf.specification;
 
-import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
-
 public class KeysDeterminationSpecification extends NFSpecification {
     private int pointsDeductedForMissingKey;
 
     private int pointsDeductedForAdditionalKey;
 
     public KeysDeterminationSpecification() {
-        super(null);
+        super();
     }
 
     @Override
