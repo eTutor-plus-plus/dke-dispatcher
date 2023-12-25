@@ -5,7 +5,9 @@ import at.jku.dke.etutor.grading.service.DatabaseException;
 import at.jku.dke.etutor.grading.service.RTResourceService;
 import at.jku.dke.etutor.grading.service.SQLResourceService;
 import at.jku.dke.etutor.modules.rt.RTObject;
+import at.jku.dke.etutor.modules.rt.RTSolution;
 import at.jku.dke.etutor.modules.rt.analysis.RTAnalysis;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.ParseException;
@@ -32,19 +34,67 @@ public class ETutorRTController {
     }
 
     @PostMapping("/task/addTask")
-    public Long getTask(@RequestBody String elem) throws SQLException, ParseException {
-        RTObject rtObject = resourceService.getRTObject(elem);
-        String solution = rtObject.getSolution().toString();
-        solution = solution = solution.substring(1, solution.length() - 1);
-        return this.resourceService.insertTask(solution, rtObject.getMaxPoints());
+    public Long addTask(@RequestBody String elem) throws SQLException, ParseException, JsonProcessingException {
+        boolean parseError = false;
+        RTObject rtObject = null;
+        String solution = "";
+        long error = 1;
+        int checkSolution = 1;
+        try {
+            rtObject = resourceService.getRTObject(elem);
+            if (rtObject.getSolution() != null){
+                solution = rtObject.getSolution().toString();
+                solution = solution = solution.substring(1, solution.length() - 1);
+                List<RTSolution> rtSolutions = resourceService.getRTSolutions(solution);
+                checkSolution = resourceService.checkRTSolution(rtSolutions, rtObject.getMaxPoints());
+            }
+        } catch (RuntimeException e){
+            parseError = true;
+        }
+        if(checkSolution != 1){
+            error = checkSolution;
+            return error;
+        }
+        if(!parseError) {
+            this.resourceService.insertTask(solution, rtObject.getMaxPoints());
+            return error;
+        }
+        else{
+            error = -1;
+            return error;
+        }
     }
 
     @PutMapping("/task/editTask")
-    public void editTask(@RequestBody String elem) throws SQLException, ParseException {
-        RTObject rtObject = resourceService.getRTObject(elem);
-        String solution = rtObject.getSolution().toString();
-        solution = solution = solution.substring(1, solution.length() - 1);
-        this.resourceService.editTask(solution, rtObject.getMaxPoints(), rtObject.getId());
+    public Long editTask(@RequestBody String elem) throws SQLException, ParseException, JsonProcessingException {
+        boolean parseError = false;
+        RTObject rtObject = null;
+        String solution = "";
+        long error = 1;
+        int checkSolution = 1;
+        try {
+            rtObject = resourceService.getRTObject(elem);
+            if (rtObject.getSolution() != null){
+            solution = rtObject.getSolution().toString();
+            solution = solution = solution.substring(1, solution.length() - 1);
+            List<RTSolution> rtSolutions = resourceService.getRTSolutions(solution);
+                checkSolution = resourceService.checkRTSolution(rtSolutions, rtObject.getMaxPoints());
+            }
+        } catch (RuntimeException e){
+            parseError = true;
+        }
+        if(checkSolution != 1){
+            error = checkSolution;
+            return error;
+        }
+        if(!parseError) {
+            this.resourceService.editTask(solution, rtObject.getMaxPoints(), rtObject.getId());
+            return error;
+        }
+        else{
+            error = -1;
+            return error;
+        }
     }
 
     @DeleteMapping("/task/deleteTask/{id}")

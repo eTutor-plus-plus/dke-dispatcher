@@ -123,7 +123,7 @@ public class RTSemanticsAnalysis {
             if (student != null) {
                 studentList = Arrays.asList(student.split("\\s*,\\s*"));
             }
-            
+
             if (!solutionList.equals(studentList)) {
                 if(studentList != null && solutionList != null) {
                     int pointsForRightAnswer = weighting[2] / countRelations / solutionList.size();

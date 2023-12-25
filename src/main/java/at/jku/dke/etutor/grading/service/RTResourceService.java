@@ -7,12 +7,18 @@ import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 import at.jku.dke.etutor.modules.rt.RTDataSource;
 import at.jku.dke.etutor.modules.rt.RTObject;
 import at.jku.dke.etutor.modules.rt.RTSolution;
+import at.jku.dke.etutor.modules.rt.analysis.errorListener;
+import at.jku.dke.etutor.modules.rt.analysis.rtSyntaxLexer;
+import at.jku.dke.etutor.modules.rt.analysis.rtSyntaxParser;
 import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseBean;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.parser.ParseException;
 import net.sourceforge.plantuml.json.JsonString;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -66,18 +72,28 @@ public class RTResourceService {
 
     public RTObject getRTObject(String elem) throws ParseException {
         ObjectMapper objectMapper = new ObjectMapper();
-        RTObject rtObject;
+        RTObject rtObject = null;
         try {
             rtObject = objectMapper.readValue(elem, RTObject.class);
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException e){
             throw new RuntimeException(e);
         }
         return rtObject;
     }
 
     public List<RTSolution> getRTSolutions(String elem) throws JsonProcessingException {
+        List<RTSolution> rtSolutions = null;
+        elem = elem.replace("\\t\\r\\n","\t\r\n");
+        elem = elem.replace("\\r\\n", "\r\n");
+        elem = elem.replace("\\","");
         ObjectMapper objectMapper = new ObjectMapper();
-        List<RTSolution> rtSolutions = objectMapper.readValue(elem, new TypeReference<List<RTSolution>>() {});
+        try {
+            rtSolutions = objectMapper.readValue(elem, new TypeReference<List<RTSolution>>() {});
+        }
+        catch (JsonProcessingException e){
+            throw new RuntimeException(e);
+        }
+
         return rtSolutions;
     }
 
@@ -125,9 +141,6 @@ public class RTResourceService {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
                     String solution = resultSet.getString("solution");
-                    solution = solution.replace("\\t\\r\\n","\t\r\n");
-                    solution = solution.replace("\\r\\n", "\r\n");
-                    solution = solution.replace("\\","");
                     List<RTSolution> rtSolutions = getRTSolutions(solution);
                     Integer maxPoints = resultSet.getInt("maxPoints");
                     Integer idDb = resultSet.getInt("id");
@@ -144,6 +157,33 @@ public class RTResourceService {
             }
         }
         return rtObject;
+    }
+
+    public int checkRTSolution(List<RTSolution> rtSolutions, int maxPoints){
+        int solutionPoints = 0;
+        for(RTSolution s : rtSolutions){
+            solutionPoints += s.getGesamtGewichtung();
+            for (Map.Entry<Integer,List<String>> entry : s.getSolution().entrySet()){
+                for (String elem : entry.getValue()){
+                    try {
+                        errorListener errorListener = new errorListener();
+                        ANTLRInputStream input = new ANTLRInputStream(elem);
+                        rtSyntaxLexer lexer = new rtSyntaxLexer(input);
+                        lexer.addErrorListener(errorListener);
+                        CommonTokenStream tokens = new CommonTokenStream(lexer);
+                        rtSyntaxParser parser = new rtSyntaxParser(tokens);
+                        parser.addErrorListener(errorListener);
+                        ParseTree tree = parser.start();
+                    } catch (Exception e) {
+                        return -2;
+                    }
+                }
+            }
+        }
+        if (solutionPoints > maxPoints){
+            return -3;
+        }
+        return 1;
     }
 
 }
