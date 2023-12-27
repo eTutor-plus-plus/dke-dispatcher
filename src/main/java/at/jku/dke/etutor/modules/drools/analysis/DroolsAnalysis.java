@@ -1,31 +1,29 @@
 package at.jku.dke.etutor.modules.drools.analysis;
 
 import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
-import at.jku.dke.etutor.grading.config.ApplicationProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Assert;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Results;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
 
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class DroolsAnalysis extends DefaultAnalysis {
     private int exerciseID;
@@ -35,8 +33,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
     private List<EventModel> events;
     private String solution;
     private List<Object[]> testData;
-    private static final String route = "http://localhost:8081"; //for etutor: "http://localhost:8081" | for test "http://localhost:9000"
-
+    private static final String route = "http://localhost:8081";
 
     public DroolsAnalysis(int exerciseID, String inputRules) throws IOException {
         super();
@@ -96,25 +93,22 @@ public class DroolsAnalysis extends DefaultAnalysis {
         loadJavaClasses();
         loadFacts();
         loadSolution();
-        loadEvents();
-        loadTestDataFromDatabase();
     }
 
     /**
      * Loads the required classes from the task-database.
      *
      */
-
     public void loadJavaClasses() {
         List<SourceFileModel> classList = new ArrayList<>();
 
-        try (HttpClient client = HttpClient.newHttpClient()) {
-            URI uri = URI.create(route + "/drools/task/getClasses/" + this.exerciseID);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .GET()
-                    .build();
-
+        final HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create(route+"/drools/task/getClasses/" + this.exerciseID);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .GET()
+                .build();
+        try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JSONArray jsonArray = new JSONArray(response.body());
 
@@ -133,84 +127,40 @@ public class DroolsAnalysis extends DefaultAnalysis {
         this.javaClasses = classList;
     }
 
-    /**
-     * Loads the required test-data from the task-database.
-     */
-    //TODO: HttpAbrufe in einer Methode zusammenführen? Unklar ob das Zielführend wäre 20231124
-    public void loadTestDataFromDatabase(){
-        List<Object[]> testDataList = new ArrayList<>();
-
-        try (HttpClient client = HttpClient.newHttpClient()) {
-            URI uri = URI.create(route + "/drools/task/getTestData/" + this.exerciseID);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            JSONArray jsonArray = new JSONArray(response.body());
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject obj = jsonArray.getJSONObject(i);
-                Object inputClassname = obj.get("input_classname");
-                Object expectedOutput = obj.get("expected_output");
-
-                testDataList.add(new Object[]{inputClassname, expectedOutput});
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        this.testData = testDataList;
-
-    }
 
     /**
-     * Builds the DataProvider for the TestNG framework. Takes the test data from the current object.
-     */
-    @DataProvider(name = "testData")
-    public Object[][] loadTestData() {
-
-        Object[][] testDataArray = new Object[this.testData.size()][];
-        for (int i = 0; i < this.testData.size(); i++) {
-            testDataArray[i] = this.testData.get(i);
-        }
-
-        return testDataArray;
-    }
-
-    /**
-     * Loads the required facts from the task-database.
+     * Loads the required facts from the objects-table.
      */
     public void loadFacts(){
         List<FactModel> factList = new ArrayList<>();
 
-        try (HttpClient client = HttpClient.newHttpClient()) {
-            URI uri = URI.create(route + "/drools/task/getFacts/" + this.exerciseID);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .GET()
-                    .build();
-
+        final HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create(route + "/drools/task/getFacts/" + this.exerciseID);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .GET()
+                .build();
+        try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            JSONArray jsonArray = new JSONArray(response.body());
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonArray = objectMapper.readTree(response.body());
 
-            String clazz = "";
-            String instanceName = "";
-            String dbArray;
-            List<Object> parametersList = new ArrayList<>();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject obj = jsonArray.getJSONObject(i);
-                clazz = obj.getString("clazz");
-                instanceName = obj.getString("instance_name");
-                dbArray = obj.getString("parameters").replaceAll("[{}]", "");
-                parametersList = Arrays.stream(dbArray.split(","))
-                        .map(String::trim)
-                        .collect(Collectors.toList());
-            }
-            FactModel factModel = new FactModel(clazz, instanceName, parametersList);
+            String fullClassname = "";
+            int objectId = -1;
+            JsonNode parameterArray = null;
+
+            for (JsonNode node : jsonArray) {
+                fullClassname = node.get("full_classname").asText();
+                objectId = node.get("object_id").asInt();
+
+                if (node.has("parameter") && node.get("parameter").isArray()) {
+                    parameterArray = node.get("parameter");
+                }
+
+            FactModel factModel = new FactModel(fullClassname, objectId, parameterArray);
             factList.add(factModel);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -239,16 +189,19 @@ public class DroolsAnalysis extends DefaultAnalysis {
         return value;
     }
 
+    /**
+     * Loads the solution rules from the task table
+     */
     public void loadSolution() {
         String solution = "";
 
-        try (HttpClient client = HttpClient.newHttpClient()) {
-            URI uri = URI.create(route + "/drools/task/getSolution/" + this.exerciseID);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .GET()
-                    .build();
-
+        final HttpClient client = HttpClient.newHttpClient();
+        URI uri = URI.create(route + "/drools/task/getSolution/" + this.exerciseID);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .GET()
+                .build();
+        try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JSONArray jsonArray = new JSONArray(response.body());
             JSONObject obj = jsonArray.getJSONObject(0);
@@ -259,38 +212,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
         this.solution = solution;
     }
 
-    public void loadEvents(){
-        List<EventModel> eventList = new ArrayList<>();
 
-        try (HttpClient client = HttpClient.newHttpClient()) {
-            URI uri = URI.create(route + "/drools/task/getEvents/" + this.exerciseID);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            JSONArray jsonArray = new JSONArray(response.body());
-
-            String clazz = "";
-            String referenceName = "";
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            Date timestamp = null;
-            String instanceName = "";
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject obj = jsonArray.getJSONObject(i);
-                clazz = obj.getString("clazz");
-                referenceName = obj.getString("reference_name");
-                timestamp = formatter.parse(obj.getString("timestamp"));
-                instanceName = obj.getString("instance_name");
-            }
-            EventModel eventModel = new EventModel(clazz, referenceName, instanceName, timestamp);
-            eventList.add(eventModel);
-        } catch (Exception e) {
-                e.printStackTrace();
-        }
-        this.events = eventList;
-    }
 
     public boolean hasSyntaxError() throws IOException {
         try (DynamicDroolsBuilder dyn = new DynamicDroolsBuilder(this.javaClasses)) {
@@ -314,84 +236,118 @@ public class DroolsAnalysis extends DefaultAnalysis {
         }
     }
 
-    @Test(dataProvider = "testData")
-    public void hasSemantikError(Object inputClassName, Object expectedOutput) throws IOException, ReflectiveOperationException{
+    public void hasSemantikError() throws IOException, ReflectiveOperationException{
+        boolean isCep = true;
         try(var dyn = new DynamicDroolsBuilder(this.javaClasses)) {
-            var ks = dyn.newKieSession(this.inputRules, true);
+            var ks = dyn.newKieSession(this.inputRules, isCep);
 
             SessionClock clock = ks.getSessionClock();
             if (!(clock instanceof SessionPseudoClock spc))
                 return;
 
-            Map<String, Object> dynamicFactObjects = new HashMap<>();
+            Map<Integer, Object> dynamicObjectMap = new HashMap<>();
+            ArrayList<Object> dynamicEventList = new ArrayList<>();
+
             for (var fact : facts) {
-                Object obj = dyn.instantiate(fact.getClazz(), fact.getParameters());
-                dynamicFactObjects.put(fact.getInstanceName(), obj);
-                //Dynamische Objekte sind nicht möglich, daher hier der Umweg mit einer HashMap, die die Objekte speichert
-                //TODO: Risikos abklären
+                List<Object> parameterList = new ArrayList<>();
+                JsonNode jsonNode = fact.getParameters();
+                Class<?> myClass = dyn.loadClass(fact.getFullClassname());
+
+                // Erhalte den einzigen öffentlichen Konstruktor
+                Constructor<?> targetConstructor = myClass.getConstructors()[0];
+
+                // Parameter-Typen des Zielkonstruktors
+                Class<?>[] parameterTypes = targetConstructor.getParameterTypes();
+                Object[] parameters = new Object[parameterTypes.length];
+
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    Class<?> parameterType = parameterTypes[i];
+                    JsonNode paramNode = jsonNode.get(i); // Annahme: Die JSON-Struktur entspricht der Reihenfolge der Parameter im Konstruktor
+                    if(paramNode.isObject()){
+                        int objectId = paramNode.get("object_id").asInt();
+                        Object object = dynamicObjectMap.get(objectId);
+                        parameterList.add(object);
+                    } else if (parameterType == Integer.class) {
+                        parameterList.add(paramNode.asInt());
+                    } else if (parameterType == String.class) {
+                        parameterList.add(paramNode.asText());
+                    } else if (parameterType == Date.class) {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                        Date timestamp = dateFormat.parse(paramNode.asText());
+                        parameterList.add(timestamp);
+                    }
+
+                    // Weitere Typen können entsprechend verarbeitet werden
+                }
+
+                Object event = targetConstructor.newInstance(parameters);
+                System.out.println(event);
+
+                Object obj = dyn.instantiate(fact.getFullClassname(), parameterList.toArray());
+
+                if(parameterList.stream().anyMatch(e -> e.getClass() == Date.class)){
+                    dynamicEventList.add(obj);
+                } else {
+                    dynamicObjectMap.put(fact.getObjectId(), obj);
+                }
             }
 
-            var dynamicEventObjects = new ArrayList<>();
-            for (var event : events) {
-                Object obj = dyn.instantiate(event.getClazz(), event.getReferenceClass(), event.getTimestamp());
-                String referenceName = (String) event.getReferenceClass();
-                if (dynamicFactObjects.containsKey(referenceName)) event.setReferenceClass(dynamicFactObjects.get(referenceName));
-                dynamicEventObjects.add(obj);
-                //Dynamische Objekte sind nicht möglich, daher hier der Umweg mit einer HashMap, die die Objekte speichert
-                //TODO: Risikos abklären
-            }
+            var dynamicFactList = new ArrayList<>(dynamicObjectMap.values());
 
+            var dynamicObjectList = new ArrayList<>();
+
+            if(isCep){
+                dynamicObjectList = dynamicEventList;
+            }else{
+                dynamicObjectList = dynamicFactList;
+            }
             // Fire all rules
-            for (var event : dynamicEventObjects) {
-                ks.insert(event);
-                // Martin: folgendes kann man anders lösen, indem man z.B. Event-Interface generell im eTutor vorgibt.
-                Date ts = (Date) event.getClass().getMethod("timestamp").invoke(event);
+            for (var object : dynamicObjectList) {
+                ks.insert(object);
 
-                var diff = ts.getTime() - clock.getCurrentTime();
-                if (diff > 0)
-                    spc.advanceTime(diff, TimeUnit.MILLISECONDS);
+                // folgendes kann man anders lösen, indem man z.B. Event-Interface generell im eTutor vorgibt.
+                if(isCep){
+                    Date ts = (Date) object.getClass().getMethod("timestamp").invoke(object);
+
+                    var diff = ts.getTime() - clock.getCurrentTime();
+                    if (diff > 0)
+                        spc.advanceTime(diff, TimeUnit.MILLISECONDS);
+                }
 
                 ks.fireAllRules();
             }
 
             // Analyze
-            var inputClass = dyn.loadClass((String) inputClassName);
-            for (Object invoice : ks.getObjects(obj -> obj.getClass().equals(inputClass))) {
-                Assert.assertEquals(invoice.getClass().getMethod("price").invoke(invoice), (Double) expectedOutput);
+            System.out.println(ks.getFactHandles().toString());
+            Collection<FactHandle> factHandles = ks.getFactHandles();
+            for(FactHandle factHandle : factHandles){
+                Object object = ks.getObject(factHandle);
+                System.out.println(object.toString());
             }
-            //TODO: wird die anzahl der testdaten vs facten verglichen? 20231205 LK
+            System.out.println("===================================================");
+            System.out.println("INVOICES");
+            var invoiceClass = dyn.loadClass("at.jku.dke.etutor.modules.drools.jit.Invoice");
+            for (Object invoice : ks.getObjects(obj -> obj.getClass().equals(invoiceClass))) {
+                System.out.println(invoice);
+            }
+
+
+
+//            // Analyze
+//            var inputClass = dyn.loadClass((String) inputClassName);
+//            for (Object invoice : ks.getObjects(obj -> obj.getClass().equals(inputClass))) {
+//                Assert.assertEquals(invoice.getClass().getMethod("price").invoke(invoice), (Double) expectedOutput);
+//            }
+//            //TODO: wird die anzahl der testdaten vs facten verglichen? 20231205 LK
 
 
         } catch (ReflectiveOperationException | IOException e) {
             throw new IOException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 
-
-//TODO: DataProvider mit mehreren expectedOutputs erstellen
-//    public class MyTest {
-//
-//        @DataProvider(name = "inputOutput")
-//        public Object[][] createData() {
-//            return new Object[][] {
-//                    { 1, "output1", "output2", "output3" },
-//                    { 2, "output4", "output5" },
-//                    // Weitere Eingabe/Ausgabe-Paare hier hinzufügen...
-//            };
-//        }
-//
-//        @Test(dataProvider = "inputOutput")
-//        public void testMethod(int input, String... expectedOutputs) {
-//            // Hier wird deine Testlogik durchgeführt
-//            // Vergleiche die tatsächliche Ausgabe mit den erwarteten Ausgaben
-//            // Beispielhaft wird hier eine Schleife verwendet, um alle erwarteten Ausgaben zu überprüfen
-//            for (String expectedOutput : expectedOutputs) {
-//                // Hier müsstest du deine Methode aufrufen und das Ergebnis mit expectedOutput vergleichen
-//                String actualOutput = YourClass.yourMethod(input); // Hier deine Methode aufrufen
-//                assertEquals(actualOutput, expectedOutput);
-//            }
-//        }
-//    }
 
         //TODO: Klassen laden eventuell mit der Variante von Martin (loadClass) und dann aus der KIESession die Objekte laden
         //TODO Dann den Test ausführen, TestListener implementieren

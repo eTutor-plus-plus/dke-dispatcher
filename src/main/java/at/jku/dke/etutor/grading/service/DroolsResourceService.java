@@ -3,6 +3,7 @@ package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
+import at.jku.dke.etutor.objects.dispatcher.drools.DroolsObjectDTO;
 import at.jku.dke.etutor.objects.dispatcher.drools.DroolsTaskDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -82,7 +83,7 @@ public class DroolsResourceService {
         logger.debug("getFacts(int taskId)");
         String query = "SELECT object_id, full_classname, parameter " +
                 "FROM objects " +
-                "WHERE task_id = 1 AND data_type = 'input' " +
+                "WHERE task_id = ? AND data_type = 'input' " +
                 "ORDER BY object_id";
         String[] columnNames = {"object_id", "full_classname", "parameter"};
         return executeQueryAndReturnJSON(query, columnNames, taskId);
@@ -110,8 +111,8 @@ public class DroolsResourceService {
 
     public String getTask(int id) throws SQLException {
         logger.debug("getTask(int id)");
-        String query = "SELECT id, solution, max_points FROM tasks WHERE id = ?";
-        String[] columnNames = {"id", "solution", "max_points"};
+        String query = "SELECT task_id, solution, max_points FROM tasks WHERE task_id = ?";
+        String[] columnNames = {"task_id", "solution", "max_points"};
         return executeQueryAndReturnJSON(query, columnNames, id);
     }
 
@@ -127,7 +128,7 @@ public class DroolsResourceService {
             while (rs.next()) {
                 JSONObject obj = new JSONObject();
                 for (String columnName : columnNames) {
-                    if (columnName.equals("parameters")) {
+                    if (columnName.equals("parameter")) {
                         String paramValue = rs.getString(columnName);
                         try {
                             JSONArray paramsArray = new JSONArray(paramValue);
@@ -210,6 +211,7 @@ public class DroolsResourceService {
             if (rowsInserted > 0) {
                 logger.debug("Task created");
                 createClasses(taskDTO, taskId, con);
+
                 return taskId;
             }
             con.rollback();
@@ -328,6 +330,84 @@ public class DroolsResourceService {
         }
     }
 
+    public int createOutput(DroolsObjectDTO droolsObjectDTO) throws DatabaseException{
+        logger.debug("Enter: Creating objects");
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD)){
+            con.setAutoCommit(false);
+
+            PreparedStatement statement = con.prepareStatement("INSERT INTO objects " +
+                    "(object_id, parameter, submission_type, full_classname, data_type, task_id) " +
+                    "VALUES (?, ?::JSON, ?, ?, ?, ?)");
+
+            int taskId = droolsObjectDTO.getTaskId();
+            int objectId = getAvailableObjectId(taskId);
+            String submissionType = droolsObjectDTO.getSubmissionType();
+            String fullClassname = droolsObjectDTO.getFullClassname();
+            String dataType = droolsObjectDTO.getDataType();
+            JSONArray parameterArray = new JSONArray(droolsObjectDTO.getParameter());
+
+            statement.setInt(1, objectId);
+            statement.setString(2, parameterArray.toString());
+            statement.setString(3, submissionType);
+            statement.setString(4, fullClassname);
+            statement.setString(5, dataType);
+            statement.setInt(6, taskId);
+
+            logger.debug("Statement for creating output: {} ", statement);
+            int rowsAdded = statement.executeUpdate();
+            if(rowsAdded > 0){
+                logger.debug("Object created");
+                con.commit();
+                return rowsAdded;
+            }
+            con.rollback();
+            return -1;
+
+        } catch (SQLException | JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    /**
+     * Fetches an available object id
+     *
+     * @return the object id
+     * @throws DatabaseException if an SQLException occurs
+     */
+    public int getAvailableObjectId(int taskId) throws DatabaseException {
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD);) {
+            con.setAutoCommit(false);
+            return getAvailableObjectIdUtil(con, taskId);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new DatabaseException(throwables);
+        }
+    }
+
+    private int getAvailableObjectIdUtil(Connection con, int taskId) throws DatabaseException {
+        String fetchMaxIdQuery = "SELECT max(object_id) as object_id FROM objects WHERE task_id = ?";
+        int maxId = -1;
+
+        try {
+            PreparedStatement fetchMaxIdStmt = con.prepareStatement(fetchMaxIdQuery);
+            fetchMaxIdStmt.setInt(1, taskId);
+            ResultSet maxIdSet = fetchMaxIdStmt.executeQuery();
+
+            if (maxIdSet.next()) {
+                maxId = maxIdSet.getInt("object_id");
+                maxId++;
+            } else throw new DatabaseException("Internal Error: could not fetch object id");
+
+            con.commit();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+            throw new DatabaseException(throwables);
+        }
+        return maxId;
+    }
+
+
     /**
      * Delete a task from teh database
      * @param id
@@ -337,7 +417,7 @@ public class DroolsResourceService {
         logger.debug("Enter: Deleting task");
         try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
             con.setAutoCommit(false);
-            //TODO: Prüfen ob Task existiert?? 20231202
+            //TODO: Prüfen ob Task existiert?? 20231202 LK
 
             PreparedStatement statement = con.prepareStatement("DELETE FROM tasks WHERE id = ?");
             statement.setInt(1, id);
@@ -369,7 +449,7 @@ public class DroolsResourceService {
             con.setAutoCommit(false);
             String newSolution = taskDTO.getSolution();
             int newMaxPoints = taskDTO.getMaxPoints();
-            //TODO: Fehleingabe crashed das Programm (z.B "lösung" statt 'lösung')
+            //TODO: Fehleingabe crashed das Programm (z.B "lösung" statt 'lösung') LK
             StringBuilder queryBuilder = new StringBuilder("UPDATE tasks SET ");
             List<Object> parameters = new ArrayList<>();
 

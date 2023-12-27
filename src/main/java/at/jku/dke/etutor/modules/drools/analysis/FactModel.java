@@ -1,39 +1,39 @@
 package at.jku.dke.etutor.modules.drools.analysis;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class FactModel {
-    private String clazz;
-    private String instanceName;
-    private List<Object> parameters;
+    private String fullClassname;
+    private int objectId;
+    private JsonNode parameters;
 
-    public FactModel(String clazz, String instanceName, List<Object> parameters) {
-        this.clazz = clazz;
-        this.instanceName = instanceName;
+    public FactModel(String fullClassname, int objectId, JsonNode parameters) {
+        this.fullClassname = fullClassname;
+        this.objectId = objectId;
         this.parameters = parameters;
     }
 
-    public String getClazz() {
-        return clazz;
+    public String getFullClassname() {
+        return fullClassname;
     }
 
-    public void setClazz(String clazz) {
-        this.clazz = clazz;
+    public void setFullClassname(String fullClassname) {
+        this.fullClassname = fullClassname;
     }
 
-    public List<Object> getParameters() {
+    public JsonNode getParameters() {
         return parameters;
     }
 
-    public void setParameters(List<Object> parameters) {
+    public void setParameters(JsonNode parameters) {
         this.parameters = parameters;
     }
 
-    public String getInstanceName() {
-        return instanceName;
+    public int getObjectId() {
+        return objectId;
     }
 
-    public void setInstanceName(String instanceName) {
-        this.instanceName = instanceName;
+    public void setObjectId(int objectId) {
+        this.objectId = objectId;
     }
 }

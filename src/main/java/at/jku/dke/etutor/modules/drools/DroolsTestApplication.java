@@ -13,6 +13,8 @@ public class DroolsTestApplication {
         if(analysis.hasSyntaxError()) System.out.println("Regeln haben Syntaxfehler.");
         else System.out.println("Regeln haben keine Syntaxfehler.");
 
+        analysis.hasSemantikError();
+
 
         System.out.println(analysis.toString());
 
