@@ -1,21 +1,19 @@
 package at.jku.dke.etutor.modules.drools.analysis;
 
 import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.objects.dispatcher.drools.DroolsObjectDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.junit.Assert;
 import org.kie.api.builder.Results;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
 
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
-import org.testng.annotations.Test;
-
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -29,69 +27,17 @@ public class DroolsAnalysis extends DefaultAnalysis {
     private int exerciseID;
     private String inputRules;
     private List<SourceFileModel> javaClasses;
-    private List<FactModel> facts;
-    private List<EventModel> events;
-    private String solution;
-    private List<Object[]> testData;
-    private static final String route = "http://localhost:8081";
+    private List<FactModel> factsForDiagnose;
+    private List<FactModel> factsForSubmit;
+    private String solutionRules;
 
     public DroolsAnalysis(int exerciseID, String inputRules) throws IOException {
         super();
         this.exerciseID = exerciseID;
-        if(inputRules.isEmpty())
-            inputRules = """
-            package at.jku.dke.etutor.modules.drools.jit;
-
-            // Imports nicht notwendig, da gleiches package
-            // hier nur damit Auto-Complete zumindest tlw. funktioniert
-            import at.jku.dke.etutor.modules.drools.jit.EnterParkingLotEvent
-            import at.jku.dke.etutor.modules.drools.jit.ExitParkingLotEvent
-
-            // Konsolenausgaben sind nicht erforderlich; hier nur zum Debugging
-            rule "Combine parking intervals if reentry within 15 min"
-            when
-                $enter1 : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
-                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[0s, 15m] $exit)
-            then
-                System.out.printf("Re-enter within 15 minutes after exiting [vehicle: %s, enter1: %s, exit: %s, enter2: %s]%n",
-                    $enter1.vehicle().licensePlate(),
-                    $enter1.timestamp(),
-                    $exit.timestamp(),
-                    $enter2.timestamp());
-                delete($exit);
-                delete($enter2);
-            end
-
-            rule "Do not combine parking intervals if reentry after 15 min"
-            when
-                $enter1 : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
-                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[15m1s] $exit)
-            then
-                System.out.printf("Re-enter more than 15 minutes after exiting [vehicle: %s, enter1: %s, exit: %s, enter2: %s]%n",
-                    $enter1.vehicle().licensePlate(),
-                    $enter1.timestamp(),
-                    $exit.timestamp(),
-                    $enter2.timestamp());
-                delete($enter1);
-                delete($exit);
-            end
-
-            rule "Issue invoice"
-            when
-                $enter : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter.vehicle().licensePlate(), this after[2h1m] $enter)
-            then
-                System.out.printf("Parking duration more than 2 hours [vehicle: %s, enter: %s, exit: %s]%n",
-                    $enter.vehicle().licensePlate(),
-                    $enter.timestamp(),
-                    $exit.timestamp());
-                insert(new Invoice($exit.timestamp(), $enter.vehicle(), (int)Math.ceil(($exit.diffInMinutes($enter) - 120) / 60.0) * 3));
-            end""";
         this.inputRules = inputRules;
         loadJavaClasses();
-        loadFacts();
+        factsForDiagnose = loadFacts(true);
+        factsForSubmit = loadFacts(false);
         loadSolution();
     }
 
@@ -103,7 +49,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
         List<SourceFileModel> classList = new ArrayList<>();
 
         final HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create(route+"/drools/task/getClasses/" + this.exerciseID);
+        URI uri = URI.create("http://localhost:8081/drools/task/getClasses/" + this.exerciseID);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -131,11 +77,12 @@ public class DroolsAnalysis extends DefaultAnalysis {
     /**
      * Loads the required facts from the objects-table.
      */
-    public void loadFacts(){
+    public List<FactModel> loadFacts(Boolean isForDiagnose){
         List<FactModel> factList = new ArrayList<>();
 
         final HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create(route + "/drools/task/getFacts/" + this.exerciseID);
+        URI uri = URI.create("http://localhost:8081/drools/task/getFacts/" + this.exerciseID
+                + "?isForDiagnose=" + isForDiagnose);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -164,7 +111,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.facts = factList;
+        return factList;
     }
 
     /**
@@ -196,7 +143,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
         String solution = "";
 
         final HttpClient client = HttpClient.newHttpClient();
-        URI uri = URI.create(route + "/drools/task/getSolution/" + this.exerciseID);
+        URI uri = URI.create("http://localhost:8081/drools/task/getSolution/" + this.exerciseID);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -209,14 +156,13 @@ public class DroolsAnalysis extends DefaultAnalysis {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.solution = solution;
+        this.solutionRules = solution;
     }
 
 
 
     public boolean hasSyntaxError() throws IOException {
         try (DynamicDroolsBuilder dyn = new DynamicDroolsBuilder(this.javaClasses)) {
-            //TODO: Richtige KieSession erstellen mit String rules 2023-11-24
 
             Results results = dyn.checkDroolsSyntax(this.inputRules);
 
@@ -236,17 +182,21 @@ public class DroolsAnalysis extends DefaultAnalysis {
         }
     }
 
-    public void hasSemantikError() throws IOException, ReflectiveOperationException{
-        boolean isCep = true;
+    public Collection<?> fireRules(Boolean isForDiagnose) throws IOException, ReflectiveOperationException{
+        boolean isCep = true; //könnte man in die Angabe beim Erstellen aufnehmen für "normale" Drools Beispiele
         try(var dyn = new DynamicDroolsBuilder(this.javaClasses)) {
             var ks = dyn.newKieSession(this.inputRules, isCep);
 
             SessionClock clock = ks.getSessionClock();
             if (!(clock instanceof SessionPseudoClock spc))
-                return;
+                return null;
 
             Map<Integer, Object> dynamicObjectMap = new HashMap<>();
             ArrayList<Object> dynamicEventList = new ArrayList<>();
+            List<FactModel> facts;
+
+            if(isForDiagnose) facts = factsForDiagnose;
+            else facts = factsForSubmit;
 
             for (var fact : facts) {
                 List<Object> parameterList = new ArrayList<>();
@@ -317,21 +267,131 @@ public class DroolsAnalysis extends DefaultAnalysis {
                 ks.fireAllRules();
             }
 
-            // Analyze
-            System.out.println(ks.getFactHandles().toString());
-            Collection<FactHandle> factHandles = ks.getFactHandles();
-            for(FactHandle factHandle : factHandles){
-                Object object = ks.getObject(factHandle);
-                System.out.println(object.toString());
-            }
-            System.out.println("===================================================");
-            System.out.println("INVOICES");
-            var invoiceClass = dyn.loadClass("at.jku.dke.etutor.modules.drools.jit.Invoice");
-            for (Object invoice : ks.getObjects(obj -> obj.getClass().equals(invoiceClass))) {
-                System.out.println(invoice);
+            return ks.getObjects();
+
+        } catch (ReflectiveOperationException | IOException e) {
+            throw new IOException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+//    public List<Map<String, Object>>
+
+    public List<Map<String, Object>> createOutputFactList(Boolean isForDiagnose) throws ReflectiveOperationException, IOException {
+
+        Collection<?> generatedFacts = fireRules(isForDiagnose);
+
+        List<Map<String, Object>> listOfKeyValuePairs = new ArrayList<>();
+
+        for (Object fact : generatedFacts) {
+            Map<String, Object> keyValuePairs = new HashMap<>();
+            createKeyValuePairs(fact, keyValuePairs);
+            listOfKeyValuePairs.add(keyValuePairs);
+        }
+        return listOfKeyValuePairs;
+    }
+
+    public int createSampleSolution(Boolean isForDiagnose) throws ReflectiveOperationException, IOException {
+
+        try {
+            List<Map<String, Object>> listOfKeyValuePairs = createOutputFactList(isForDiagnose);
+
+            // Erstellen eines ObjectMapper
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            String jsonOutput = null;
+            String requestBody = null;
+            try {
+                // Konvertierung der Liste von Key-Value-Paaren in JSON
+                jsonOutput = objectMapper.writeValueAsString(listOfKeyValuePairs);
+
+                DroolsObjectDTO objectDTO = new DroolsObjectDTO();
+                objectDTO.setDataType("output");
+                objectDTO.setFullClassname("");
+                objectDTO.setTaskId(exerciseID);
+                objectDTO.setParameter(jsonOutput);
+                String submissionType = "submit";
+                if(isForDiagnose) submissionType = "diagnose";
+                objectDTO.setSubmissionType(submissionType);
+
+                requestBody = objectMapper.writeValueAsString(objectDTO);
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
+            final HttpClient client = HttpClient.newHttpClient();
+            URI uri = URI.create("http://localhost:8081/drools/task/createOutput");
+            assert requestBody != null;
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .header("Content-Type","application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
 
+            try {
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                return response.statusCode();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } catch (IOException | ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+        return -1;
+    }
+
+    private static void createKeyValuePairs(Object obj, Map<String, Object> keyValuePairs) {
+        for (Field field : obj.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value != null) {
+                    if (isPrimitiveOrSpecificType(field.getType())) {
+                        keyValuePairs.put(field.getName(), value);
+                    } else {
+                        Map<String, Object> subKeyValuePairs = new HashMap<>();
+                        createKeyValuePairs(value, subKeyValuePairs);
+                        keyValuePairs.put(field.getName(), subKeyValuePairs);
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static boolean isPrimitiveOrSpecificType(Class<?> type) {
+        return type.isPrimitive() || isWrapperOrSpecificType(type);
+    }
+
+    private static boolean isWrapperOrSpecificType(Class<?> type) {
+        return type.equals(Boolean.class) ||
+                type.equals(Byte.class) ||
+                type.equals(Character.class) ||
+                type.equals(Short.class) ||
+                type.equals(Integer.class) ||
+                type.equals(Long.class) ||
+                type.equals(Float.class) ||
+                type.equals(Double.class) ||
+                type.equals(String.class) ||
+                type.equals(Date.class);
+    }
+
+    public boolean hasSemantikError(){
+        // Analyze
+
+//        System.out.println(ks.getFactHandles().toString());
+//        Collection<FactHandle> factHandles = ks.getFactHandles();
+//        for(FactHandle factHandle : factHandles){
+//            Object object = ks.getObject(factHandle);
+//            System.out.println(object.toString());
+//        }
+//        System.out.println("===================================================");
+//        System.out.println("INVOICES");
 
 //            // Analyze
 //            var inputClass = dyn.loadClass((String) inputClassName);
@@ -340,13 +400,9 @@ public class DroolsAnalysis extends DefaultAnalysis {
 //            }
 //            //TODO: wird die anzahl der testdaten vs facten verglichen? 20231205 LK
 
-
-        } catch (ReflectiveOperationException | IOException e) {
-            throw new IOException(e);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        return false;
     }
+
 
 
         //TODO: Klassen laden eventuell mit der Variante von Martin (loadClass) und dann aus der KIESession die Objekte laden
@@ -378,36 +434,21 @@ public class DroolsAnalysis extends DefaultAnalysis {
         this.javaClasses = javaClasses;
     }
 
-    public List<FactModel> getFacts() {
-        return facts;
+    public List<FactModel> getFactsForDiagnose() {
+        return factsForDiagnose;
     }
 
-    public void setFacts(List<FactModel> facts) {
-        this.facts = facts;
+    public void setFactsForDiagnose(List<FactModel> factsForDiagnose) {
+        this.factsForDiagnose = factsForDiagnose;
     }
 
-    public List<EventModel> getEvents() {
-        return events;
+
+    public String getSolutionRules() {
+        return solutionRules;
     }
 
-    public void setEvents(List<EventModel> events) {
-        this.events = events;
-    }
-
-    public String getSolution() {
-        return solution;
-    }
-
-    public void setSolution(String solution) {
-        this.solution = solution;
-    }
-
-    public List<Object[]> getTestData() {
-        return testData;
-    }
-
-    public void setTestData(List<Object[]> testData) {
-        this.testData = testData;
+    public void setSolutionRules(String solutionRules) {
+        this.solutionRules = solutionRules;
     }
 
     @Override
@@ -416,10 +457,8 @@ public class DroolsAnalysis extends DefaultAnalysis {
                 "exerciseID=" + exerciseID +
                 ", inputRules='" + inputRules + '\'' +
                 ", javaClasses=" + javaClasses +
-                ", facts=" + facts +
-                ", events=" + events +
-                ", solution='" + solution + '\'' +
-                ", testData=" + testData +
+                ", facts=" + factsForDiagnose +
+                ", solution='" + solutionRules + '\'' +
                 '}';
     }
 }

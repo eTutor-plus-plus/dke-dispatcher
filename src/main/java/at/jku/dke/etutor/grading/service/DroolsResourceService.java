@@ -3,6 +3,8 @@ package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
+import at.jku.dke.etutor.grading.rest.model.repositories.SubmissionRepository;
+import at.jku.dke.etutor.modules.drools.analysis.DroolsAnalysis;
 import at.jku.dke.etutor.objects.dispatcher.drools.DroolsObjectDTO;
 import at.jku.dke.etutor.objects.dispatcher.drools.DroolsTaskDTO;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -37,12 +39,14 @@ public class DroolsResourceService {
     private SubmissionDispatcherService dispatcherService;
     private GradingDTORepository gradingDTORepository;
     private final ModelMapper modelMapper;
+    private final SubmissionRepository submissionRepository;
 
 
     public DroolsResourceService(SubmissionDispatcherService dispatcherService,
                                  GradingDTORepository gradingDTORepository,
                                  ApplicationProperties applicationProperties,
-                                 ModelMapper modelMapper) {
+                                 ModelMapper modelMapper,
+                                 SubmissionRepository submissionRepository) {
         this.logger = (Logger) LoggerFactory.getLogger(DroolsResourceService.class);
         this.applicationProperties = applicationProperties;
         this.dispatcherService = dispatcherService;
@@ -51,6 +55,7 @@ public class DroolsResourceService {
         USER = applicationProperties.getDrools().getConnUser();
         PWD = applicationProperties.getDrools().getConnPwd();
         this.modelMapper = modelMapper;
+        this.submissionRepository = submissionRepository;
     }
 
     /**
@@ -66,27 +71,53 @@ public class DroolsResourceService {
         return executeQueryAndReturnJSON(query, columnNames, taskId);
     }
 
-    public String getTestData(int id) throws SQLException {
-        logger.debug("getTestData(int id)");
-        String query = "SELECT input_classname, expected_output FROM testdata WHERE task_id = ?";
-        String[] columnNames = {"input_classname", "expected_output"};
+//    /**
+//     *
+//     * @param id
+//     * @return
+//     * @throws SQLException
+//     */
+//    public String getTestData(int id) throws SQLException {
+//        logger.debug("getTestData(int id)");
+//        String query = "SELECT input_classname, expected_output FROM testdata WHERE task_id = ?";
+//        String[] columnNames = {"input_classname", "expected_output"};
+//        return executeQueryAndReturnJSON(query, columnNames, id);
+//    }
+
+    /**
+     * Fetches all input facts and events for the selected task (diagnose/submit)
+     * @param id
+     * @return JSON with the required columns
+     * @throws SQLException
+     */
+    public String getFacts(int id, boolean isForDiagnose) throws SQLException {
+        logger.debug("getFacts(int id, boolean isForDiagnose)");
+        String submissionType = "submit";
+        if(isForDiagnose) submissionType = "diagnose";
+        String query = "SELECT object_id, full_classname, parameter " +
+                "FROM objects " +
+                "WHERE task_id = ? AND data_type = 'input' AND submission_type = '"+submissionType+"'" +
+                "ORDER BY object_id";
+        String[] columnNames = {"object_id", "full_classname", "parameter"};
         return executeQueryAndReturnJSON(query, columnNames, id);
     }
 
     /**
-     * Fetches all input facts and events for the selected task
-     * @param taskId
-     * @return JSON with the required columns
+     * Fetches the output objects (diagnose/submit), generated with the sample solution rules
+     * @param id
+     * @param isForDiagnose
+     * @return
      * @throws SQLException
      */
-    public String getFacts(int taskId) throws SQLException { //TODO: diagnose and submit LK
-        logger.debug("getFacts(int taskId)");
-        String query = "SELECT object_id, full_classname, parameter " +
+    public String getOutput(int id, boolean isForDiagnose) throws SQLException {
+        logger.debug("getObjects(int taskId, boolean isForDiagnose)");
+        String submissionType = "submit";
+        if(isForDiagnose) submissionType = "diagnose";
+        String query = "SELECT parameter " +
                 "FROM objects " +
-                "WHERE task_id = ? AND data_type = 'input' " +
-                "ORDER BY object_id";
+                "WHERE task_id = ? AND data_type = 'output' AND submission_type = '"+submissionType+"'";
         String[] columnNames = {"object_id", "full_classname", "parameter"};
-        return executeQueryAndReturnJSON(query, columnNames, taskId);
+        return executeQueryAndReturnJSON(query, columnNames, id);
     }
 
     /**
@@ -109,6 +140,12 @@ public class DroolsResourceService {
 //        return executeQueryAndReturnJSON(query, columnNames, id);
 //    }
 
+    /**
+     * Fetches a task
+     * @param id
+     * @return
+     * @throws SQLException
+     */
     public String getTask(int id) throws SQLException {
         logger.debug("getTask(int id)");
         String query = "SELECT task_id, solution, max_points FROM tasks WHERE task_id = ?";
@@ -195,6 +232,7 @@ public class DroolsResourceService {
     public int addTask(DroolsTaskDTO taskDTO) throws DatabaseException, SQLException { //TODO: Exception??
         logger.debug("Enter: Creating task");
         try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
+
             con.setAutoCommit(false);
             int taskId = getAvailableExerciseId();
             int maxPoints = taskDTO.getMaxPoints();
@@ -210,15 +248,27 @@ public class DroolsResourceService {
             int rowsInserted = createTaskStmt.executeUpdate();
             if (rowsInserted > 0) {
                 logger.debug("Task created");
-                createClasses(taskDTO, taskId, con);
+                if(createClasses(taskDTO, taskId, con) > 0) {
+                    if(createObjects(taskDTO, taskId, con) > 0){
+                        con.commit();
+                        DroolsAnalysis analysis = new DroolsAnalysis(taskId, solution);
+                        if(!analysis.hasSyntaxError()){
+                            if(analysis.createSampleSolution(true) == 200
+                                    && analysis.createSampleSolution(false) == 200){
+                                return taskId;
+                            }
+                        }
 
-                return taskId;
+                    }
+                }
             }
             con.rollback();
             return -1;
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
             throw new DatabaseException(throwables);
+        } catch (IOException | ReflectiveOperationException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -254,13 +304,9 @@ public class DroolsResourceService {
                 logger.debug("Added statement batch for creating classes: {} ", statement);
             }
             int[] rowsInserted = statement.executeBatch();
-            if(rowsInserted.length > 0){
-                logger.debug("{} classes created", rowsInserted.length);
-                createObjects(taskDTO, taskId, con);
-                return rowsInserted.length;
-            }
-            con.rollback();
-            return -1;
+
+            return rowsInserted.length;
+
 
         } catch (Exception throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -316,13 +362,9 @@ public class DroolsResourceService {
             }
 
             int[] rowsInserted = statement.executeBatch();
-            if(rowsInserted.length > 0){
-                logger.debug("{} objects created", rowsInserted.length);
-                con.commit();
-                return rowsInserted.length;
-            }
-            con.rollback();
-            return -1;
+
+            return rowsInserted.length;
+
 
         } catch (IndexOutOfBoundsException | IOException | SQLException | JSONException e) {
             logger.error(e.getMessage(), e);
@@ -330,6 +372,12 @@ public class DroolsResourceService {
         }
     }
 
+    /**
+     * Creates sample solution output objects generated with the sample solution
+     * @param droolsObjectDTO
+     * @return
+     * @throws DatabaseException
+     */
     public int createOutput(DroolsObjectDTO droolsObjectDTO) throws DatabaseException{
         logger.debug("Enter: Creating objects");
         try (Connection con = DriverManager.getConnection(URL, USER, PWD)){
@@ -354,13 +402,11 @@ public class DroolsResourceService {
             statement.setInt(6, taskId);
 
             logger.debug("Statement for creating output: {} ", statement);
-            int rowsAdded = statement.executeUpdate();
-            if(rowsAdded > 0){
-                logger.debug("Object created");
+            int rowsInserted = statement.executeUpdate();
+            if(rowsInserted == 1){
                 con.commit();
-                return rowsAdded;
+                return rowsInserted;
             }
-            con.rollback();
             return -1;
 
         } catch (SQLException | JSONException e) {
@@ -478,4 +524,7 @@ public class DroolsResourceService {
             con.commit();
         }
     }
+
+
+
 }

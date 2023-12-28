@@ -50,23 +50,23 @@ public class ETutorDroolsController {
         }
     }
 
-    @GetMapping("/task/getTestData/{id}")
-    public ResponseEntity<String> getTestData(@PathVariable int id) throws RuntimeException {
-        logger.info("Enter: getTestData()");
-        try{
-            String testData = resourceService.getTestData(id);
-            if(testData.equals("")){
-                logger.info("Exit: getTestData() with status 404");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find test-data for task " + id);
-            }else{
-                logger.info("Exit: getTestData() with status 200");
-                return ResponseEntity.status(HttpStatus.OK).body(testData);
-            }
-        } catch (Exception e) {
-            logger.info("Exit: getTestData() - Internal Server Error - Code 500");
-            throw new RuntimeException(e);
-        }
-    }
+//    @GetMapping("/task/getTestData/{id}")
+//    public ResponseEntity<String> getTestData(@PathVariable int id) throws RuntimeException {
+//        logger.info("Enter: getTestData()");
+//        try{
+//            String testData = resourceService.getTestData(id);
+//            if(testData.equals("")){
+//                logger.info("Exit: getTestData() with status 404");
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find test-data for task " + id);
+//            }else{
+//                logger.info("Exit: getTestData() with status 200");
+//                return ResponseEntity.status(HttpStatus.OK).body(testData);
+//            }
+//        } catch (Exception e) {
+//            logger.info("Exit: getTestData() - Internal Server Error - Code 500");
+//            throw new RuntimeException(e);
+//        }
+//    }
 //    @GetMapping("/task/getEvents/{id}")
 //    public ResponseEntity<String> getEvents(@PathVariable int id) throws RuntimeException {
 //        logger.info("Enter: getEvents()");
@@ -102,10 +102,13 @@ public class ETutorDroolsController {
         }
     }
     @GetMapping("/task/getFacts/{id}")
-    public ResponseEntity<String> getFacts(@PathVariable int id) throws RuntimeException {
+    public ResponseEntity<String> getFacts(
+            @PathVariable int id,
+            @RequestParam(value = "isForDiagnose") boolean isForDiagnose
+    ) throws RuntimeException {
         logger.info("Enter: getFacts()");
         try{
-            String facts = resourceService.getFacts(id);
+            String facts = resourceService.getFacts(id, isForDiagnose);
             if(facts.equals("")){
                 logger.info("Exit: getFacts() with status 404");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find facts for task "+id);
@@ -136,6 +139,28 @@ public class ETutorDroolsController {
             throw new RuntimeException(e);
         }
     }
+
+    @GetMapping("/task/getOutput/{id}")
+    public ResponseEntity<String> getOutput(
+            @PathVariable int id,
+            @RequestParam(value = "isForDiagnose") boolean isForDiagnose
+    ) throws RuntimeException {
+        logger.info("Enter: getOutput()");
+        try{
+            String facts = resourceService.getOutput(id, isForDiagnose);
+            if(facts.equals("")){
+                logger.info("Exit: getOutput() with status 404");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find output for task "+id);
+            }else{
+                logger.info("Exit: getOutput() with status 200");
+                return ResponseEntity.status(HttpStatus.OK).body(facts);
+            }
+        } catch (Exception e) {
+            logger.info("Exit: getOutput() - Internal Server Error - Code 500");
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
     @GetMapping("/task/getTask/{id}")
