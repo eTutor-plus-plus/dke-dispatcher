@@ -2,6 +2,7 @@ package at.jku.dke.etutor.modules.drools.analysis;
 
 import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
 import at.jku.dke.etutor.objects.dispatcher.drools.DroolsObjectDTO;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.kie.api.builder.Results;
@@ -276,22 +277,6 @@ public class DroolsAnalysis extends DefaultAnalysis {
         }
     }
 
-//    public List<Map<String, Object>>
-
-    public List<Map<String, Object>> createOutputFactList(Boolean isForDiagnose) throws ReflectiveOperationException, IOException {
-
-        Collection<?> generatedFacts = fireRules(isForDiagnose);
-
-        List<Map<String, Object>> listOfKeyValuePairs = new ArrayList<>();
-
-        for (Object fact : generatedFacts) {
-            Map<String, Object> keyValuePairs = new HashMap<>();
-            createKeyValuePairs(fact, keyValuePairs);
-            listOfKeyValuePairs.add(keyValuePairs);
-        }
-        return listOfKeyValuePairs;
-    }
-
     public int createSampleSolution(Boolean isForDiagnose) throws ReflectiveOperationException, IOException {
 
         try {
@@ -344,13 +329,72 @@ public class DroolsAnalysis extends DefaultAnalysis {
         return -1;
     }
 
+    public List<Map<String, Object>> convertOutputJsonToListUtil(String jsonOutput){
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            List<Map<String, Object>> listOfMaps = objectMapper.readValue(jsonOutput, new TypeReference<>() {});
+
+            // Rekursive Umwandlung der verschachtelten Maps
+            List<Map<String, Object>> convertedList = new ArrayList<>();
+            for (Map<String, Object> map : listOfMaps) {
+                Map<String, Object> convertedMap = new HashMap<>();
+                convertNestedMap(map, convertedMap);
+                convertedList.add(convertedMap);
+            }
+
+            return convertedList;
+
+            // Verarbeitung der umgewandelten Liste
+//            for (Map<String, Object> convertedMap : convertedList) {
+//                for (Map.Entry<String, Object> entry : convertedMap.entrySet()) {
+//                    System.out.println(entry.getKey() + ": " + entry.getValue());
+//                }
+//                System.out.println("---------------");
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static void convertNestedMap(Map<String, Object> source, Map<String, Object> destination) {
+        for (Map.Entry<String, Object> entry : source.entrySet()) {
+            if (entry.getValue() instanceof Map) {
+                Map<String, Object> nestedDestination = new HashMap<>();
+                convertNestedMap((Map<String, Object>) entry.getValue(), nestedDestination);
+                destination.put(entry.getKey(), nestedDestination);
+            } else {
+                destination.put(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    public List<Map<String, Object>> createOutputFactList(Boolean isForDiagnose) throws ReflectiveOperationException, IOException {
+
+        Collection<?> generatedFacts = fireRules(isForDiagnose);
+
+        List<Map<String, Object>> listOfKeyValuePairs = new ArrayList<>();
+
+        for (Object fact : generatedFacts) {
+            Map<String, Object> keyValuePairs = new HashMap<>();
+            createKeyValuePairs(fact, keyValuePairs);
+            listOfKeyValuePairs.add(keyValuePairs);
+        }
+        return listOfKeyValuePairs;
+    }
+
     private static void createKeyValuePairs(Object obj, Map<String, Object> keyValuePairs) {
         for (Field field : obj.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             try {
                 Object value = field.get(obj);
+                keyValuePairs.put("class", obj.getClass().getName());
                 if (value != null) {
                     if (isPrimitiveOrSpecificType(field.getType())) {
+                        if (field.getType().equals(Date.class)) {
+                            value = ((Date) value).toString(); // Anpassen Sie dies an das gewünschte Datumsformat
+                        }
                         keyValuePairs.put(field.getName(), value);
                     } else {
                         Map<String, Object> subKeyValuePairs = new HashMap<>();
@@ -379,6 +423,56 @@ public class DroolsAnalysis extends DefaultAnalysis {
                 type.equals(Double.class) ||
                 type.equals(String.class) ||
                 type.equals(Date.class);
+    }
+
+    public boolean compareLists(List<Map<String, Object>> list1, List<Map<String, Object>> list2) {
+        if (list1.size() != list2.size()) {
+            return false;
+        }
+
+        // Sortiere die Listen, um sicherzustellen, dass die Elemente in der gleichen Reihenfolge sind
+        list1.sort(Comparator.comparing(Object::toString));
+        list2.sort(Comparator.comparing(Object::toString));
+
+        for (int i = 0; i < list1.size(); i++) {
+            Map<String, Object> map1 = list1.get(i);
+            Map<String, Object> map2 = list2.get(i);
+
+            // Vergleiche die Maps
+            if (!compareNestedMaps(map1, map2)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    public static boolean compareNestedMaps(Map<String, Object> map1, Map<String, Object> map2) {
+        if (map1.size() != map2.size()) {
+            return false;
+        }
+
+        for (Map.Entry<String, Object> entry : map1.entrySet()) {
+            String key = entry.getKey();
+            Object value1 = entry.getValue();
+            Object value2 = map2.get(key);
+
+            if (value1 instanceof Map && value2 instanceof Map) {
+                if (!compareNestedMaps((Map<String, Object>) value1, (Map<String, Object>) value2)) {
+                    return false;
+                }
+            } else {
+                if (value1 == null) {
+                    if (value2 != null) {
+                        return false;
+                    }
+                } else if (!value1.equals(value2)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public boolean hasSemantikError(){
