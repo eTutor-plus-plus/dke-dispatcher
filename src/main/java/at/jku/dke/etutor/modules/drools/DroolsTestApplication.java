@@ -10,29 +10,32 @@ public class DroolsTestApplication {
 
     public static void main(String[] args) throws IOException, ReflectiveOperationException {
 
-        DroolsAnalysis analysis = new DroolsAnalysis(1,RULES);
+        DroolsAnalysis analysis = new DroolsAnalysis(1,RULES, true);
+        analysis.analyze();
 
 //        analysis.hasSyntaxError();
 //
 
-        analysis.createSampleSolution(true);
-        analysis.createSampleSolution(false);
+//        analysis.createSampleSolution(true);
+//        analysis.createSampleSolution(false);
 
-        List<Map<String, Object>> newOutputList = analysis.createOutputFactList(true);
+        int additionalFacts = analysis.getAdditionalFacts();
+        if(additionalFacts > 0) System.out.println("Es sind um " + additionalFacts + " Fakten zu viel.");
+        if(additionalFacts < 0) System.out.println("Es sind um " + additionalFacts + " Fakten zu wenig.");
 
-        List<Map<String, Object>> newConvertedList = analysis.convertOutputJsonToListUtil(JSON);
-
-        boolean isEqual = analysis.compareLists(newOutputList, newConvertedList);
+        int wrongFacts = analysis.getWrongFacts();
+        if(wrongFacts == 0) System.out.println("Regeln sind korrekt");
+        else System.out.println("Es sind "+ wrongFacts +" Fakten falsch.");
 
         System.out.println(analysis.toString());
-
-
 
     }
 
     private static final String JSON = "[{\"class\": \"at.jku.dke.etutor.modules.drools.jit.EnterParkingLotEvent\", \"vehicle\": {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Vehicle\", \"licensePlate\": \"W-444D\"}, \"timestamp\": \"Sun Jan 01 11:00:00 CET 2023\"}, {\"class\": \"at.jku.dke.etutor.modules.drools.jit.EnterParkingLotEvent\", \"vehicle\": {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Vehicle\", \"licensePlate\": \"S-333D\"}, \"timestamp\": \"Sun Jan 01 06:00:00 CET 2023\"}, {\"class\": \"at.jku.dke.etutor.modules.drools.jit.EnterParkingLotEvent\", \"vehicle\": {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Vehicle\", \"licensePlate\": \"L-888D\"}, \"timestamp\": \"Wed Feb 01 14:00:00 CET 2023\"}, {\"class\": \"at.jku.dke.etutor.modules.drools.jit.EnterParkingLotEvent\", \"vehicle\": {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Vehicle\", \"licensePlate\": \"L-111D\"}, \"timestamp\": \"Sun Jan 01 11:00:00 CET 2023\"}, {\"class\": \"at.jku.dke.etutor.modules.drools.jit.ExitParkingLotEvent\", \"vehicle\": {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Vehicle\", \"licensePlate\": \"L-111D\"}, \"timestamp\": \"Sun Jan 01 13:30:00 CET 2023\"}, {\"class\": \"at.jku.dke.etutor.modules.drools.jit.ExitParkingLotEvent\", \"vehicle\": {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Vehicle\", \"licensePlate\": \"S-333D\"}, \"timestamp\": \"Sun Jan 01 07:30:00 CET 2023\"}, {\"class\": \"at.jku.dke.etutor.modules.drools.jit.ExitParkingLotEvent\", \"vehicle\": {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Vehicle\", \"licensePlate\": \"W-444D\"}, \"timestamp\": \"Sun Jan 01 16:15:00 CET 2023\"}, {\"class\": \"at.jku.dke.etutor.modules.drools.jit.ExitParkingLotEvent\", \"vehicle\": {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Vehicle\", \"licensePlate\": \"L-888D\"}, \"timestamp\": \"Wed Feb 01 14:30:00 CET 2023\"}, {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Invoice\", \"price\": 3, \"vehicle\": {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Vehicle\", \"licensePlate\": \"L-111D\"}, \"invoiceDate\": \"Sun Jan 01 13:30:00 CET 2023\"}, {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Invoice\", \"price\": 3, \"vehicle\": {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Vehicle\", \"licensePlate\": \"L-888D\"}, \"invoiceDate\": \"Wed Feb 01 13:40:00 CET 2023\"}, {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Invoice\", \"price\": 12, \"vehicle\": {\"class\": \"at.jku.dke.etutor.modules.drools.jit.Vehicle\", \"licensePlate\": \"W-444D\"}, \"invoiceDate\": \"Sun Jan 01 16:15:00 CET 2023\"}]";
 
     private static final String RULES = """
+            package at.jku.dke.etutor.modules.drools.jit;
+            
             rule "Combine parking intervals if reentry within 15 min"
             when
                 $enter1 : EnterParkingLotEvent()

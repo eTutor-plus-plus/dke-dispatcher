@@ -301,7 +301,7 @@ public class SQLReporter {
     }
 
     /**
-     * Returns wheter the locale equals Locale.GERMAN
+     * Returns whether the locale equals Locale.GERMAN
      * @param locale the locale
      * @return a boolean
      */

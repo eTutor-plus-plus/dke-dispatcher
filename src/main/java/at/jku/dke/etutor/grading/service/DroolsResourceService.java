@@ -71,19 +71,6 @@ public class DroolsResourceService {
         return executeQueryAndReturnJSON(query, columnNames, taskId);
     }
 
-//    /**
-//     *
-//     * @param id
-//     * @return
-//     * @throws SQLException
-//     */
-//    public String getTestData(int id) throws SQLException {
-//        logger.debug("getTestData(int id)");
-//        String query = "SELECT input_classname, expected_output FROM testdata WHERE task_id = ?";
-//        String[] columnNames = {"input_classname", "expected_output"};
-//        return executeQueryAndReturnJSON(query, columnNames, id);
-//    }
-
     /**
      * Fetches all input facts and events for the selected task (diagnose/submit)
      * @param id
@@ -113,10 +100,10 @@ public class DroolsResourceService {
         logger.debug("getObjects(int taskId, boolean isForDiagnose)");
         String submissionType = "submit";
         if(isForDiagnose) submissionType = "diagnose";
-        String query = "SELECT parameter " +
+        String query = "SELECT parameter AS solution_output " +
                 "FROM objects " +
                 "WHERE task_id = ? AND data_type = 'output' AND submission_type = '"+submissionType+"'";
-        String[] columnNames = {"object_id", "full_classname", "parameter"};
+        String[] columnNames = {"solution_output"};
         return executeQueryAndReturnJSON(query, columnNames, id);
     }
 
@@ -133,13 +120,6 @@ public class DroolsResourceService {
         return executeQueryAndReturnJSON(query, columnNames, taskId);
     }
 
-//    public String getEvents(int id) throws SQLException {
-//        logger.debug("getEvents(int id)");
-//        String query = "SELECT clazz, reference_name, timestamp, instance_name FROM events WHERE task_id = ?";
-//        String[] columnNames = {"clazz", "reference_name", "timestamp", "instance_name"};
-//        return executeQueryAndReturnJSON(query, columnNames, id);
-//    }
-
     /**
      * Fetches a task
      * @param id
@@ -148,8 +128,21 @@ public class DroolsResourceService {
      */
     public String getTask(int id) throws SQLException {
         logger.debug("getTask(int id)");
-        String query = "SELECT task_id, solution, max_points FROM tasks WHERE task_id = ?";
-        String[] columnNames = {"task_id", "solution", "max_points"};
+        String query = "SELECT task_id, solution, max_points, error_weighting, validation_classname FROM tasks WHERE task_id = ?";
+        String[] columnNames = {"task_id", "solution", "max_points", "error_weighting", "validation_classname"};
+        return executeQueryAndReturnJSON(query, columnNames, id);
+    }
+
+    /**
+     * Fetches the additional properties of a drools task
+     * @param id
+     * @return
+     * @throws SQLException
+     */
+    public String getTaskProperties(int id) throws SQLException {
+        logger.debug("getTaskProperties(int taskId)");
+        String query = "SELECT error_weighting, validation_classname FROM tasks WHERE task_id = ?";
+        String[] columnNames = {"error_weighting", "validation_classname"};
         return executeQueryAndReturnJSON(query, columnNames, id);
     }
 
@@ -229,7 +222,7 @@ public class DroolsResourceService {
      * @throws DatabaseException
      * @throws SQLException
      */
-    public int addTask(DroolsTaskDTO taskDTO) throws DatabaseException, SQLException { //TODO: Exception??
+    public int addTask(DroolsTaskDTO taskDTO) throws DatabaseException, SQLException {
         logger.debug("Enter: Creating task");
         try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
 
@@ -237,13 +230,18 @@ public class DroolsResourceService {
             int taskId = getAvailableExerciseId();
             int maxPoints = taskDTO.getMaxPoints();
             String solution = taskDTO.getSolution();
+            int errorWeighting = taskDTO.getErrorWeighting();
+            String validationClassname = taskDTO.getValidationClassname();
 
             PreparedStatement createTaskStmt = con.prepareStatement("INSERT INTO tasks " +
-                    "(task_id, solution, max_points) " +
-                    "VALUES(?,?,?)");
+                    "(task_id, solution, error_weighting, validation_classname) " +
+                    "VALUES(?,?,?,?,?)");
             createTaskStmt.setInt(1, taskId);
             createTaskStmt.setString(2, solution);
             createTaskStmt.setInt(3, maxPoints);
+            createTaskStmt.setInt(4,errorWeighting);
+            createTaskStmt.setString(5, validationClassname);
+
             logger.debug("Statement for creating task: {} ", createTaskStmt);
             int rowsInserted = createTaskStmt.executeUpdate();
             if (rowsInserted > 0) {
@@ -251,10 +249,11 @@ public class DroolsResourceService {
                 if(createClasses(taskDTO, taskId, con) > 0) {
                     if(createObjects(taskDTO, taskId, con) > 0){
                         con.commit();
-                        DroolsAnalysis analysis = new DroolsAnalysis(taskId, solution);
-                        if(!analysis.hasSyntaxError()){
-                            if(analysis.createSampleSolution(true) == 200
-                                    && analysis.createSampleSolution(false) == 200){
+                        DroolsAnalysis analysisSubmit = new DroolsAnalysis(taskId, solution, false);
+                        DroolsAnalysis analysisDiagnose = new DroolsAnalysis(taskId, solution, true);
+                        if(!analysisSubmit.isHasSyntaxError()){
+                            if(analysisSubmit.createSampleSolution() == 200
+                                    && analysisDiagnose.createSampleSolution() == 200){
                                 return taskId;
                             }
                         }
@@ -281,7 +280,7 @@ public class DroolsResourceService {
      * @throws DatabaseException
      * @throws SQLException
      */
-    public int createClasses(DroolsTaskDTO taskDTO, int taskId, Connection con) throws DatabaseException, SQLException { //TODO: Exception??
+    public int createClasses(DroolsTaskDTO taskDTO, int taskId, Connection con) throws DatabaseException, SQLException {
         logger.debug("Enter: Creating classes");
         try {
             String classesJson = taskDTO.getClasses();
@@ -455,7 +454,7 @@ public class DroolsResourceService {
 
 
     /**
-     * Delete a task from teh database
+     * Delete a task from the database
      * @param id
      * @throws SQLException
      */
@@ -463,19 +462,19 @@ public class DroolsResourceService {
         logger.debug("Enter: Deleting task");
         try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
             con.setAutoCommit(false);
-            //TODO: Prüfen ob Task existiert?? 20231202 LK
 
-            PreparedStatement statement = con.prepareStatement("DELETE FROM tasks WHERE id = ?");
-            statement.setInt(1, id);
+            PreparedStatement statementObjects = con.prepareStatement("DELETE FROM objects WHERE task_id =" + id);
+            statementObjects.executeUpdate();
 
-            logger.debug("Statement for deleting task: {} ", statement);
-            int rowsDeleted = statement.executeUpdate();
-            if(rowsDeleted > 0){
-                logger.debug("Task deleted");
-                con.commit();
-                return;
-            }
-            con.rollback();
+            PreparedStatement statementClasses = con.prepareStatement("DELETE FROM classes WHERE task_id =" + id);
+            statementClasses.executeUpdate();
+
+            PreparedStatement statementTasks = con.prepareStatement("DELETE FROM tasks WHERE task_id =" + id);
+            statementTasks.executeUpdate();
+            logger.debug("Statement for deleting task: {}; {}; {}", statementObjects, statementClasses, statementTasks);
+            logger.debug("Task deleted");
+            con.commit();
+
         } catch (SQLException throwable) {
             logger.error(throwable.getMessage(), throwable);
             throw new SQLException(throwable);

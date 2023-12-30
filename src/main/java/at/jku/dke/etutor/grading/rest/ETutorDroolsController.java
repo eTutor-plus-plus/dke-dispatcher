@@ -50,40 +50,12 @@ public class ETutorDroolsController {
         }
     }
 
-//    @GetMapping("/task/getTestData/{id}")
-//    public ResponseEntity<String> getTestData(@PathVariable int id) throws RuntimeException {
-//        logger.info("Enter: getTestData()");
-//        try{
-//            String testData = resourceService.getTestData(id);
-//            if(testData.equals("")){
-//                logger.info("Exit: getTestData() with status 404");
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find test-data for task " + id);
-//            }else{
-//                logger.info("Exit: getTestData() with status 200");
-//                return ResponseEntity.status(HttpStatus.OK).body(testData);
-//            }
-//        } catch (Exception e) {
-//            logger.info("Exit: getTestData() - Internal Server Error - Code 500");
-//            throw new RuntimeException(e);
-//        }
-//    }
-//    @GetMapping("/task/getEvents/{id}")
-//    public ResponseEntity<String> getEvents(@PathVariable int id) throws RuntimeException {
-//        logger.info("Enter: getEvents()");
-//        try{
-//            String events = resourceService.getEvents(id);
-//            if(events.equals("")){
-//                logger.info("Exit: getEvents() with status 404");
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find events for task "+id);
-//            }else{
-//                logger.info("Exit: getEvents() with status 200");
-//                return ResponseEntity.status(HttpStatus.OK).body(events);
-//            }
-//        } catch (Exception e) {
-//            logger.info("Exit: getEvents() - Internal Server Error - Code 500");
-//            throw new RuntimeException(e);
-//        }
-//    }
+    /**
+     * Fetches the solution rules
+     * @param id
+     * @return
+     * @throws RuntimeException
+     */
     @GetMapping("/task/getSolution/{id}")
     public ResponseEntity<String> getSolution(@PathVariable int id) throws RuntimeException {
         logger.info("Enter: getSolution()");
@@ -101,6 +73,38 @@ public class ETutorDroolsController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Fetches additional properties for the selected task
+     * @param id
+     * @return
+     * @throws RuntimeException
+     */
+    @GetMapping("/task/getTaskProperties/{id}")
+    public ResponseEntity<String> getTaskProperties(@PathVariable int id) throws RuntimeException {
+        logger.info("Enter: getTaskProperties()");
+        try{
+            String solution = resourceService.getTaskProperties(id);
+            if(solution.equals("")){
+                logger.info("Exit: getTaskProperties() with status 404");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find properties for task "+id);
+            }else{
+                logger.info("Exit: getTaskProperties() with status 200");
+                return ResponseEntity.status(HttpStatus.OK).body(solution);
+            }
+        } catch (Exception e) {
+            logger.info("Enter: getTaskProperties() - Internal Server Error - Code 500");
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Fetches the facts for either submit or diagnose
+     * @param id
+     * @param isForDiagnose
+     * @return
+     * @throws RuntimeException
+     */
     @GetMapping("/task/getFacts/{id}")
     public ResponseEntity<String> getFacts(
             @PathVariable int id,
@@ -122,6 +126,13 @@ public class ETutorDroolsController {
         }
     }
 
+    /**
+     * Saves the output facts to the database
+     * @param objectDTO
+     * @return
+     * @throws ApiException
+     * @throws DatabaseException
+     */
     @PostMapping("/task/createOutput")
     public ResponseEntity<String> createOutput(@RequestBody DroolsObjectDTO objectDTO) throws ApiException, DatabaseException {
         logger.info("Enter: createOutput()");
@@ -140,6 +151,13 @@ public class ETutorDroolsController {
         }
     }
 
+    /**
+     * Fetches the output facts for the selected task (submit/diagnose)
+     * @param id
+     * @param isForDiagnose
+     * @return
+     * @throws RuntimeException
+     */
     @GetMapping("/task/getOutput/{id}")
     public ResponseEntity<String> getOutput(
             @PathVariable int id,
@@ -162,7 +180,12 @@ public class ETutorDroolsController {
     }
 
 
-
+    /**
+     * Fetches the information of a task
+     * @param id
+     * @return
+     * @throws RuntimeException
+     */
     @GetMapping("/task/getTask/{id}")
     public ResponseEntity<String> getTask(@PathVariable int id) throws RuntimeException {
         logger.info("Enter: getTask()");
@@ -181,6 +204,12 @@ public class ETutorDroolsController {
         }
     }
 
+    /**
+     * Creates a task in the database
+     * @param taskDTO
+     * @return
+     * @throws ApiException
+     */
     @PostMapping("/task/addTask")
     public ResponseEntity<Integer> addTask(@RequestBody DroolsTaskDTO taskDTO) throws ApiException {
         logger.info("Enter: addTask()");
@@ -200,6 +229,12 @@ public class ETutorDroolsController {
         }
     }
 
+    /**
+     * Edit a task
+     * @param id
+     * @param taskDTO
+     * @return
+     */
     @PutMapping("/task/editTask/{id}")
     public ResponseEntity<String> editTask(@PathVariable int id, @RequestBody DroolsTaskDTO taskDTO){
         logger.info("Enter: editTask() task_id: {}", id);
@@ -212,89 +247,14 @@ public class ETutorDroolsController {
         }
     }
 
+    /**
+     * Delete a task
+     * @param id
+     * @throws SQLException
+     */
     @DeleteMapping("/task/deleteTask/{id}")
     public void deleteTask(@PathVariable int id) throws SQLException {
         resourceService.deleteTask(id);
     }
-
-//    @PostMapping("/task/addClass")
-//    public ResponseEntity<String> addClass(@RequestBody DroolsClassDTO classDTO) throws ApiException {
-//        logger.info("Enter: addClass()");
-//        try {
-//            String className = resourceService.addTask(classDTO);
-//
-//            //TODO: Eventuell Syntax vor dem erstellen Prüfen? 20231203
-//
-//            logger.info("Exit: addClass() for className: {} with Status Code 200", className);
-//            return ResponseEntity.ok(className);
-//        } catch (DatabaseException e) {
-//            logger.error("Exit: addClass() with Status Code 500", e);
-//            logger.info("Rollback. Deleting class.");
-//            throw new ApiException(500, e.toString(), null);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-//    @PostMapping("/task/addEvent")
-//    public ResponseEntity<String> addEvent(@RequestBody DroolsEventDTO eventDTO) throws ApiException {
-//        logger.info("Enter: addEvent()");
-//        try {
-//            String eventName = resourceService.addEvent(eventDTO);
-//
-//            //TODO: Eventuell Syntax vor dem erstellen Prüfen? 20231203
-//
-//            logger.info("Exit: addEvent() for eventName: {} with Status Code 200", eventName);
-//            return ResponseEntity.ok(eventName);
-//        } catch (DatabaseException e) {
-//            logger.error("Exit: addEvent() with Status Code 500", e);
-//            logger.info("Rollback. Deleting event.");
-//            throw new ApiException(500, e.toString(), null);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-//    @PostMapping("/task/addFact")
-//    public ResponseEntity<String> addFact(@RequestBody DroolsFactDTO factDTO) throws ApiException {
-//        logger.info("Enter: addFact()");
-//        try {
-//            String factName = resourceService.addFact(factDTO);
-//
-//            //TODO: Eventuell Syntax vor dem erstellen Prüfen? 20231203
-//
-//            logger.info("Exit: addFact() for factName: {} with Status Code 200", factName);
-//            return ResponseEntity.ok(factName);
-//        } catch (DatabaseException e) {
-//            logger.error("Exit: addFact() with Status Code 500", e);
-//            logger.info("Rollback. Deleting fact.");
-//            throw new ApiException(500, e.toString(), null);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-//    @PostMapping("/task/addTestdata")
-//    public ResponseEntity<Integer> addTestdata(@RequestBody DroolsTestDTO testDTO) throws ApiException {
-//        logger.info("Enter: addTestdata()");
-//        try {
-//            int taskId = resourceService.addTestdata(testDTO);
-//
-//            //TODO: Eventuell Syntax vor dem erstellen Prüfen? 20231203
-//
-//            logger.info("Exit: addTestdata() for taskId: {} with Status Code 200", taskId);
-//            return ResponseEntity.ok(taskId);
-//        } catch (DatabaseException e) {
-//            logger.error("Exit: addTestdata() with Status Code 500", e);
-//            logger.info("Rollback. Deleting testdata.");
-//            throw new ApiException(500, e.toString(), null);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-
-
-
 
 }
