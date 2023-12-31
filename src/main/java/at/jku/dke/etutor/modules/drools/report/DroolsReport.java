@@ -3,7 +3,6 @@ package at.jku.dke.etutor.modules.drools.report;
 import at.jku.dke.etutor.core.evaluation.DefaultReport;
 import at.jku.dke.etutor.modules.drools.analysis.DroolsAnalysis;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.Map;
@@ -19,40 +18,113 @@ public class DroolsReport extends DefaultReport implements Serializable {
         this.droolsAnalysis = droolsAnalysis;
         this.locale = locale;
         this.passedAttributes = passedAttributes;
+        errorMessage = new StringBuilder();
+        hintMessage = new StringBuilder();
+        report();
     }
 
-    public void report(Locale locale ){
+    public void report(){
         if(this.droolsAnalysis.isHasSyntaxError()){
-            if(isGermanLocale()) this.errorMessage.append("Die Regeln konnten aufgrund eines Syntaxfehlers nicht ausgeführt werden.");
-            else this.errorMessage.append("Rules could not be built due to a syntax error.");
+            if(isGermanLocale()) this.errorMessage.append("Die Regeln konnten aufgrund eines Syntaxfehlers nicht ausgeführt werden. ");
+            else this.errorMessage.append("Rules could not be built due to a syntax error. ");
             this.setShowErrorDescription(true);
             this.errorMessage.append(droolsAnalysis.getSyntaxErrorMessage());
+            this.setError(errorMessage.toString());
+            return;
         }
-        this.setError(errorMessage.toString());
 
-        if((this.droolsAnalysis.getAdditionalFacts() != 0 || this.droolsAnalysis.getWrongFacts() != 0)){
+
+        if((this.droolsAnalysis.getAdditionalFacts() != 0 || this.droolsAnalysis.getWrongFactList().isEmpty())){
             if(passedAttributes.get("diagnoseLevel").equals("0")) {
                this.setShowHint(true);
-               if(isGermanLocale()) this.hintMessage.append("Die Regeln enthalten semantische Fehler.");
-               else this.hintMessage.append("Rules contain semantic errors.");
+               if(isGermanLocale()){
+                   this.hintMessage.append("Die Regeln enthalten semantische Fehler. ");
+               }
+               else{
+                   this.hintMessage.append("Rules contain semantic errors. ");
+               }
             }
 
             if(passedAttributes.get("diagnoseLevel").equals("1")) {
                 this.setShowHint(true);
-                if(isGermanLocale()) this.hintMessage.append("Es wurden zu viel/zu wenig Fakten erzeugt");
-                else this.hintMessage.append("Rules produce additional/less facts");
+                if(droolsAnalysis.getAdditionalFacts() > 0) {
+                    if (isGermanLocale()){
+                        this.hintMessage.append("Es wurden zu viele Fakten erzeugt. ");
+                    }
+                    else{
+                        this.hintMessage.append("Rules produces additional facts. ");
+                    }
+                }else{
+                    if (isGermanLocale()){
+                        this.hintMessage.append("Es wurden zu wenig Fakten erzeugt. ");
+                    }
+                    else{
+                        this.hintMessage.append("Rules produces too few facts. ");
+                    }
+                }
             }
 
             if(passedAttributes.get("diagnoseLevel").equals("2")) {
                 this.setShowHint(true);
-                if(isGermanLocale()) this.hintMessage.append("Es wurden um <ANZAHL> zu viel/zu wenig Fakten erzeugt");
-                else this.hintMessage.append("Rules produce <NUMBER> additional/less facts");
+                if(droolsAnalysis.getAdditionalFacts() > 0) {
+                    if (isGermanLocale()){
+                        this.hintMessage.append("Es wurden um ")
+                                .append(droolsAnalysis.getAdditionalFacts())
+                                .append(" zu viele Fakten erzeugt. ");
+                    }
+                    else{
+                        this.hintMessage.append("Rules are generating ")
+                                .append(droolsAnalysis.getAdditionalFacts())
+                                .append(" facts too many.");
+                    }
+                }else{
+                    if (isGermanLocale()){
+                        this.hintMessage.append("Es wurden um ")
+                                .append(Math.abs(droolsAnalysis.getAdditionalFacts()))
+                                .append(" zu wenig Fakten erzeugt. ");
+                    }
+                    else{
+                        this.hintMessage.append("Rules are generating ")
+                                .append(droolsAnalysis.getAdditionalFacts())
+                                .append(" facts too few.");
+                    }
+                }
             }
 
             if(passedAttributes.get("diagnoseLevel").equals("3")) {
                 this.setShowHint(true);
-                if(isGermanLocale()) this.hintMessage.append("Es wurden um <ANZAHL> zu viele/zu wenig Fakten, der Klasse <CLASSNAME> erzeugt");
-                else this.hintMessage.append("Rules produce <NUMBER> additional/less facts of class <CLASSNAME>");
+                if(droolsAnalysis.getAdditionalFacts() > 0) {
+                    if (isGermanLocale()){
+                        this.hintMessage.append("Es wurden zu viel Fakten erzeugt. ");
+                    }
+                    else{
+                        this.hintMessage.append("Rules produces additional facts. ");
+                    }
+                }else{
+                    if (isGermanLocale()){
+                        this.hintMessage.append("Es wurden zu wenig Fakten erzeugt. ");
+                    }
+                    else{
+                        this.hintMessage.append("Rules produces too few facts. ");
+                    }
+                }
+
+                for (Map.Entry<String, Long> entry : droolsAnalysis.getAdditionalFactInformation().entrySet()) {
+                    String className = entry.getKey();
+                    Long difference = entry.getValue();
+
+                    String message;
+                    if (difference > 0) {
+                        message = difference + " facts too many of class " + className;
+                    } else if (difference < 0) {
+                        message = Math.abs(difference) + " facts too few of class " + className;
+                    } else {
+                        message = "Correct number of facts of class " + className;
+                    }
+
+                    this.hintMessage.append(message);
+                }
+
             }
 
             this.setHint(hintMessage.toString());

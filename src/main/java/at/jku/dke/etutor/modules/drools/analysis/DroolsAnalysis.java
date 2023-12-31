@@ -23,6 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class DroolsAnalysis extends DefaultAnalysis {
     private int taskId;
@@ -35,10 +36,11 @@ public class DroolsAnalysis extends DefaultAnalysis {
     private String taskValidationClassname;
     private final boolean isForDiagnose;
     private List<Map<String, Object>> studentOutput;
-    private int wrongFacts;
-    private int additionalFacts;
+    private List<Map<String, Object>> wrongFactList;
+    private Map<String, Long> additionalFactInformation;
+    private long additionalFacts;
     private boolean hasSyntaxError;
-    private String syntaxErrorMessage = "";
+    private StringBuilder syntaxErrorMessage = new StringBuilder();
 
     public DroolsAnalysis(int taskId, String inputRules, Boolean isForDiagnose) throws IOException, ReflectiveOperationException {
         super();
@@ -58,10 +60,13 @@ public class DroolsAnalysis extends DefaultAnalysis {
      * @throws IOException
      */
     public void analyze() throws ReflectiveOperationException, IOException {
+        if(hasSyntaxError) return;
+
         loadSampleSolutionOutput();
         this.studentOutput = createOutputFactList();
-        this.additionalFacts = this.sampleSolutionOutput.size() - this.studentOutput.size();
-        this.wrongFacts = compareOutputs();
+        this.additionalFactInformation = buildComparisonReport();
+        this.wrongFactList = compareOutputs();
+        this.setSubmissionSuitsSolution(!hasSyntaxError && wrongFactList.isEmpty() && additionalFactInformation.isEmpty());
     }
 
     /**
@@ -162,27 +167,6 @@ public class DroolsAnalysis extends DefaultAnalysis {
         this.facts = factList;
     }
 
-    /**
-     * Parses the input as primitive datatype.
-     *
-     * @return Primitive datatype of the String input.
-     * */
-    private Object parseValue(String value) {
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            try {
-                return Double.parseDouble(value);
-            } catch (NumberFormatException ex) {
-                if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
-                    return Boolean.parseBoolean(value);
-                }
-                // Primitive Datentypen nach Bedarf erweitern
-            }
-        }
-        // Standardfall: Wenn keiner der primitiven Datentypen passt, wird einfach der String verwendet
-        return value;
-    }
 
     /**
      * Loads the solution rules from the task table
@@ -245,7 +229,7 @@ public class DroolsAnalysis extends DefaultAnalysis {
 
                 for (org.kie.api.builder.Message message : results.getMessages()) {
                     if (message.getLevel() == org.kie.api.builder.Message.Level.ERROR) {
-                        this.syntaxErrorMessage = message.getText();
+                        this.syntaxErrorMessage.append(message.getText()).append(". ");
                     }
                 }
                 return true;
@@ -494,25 +478,70 @@ public class DroolsAnalysis extends DefaultAnalysis {
                 type.equals(Date.class);
     }
 
-    private int compareOutputs() {
+    private Map<String, Long> buildComparisonReport(){
         List<Map<String, Object>> list1 = this.sampleSolutionOutput;
         List<Map<String, Object>> list2 = this.studentOutput;
+
+        Map<String, Long> classCountMap1 = list1.stream()
+                .map(map -> (String) map.get("class"))
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        className -> className,
+                        Collectors.counting()
+                ));
+
+        Map<String, Long> classCountMap2 = list2.stream()
+                .map(map -> (String) map.get("class"))
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        className -> className,
+                        Collectors.counting()
+                ));
+
+        Map<String, Long> differenceMap = new HashMap<>(classCountMap2);
+
+        // Vergleiche die Einträge in classCountMap1 mit differenceMap und finde die Unterschiede
+        classCountMap1.forEach((className, count) -> differenceMap.compute(className, (key, value) -> {
+            if (value == null) {
+                return -count; // Die Klasse existiert nur in Map 2
+            } else {
+                return value - count; // Berechne den Unterschied in den Vorkommnisse
+            }
+        }));
+
+        // Entferne Einträge, die in beiden Maps vorkommen (d.h. Vorkommen = 0)
+        differenceMap.entrySet().removeIf(entry -> entry.getValue() == 0);
+
+        this.additionalFacts = differenceMap.values().stream()
+                .mapToLong(Long::longValue)
+                .sum();
+
+        return differenceMap;
+    }
+
+    private List<Map<String, Object>> compareOutputs() {
+        List<Map<String, Object>> list1 = this.sampleSolutionOutput;
+        List<Map<String, Object>> list2 = this.studentOutput;
+        List<Map<String, Object>> wrongFactList = new ArrayList<>();
 
         // Sortiere die Listen, um sicherzustellen, dass die Elemente in der gleichen Reihenfolge sind
         list1.sort(Comparator.comparing(Object::toString));
         list2.sort(Comparator.comparing(Object::toString));
-        int numberOfWrongFacts = 0;
-        for (int i = 0; i < list1.size(); i++) {
-            Map<String, Object> map1 = list1.get(i);
-            Map<String, Object> map2 = list2.get(i);
 
-            // Vergleiche die Maps
-            if (!compareNestedMaps(map1, map2)) {
-                numberOfWrongFacts = numberOfWrongFacts + 1;
+
+        if(list1.size() == list2.size()){
+            for (int i = 0; i < list1.size(); i++) {
+                Map<String, Object> map1 = list1.get(i);
+                Map<String, Object> map2 = list2.get(i);
+
+                // Vergleiche die Maps
+                if (!compareNestedMaps(map1, map2)) {
+                    wrongFactList.add(map2);
+                }
             }
         }
 
-        return numberOfWrongFacts;
+        return wrongFactList;
     }
 
     private static boolean compareNestedMaps(Map<String, Object> map1, Map<String, Object> map2) {
@@ -542,6 +571,28 @@ public class DroolsAnalysis extends DefaultAnalysis {
             }
         }
         return true;
+    }
+
+    /**
+     * Parses the input as primitive datatype.
+     *
+     * @return Primitive datatype of the String input.
+     * */
+    private Object parseValue(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            try {
+                return Double.parseDouble(value);
+            } catch (NumberFormatException ex) {
+                if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+                    return Boolean.parseBoolean(value);
+                }
+                // Primitive Datentypen nach Bedarf erweitern
+            }
+        }
+        // Standardfall: Wenn keiner der primitiven Datentypen passt, wird einfach der String verwendet
+        return value;
     }
 
 
@@ -622,20 +673,32 @@ public class DroolsAnalysis extends DefaultAnalysis {
         this.studentOutput = studentOutput;
     }
 
-    public int getWrongFacts() {
-        return wrongFacts;
-    }
-
-    public void setWrongFacts(int wrongFacts) {
-        this.wrongFacts = wrongFacts;
-    }
-
-    public int getAdditionalFacts() {
+    public long getAdditionalFacts() {
         return additionalFacts;
     }
 
-    public void setAdditionalFacts(int additionalFacts) {
+    public void setAdditionalFacts(long additionalFacts) {
         this.additionalFacts = additionalFacts;
+    }
+
+    public List<Map<String, Object>> getWrongFactList() {
+        return wrongFactList;
+    }
+
+    public void setWrongFactList(List<Map<String, Object>> wrongFactList) {
+        this.wrongFactList = wrongFactList;
+    }
+
+    public Map<String, Long> getAdditionalFactInformation() {
+        return additionalFactInformation;
+    }
+
+    public void setAdditionalFactInformation(Map<String, Long> additionalFactInformation) {
+        this.additionalFactInformation = additionalFactInformation;
+    }
+
+    public void setSyntaxErrorMessage(StringBuilder syntaxErrorMessage) {
+        this.syntaxErrorMessage = syntaxErrorMessage;
     }
 
     public boolean isHasSyntaxError() {
@@ -647,11 +710,11 @@ public class DroolsAnalysis extends DefaultAnalysis {
     }
 
     public String getSyntaxErrorMessage() {
-        return syntaxErrorMessage;
+        return syntaxErrorMessage.toString();
     }
 
     public void setSyntaxErrorMessage(String syntaxErrorMessage) {
-        this.syntaxErrorMessage = syntaxErrorMessage;
+        this.syntaxErrorMessage.append(syntaxErrorMessage);
     }
 
     @Override

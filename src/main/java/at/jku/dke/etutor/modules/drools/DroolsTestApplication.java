@@ -3,8 +3,6 @@ package at.jku.dke.etutor.modules.drools;
 import at.jku.dke.etutor.modules.drools.analysis.DroolsAnalysis;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 public class DroolsTestApplication {
 
@@ -19,11 +17,14 @@ public class DroolsTestApplication {
 //        analysis.createSampleSolution(true);
 //        analysis.createSampleSolution(false);
 
-        int additionalFacts = analysis.getAdditionalFacts();
+        long additionalFacts = analysis.getAdditionalFactInformation().values().stream()
+                .mapToLong(Long::longValue)
+                .sum();
+
         if(additionalFacts > 0) System.out.println("Es sind um " + additionalFacts + " Fakten zu viel.");
         if(additionalFacts < 0) System.out.println("Es sind um " + additionalFacts + " Fakten zu wenig.");
 
-        int wrongFacts = analysis.getWrongFacts();
+        int wrongFacts = analysis.getWrongFactList().size();
         if(wrongFacts == 0) System.out.println("Regeln sind korrekt");
         else System.out.println("Es sind "+ wrongFacts +" Fakten falsch.");
 
@@ -40,7 +41,7 @@ public class DroolsTestApplication {
             when
                 $enter1 : EnterParkingLotEvent()
                 $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
-                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[0s, 15m] $exit)
+                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[0s, 50m] $exit)
             then
                 System.out.printf("Re-enter within 15 minutes after exiting [vehicle: %s, enter1: %s, exit: %s, enter2: %s]%n",
                     $enter1.vehicle().licensePlate(),

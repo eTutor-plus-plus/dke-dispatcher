@@ -30,6 +30,7 @@ public class DroolsEvaluator implements Evaluator {
         else if (passedAttributes.get("action").equalsIgnoreCase("submit")) isForDiagnose = false;
 
         DroolsAnalysis analysis = new DroolsAnalysis(taskId, passedAttributes.get("submission"), isForDiagnose);
+        analysis.analyze();
         return analysis;
     }
 

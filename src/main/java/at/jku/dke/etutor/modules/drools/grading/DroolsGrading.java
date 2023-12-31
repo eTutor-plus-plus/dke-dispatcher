@@ -14,20 +14,23 @@ public class DroolsGrading extends DefaultGrading {
     private final Logger logger;
     private final DroolsAnalysis analysis;
 
-    public DroolsGrading(DroolsAnalysis analysis, int maxPoints){
+    public DroolsGrading(DroolsAnalysis analysis, int maxPoints) throws IOException {
         super();
         this.logger = (Logger) LoggerFactory.getLogger(ETutorDroolsController.class);
         this.analysis = analysis;
         this.setMaxPoints(maxPoints);
+        grade();
     }
 
     public void grade() throws IOException {
         logger.debug("Enter: grade()");
         if(analysis.isHasSyntaxError()) this.setPoints(0);
-        double points = this.getMaxPoints() - (analysis.getWrongFacts() + analysis.getAdditionalFacts())*analysis.getTaskErrorWeighting()/100.0;
-        if(points < 0) points = 0;
-        this.setPoints(points);
-        logger.debug("set points to: {}", points);
+        else {
+            double points = this.getMaxPoints() - (analysis.getWrongFactList().size() + Math.abs(analysis.getAdditionalFacts())) * analysis.getTaskErrorWeighting() / 100.0;
+            if (points < 0) points = 0;
+            this.setPoints(points);
+            logger.debug("set points to: {}", points);
+        }
     }
 
 }
