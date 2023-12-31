@@ -30,10 +30,6 @@ public class FunctionalDependency implements Serializable{
 	 * @return A <code>List</code> of unfolded functional dependencies, derived from this one
 	 */
 	public List<FunctionalDependency> unfold() {
-		/*
-		 * As the only usage of this method's return value is to add all values to another collection, I replaced the
-		 * Vector with a LinkedList for faster insertion here.
-		 */
 		List<FunctionalDependency> unfoldedRepresentation = new LinkedList<>();
 
         for (String rh : this.rhsAttributes) {
@@ -47,14 +43,18 @@ public class FunctionalDependency implements Serializable{
 		return unfoldedRepresentation;
 	}
 
+	/**
+	 * Tests whether either side of this <code>FunctionalDependency</code> is empty or if the left-hand side contains
+	 * the right-hand side (Gerald Wimmer, 2023-12-31)
+	 * @return whether either side of this <code>FunctionalDependency</code> is empty or if the left-hand side contains
+	 * the right-hand side
+	 */
 	public boolean isTrivial() {
 		return this.lhsAttributes.isEmpty() || this.rhsAttributes.isEmpty() || this.lhsAttributes.containsAll(this.rhsAttributes);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		FunctionalDependency dependency;
-
 		if (obj == null) {
 			return false;
 		}
@@ -63,7 +63,7 @@ public class FunctionalDependency implements Serializable{
 			return false;
 		}
 
-		dependency = (FunctionalDependency)obj;
+		FunctionalDependency dependency = (FunctionalDependency)obj;
 
 		if (!(dependency.getLhsAttributes().containsAll(this.lhsAttributes))) {
 			return false;

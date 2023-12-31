@@ -4,10 +4,11 @@ import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class TrivialDependenciesAnalysis extends NFAnalysis {
 
-	private HashSet<FunctionalDependency> trivialDependencies;
+	private final Set<FunctionalDependency> trivialDependencies;
 
 	public TrivialDependenciesAnalysis() {
 		super();
@@ -18,11 +19,8 @@ public class TrivialDependenciesAnalysis extends NFAnalysis {
 		this.trivialDependencies.add(dependency);
 	}
 
-	public HashSet<FunctionalDependency> getTrivialDependencies() {
-		return (HashSet<FunctionalDependency>)this.trivialDependencies.clone();
+	public Set<FunctionalDependency> getTrivialDependencies() {
+		return new HashSet<>(this.trivialDependencies);
 	}
 
-	public void setTrivialDependencies(HashSet<FunctionalDependency> trivialDependencies) {
-		this.trivialDependencies = trivialDependencies;
-	}
 }

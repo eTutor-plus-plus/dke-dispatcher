@@ -2,28 +2,68 @@ package at.jku.dke.etutor.modules.nf.specification;
 
 public class MinimalCoverSpecification extends NFSpecification {
 
-    private int pointsDeductedPerMissingDependency;
+    private int pointsDeductedPerNonCanonicalDependency;
 
-    private int pointsDeductedPerIncorrectDependency;
+    private int pointsDeductedPerTrivialDependency;
+
+    private int pointsDeductedPerExtraneousAttribute;
+
+    private int pointsDeductedPerRedundantDependency;
+
+    private int pointsDeductedPerMissingDependencyVsSolution;
+
+    private int pointsDeductedPerIncorrectDependencyVsSolution;
 
     public MinimalCoverSpecification() {
         super();
     }
 
-    public int getPointsDeductedPerMissingDependency() {
-        return pointsDeductedPerMissingDependency;
+    public int getPointsDeductedPerNonCanonicalDependency() {
+        return pointsDeductedPerNonCanonicalDependency;
     }
 
-    public void setPointsDeductedPerMissingDependency(int pointsDeductedPerMissingDependency) {
-        this.pointsDeductedPerMissingDependency = pointsDeductedPerMissingDependency;
+    public void setPointsDeductedPerNonCanonicalDependency(int pointsDeductedPerNonCanonicalDependency) {
+        this.pointsDeductedPerNonCanonicalDependency = pointsDeductedPerNonCanonicalDependency;
     }
 
-    public int getPointsDeductedPerIncorrectDependency() {
-        return pointsDeductedPerIncorrectDependency;
+    public int getPointsDeductedPerTrivialDependency() {
+        return pointsDeductedPerTrivialDependency;
     }
 
-    public void setPointsDeductedPerIncorrectDependency(int pointsDeductedPerIncorrectDependency) {
-        this.pointsDeductedPerIncorrectDependency = pointsDeductedPerIncorrectDependency;
+    public void setPointsDeductedPerTrivialDependency(int pointsDeductedPerTrivialDependency) {
+        this.pointsDeductedPerTrivialDependency = pointsDeductedPerTrivialDependency;
+    }
+
+    public int getPointsDeductedPerExtraneousAttribute() {
+        return pointsDeductedPerExtraneousAttribute;
+    }
+
+    public void setPointsDeductedPerExtraneousAttribute(int pointsDeductedPerExtraneousAttribute) {
+        this.pointsDeductedPerExtraneousAttribute = pointsDeductedPerExtraneousAttribute;
+    }
+
+    public int getPointsDeductedPerRedundantDependency() {
+        return pointsDeductedPerRedundantDependency;
+    }
+
+    public void setPointsDeductedPerRedundantDependency(int pointsDeductedPerRedundantDependency) {
+        this.pointsDeductedPerRedundantDependency = pointsDeductedPerRedundantDependency;
+    }
+
+    public int getPointsDeductedPerMissingDependencyVsSolution() {
+        return pointsDeductedPerMissingDependencyVsSolution;
+    }
+
+    public void setPointsDeductedPerMissingDependencyVsSolution(int pointsDeductedPerMissingDependencyVsSolution) {
+        this.pointsDeductedPerMissingDependencyVsSolution = pointsDeductedPerMissingDependencyVsSolution;
+    }
+
+    public int getPointsDeductedPerIncorrectDependencyVsSolution() {
+        return pointsDeductedPerIncorrectDependencyVsSolution;
+    }
+
+    public void setPointsDeductedPerIncorrectDependencyVsSolution(int pointsDeductedPerIncorrectDependencyVsSolution) {
+        this.pointsDeductedPerIncorrectDependencyVsSolution = pointsDeductedPerIncorrectDependencyVsSolution;
     }
 
     @Override

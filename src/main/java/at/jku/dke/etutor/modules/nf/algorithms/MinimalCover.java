@@ -121,6 +121,13 @@ public class MinimalCover {
 		return fd2.getLhsAttributes().containsAll(fd1.getLhsAttributes()) && fd1.getLhsAttributes().containsAll(fd2.getLhsAttributes());
 	}
 
+	/**
+	 * This method splits each of the supplied <code>FunctionalDependency</code> objects up into multiple
+	 * <code>FunctionalDependency</code> objects, each with the same left-hand side and a single attribute on the
+	 * right-hand side.
+	 * @param dependencies The <code>FunctionalDependency</code> objects to be unfolded
+	 * @return A <code>Set</code> of unfolded <code>FunctionalDependency</code> objects
+	 */
 	public static Set<FunctionalDependency> unfold(Collection<FunctionalDependency> dependencies) {
 		HashSet<FunctionalDependency> unfoldedDependencies = new HashSet<>();
 

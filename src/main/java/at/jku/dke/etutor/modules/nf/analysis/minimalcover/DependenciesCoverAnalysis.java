@@ -3,25 +3,26 @@ package at.jku.dke.etutor.modules.nf.analysis.minimalcover;
 import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 
 public class DependenciesCoverAnalysis extends NFAnalysis {
 
-	final Vector<FunctionalDependency> missingDependencies;
-	final Vector<FunctionalDependency> additionalDependencies;
+	final List<FunctionalDependency> missingDependencies;
+	final List<FunctionalDependency> additionalDependencies;
 
 	public DependenciesCoverAnalysis() {
 		super();
-		this.missingDependencies = new Vector<>();
-		this.additionalDependencies = new Vector<>();
+		this.missingDependencies = new LinkedList<>();
+		this.additionalDependencies = new LinkedList<>();
 	}
 
-	public Vector<FunctionalDependency> getMissingDependencies(){
-		return (Vector<FunctionalDependency>)this.missingDependencies.clone();
+	public List<FunctionalDependency> getMissingDependencies(){
+		return new LinkedList<>(this.missingDependencies);
 	}
 	
-	public Vector<FunctionalDependency> getAdditionalDependencies(){
-		return (Vector<FunctionalDependency>)this.additionalDependencies.clone();
+	public List<FunctionalDependency> getAdditionalDependencies(){
+		return new LinkedList<>(this.additionalDependencies);
 	}
 
 	public void addMissingDependency(FunctionalDependency dependency){

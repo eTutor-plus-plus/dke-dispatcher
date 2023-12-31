@@ -318,25 +318,32 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			MinimalCoverAnalysis minimalCoverAnalysis = (MinimalCoverAnalysis) nfAnalysis;
 
-			// TODO: Implement grading based on variables in the specification
+			actualPoints -= minimalCoverAnalysis.getCanonicalRepresentationAnalysis().getNotCanonicalDependencies().size() * specification.getPointsDeductedPerNonCanonicalDependency();
+			actualPoints -= minimalCoverAnalysis.getTrivialDependenciesAnalysis().getTrivialDependencies().size() * specification.getPointsDeductedPerTrivialDependency();
+			actualPoints -= minimalCoverAnalysis.getExtraneousAttributesAnalysis().getExtraneousAttributes().values().stream()
+					.mapToInt(attributes -> attributes.size())
+					.sum() * specification.getPointsDeductedPerExtraneousAttribute();
+			actualPoints -= minimalCoverAnalysis.getRedundantDependenciesAnalysis().getRedundantDependencies().size() * specification.getPointsDeductedPerRedundantDependency();
+			actualPoints -= minimalCoverAnalysis.getDependenciesCoverAnalysis().getMissingDependencies().size() * specification.getPointsDeductedPerMissingDependencyVsSolution();
+			actualPoints -= minimalCoverAnalysis.getDependenciesCoverAnalysis().getAdditionalDependencies().size() * specification.getPointsDeductedPerIncorrectDependencyVsSolution();
 
 		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) {
-			AttributeClosureSpecification attributeClosureSpecification = null;
+			AttributeClosureSpecification specification = null;
 			try {
-				attributeClosureSpecification = new ObjectMapper().readValue(specificationString, AttributeClosureSpecification.class);
+				specification = new ObjectMapper().readValue(specificationString, AttributeClosureSpecification.class);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			AttributeClosureAnalysis attributeClosureAnalysis = (AttributeClosureAnalysis) nfAnalysis;
 
-			actualPoints -= attributeClosureAnalysis.getMissingAttributes().size() * attributeClosureSpecification.getPointsDeductedPerMissingAttribute();
-			actualPoints -= attributeClosureAnalysis.getAdditionalAttributes().size() * attributeClosureSpecification.getPointsDeductedPerIncorrectAttribute();
+			actualPoints -= attributeClosureAnalysis.getMissingAttributes().size() * specification.getPointsDeductedPerMissingAttribute();
+			actualPoints -= attributeClosureAnalysis.getAdditionalAttributes().size() * specification.getPointsDeductedPerIncorrectAttribute();
 
 		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION) { // Note: Could be identical to Decompose, now that you only have to specify the end result (Gerald Wimmer, 2023-11-27)
-			NormalizationSpecification normalizationSpecification = null;
+			NormalizationSpecification specification = null;
 			try {
-				normalizationSpecification = new ObjectMapper().readValue(specificationString, NormalizationSpecification.class);
+				specification = new ObjectMapper().readValue(specificationString, NormalizationSpecification.class);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -354,7 +361,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			}
 
 			NormalformDeterminationAnalysis normalformDeterminationAnalysis = (NormalformDeterminationAnalysis) nfAnalysis;
-			
+
 			if(!normalformDeterminationAnalysis.getOverallLevelIsCorrect()) {
 				actualPoints -= specification.getPointsDeductedForIncorrectNFOverall();
 			}

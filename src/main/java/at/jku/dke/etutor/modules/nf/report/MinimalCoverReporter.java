@@ -14,7 +14,9 @@ import org.springframework.context.MessageSource;
 
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.StringJoiner;
+import java.util.Vector;
 import java.util.logging.Level;
 
 public class MinimalCoverReporter {
@@ -247,8 +249,8 @@ public class MinimalCoverReporter {
 		StringBuilder description = new StringBuilder();
 
         //COUNT BAD DEPENDECIES
-        for (FunctionalDependency functionalDependency : analysis.getExtraneousAttributes().keySet()) {
-            count = count + analysis.getExtraneousAttributes(functionalDependency).size();
+        for (Vector<String> extraneousAttributes : analysis.getExtraneousAttributes().values()) {
+            count += extraneousAttributes.size();
         }
 
 		//SET ERROR
@@ -281,19 +283,17 @@ public class MinimalCoverReporter {
 			description.append("<thead><tr><th>").append(messageSource.getMessage("minimalcoverreporter.functionaldependency", null, locale)).append("</th><th>").append(messageSource.getMessage("minimalcoverreporter.extraneousattributes", null, locale)).append("</th></tr></thead><tbody>");
 
 			boolean first = true;
-			Iterator<String> extraneousAttributesIterator;
-            for (FunctionalDependency currBadDependency : analysis.getExtraneousAttributes().keySet()) {
+            for (Map.Entry<FunctionalDependency, Vector<String>> currEntry : analysis.getExtraneousAttributes().entrySet()) {
                 description.append("<tr><td>");
-                description.append(printDependency(currBadDependency));
+                description.append(printDependency(currEntry.getKey()));
                 description.append("</td><td>");
 
-                extraneousAttributesIterator = analysis.getExtraneousAttributes(currBadDependency).iterator();
-                while (extraneousAttributesIterator.hasNext()) {
+                for (String extraneousAttribute : currEntry.getValue()) {
                     if (first) {
                         first = false;
                     } else {
                         description.append(" ");
-                        description.append(extraneousAttributesIterator.next());
+                        description.append(extraneousAttribute);
                     }
                 }
                 description.append("</td></tr>");

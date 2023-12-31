@@ -132,6 +132,6 @@ public class RDBDConstants {
 	}
 
 	public enum EvalAction {
-		SUBMIT, CHECK, DIAGNOSE;
-	}
+		SUBMIT, CHECK, DIAGNOSE
+    }
 }

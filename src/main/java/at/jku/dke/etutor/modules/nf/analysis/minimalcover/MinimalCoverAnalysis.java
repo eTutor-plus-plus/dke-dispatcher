@@ -12,12 +12,6 @@ public class MinimalCoverAnalysis extends NFAnalysis {
 
 	public MinimalCoverAnalysis() {
 		super();
-
-		this.dependenciesCoverAnalysis = null; 
-		this.trivialDependenciesAnalysis = null;
-		this.extraneousAttributesAnalysis = null;
-		this.redundantDependenciesAnalysis = null;
-		this.canonicalRepresentationAnalysis = null;
 	}
 
 	public ExtraneousAttributesAnalysis getExtraneousAttributesAnalysis(){

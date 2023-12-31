@@ -8,9 +8,9 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 import java.util.logging.Level;
 
 public class MinimalCoverAnalyzer {
@@ -23,15 +23,15 @@ public class MinimalCoverAnalyzer {
 		//INIT LOCAL VARIABLES
 		MinimalCoverAnalysis analysis = new MinimalCoverAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
+
 		Set<FunctionalDependency> submittedDependencies = relation.getFunctionalDependencies();
-		Set<FunctionalDependency> correctDependencies = MinimalCover.execute(specification.getFunctionalDependencies());
 
 		//ANALYZE CANONICAL REPRESENTATION OF SUBMITTED DEPENDENCIES
 		CanonicalRepresentationAnalysis canonicalRepresentationAnalysis = analyzeCanonicalRepresentation(submittedDependencies);
 		analysis.setCanonicalRepresentationAnalysis(canonicalRepresentationAnalysis);
 		if (!canonicalRepresentationAnalysis.submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
-			return analysis;
+			// return analysis; // Note: disabled for grading purposes (Gerald Wimmer, 2023-12-31).
 		}
 	
 		//ANALYZE TRIVIAL FUNCTIONAL DEPENDENCIES
@@ -39,7 +39,7 @@ public class MinimalCoverAnalyzer {
 		analysis.setTrivialDependenciesAnalysis(trivialDependenciesAnalysis);
 		if (!trivialDependenciesAnalysis.submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
-			return analysis;
+			// return analysis; // Note: disabled for grading purposes (Gerald Wimmer, 2023-12-31).
 		}
 		
 		//ANALYZE EXTRANEOUS ATTRIBUTES
@@ -47,18 +47,24 @@ public class MinimalCoverAnalyzer {
 		analysis.setExtraneousAttributesAnalysis(extraneousAttributesAnalysis);
 		if (!extraneousAttributesAnalysis.submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
-			return analysis;
+			// return analysis; // Note: disabled for grading purposes (Gerald Wimmer, 2023-12-31).
 		}
-		
+
+		/*
+		 * TODO: Check whether this won't cause any issues, given that we test for redundant FDs compared to the
+		 *  correct solution afterwards (Gerald Wimmer, 2023-12-31).
+		 */
 		//ANALYZE REDUNDANT FUNCTIONAL DEPENDENCIES
 		RedundantDependenciesAnalysis redundantDependenciesAnalysis = analyzeRedundantDependencies(submittedDependencies);
 		analysis.setRedundantDependenciesAnalysis(redundantDependenciesAnalysis);
 		if (!redundantDependenciesAnalysis.submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
-			return analysis;
+			// return analysis; // Note: disabled for grading purposes (Gerald Wimmer, 2023-12-31).
 		}
 
 		//ANALYZE DEPENDENCIES COVER
+		Set<FunctionalDependency> correctDependencies = MinimalCover.execute(specification.getFunctionalDependencies());
+
 		DependenciesCoverAnalysis dependenciesCoverAnalysis = analyzeDependenciesCover(submittedDependencies, correctDependencies);
 		analysis.setDependenciesCoverAnalysis(dependenciesCoverAnalysis);
 		if (!dependenciesCoverAnalysis.submissionSuitsSolution()){
@@ -67,16 +73,20 @@ public class MinimalCoverAnalyzer {
 
 		return analysis;
 	}
-	
-	public static DependenciesCoverAnalysis analyzeDependenciesCover(Collection<FunctionalDependency> submittedDependencies, Collection<FunctionalDependency> correctDependencies){
-		FunctionalDependency currDependency;
 
+	/**
+	 * Tests which of the submitted functional dependencies are extraneous or missing compared to the correct solution.
+	 * @param submittedDependencies The <code>Collection</code> of <code>FunctionalDependency</code> objects that were
+	 *                                 submitted.
+	 * @param correctDependencies The <code>Collection</code> containing the correct minimal cover.
+	 * @return A <code>DependenciesCoverAnalysis</code> of the submitted functional dependencies
+	 */
+	public static DependenciesCoverAnalysis analyzeDependenciesCover(Collection<FunctionalDependency> submittedDependencies, Collection<FunctionalDependency> correctDependencies) {
 		DependenciesCoverAnalysis analysis = new DependenciesCoverAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
 
-		Iterator<FunctionalDependency> dependenciesIterator = submittedDependencies.iterator();
-		while (dependenciesIterator.hasNext()){
-			currDependency = dependenciesIterator.next();
+		// Test whether any of the submittedDependencies is extraneous
+		for (FunctionalDependency currDependency : submittedDependencies) {
 			if (!Member.execute(currDependency, correctDependencies)){
 				analysis.addAdditionalDependency(currDependency);
 				analysis.setSubmissionSuitsSolution(false);
@@ -84,9 +94,8 @@ public class MinimalCoverAnalyzer {
 			}
 		}
 
-		dependenciesIterator = correctDependencies.iterator();
-		while (dependenciesIterator.hasNext()){
-			currDependency = dependenciesIterator.next();
+		// Test whether any functional dependencies are missing from the submittedDependencies
+		for (FunctionalDependency currDependency : correctDependencies){
 			if (!Member.execute(currDependency, submittedDependencies)){
 				analysis.addMissingDependency(currDependency);
 				analysis.setSubmissionSuitsSolution(false);
@@ -96,23 +105,30 @@ public class MinimalCoverAnalyzer {
 		
 		return analysis;
 	}
-	
-	public static RedundantDependenciesAnalysis analyzeRedundantDependencies(Collection<FunctionalDependency> dependencies){
-		FunctionalDependency currDependency;
 
-		Vector<FunctionalDependency> tempDependencies = new Vector<>();
-		Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
+	/**
+	 * Tests which of the passed functional dependencies are redundant (i.e., the <code>Collection</code> of
+	 * dependencies would remain semantically identical without it).
+	 * @param dependencies The <code>Collection</code> of <code>FunctionalDependency</code> objects to be tested
+	 * @return A <code>RedundantDependenciesAnalysis</code> of the passed functional dependencies
+	 */
+	public static RedundantDependenciesAnalysis analyzeRedundantDependencies(Collection<FunctionalDependency> dependencies){
 		RedundantDependenciesAnalysis analysis = new RedundantDependenciesAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
 
-		while (dependenciesIterator.hasNext()){
-			currDependency = dependenciesIterator.next();
-
-			tempDependencies.clear();
-			tempDependencies.addAll(dependencies);
+		for (FunctionalDependency currDependency : dependencies) {
+			/*
+			 * Create a copy of all dependencies without currDependency or any previously found redundant dependencies.
+			 * (Gerald Wimmer, 2023-12-31).
+			 */
+			List<FunctionalDependency> tempDependencies = new LinkedList<>(dependencies);
 			tempDependencies.remove(currDependency);
 			tempDependencies.removeAll(analysis.getRedundantDependencies());
 
+			/*
+			 * Check whether the collection of dependencies would remain semantically identical without currDependency
+			 * (i.e., whether currDependency is redundant) (Gerald Wimmer, 2023-12-31).
+			 */
 			if (Cover.execute(tempDependencies, dependencies)){
 				RDBDHelper.getLogger().log(Level.INFO, "Found redundant functional dependency.");
 				analysis.addRedundantDependency(currDependency);
@@ -122,32 +138,50 @@ public class MinimalCoverAnalyzer {
 
 		return analysis;
 	}
-	
-	public static ExtraneousAttributesAnalysis analyzeExtraneousAttributes(Collection<FunctionalDependency> dependencies){
-		Vector<FunctionalDependency> tempDependencies = new Vector<>();
-		FunctionalDependency tempDependency = new FunctionalDependency();
+
+	/**
+	 * Tests which of the passed functional dependencies are not minimal (i.e., the left-hand side contains
+	 * extraneous attributes).
+	 * @param dependencies The <code>Collection</code> of <code>FunctionalDependency</code> objects to be tested
+	 * @return An <code>ExtraneousAttributesAnalysis</code> of the passed functional dependencies
+	 */
+	public static ExtraneousAttributesAnalysis analyzeExtraneousAttributes(Collection<FunctionalDependency> dependencies) {
 		ExtraneousAttributesAnalysis analysis = new ExtraneousAttributesAnalysis();
-		Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
 		analysis.setSubmissionSuitsSolution(true);
 
-		while (dependenciesIterator.hasNext()) {
-			FunctionalDependency currDependency = dependenciesIterator.next();
-
+		for (FunctionalDependency currDependency : dependencies) {
 			for (String currAttribute : currDependency.getLhsAttributes()) {
+				/*
+				 * Create a copy of the currDependency with all attributes except currAttribute
+				 * (Gerald Wimmer, 2023-12-31).
+				 */
+				FunctionalDependency tempDependency = new FunctionalDependency();
 				tempDependency.setLhsAttributes(currDependency.getLhsAttributes());
 				tempDependency.setRhsAttributes(currDependency.getRhsAttributes());
 				tempDependency.removeLhsAttribute(currAttribute);
 
-				if (analysis.getExtraneousAttributes().containsKey(currDependency)){
+				/*
+				 * If we've already detected other extraneous attributes for currDependency, remove those from the LHS
+				 * as well (Gerald Wimmer, 2023-12-31).
+				 */
+				if (analysis.getExtraneousAttributes().containsKey(currDependency)) {
 					tempDependency.removeLhsAttributes(analysis.getExtraneousAttributes().get(currDependency));
 				}
 
-				tempDependencies.clear();
-				tempDependencies.addAll(dependencies);
+				/*
+				 * Create a copy of our set of dependencies which contains the tempDependency WITHOUT currAttribute in
+				 * place of the old currDependency WITH curAttribute (Gerald Wimmer, 2023-12-31).
+				 */
+				List<FunctionalDependency> tempDependencies = new LinkedList<>(dependencies);
 				tempDependencies.remove(currDependency);
 				tempDependencies.add(tempDependency);
-				
-				if (Cover.execute(dependencies, tempDependencies)){
+
+				/*
+				 * Check whether the collection of dependencies would remain semantically identical without
+				 * currAttribute (i.e., whether currAttribute is extraneous in currDependency)
+				 * (Gerald Wimmer, 2023-12-31).
+				 */
+				if (Cover.execute(dependencies, tempDependencies)) {
 					analysis.setSubmissionSuitsSolution(false);
 					analysis.addExtraneousAttribute(currDependency, currAttribute);
 					RDBDHelper.getLogger().log(Level.INFO, "Found extraneous attributes.");
@@ -157,14 +191,18 @@ public class MinimalCoverAnalyzer {
 		
 		return analysis;
 	}
-	
+
+	/**
+	 * Tests which of the passed functional dependencies is trivial (i.e., either side is empty or the left-hand
+	 * side contains the right-hand side).
+	 * @param dependencies The <code>Set</code> of <code>FunctionalDependency</code> objects to be tested
+	 * @return A <code>TrivialDependenciesAnalysis</code> of the passed functional dependencies
+	 */
 	public static TrivialDependenciesAnalysis analyzeTrivialDependencies(Set<FunctionalDependency> dependencies){
-		Iterator<FunctionalDependency> dependenciesIterator = dependencies.iterator();
 		TrivialDependenciesAnalysis analysis = new TrivialDependenciesAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
 		
-		while (dependenciesIterator.hasNext()){
-			FunctionalDependency currDependency = dependenciesIterator.next();
+		for (FunctionalDependency currDependency : dependencies) {
 			if (currDependency.isTrivial()){
 				analysis.addTrivialDependency(currDependency);
 				analysis.setSubmissionSuitsSolution(false);
@@ -174,13 +212,18 @@ public class MinimalCoverAnalyzer {
 		
 		return analysis;
 	}
-	
+
+	/**
+	 * Tests which of the passed functional dependencies have more than one right-hand-side attribute.
+	 * @param dependencies The <code>Set</code> of <code>FunctionalDependency</code> objects to be tested
+	 * @return A <code>CanonicalRepresentationAnalysis</code> of the passed functional dependencies
+	 */
 	public static CanonicalRepresentationAnalysis analyzeCanonicalRepresentation(Set<FunctionalDependency> dependencies){
 		CanonicalRepresentationAnalysis analysis = new CanonicalRepresentationAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
 		
-		for (FunctionalDependency currDependency : dependencies){
-			if (currDependency.getRhsAttributes().size() > 1){
+		for (FunctionalDependency currDependency : dependencies) {
+			if (currDependency.getRhsAttributes().size() > 1) {
 				analysis.addNotCanonicalDependency(currDependency);
 				RDBDHelper.getLogger().log(Level.INFO, "Found not canonically represented dependency.");
 				analysis.setSubmissionSuitsSolution(false);

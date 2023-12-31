@@ -3,29 +3,24 @@ package at.jku.dke.etutor.modules.nf.analysis.minimalcover;
 import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 public class RedundantDependenciesAnalysis extends NFAnalysis {
 
-	private final HashSet<FunctionalDependency> redundantDependencies;
+	private final Set<FunctionalDependency> redundantDependencies;
 
 	public RedundantDependenciesAnalysis() {
 		super();
 		this.redundantDependencies = new HashSet<>();
 	}
 
-	public void setRedundantDependencies(Collection<FunctionalDependency> redundantDependencies) {
-		this.redundantDependencies.clear();
-		this.redundantDependencies.addAll(redundantDependencies);
-	}
-
 	public void addRedundantDependency(FunctionalDependency dependency){
 		this.redundantDependencies.add(dependency);
 	}
 
-	public HashSet<FunctionalDependency> getRedundantDependencies() {
-		return (HashSet<FunctionalDependency>)this.redundantDependencies.clone();
+	public Set<FunctionalDependency> getRedundantDependencies() {
+		return new HashSet<>(this.redundantDependencies);
 	}
 
 }
