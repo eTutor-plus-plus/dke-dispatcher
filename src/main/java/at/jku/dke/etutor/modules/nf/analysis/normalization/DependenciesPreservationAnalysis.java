@@ -1,11 +1,11 @@
 package at.jku.dke.etutor.modules.nf.analysis.normalization;
 
-import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.HashSet;
 
-public class DependenciesPreservationAnalysis extends DefaultAnalysis {
+public class DependenciesPreservationAnalysis extends NFAnalysis {
 
 	private final HashSet<FunctionalDependency> lostDependencies;
 

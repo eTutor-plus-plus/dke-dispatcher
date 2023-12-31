@@ -1,11 +1,11 @@
 package at.jku.dke.etutor.modules.nf.analysis.minimalcover;
 
-import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.HashSet;
 
-public class TrivialDependenciesAnalysis extends DefaultAnalysis {
+public class TrivialDependenciesAnalysis extends NFAnalysis {
 
 	private HashSet<FunctionalDependency> trivialDependencies;
 

@@ -1,11 +1,11 @@
 package at.jku.dke.etutor.modules.nf.analysis.minimalcover;
 
-import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.Vector;
 
-public class DependenciesCoverAnalysis extends DefaultAnalysis {
+public class DependenciesCoverAnalysis extends NFAnalysis {
 
 	final Vector<FunctionalDependency> missingDependencies;
 	final Vector<FunctionalDependency> additionalDependencies;

@@ -1,9 +1,9 @@
 package at.jku.dke.etutor.modules.nf.specification;
 
 public class KeysDeterminationSpecification extends NFSpecification {
-    private int pointsDeductedForMissingKey;
+    private int pointsDeductedPerMissingKey;
 
-    private int pointsDeductedForAdditionalKey;
+    private int pointsDeductedPerIncorrectKey;
 
     public KeysDeterminationSpecification() {
         super();
@@ -14,19 +14,19 @@ public class KeysDeterminationSpecification extends NFSpecification {
         return false; // TODO: implement
     }
 
-    public int getPointsDeductedForMissingKey() {
-        return pointsDeductedForMissingKey;
+    public int getPointsDeductedPerMissingKey() {
+        return pointsDeductedPerMissingKey;
     }
 
-    public void setPointsDeductedForMissingKey(int pointsDeductedForMissingKey) {
-        this.pointsDeductedForMissingKey = pointsDeductedForMissingKey;
+    public void setPointsDeductedPerMissingKey(int pointsDeductedPerMissingKey) {
+        this.pointsDeductedPerMissingKey = pointsDeductedPerMissingKey;
     }
 
-    public int getPointsDeductedForAdditionalKey() {
-        return pointsDeductedForAdditionalKey;
+    public int getPointsDeductedPerIncorrectKey() {
+        return pointsDeductedPerIncorrectKey;
     }
 
-    public void setPointsDeductedForAdditionalKey(int pointsDeductedForAdditionalKey) {
-        this.pointsDeductedForAdditionalKey = pointsDeductedForAdditionalKey;
+    public void setPointsDeductedPerIncorrectKey(int pointsDeductedPerIncorrectKey) {
+        this.pointsDeductedPerIncorrectKey = pointsDeductedPerIncorrectKey;
     }
 }

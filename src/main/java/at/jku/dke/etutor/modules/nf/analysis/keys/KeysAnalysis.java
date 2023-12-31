@@ -1,19 +1,20 @@
 package at.jku.dke.etutor.modules.nf.analysis.keys;
 
-import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.KeyComparator;
 
 import java.util.Collection;
 import java.util.TreeSet;
 
-public class KeysAnalysis extends DefaultAnalysis {
+public class KeysAnalysis extends NFAnalysis {
 
 	private final TreeSet<Key> missingKeys;
 	private final TreeSet<Key> additionalKeys;
 
 	public KeysAnalysis() {
 		super();
+
 		this.missingKeys = new TreeSet<>(new KeyComparator());
 		this.additionalKeys = new TreeSet<>(new KeyComparator());
 	}

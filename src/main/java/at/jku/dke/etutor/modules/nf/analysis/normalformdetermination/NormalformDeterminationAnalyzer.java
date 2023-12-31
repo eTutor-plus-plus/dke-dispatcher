@@ -75,7 +75,8 @@ public class NormalformDeterminationAnalyzer {
 		// Note: Neither of the two compared NormalFormLevels would be null under normal circumstances. (Gerald Wimmer, 2023-12-02)
 		NormalformLevelComparator comparator = new NormalformLevelComparator();
 		analysis.setSubmittedLevel(submission.getOverallLevel());
-		if (comparator.compare(analysis.getOverallNormalformLevel(), analysis.getSubmittedLevel()) != 0){
+		if (comparator.compare(analysis.getOverallNormalformLevel(), analysis.getSubmittedLevel()) != 0) {
+			analysis.setOverallLevelIsCorrect(false);
 			analysis.setSubmissionSuitsSolution(false);			
 		}
 		

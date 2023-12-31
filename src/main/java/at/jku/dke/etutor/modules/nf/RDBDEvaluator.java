@@ -5,6 +5,7 @@ import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.core.evaluation.Evaluator;
 import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.core.evaluation.Report;
+import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.closure.AttributeClosureAnalysis;
@@ -40,6 +41,9 @@ import at.jku.dke.etutor.modules.nf.report.NormalizationReporterConfig;
 import at.jku.dke.etutor.modules.nf.report.RBRReporter;
 import at.jku.dke.etutor.modules.nf.report.ReporterConfig;
 import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
+import at.jku.dke.etutor.modules.nf.specification.KeysDeterminationSpecification;
+import at.jku.dke.etutor.modules.nf.specification.MinimalCoverSpecification;
+import at.jku.dke.etutor.modules.nf.specification.NormalformDeterminationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.antlr.v4.runtime.CharStream;
@@ -88,17 +92,17 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		int internalType = RDBDExercisesManager.fetchInternalType(exerciseID);
 		String specificationString = RDBDExercisesManager.fetchSpecification(exerciseID);
 
-		Analysis analysis;
+		NFAnalysis analysis;
 		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION) {
-			Relation specification = null;
+			KeysDeterminationSpecification specification = null;
 			try {	// Source: https://mkyong.com/java/how-to-convert-java-object-to-from-json-jackson/
-				specification = new ObjectMapper().readValue(specificationString, Relation.class);
+				specification = new ObjectMapper().readValue(specificationString, KeysDeterminationSpecification.class);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			KeysAnalyzerConfig keysAnalyzerConfig = new KeysAnalyzerConfig();
-			KeysContainer correctKeys = KeysDeterminator.determineAllKeys(specification);
+			KeysContainer correctKeys = KeysDeterminator.determineAllKeys(specification.getBaseRelation());
 			keysAnalyzerConfig.setCorrectMinimalKeys(correctKeys.getMinimalKeys());
 
 			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
@@ -112,9 +116,9 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			analysis.setSubmission(submission);
 
 		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER) {
-			Relation specification = null;
+			MinimalCoverSpecification specification = null;
 			try {
-				specification = new ObjectMapper().readValue(specificationString, Relation.class);
+				specification = new ObjectMapper().readValue(specificationString, MinimalCoverSpecification.class);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -124,7 +128,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			Set<FunctionalDependency> functionalDependencies = submissionParser.functionalDependencySet().functionalDependencies;
 			submission.setFunctionalDependencies(functionalDependencies);
 
-			analysis = MinimalCoverAnalyzer.analyze(submission, specification);
+			analysis = MinimalCoverAnalyzer.analyze(submission, specification.getBaseRelation());
 
 			//Set Submission
 			analysis.setSubmission(submission);
@@ -274,18 +278,96 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			throw new Exception("Unsupported RDBD type.");
 		}
 
+		analysis.setExerciseId(exerciseID);
+
 		return analysis;
 	}
 
 	@Override
-	public Grading grade(Analysis analysis, int taskID, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
-		DefaultGrading grading = new DefaultGrading();
-		grading.setMaxPoints(1);
-		if (analysis.submissionSuitsSolution()){
-			grading.setPoints(1);
+	public Grading grade(Analysis analysis, int maxPoints, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
+		NFAnalysis nfAnalysis = (NFAnalysis) analysis;
+
+		int internalType = RDBDExercisesManager.fetchInternalType(nfAnalysis.getExerciseId());
+		String specificationString = RDBDExercisesManager.fetchSpecification(nfAnalysis.getExerciseId());
+
+		Grading grading = new DefaultGrading();
+		grading.setMaxPoints(maxPoints);
+
+		int actualPoints = maxPoints;
+
+		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION) {
+			KeysDeterminationSpecification specification = null;
+			try {	// Source: https://mkyong.com/java/how-to-convert-java-object-to-from-json-jackson/
+				specification = new ObjectMapper().readValue(specificationString, KeysDeterminationSpecification.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			KeysAnalysis keysAnalysis = (KeysAnalysis) nfAnalysis;
+
+			actualPoints -= keysAnalysis.getMissingKeys().size() * specification.getPointsDeductedPerMissingKey();
+			actualPoints -= keysAnalysis.getAdditionalKeys().size() * specification.getPointsDeductedPerIncorrectKey();
+
+		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER) {
+			MinimalCoverSpecification specification = null;
+			try {
+				specification = new ObjectMapper().readValue(specificationString, MinimalCoverSpecification.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			MinimalCoverAnalysis minimalCoverAnalysis = (MinimalCoverAnalysis) nfAnalysis;
+
+			// TODO: Implement grading based on variables in the specification
+
+		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) {
+			AttributeClosureSpecification attributeClosureSpecification = null;
+			try {
+				attributeClosureSpecification = new ObjectMapper().readValue(specificationString, AttributeClosureSpecification.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			AttributeClosureAnalysis attributeClosureAnalysis = (AttributeClosureAnalysis) nfAnalysis;
+
+			actualPoints -= attributeClosureAnalysis.getMissingAttributes().size() * attributeClosureSpecification.getPointsDeductedPerMissingAttribute();
+			actualPoints -= attributeClosureAnalysis.getAdditionalAttributes().size() * attributeClosureSpecification.getPointsDeductedPerIncorrectAttribute();
+
+		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION) { // Note: Could be identical to Decompose, now that you only have to specify the end result (Gerald Wimmer, 2023-11-27)
+			NormalizationSpecification normalizationSpecification = null;
+			try {
+				normalizationSpecification = new ObjectMapper().readValue(specificationString, NormalizationSpecification.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			NormalizationAnalysis normalizationAnalysis = (NormalizationAnalysis) nfAnalysis;
+
+			// TODO: Implement grading based on variables in the specification
+
+		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
+			NormalformDeterminationSpecification specification = null;
+			try {
+				specification = new ObjectMapper().readValue(specificationString, NormalformDeterminationSpecification.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			NormalformDeterminationAnalysis normalformDeterminationAnalysis = (NormalformDeterminationAnalysis) nfAnalysis;
+			
+			if(!normalformDeterminationAnalysis.getOverallLevelIsCorrect()) {
+				actualPoints -= specification.getPointsDeductedForIncorrectNFOverall();
+			}
+			actualPoints -= normalformDeterminationAnalysis.getWrongLeveledDependencies().size() * specification.getPointsDeductedPerIncorrectNFDependency();
+
 		} else {
-			grading.setPoints(0);
+			RDBDHelper.getLogger().log(Level.SEVERE, "RDBD internal type '" + internalType + "' is not supported.");
+			throw new Exception("Unsupported RDBD type.");
 		}
+
+		actualPoints = Math.min(0, actualPoints);
+		grading.setPoints(actualPoints);
+
 		return grading;
 	}
 

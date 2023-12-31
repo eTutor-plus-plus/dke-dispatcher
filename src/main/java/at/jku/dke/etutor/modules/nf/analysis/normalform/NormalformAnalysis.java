@@ -1,12 +1,12 @@
 package at.jku.dke.etutor.modules.nf.analysis.normalform;
 
-import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
 import java.util.Vector;
 
-public class NormalformAnalysis extends DefaultAnalysis {
+public class NormalformAnalysis extends NFAnalysis {
 
 
 	private final Vector<FirstNormalformViolation> firstNormalFormViolations;

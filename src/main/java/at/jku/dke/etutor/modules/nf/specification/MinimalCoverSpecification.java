@@ -2,28 +2,28 @@ package at.jku.dke.etutor.modules.nf.specification;
 
 public class MinimalCoverSpecification extends NFSpecification {
 
-    private int pointsDeductedForMissingDependency;
+    private int pointsDeductedPerMissingDependency;
 
-    private int pointsDeductedForAdditionalDependency;
+    private int pointsDeductedPerIncorrectDependency;
 
     public MinimalCoverSpecification() {
         super();
     }
 
-    public int getPointsDeductedForMissingDependency() {
-        return pointsDeductedForMissingDependency;
+    public int getPointsDeductedPerMissingDependency() {
+        return pointsDeductedPerMissingDependency;
     }
 
-    public void setPointsDeductedForMissingDependency(int pointsDeductedForMissingDependency) {
-        this.pointsDeductedForMissingDependency = pointsDeductedForMissingDependency;
+    public void setPointsDeductedPerMissingDependency(int pointsDeductedPerMissingDependency) {
+        this.pointsDeductedPerMissingDependency = pointsDeductedPerMissingDependency;
     }
 
-    public int getPointsDeductedForAdditionalDependency() {
-        return pointsDeductedForAdditionalDependency;
+    public int getPointsDeductedPerIncorrectDependency() {
+        return pointsDeductedPerIncorrectDependency;
     }
 
-    public void setPointsDeductedForAdditionalDependency(int pointsDeductedForAdditionalDependency) {
-        this.pointsDeductedForAdditionalDependency = pointsDeductedForAdditionalDependency;
+    public void setPointsDeductedPerIncorrectDependency(int pointsDeductedPerIncorrectDependency) {
+        this.pointsDeductedPerIncorrectDependency = pointsDeductedPerIncorrectDependency;
     }
 
     @Override

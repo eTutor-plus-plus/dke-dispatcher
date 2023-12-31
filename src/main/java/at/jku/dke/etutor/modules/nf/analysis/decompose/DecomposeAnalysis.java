@@ -1,7 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis.decompose;
 
-import at.jku.dke.etutor.core.evaluation.Analysis;
-import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.DependenciesPreservationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
@@ -11,7 +10,7 @@ import at.jku.dke.etutor.modules.nf.model.IdentifiedRelationComparator;
 import java.io.Serializable;
 import java.util.*;
 
-public class DecomposeAnalysis extends DefaultAnalysis implements Serializable, Analysis{
+public class DecomposeAnalysis extends NFAnalysis implements Serializable {
 
 	private int maxLostDependencies;
 	private NormalformLevel targetLevel;

@@ -33,7 +33,7 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 	protected NormalformLevel targetLevel;
 
 	public NormalizationSpecification() {
-		super(new IdentifiedRelation(), 0);
+		super(new IdentifiedRelation());
 		this.maxLostDependencies = 0;
 		this.targetLevel = NormalformLevel.THIRD;
  	}

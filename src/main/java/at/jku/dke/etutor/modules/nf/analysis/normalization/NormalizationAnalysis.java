@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis.normalization;
 
-import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.decompose.DecompositionAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.CanonicalRepresentationAnalysis;
@@ -13,7 +13,7 @@ import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
 import java.util.HashMap;
 
-public class NormalizationAnalysis extends DefaultAnalysis {
+public class NormalizationAnalysis extends NFAnalysis {
 
 	private int maxLostDependencies;
 

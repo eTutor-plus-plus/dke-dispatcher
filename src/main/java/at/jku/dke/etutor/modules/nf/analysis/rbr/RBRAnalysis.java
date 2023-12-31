@@ -1,11 +1,11 @@
 package at.jku.dke.etutor.modules.nf.analysis.rbr;
 
-import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.Vector;
 
-public class RBRAnalysis extends DefaultAnalysis {
+public class RBRAnalysis extends NFAnalysis {
 
 	private final Vector<FunctionalDependency> missingFunctionalDependencies;
 	private final Vector<FunctionalDependency> additionalFunctionalDependencies;

@@ -1,12 +1,12 @@
 package at.jku.dke.etutor.modules.nf.analysis.decompose;
 
-import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 
 import java.text.Collator;
 import java.util.Collection;
 import java.util.TreeSet;
 
-public class DecompositionAnalysis extends DefaultAnalysis {
+public class DecompositionAnalysis extends NFAnalysis {
 
 	private final TreeSet<String> missingAttributes;
 

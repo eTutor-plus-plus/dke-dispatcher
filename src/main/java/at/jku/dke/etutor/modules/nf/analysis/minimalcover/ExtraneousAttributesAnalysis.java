@@ -1,12 +1,12 @@
 package at.jku.dke.etutor.modules.nf.analysis.minimalcover;
 
-import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.HashMap;
 import java.util.Vector;
 
-public class ExtraneousAttributesAnalysis extends DefaultAnalysis {
+public class ExtraneousAttributesAnalysis extends NFAnalysis {
 
 	private final HashMap<FunctionalDependency, Vector<String>> extraneousAttributes;
 

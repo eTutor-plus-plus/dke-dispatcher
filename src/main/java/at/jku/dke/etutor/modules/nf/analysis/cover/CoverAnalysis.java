@@ -1,11 +1,11 @@
 package at.jku.dke.etutor.modules.nf.analysis.cover;
 
-import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.TreeSet;
 
-public class CoverAnalysis extends DefaultAnalysis {
+public class CoverAnalysis extends NFAnalysis {
 
 	private final TreeSet<FunctionalDependency> missingDependenciesInSet1;
 	private final TreeSet<FunctionalDependency> missingDependenciesInSet2;

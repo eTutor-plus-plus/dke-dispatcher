@@ -2,28 +2,28 @@ package at.jku.dke.etutor.modules.nf.specification;
 
 public class NormalformDeterminationSpecification extends NFSpecification {
 
-    private int pointsDeductedForWrongNFOverall;
+    private int pointsDeductedForIncorrectNFOverall;
 
-    private int pointsDeductedForWrongNFDependency;
+    private int pointsDeductedPerIncorrectNFDependency;
 
     public NormalformDeterminationSpecification() {
         super();
     }
 
-    public int getPointsDeductedForWrongNFOverall() {
-        return pointsDeductedForWrongNFOverall;
+    public int getPointsDeductedForIncorrectNFOverall() {
+        return pointsDeductedForIncorrectNFOverall;
     }
 
-    public void setPointsDeductedForWrongNFOverall(int pointsDeductedForWrongNFOverall) {
-        this.pointsDeductedForWrongNFOverall = pointsDeductedForWrongNFOverall;
+    public void setPointsDeductedForIncorrectNFOverall(int pointsDeductedForIncorrectNFOverall) {
+        this.pointsDeductedForIncorrectNFOverall = pointsDeductedForIncorrectNFOverall;
     }
 
-    public int getPointsDeductedForWrongNFDependency() {
-        return pointsDeductedForWrongNFDependency;
+    public int getPointsDeductedPerIncorrectNFDependency() {
+        return pointsDeductedPerIncorrectNFDependency;
     }
 
-    public void setPointsDeductedForWrongNFDependency(int pointsDeductedForWrongNFDependency) {
-        this.pointsDeductedForWrongNFDependency = pointsDeductedForWrongNFDependency;
+    public void setPointsDeductedPerIncorrectNFDependency(int pointsDeductedPerIncorrectNFDependency) {
+        this.pointsDeductedPerIncorrectNFDependency = pointsDeductedPerIncorrectNFDependency;
     }
 
     @Override
