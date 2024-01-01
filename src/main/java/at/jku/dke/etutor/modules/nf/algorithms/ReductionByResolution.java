@@ -167,11 +167,20 @@ public class ReductionByResolution {
 
 		return MinimalCover.fold(result);
 	}
-	
-	
-	public static Set<FunctionalDependency> execute(Relation rel, Collection<String> subScheme) {
-		Vector<String> attributes = new Vector<>();
 
+	/**
+	 * Determines the functional dependencies of the subScheme of a base relation.
+	 * @param rel The base relation
+	 * @param subScheme The subScheme
+	 * @return The functional dependencies of the subScheme
+	 */
+	public static Set<FunctionalDependency> execute(Relation rel, Collection<String> subScheme) {
+		List<String> attributes = new Vector<>();
+
+		/*
+		 * Add only those attributes of the base relation that are absent from the subScheme
+		 * (Gerald Wimmer, 2024-01-01).
+		 */
 		for (String currAttribute : rel.getAttributes()) {
 			if (!subScheme.contains(currAttribute)) {
 				attributes.add(currAttribute);
@@ -181,71 +190,42 @@ public class ReductionByResolution {
 		Set<FunctionalDependency> dependencies = rel.getFunctionalDependencies();
 		Set<FunctionalDependency> result = MinimalCover.unfold(dependencies);
 
-		String currAttribute;
-		while (!attributes.isEmpty()) {
-			currAttribute = attributes.get(0);
-			
-			/*
-			System.out.println("Processing Attribute '" + currAttribute + "'");
-			resultIterator = result.iterator();
-			System.out.println("STARTING SET OF DEPENDENCIES:");
-			while (resultIterator.hasNext()) {
-				System.out.println(resultIterator.next());
-			}*/
-			
-			//result.addAll(calculateResolvents(currAttribute, dependencies)); VORIGE VERSION - WAR FALSCH
+		for (String currAttribute : attributes) {
 			result.addAll(calculateResolvents(currAttribute, result));
-			
-			/*
-			resultIterator = result.iterator();
-			System.out.println("EXTENDED SET OF DEPENDENCIES:");
-			while (resultIterator.hasNext()) {
-				System.out.println(resultIterator.next());
-			}*/
 
-			Iterator<FunctionalDependency> resultIterator = result.iterator();
+			/*
+			 * Remove all those functional dependencies which contain currAttribute on their left-hand side
+			 * (i.e., cannot be resolved) or right-hand side (because currAttribute is NOT present in the subScheme).
+			 */
+            Iterator<FunctionalDependency> resultIterator = result.iterator();
 			while (resultIterator.hasNext()) {
 				FunctionalDependency currFD = resultIterator.next();
 
-				//HACK - VORIGE VERSION - WAR FALSCH
-				//if ((!subScheme.containsAll(currFD.getLhsAttributes())) || (!subScheme.containsAll(currFD.getRhsAttributes()))){
-				//	resultIterator.remove();
-				//} else {
-					//original code
-					if ((currFD.getLhsAttributes().contains(currAttribute))	|| (currFD.getRhsAttributes().contains(currAttribute))) {
-						resultIterator.remove();
-						//System.out.println("REMOVED DEPENDENCY: " + currFD);
-					}
-				//}
+				if ((currFD.getLhsAttributes().contains(currAttribute))	|| (currFD.getRhsAttributes().contains(currAttribute))) {
+					resultIterator.remove();
+				}
 			}
-			/*
-			resultIterator = result.iterator();
-			System.out.println("CLEANED SET OF DEPENDENCIES:");
-			while (resultIterator.hasNext()) {
-				System.out.println(resultIterator.next());
-			}*/
-			
-			attributes.remove(currAttribute);
 		}
 
 		return MinimalCover.fold(result);
 	}
 
+	/**
+	 * Determines the resolvents for an attribute given a <code>Collection</code> of functional dependencies.
+	 * @param a The attribute whose resolvent is to be determined
+	 * @param dependencies The functional dependencies on which the resolvent is to be based
+	 * @return A <code>Set</code> of resolved functional dependencies
+	 */
 	public static Set<FunctionalDependency> calculateResolvents(String a, Collection<FunctionalDependency> dependencies) {
-		FunctionalDependency currDependency;
-
-		HashSet<FunctionalDependency> resolvents = new HashSet<>();
-		Vector<FunctionalDependency> containingDependencies = new Vector<>();
-
-        for (FunctionalDependency functionalDependency : dependencies) {
-            currDependency = functionalDependency;
+		List<FunctionalDependency> containingDependencies = new Vector<>();
+        for (FunctionalDependency currDependency : dependencies) {
             if (currDependency.getRhsAttributes().contains(a)) {
                 containingDependencies.add(currDependency);
             }
         }
 
-        for (FunctionalDependency dependency : dependencies) {
-            currDependency = dependency;
+		Set<FunctionalDependency> resolvents = new HashSet<>();
+        for (FunctionalDependency currDependency : dependencies) {
             if (currDependency.getLhsAttributes().contains(a)) {
                 for (FunctionalDependency containingDependency : containingDependencies) {
                     FunctionalDependency resolvent = new FunctionalDependency();
@@ -261,16 +241,6 @@ public class ReductionByResolution {
             }
         }
 
-		/*
-		System.out.println("-----------------------------------------------");
-		System.out.println("CALCULATED RESOLVENTS FOR ATTRIBUTE '" + a + "'");
-		Iterator resolventsIterator = resolvents.iterator();
-		while (resolventsIterator.hasNext()){
-			System.out.println(resolventsIterator.next());
-		}
-		System.out.println("-----------------------------------------------\n");
-		*/
-		
-		return resolvents;
+        return resolvents;
 	}
 }

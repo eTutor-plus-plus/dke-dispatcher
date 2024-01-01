@@ -2,68 +2,68 @@ package at.jku.dke.etutor.modules.nf.specification;
 
 public class MinimalCoverSpecification extends NFSpecification {
 
-    private int pointsDeductedPerNonCanonicalDependency;
+    private int penaltyPerNonCanonicalDependency;
 
-    private int pointsDeductedPerTrivialDependency;
+    private int penaltyPerTrivialDependency;
 
-    private int pointsDeductedPerExtraneousAttribute;
+    private int penaltyPerExtraneousAttribute;
 
-    private int pointsDeductedPerRedundantDependency;
+    private int penaltyPerRedundantDependency;
 
-    private int pointsDeductedPerMissingDependencyVsSolution;
+    private int penaltyPerMissingDependencyVsSolution;
 
-    private int pointsDeductedPerIncorrectDependencyVsSolution;
+    private int penaltyPerIncorrectDependencyVsSolution;
 
     public MinimalCoverSpecification() {
         super();
     }
 
-    public int getPointsDeductedPerNonCanonicalDependency() {
-        return pointsDeductedPerNonCanonicalDependency;
+    public int getPenaltyPerNonCanonicalDependency() {
+        return penaltyPerNonCanonicalDependency;
     }
 
-    public void setPointsDeductedPerNonCanonicalDependency(int pointsDeductedPerNonCanonicalDependency) {
-        this.pointsDeductedPerNonCanonicalDependency = pointsDeductedPerNonCanonicalDependency;
+    public void setPenaltyPerNonCanonicalDependency(int penaltyPerNonCanonicalDependency) {
+        this.penaltyPerNonCanonicalDependency = penaltyPerNonCanonicalDependency;
     }
 
-    public int getPointsDeductedPerTrivialDependency() {
-        return pointsDeductedPerTrivialDependency;
+    public int getPenaltyPerTrivialDependency() {
+        return penaltyPerTrivialDependency;
     }
 
-    public void setPointsDeductedPerTrivialDependency(int pointsDeductedPerTrivialDependency) {
-        this.pointsDeductedPerTrivialDependency = pointsDeductedPerTrivialDependency;
+    public void setPenaltyPerTrivialDependency(int penaltyPerTrivialDependency) {
+        this.penaltyPerTrivialDependency = penaltyPerTrivialDependency;
     }
 
-    public int getPointsDeductedPerExtraneousAttribute() {
-        return pointsDeductedPerExtraneousAttribute;
+    public int getPenaltyPerExtraneousAttribute() {
+        return penaltyPerExtraneousAttribute;
     }
 
-    public void setPointsDeductedPerExtraneousAttribute(int pointsDeductedPerExtraneousAttribute) {
-        this.pointsDeductedPerExtraneousAttribute = pointsDeductedPerExtraneousAttribute;
+    public void setPenaltyPerExtraneousAttribute(int penaltyPerExtraneousAttribute) {
+        this.penaltyPerExtraneousAttribute = penaltyPerExtraneousAttribute;
     }
 
-    public int getPointsDeductedPerRedundantDependency() {
-        return pointsDeductedPerRedundantDependency;
+    public int getPenaltyPerRedundantDependency() {
+        return penaltyPerRedundantDependency;
     }
 
-    public void setPointsDeductedPerRedundantDependency(int pointsDeductedPerRedundantDependency) {
-        this.pointsDeductedPerRedundantDependency = pointsDeductedPerRedundantDependency;
+    public void setPenaltyPerRedundantDependency(int penaltyPerRedundantDependency) {
+        this.penaltyPerRedundantDependency = penaltyPerRedundantDependency;
     }
 
-    public int getPointsDeductedPerMissingDependencyVsSolution() {
-        return pointsDeductedPerMissingDependencyVsSolution;
+    public int getPenaltyPerMissingDependencyVsSolution() {
+        return penaltyPerMissingDependencyVsSolution;
     }
 
-    public void setPointsDeductedPerMissingDependencyVsSolution(int pointsDeductedPerMissingDependencyVsSolution) {
-        this.pointsDeductedPerMissingDependencyVsSolution = pointsDeductedPerMissingDependencyVsSolution;
+    public void setPenaltyPerMissingDependencyVsSolution(int penaltyPerMissingDependencyVsSolution) {
+        this.penaltyPerMissingDependencyVsSolution = penaltyPerMissingDependencyVsSolution;
     }
 
-    public int getPointsDeductedPerIncorrectDependencyVsSolution() {
-        return pointsDeductedPerIncorrectDependencyVsSolution;
+    public int getPenaltyPerIncorrectDependencyVsSolution() {
+        return penaltyPerIncorrectDependencyVsSolution;
     }
 
-    public void setPointsDeductedPerIncorrectDependencyVsSolution(int pointsDeductedPerIncorrectDependencyVsSolution) {
-        this.pointsDeductedPerIncorrectDependencyVsSolution = pointsDeductedPerIncorrectDependencyVsSolution;
+    public void setPenaltyPerIncorrectDependencyVsSolution(int penaltyPerIncorrectDependencyVsSolution) {
+        this.penaltyPerIncorrectDependencyVsSolution = penaltyPerIncorrectDependencyVsSolution;
     }
 
     @Override

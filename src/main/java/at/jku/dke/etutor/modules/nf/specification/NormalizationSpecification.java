@@ -11,22 +11,71 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 	private static final long serialVersionUID = -8591463798404619419L;
 
 	// Start of point deduction variables
-	private int pointsDeductedForEachWrongNFRelation;
-
-	private int pointsDeductedForEveryLostAttribute;
-
-	private int pointsDeductedForEveryExcessiveLostFunctionalDependency;
+	/**
+	 * (a in the grading schema V3)
+	 */
+	private int penaltyPerLostAttribute;
 
 	/**
-	 * Points deducted for every functional dependency that would have to exist in a resulting relation but does not
+	 * (b in the grading schema V3)
 	 */
-	private int pointsDeductedForEveryMissedNewFunctionalDependency;
+	private int penaltyForLossyDecomposition;
 
-	private int pointsDeductedForEveryWrongNewFunctionalDependency;
+	/**
+	 * (c in the grading schema V3)
+	 */
+	private int penaltyPerNonCanonicalDependency;
 
-	private int pointsDeductedForEveryMissingKey;
+	/**
+	 * (d in the grading schema V3)
+	 */
+	private int penaltyPerTrivialDependency;
 
-	private int pointsDeductedForEveryWrongKey;
+	/**
+	 * (e in the grading schema V3)
+	 */
+	private int penaltyPerExtraneousAttributeInDependencies;
+
+	/**
+	 * (f in the grading schema V3)
+	 */
+	private int penaltyPerRedundantDependency;
+
+	/**
+	 * (g in the grading schema V3)
+	 */
+	private int penaltyPerExcessiveLostDependency;
+
+	/**
+	 * Points deducted for every functional dependency that would have to exist in a resulting relation due to the
+	 * decomposition process but does not
+	 *
+	 * (h in the grading schema V3)
+	 */
+	private int penaltyPerMissedNewDependency;
+
+	/**
+	 * Points deducted for every functional dependency that exists in a resulting relation, even though it is not
+	 * supposed to (due to the decomposition process, specifically the RBR algorithm).
+	 *
+	 * (i in the grading schema V3)
+	 */
+	private int penaltyPerWrongNewDependency;
+
+	/**
+	 * (j in the grading schema V3)
+	 */
+	private int penaltyPerMissingKey;
+
+	/**
+	 * (k in the grading schema V3)
+	 */
+	private int penaltyPerWrongKey;
+
+	/**
+	 * (l in the grading schema V3)
+	 */
+	private int penaltyPerWrongNFRelation;
 	// End of point deduction variables
 
 	protected int maxLostDependencies;
@@ -38,7 +87,103 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 		this.targetLevel = NormalformLevel.THIRD;
  	}
 
- 	@Override
+	public int getPenaltyPerLostAttribute() {
+		return penaltyPerLostAttribute;
+	}
+
+	public void setPenaltyPerLostAttribute(int penaltyPerLostAttribute) {
+		this.penaltyPerLostAttribute = penaltyPerLostAttribute;
+	}
+
+	public int getPenaltyForLossyDecomposition() {
+		return penaltyForLossyDecomposition;
+	}
+
+	public void setPenaltyForLossyDecomposition(int penaltyForLossyDecomposition) {
+		this.penaltyForLossyDecomposition = penaltyForLossyDecomposition;
+	}
+
+	public int getPenaltyPerNonCanonicalDependency() {
+		return penaltyPerNonCanonicalDependency;
+	}
+
+	public void setPenaltyPerNonCanonicalDependency(int penaltyPerNonCanonicalDependency) {
+		this.penaltyPerNonCanonicalDependency = penaltyPerNonCanonicalDependency;
+	}
+
+	public int getPenaltyPerTrivialDependency() {
+		return penaltyPerTrivialDependency;
+	}
+
+	public void setPenaltyPerTrivialDependency(int penaltyPerTrivialDependency) {
+		this.penaltyPerTrivialDependency = penaltyPerTrivialDependency;
+	}
+
+	public int getPenaltyPerExtraneousAttributeInDependencies() {
+		return penaltyPerExtraneousAttributeInDependencies;
+	}
+
+	public void setPenaltyPerExtraneousAttributeInDependencies(int penaltyPerExtraneousAttributeInDependencies) {
+		this.penaltyPerExtraneousAttributeInDependencies = penaltyPerExtraneousAttributeInDependencies;
+	}
+
+	public int getPenaltyPerRedundantDependency() {
+		return penaltyPerRedundantDependency;
+	}
+
+	public void setPenaltyPerRedundantDependency(int penaltyPerRedundantDependency) {
+		this.penaltyPerRedundantDependency = penaltyPerRedundantDependency;
+	}
+
+	public int getPenaltyPerExcessiveLostDependency() {
+		return penaltyPerExcessiveLostDependency;
+	}
+
+	public void setPenaltyPerExcessiveLostDependency(int penaltyPerExcessiveLostDependency) {
+		this.penaltyPerExcessiveLostDependency = penaltyPerExcessiveLostDependency;
+	}
+
+	public int getPenaltyPerMissedNewDependency() {
+		return penaltyPerMissedNewDependency;
+	}
+
+	public void setPenaltyPerMissedNewDependency(int penaltyPerMissedNewDependency) {
+		this.penaltyPerMissedNewDependency = penaltyPerMissedNewDependency;
+	}
+
+	public int getPenaltyPerWrongNewDependency() {
+		return penaltyPerWrongNewDependency;
+	}
+
+	public void setPenaltyPerWrongNewDependency(int penaltyPerWrongNewDependency) {
+		this.penaltyPerWrongNewDependency = penaltyPerWrongNewDependency;
+	}
+
+	public int getPenaltyPerMissingKey() {
+		return penaltyPerMissingKey;
+	}
+
+	public void setPenaltyPerMissingKey(int penaltyPerMissingKey) {
+		this.penaltyPerMissingKey = penaltyPerMissingKey;
+	}
+
+	public int getPenaltyPerWrongKey() {
+		return penaltyPerWrongKey;
+	}
+
+	public void setPenaltyPerWrongKey(int penaltyPerWrongKey) {
+		this.penaltyPerWrongKey = penaltyPerWrongKey;
+	}
+
+	public int getPenaltyPerWrongNFRelation() {
+		return penaltyPerWrongNFRelation;
+	}
+
+	public void setPenaltyPerWrongNFRelation(int penaltyPerWrongNFRelation) {
+		this.penaltyPerWrongNFRelation = penaltyPerWrongNFRelation;
+	}
+
+	@Override
 	public Object clone() throws CloneNotSupportedException {
 		NormalizationSpecification clone = (NormalizationSpecification)super.clone();
 		if (this.baseRelation != null) {

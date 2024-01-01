@@ -7,15 +7,20 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.logging.Level;
 
 public class RBRAnalyzer {
 
+	/**
+	 * Tests whether a subrelation contains the correct, minimal functional dependencies with respect to the base
+	 * relation.
+	 * @param baseRelation The base relation
+	 * @param subRelation The subrelation
+	 * @return An <code>RBRAnalysis</code> for the supplied subrelation with respect to the base relation
+	 */
 	public static RBRAnalysis analyze(Relation baseRelation, Relation subRelation){
 		RDBDHelper.getLogger().log(Level.INFO, "ANALYZE RBR for base-relation: " + baseRelation);
 		RDBDHelper.getLogger().log(Level.INFO, "ANALYZE RBR for sub-relation: " + subRelation);
-		
 		
 		RBRAnalysis analysis = new RBRAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
@@ -23,16 +28,16 @@ public class RBRAnalyzer {
 		Collection<FunctionalDependency> correctDependencies = ReductionByResolution.execute(baseRelation, subRelation.getAttributes());
 
 		StringBuilder temp = new StringBuilder();
-		Iterator<FunctionalDependency> correctDependenciesIterator = correctDependencies.iterator();
-		while (correctDependenciesIterator.hasNext()){
-			temp.append(correctDependenciesIterator.next()).append("; ");
+		for (FunctionalDependency currDependency : correctDependencies){
+			temp.append(currDependency).append("; ");
 		}
 		RDBDHelper.getLogger().log(Level.INFO, "CORRECT DEPENDENCIES: " + temp);
 
-		correctDependenciesIterator = correctDependencies.iterator();
-		while (correctDependenciesIterator.hasNext()){
-			FunctionalDependency currCorrectDependency = correctDependenciesIterator.next();
-
+		/*
+		 * Check if there is an equivalent for each correct dependency in the submission (i.e., whether any
+		 * dependencies are missing from the submission (Gerald Wimmer, 2024-01-01).
+		 */
+		for (FunctionalDependency currCorrectDependency : correctDependencies){
 			if (!Member.execute(currCorrectDependency, subRelation.getFunctionalDependencies())) {
 				analysis.addMissingFunctionalDependency(currCorrectDependency);
 				analysis.setSubmissionSuitsSolution(false);
@@ -41,6 +46,10 @@ public class RBRAnalyzer {
 			}
 		}
 
+		/*
+		 * Check if there is an equivalent for each submitted dependency in the correct solution (i.e., whether there
+		 * are any superfluous dependencies in the submission) (Gerald Wimmer, 2024-01-01).
+		 */
 		for (FunctionalDependency currSubmittedDependency : subRelation.getFunctionalDependencies()){
 			if (!Member.execute(currSubmittedDependency, correctDependencies)) {
 				analysis.addAdditionalFunctionalDependency(currSubmittedDependency);

@@ -12,10 +12,10 @@ public class Member {
 
 	/**
 	 * Tests whether the attribute closure for the left-hand side of the passed functional dependency contains all
-	 * attributes on its right-hand side
+	 * attributes on its right-hand side, based on another set of functional dependencies.
 	 * @param dependency The functional dependency to be tested
 	 * @param dependencies The functional dependencies that serve as a base for determining the attribute closure
-	 * @return whether the attribute closure for the left-hand side of the passed functional dependency contains all
+	 * @return Whether the attribute closure for the left-hand side of the passed functional dependency contains all
 	 * attributes on its right-hand side
 	 */
 	public static boolean execute(FunctionalDependency dependency, Collection<FunctionalDependency> dependencies){

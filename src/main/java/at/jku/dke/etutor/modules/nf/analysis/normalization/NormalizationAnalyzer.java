@@ -2,23 +2,23 @@ package at.jku.dke.etutor.modules.nf.analysis.normalization;
 
 import at.jku.dke.etutor.modules.nf.algorithms.Closure;
 import at.jku.dke.etutor.modules.nf.algorithms.Member;
-import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.decompose.DecompositionAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.MinimalCoverAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalyzer;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.KeysContainer;
 import at.jku.dke.etutor.modules.nf.model.Relation;
-import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.TreeSet;
+import java.util.Set;
 
 
 public class NormalizationAnalyzer {
@@ -37,21 +37,14 @@ public class NormalizationAnalyzer {
 		analysis.setDecompositionAnalysis(analyzeDecomposition(config.getBaseRelation(), config.getNormalizedRelations()));
 		if (!analysis.getDecompositionAnalysis().submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
-			return analysis;
+			// return analysis; // Note: disabled for grading purposes (Gerald Wimmer, 2023-12-31).
 		}
 
 		//ANALYZE LOSSLESS
 		analysis.setLosslessAnalysis(analyzeLossless(config.getBaseRelation(), config.getNormalizedRelations()));
 		if (!analysis.getLossLessAnalysis().submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
-			return analysis;
-		}
-
-		//INITIALIZE CORRECT KEYS
-		HashMap<String, KeysContainer> correctKeysOfNormalizedRelations = new HashMap<>();
-
-		for (IdentifiedRelation currNormalizedRelation : config.getNormalizedRelations()) {
-			correctKeysOfNormalizedRelations.put(currNormalizedRelation.getID(), KeysDeterminator.determineAllKeys(currNormalizedRelation));
+			// return analysis; // Note: disabled for grading purposes (Gerald Wimmer, 2023-12-31).
 		}
 
 		//ANALYZE CANONICAL REPRESENTATION
@@ -59,7 +52,7 @@ public class NormalizationAnalyzer {
 			analysis.addCanonicalRepresentationAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeCanonicalRepresentation(currRelation.getFunctionalDependencies()));
 			if (!analysis.getCanonicalRepresentationAnalysis(currRelation.getID()).submissionSuitsSolution()){
 				analysis.setSubmissionSuitsSolution(false);
-				return analysis;
+				// return analysis; // Note: disabled for grading purposes (Gerald Wimmer, 2023-12-31).
 			}
 		}
 	
@@ -68,7 +61,7 @@ public class NormalizationAnalyzer {
 			analysis.addTrivialDependenciesAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeTrivialDependencies(currRelation.getFunctionalDependencies()));
 			if (!analysis.getTrivialDependenciesAnalysis(currRelation.getID()).submissionSuitsSolution()){
 				analysis.setSubmissionSuitsSolution(false);
-				return analysis;
+				// return analysis; // Note: disabled for grading purposes (Gerald Wimmer, 2023-12-31).
 			}
 		}
 		
@@ -77,7 +70,7 @@ public class NormalizationAnalyzer {
 			analysis.addExtraneousAttributesAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeExtraneousAttributes(currRelation.getFunctionalDependencies()));
 			if (!analysis.getExtraneousAttributesAnalysis(currRelation.getID()).submissionSuitsSolution()){
 				analysis.setSubmissionSuitsSolution(false);
-				return analysis;
+				// return analysis; // Note: disabled for grading purposes (Gerald Wimmer, 2023-12-31).
 			}
 		}
 		
@@ -86,15 +79,13 @@ public class NormalizationAnalyzer {
 			analysis.addRedundantDependenciesAnalysis(currRelation.getID(), MinimalCoverAnalyzer.analyzeRedundantDependencies(currRelation.getFunctionalDependencies()));
 			if (!analysis.getRedundantDependenciesAnalysis(currRelation.getID()).submissionSuitsSolution()){
 				analysis.setSubmissionSuitsSolution(false);
-				return analysis;
+				// return analysis; // Note: disabled for grading purposes (Gerald Wimmer, 2023-12-31).
 			}
 		}
 		
 		//ANALYZE DEPENDENCIES PRESERVATION
 		analysis.setDepPresAnalysis(NormalizationAnalyzer.analyzeDependenciesPreservation(config.getBaseRelation(), config.getNormalizedRelations()));
-		if (analysis.getDepPresAnalysis().lostFunctionalDependenciesCount() > config.getMaxLostDependencies()){
-			analysis.setSubmissionSuitsSolution(false);
-		} 
+		analysis.setSubmissionSuitsSolution(analysis.getDepPresAnalysis().lostFunctionalDependenciesCount() <= config.getMaxLostDependencies());
 		
 		//ANALYZE RBR DECOMPOSITION
 		for (IdentifiedRelation currRelation : config.getNormalizedRelations()) {
@@ -102,6 +93,12 @@ public class NormalizationAnalyzer {
 			if (!analysis.getRBRAnalysis(currRelation.getID()).submissionSuitsSolution()){
 				analysis.setSubmissionSuitsSolution(false);
 			}
+		}
+
+		//INITIALIZE CORRECT KEYS
+		Map<String, KeysContainer> correctKeysOfNormalizedRelations = new HashMap<>();
+		for (IdentifiedRelation currNormalizedRelation : config.getNormalizedRelations()) {
+			correctKeysOfNormalizedRelations.put(currNormalizedRelation.getID(), KeysDeterminator.determineAllKeys(currNormalizedRelation));
 		}
 
 		//ANALYZE KEYS
@@ -116,7 +113,6 @@ public class NormalizationAnalyzer {
 		}
 
 		//ANALYZE NORMALFORM LEVELS
-		// Note: Why is this not (or no longer?) in its own method? (Gerald Wimmer, 2023-12-02)
 		NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();
 		for (IdentifiedRelation currRelation : config.getNormalizedRelations()) {
 			normalformAnalyzerConfig.setRelation(currRelation);
@@ -132,7 +128,13 @@ public class NormalizationAnalyzer {
 				
 		return analysis;
 	}
-	
+
+	/**
+	 * Tests which attributes of the base relation were lost in the decomposition
+	 * @param baseRelation The base relation that was normalized
+	 * @param decomposedRelations The submitted normalized relations
+	 * @return A <code>DecompositionAnalysis</code> of the submitted normalized relations
+	 */
 	public static DecompositionAnalysis analyzeDecomposition(Relation baseRelation, Collection<? extends Relation> decomposedRelations){
 		DecompositionAnalysis analysis = new DecompositionAnalysis();
 		analysis.setMissingAttributes(baseRelation.getAttributes());
@@ -145,7 +147,13 @@ public class NormalizationAnalyzer {
 
 		return analysis;
 	}
-	
+
+	/**
+	 * Tests whether the decomposition was lossless
+	 * @param baseRelation The base relation that was normalized
+	 * @param decomposedRelations The submitted normalized relations
+	 * @return A <code>LosslessAnalysis</code> of the submitted normalized relations
+	 */
 	public static LosslessAnalysis analyzeLossless(Relation baseRelation, Collection<? extends Relation> decomposedRelations){
 		LosslessAnalysis analysis = new LosslessAnalysis();
 		analysis.setSubmissionSuitsSolution(false);
@@ -156,8 +164,8 @@ public class NormalizationAnalyzer {
 		}
 
 		for (Relation decomposedRelation : decomposedRelations){
-			TreeSet<String> closure = Closure.execute(decomposedRelation.getAttributes(), decomposedRelationsDependencies);
-			if (closure.containsAll(baseRelation.getAttributes())){
+			Set<String> closure = Closure.execute(decomposedRelation.getAttributes(), decomposedRelationsDependencies);
+			if (closure.containsAll(baseRelation.getAttributes())) {
 				analysis.setSubmissionSuitsSolution(true);
 			}
 		}
@@ -165,6 +173,12 @@ public class NormalizationAnalyzer {
 		return analysis;
 	}
 
+	/**
+	 * Tests which functional dependencies of the base relation were lost in the decomposition
+	 * @param baseRelation The base relation that was normalized
+	 * @param decomposedRelations The submitted normalized relations
+	 * @return A <code>DependenciesPreservationAnalysis</code> of the submitted normalized relations
+	 */
 	public static DependenciesPreservationAnalysis analyzeDependenciesPreservation(Relation baseRelation, Collection<? extends Relation> decomposedRelations){
 		HashSet<FunctionalDependency> decomposedRelationsDependencies = new HashSet<>();
 		DependenciesPreservationAnalysis analysis = new DependenciesPreservationAnalysis();
@@ -183,15 +197,4 @@ public class NormalizationAnalyzer {
 		return analysis;
 	}
 
-	public static void analyzeNormalform(Collection<? extends Relation> decomposedRelations, NormalizationAnalysis analysis, Map<String, KeysContainer> correctKeys){
-		NormalformAnalyzerConfig config = new NormalformAnalyzerConfig();
-        for (Relation decomposedRelation : decomposedRelations) {
-            IdentifiedRelation currRelation = (IdentifiedRelation) decomposedRelation;
-
-            config.setRelation(currRelation);
-            config.setCorrectMinimalKeys(correctKeys.get(currRelation.getID()).getMinimalKeys());
-            config.setCorrectPartialKeys(correctKeys.get(currRelation.getID()).getPartialKeys());
-            analysis.addNormalformAnalysis(currRelation.getID(), NormalformAnalyzer.analyze(config));
-        }
-	}
 }

@@ -6,6 +6,7 @@ import at.jku.dke.etutor.core.evaluation.Evaluator;
 import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.core.evaluation.Report;
 import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.closure.AttributeClosureAnalysis;
@@ -305,8 +306,8 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			KeysAnalysis keysAnalysis = (KeysAnalysis) nfAnalysis;
 
-			actualPoints -= keysAnalysis.getMissingKeys().size() * specification.getPointsDeductedPerMissingKey();
-			actualPoints -= keysAnalysis.getAdditionalKeys().size() * specification.getPointsDeductedPerIncorrectKey();
+			actualPoints -= keysAnalysis.getMissingKeys().size() * specification.getPenaltyPerMissingKey();
+			actualPoints -= keysAnalysis.getAdditionalKeys().size() * specification.getPenaltyPerIncorrectKey();
 
 		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER) {
 			MinimalCoverSpecification specification = null;
@@ -318,14 +319,14 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			MinimalCoverAnalysis minimalCoverAnalysis = (MinimalCoverAnalysis) nfAnalysis;
 
-			actualPoints -= minimalCoverAnalysis.getCanonicalRepresentationAnalysis().getNotCanonicalDependencies().size() * specification.getPointsDeductedPerNonCanonicalDependency();
-			actualPoints -= minimalCoverAnalysis.getTrivialDependenciesAnalysis().getTrivialDependencies().size() * specification.getPointsDeductedPerTrivialDependency();
+			actualPoints -= minimalCoverAnalysis.getCanonicalRepresentationAnalysis().getNotCanonicalDependencies().size() * specification.getPenaltyPerNonCanonicalDependency();
+			actualPoints -= minimalCoverAnalysis.getTrivialDependenciesAnalysis().getTrivialDependencies().size() * specification.getPenaltyPerTrivialDependency();
 			actualPoints -= minimalCoverAnalysis.getExtraneousAttributesAnalysis().getExtraneousAttributes().values().stream()
 					.mapToInt(attributes -> attributes.size())
-					.sum() * specification.getPointsDeductedPerExtraneousAttribute();
-			actualPoints -= minimalCoverAnalysis.getRedundantDependenciesAnalysis().getRedundantDependencies().size() * specification.getPointsDeductedPerRedundantDependency();
-			actualPoints -= minimalCoverAnalysis.getDependenciesCoverAnalysis().getMissingDependencies().size() * specification.getPointsDeductedPerMissingDependencyVsSolution();
-			actualPoints -= minimalCoverAnalysis.getDependenciesCoverAnalysis().getAdditionalDependencies().size() * specification.getPointsDeductedPerIncorrectDependencyVsSolution();
+					.sum() * specification.getPenaltyPerExtraneousAttribute();
+			actualPoints -= minimalCoverAnalysis.getRedundantDependenciesAnalysis().getRedundantDependencies().size() * specification.getPenaltyPerRedundantDependency();
+			actualPoints -= minimalCoverAnalysis.getDependenciesCoverAnalysis().getMissingDependencies().size() * specification.getPenaltyPerMissingDependencyVsSolution();
+			actualPoints -= minimalCoverAnalysis.getDependenciesCoverAnalysis().getAdditionalDependencies().size() * specification.getPenaltyPerIncorrectDependencyVsSolution();
 
 		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) {
 			AttributeClosureSpecification specification = null;
@@ -337,8 +338,8 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			AttributeClosureAnalysis attributeClosureAnalysis = (AttributeClosureAnalysis) nfAnalysis;
 
-			actualPoints -= attributeClosureAnalysis.getMissingAttributes().size() * specification.getPointsDeductedPerMissingAttribute();
-			actualPoints -= attributeClosureAnalysis.getAdditionalAttributes().size() * specification.getPointsDeductedPerIncorrectAttribute();
+			actualPoints -= attributeClosureAnalysis.getMissingAttributes().size() * specification.getPenaltyPerMissingAttribute();
+			actualPoints -= attributeClosureAnalysis.getAdditionalAttributes().size() * specification.getPenaltyPerIncorrectAttribute();
 
 		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION) { // Note: Could be identical to Decompose, now that you only have to specify the end result (Gerald Wimmer, 2023-11-27)
 			NormalizationSpecification specification = null;
@@ -350,8 +351,43 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			NormalizationAnalysis normalizationAnalysis = (NormalizationAnalysis) nfAnalysis;
 
-			// TODO: Implement grading based on variables in the specification
-
+			actualPoints -= normalizationAnalysis.getDecompositionAnalysis().getMissingAttributes().size() * specification.getPenaltyPerLostAttribute();
+			if(!normalizationAnalysis.getLossLessAnalysis().submissionSuitsSolution()) {
+				actualPoints -= specification.getPenaltyForLossyDecomposition();
+			}
+			actualPoints -= normalizationAnalysis.getCanonicalRepresentationAnalyses().values().stream()
+					.mapToInt(canonicalRepresentationAnalysis -> canonicalRepresentationAnalysis.getNotCanonicalDependencies().size())
+					.sum() * specification.getPenaltyPerNonCanonicalDependency();
+			actualPoints -= normalizationAnalysis.getTrivialDependenciesAnalyses().values().stream()
+					.mapToInt(trivialDependenciesAnalysis -> trivialDependenciesAnalysis.getTrivialDependencies().size())
+					.sum() * specification.getPenaltyPerTrivialDependency();
+			actualPoints -= normalizationAnalysis.getExtraneousAttributesAnalyses().values().stream()
+					.mapToInt(extraneousAttributeAnalysis -> extraneousAttributeAnalysis.getExtraneousAttributes().values().stream()
+							.mapToInt(attributes -> attributes.size())
+							.sum())
+					.sum() * specification.getPenaltyPerExtraneousAttributeInDependencies();
+			actualPoints -= normalizationAnalysis.getRedundantDependenciesAnalyses().values().stream()
+					.mapToInt(redudantDependenciesAnalysis -> redudantDependenciesAnalysis.getRedundantDependencies().size())
+					.sum() * specification.getPenaltyPerRedundantDependency();
+			if(normalizationAnalysis.getDepPresAnalysis().lostFunctionalDependenciesCount() > normalizationAnalysis.getMaxLostDependencies()) { // So that if we're below the threshold, we don't accidentally ADD points (Gerald Wimmer, 2024-01-01).
+				actualPoints -= (normalizationAnalysis.getDepPresAnalysis().lostFunctionalDependenciesCount() - normalizationAnalysis.getMaxLostDependencies()) * specification.getPenaltyPerExcessiveLostDependency();
+			}
+			actualPoints -= normalizationAnalysis.getRbrAnalyses().values().stream()
+					.mapToInt(rbrAnalysis -> rbrAnalysis.getMissingFunctionalDependencies().size())
+					.sum() * specification.getPenaltyPerMissedNewDependency();
+			actualPoints -= normalizationAnalysis.getRbrAnalyses().values().stream()
+					.mapToInt(rbrAnalysis -> rbrAnalysis.getAdditionalFunctionalDependencies().size())
+					.sum() * specification.getPenaltyPerWrongNewDependency();
+			actualPoints -= normalizationAnalysis.getKeysAnalyses().values().stream()
+					.mapToInt(keysAnalysis -> keysAnalysis.getMissingKeys().size())
+					.sum() * specification.getPenaltyPerMissingKey();
+			actualPoints -= normalizationAnalysis.getKeysAnalyses().values().stream()
+					.mapToInt(keysAnalysis -> keysAnalysis.getAdditionalKeys().size())
+					.sum() * specification.getPenaltyPerWrongKey();
+			actualPoints -= normalizationAnalysis.getNormalformAnalyses().values().stream()
+					.filter(normalformAnalysis -> !normalformAnalysis.submissionSuitsSolution())
+					.count() * specification.getPenaltyPerWrongNFRelation();
+			
 		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
 			NormalformDeterminationSpecification specification = null;
 			try {
@@ -363,9 +399,9 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			NormalformDeterminationAnalysis normalformDeterminationAnalysis = (NormalformDeterminationAnalysis) nfAnalysis;
 
 			if(!normalformDeterminationAnalysis.getOverallLevelIsCorrect()) {
-				actualPoints -= specification.getPointsDeductedForIncorrectNFOverall();
+				actualPoints -= specification.getPenaltyPerIncorrectNFOverall();
 			}
-			actualPoints -= normalformDeterminationAnalysis.getWrongLeveledDependencies().size() * specification.getPointsDeductedPerIncorrectNFDependency();
+			actualPoints -= normalformDeterminationAnalysis.getWrongLeveledDependencies().size() * specification.getPenaltyPerIncorrectNFDependency();
 
 		} else {
 			RDBDHelper.getLogger().log(Level.SEVERE, "RDBD internal type '" + internalType + "' is not supported.");

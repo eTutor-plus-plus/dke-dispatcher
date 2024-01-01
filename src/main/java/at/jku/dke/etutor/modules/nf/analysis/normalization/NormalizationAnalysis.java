@@ -142,4 +142,32 @@ public class NormalizationAnalysis extends NFAnalysis {
 	public int getMaxLostDependencies(){
 		return this.maxLostDependencies;
 	}
+
+	public HashMap<String, RBRAnalysis> getRbrAnalyses() {
+		return rbrAnalyses;
+	}
+
+	public HashMap<String, KeysAnalysis> getKeysAnalyses() {
+		return keysAnalyses;
+	}
+
+	public HashMap<String, NormalformAnalysis> getNormalformAnalyses() {
+		return normalformAnalyses;
+	}
+
+	public HashMap<String, TrivialDependenciesAnalysis> getTrivialDependenciesAnalyses() {
+		return trivialDependenciesAnalyses;
+	}
+
+	public HashMap<String, ExtraneousAttributesAnalysis> getExtraneousAttributesAnalyses() {
+		return extraneousAttributesAnalyses;
+	}
+
+	public HashMap<String, RedundantDependenciesAnalysis> getRedundantDependenciesAnalyses() {
+		return redundantDependenciesAnalyses;
+	}
+
+	public HashMap<String, CanonicalRepresentationAnalysis> getCanonicalRepresentationAnalyses() {
+		return canonicalRepresentationAnalyses;
+	}
 }

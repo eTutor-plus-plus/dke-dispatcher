@@ -4,11 +4,12 @@ import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 
 import java.text.Collator;
 import java.util.Collection;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class DecompositionAnalysis extends NFAnalysis {
 
-	private final TreeSet<String> missingAttributes;
+	private final Set<String> missingAttributes;
 
 	public DecompositionAnalysis() {
 		super();
@@ -24,8 +25,8 @@ public class DecompositionAnalysis extends NFAnalysis {
 		this.missingAttributes.addAll(attributes);
 	}
 
-	public TreeSet<String> getMissingAttributes(){
-		return (TreeSet<String>)this.missingAttributes.clone();
+	public Set<String> getMissingAttributes(){
+		return new TreeSet<>(this.missingAttributes);
 	}
 	
 	public void removeAllMissingAttributes(Collection<String> attributes){

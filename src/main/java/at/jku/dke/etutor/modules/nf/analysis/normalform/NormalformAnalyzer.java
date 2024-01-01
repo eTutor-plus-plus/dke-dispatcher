@@ -14,7 +14,12 @@ public class NormalformAnalyzer {
 	private NormalformAnalyzer() {
 		// This class is not meant to be instantiated. (Gerald Wimmer, 2023-12-01)
 	}
-	
+
+	/**
+	 * Tests which normal form a relation conforms to, and whether that is greater or equal to the desired normal form.
+	 * @param config The configuration for this analysis
+	 * @return A <code>NormalformAnalysis</code> for the given configuration
+	 */
 	public static NormalformAnalysis analyze(NormalformAnalyzerConfig config){
 		NormalformAnalysis analysis = new NormalformAnalysis();
 		analysis.setSubmissionSuitsSolution(false);
@@ -61,7 +66,7 @@ public class NormalformAnalyzer {
 
 			// Note: config.getDesiredNormalformLevel() could be null. (Gerald Wimmer, 2023-12-02)
 			NormalformLevelComparator comparator = new NormalformLevelComparator();
-			if (comparator.compare(analysis.getOverallNormalformLevel(), config.getDesiredNormalformLevel()) >= 0){
+			if (comparator.compare(analysis.getOverallNormalformLevel(), config.getDesiredNormalformLevel()) >= 0) {
 				analysis.setSubmissionSuitsSolution(true);			
 			}
 		}

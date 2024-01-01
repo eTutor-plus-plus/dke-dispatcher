@@ -9,12 +9,17 @@ import java.util.logging.Level;
 
 public class KeysAnalyzer {
 
+	/**
+	 * Tests whether the supplied relation has the correct minimal keys and only minimal keys.
+	 * @param relation The relation to be tested
+	 * @param config The configuration for this analyzer
+	 * @return A <code>KeysAnalysis</code> about the supplied relation
+	 */
 	public static KeysAnalysis analyze(Relation relation, KeysAnalyzerConfig config){
 		// Log progress
 		RDBDHelper.getLogger().log(Level.INFO, "Start analyzing keys determination.");
 
 		KeysAnalysis analysis = new KeysAnalysis();
-		analysis.setSubmissionSuitsSolution(true);
 
 		TreeSet<Key> correctKeys = config.getCorrectMinimalKeys();
 		analysis.setSubmission(relation.getMinimalKeys());
@@ -25,9 +30,7 @@ public class KeysAnalyzer {
 		analysis.setAdditionalKeys(relation.getMinimalKeys());
 		analysis.removeAllAdditionalKeys(correctKeys);
 
-		if ((!analysis.getMissingKeys().isEmpty()) || (!analysis.getAdditionalKeys().isEmpty())){
-			analysis.setSubmissionSuitsSolution(false);
-		}
+		analysis.setSubmissionSuitsSolution(analysis.getMissingKeys().isEmpty() && analysis.getAdditionalKeys().isEmpty());
 
 		RDBDHelper.getLogger().log(Level.INFO, "Found " + analysis.getMissingKeys().size() + " missing keys.");
 		RDBDHelper.getLogger().log(Level.INFO, "Found " + analysis.getAdditionalKeys().size() + " additional keys.");
