@@ -45,6 +45,6 @@ public abstract class NFSpecification implements Serializable, Cloneable, HasSem
 
 		NFSpecification spec = (NFSpecification) obj;
 
-		return spec.getBaseRelation().semanticallyEquals(this.getBaseRelation());
+		return spec.getBaseRelation().semanticallyEquals(this.baseRelation);
 	}
 }

@@ -16,12 +16,8 @@ public class IdentifiedRelation extends Relation {
 		super(attributes, dependencies);
 	}
 	
-	public void setID(String id) throws MalformedRelationIDException {
-		if (id != null && id.matches("(?idmsux)\\d*(\\.\\d*)*")) { // Todo: Make sure this doesn't cause problems with the "R*[.*]" scheme used now. (Gerald Wimmer, 2023-11-30)
-			this.id = id;
-		} else {
-			throw new MalformedRelationIDException("ID '" + id + "' is malformed!");
-		}
+	public void setID(String id) {
+		this.id = id;
 	}
 
 	public String getID(){

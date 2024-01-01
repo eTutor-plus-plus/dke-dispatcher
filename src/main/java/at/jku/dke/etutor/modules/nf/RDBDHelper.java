@@ -1,6 +1,8 @@
 package at.jku.dke.etutor.modules.nf;
 
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelationComparator;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
@@ -13,9 +15,6 @@ import at.jku.dke.etutor.modules.nf.specification.NormalformDeterminationSpecifi
 import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.RBRSpecification;
 import at.jku.dke.etutor.modules.nf.ui.HTMLPrinter;
-import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
-import at.jku.dke.etutor.modules.nf.model.IdentifiedRelationComparator;
-import at.jku.dke.etutor.modules.nf.model.MalformedRelationIDException;
 import at.jku.dke.etutor.modules.nf.ui.SpecificationParser;
 
 import java.io.IOException;
@@ -574,7 +573,7 @@ public class RDBDHelper {
 		}
 	}
 
-	public static NFSpecification clone(NFSpecification specToClone, int rdbdType) throws MalformedRelationIDException {
+	public static NFSpecification clone(NFSpecification specToClone, int rdbdType) {
 		//TODO: add clone() to interface NFSpecification (compatible with serialized specifications?)
 		try {
             return switch (rdbdType) {
@@ -595,7 +594,7 @@ public class RDBDHelper {
 		}
 	}
 	
-	public static NFSpecification initSpecification(int rdbdType) throws MalformedRelationIDException {
+	public static NFSpecification initSpecification(int rdbdType) {
 		NFSpecification spec;
 		IdentifiedRelation relation;
 		switch (rdbdType) {

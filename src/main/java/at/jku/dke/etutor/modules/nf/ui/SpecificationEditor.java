@@ -1,9 +1,8 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
-import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
-import at.jku.dke.etutor.modules.nf.model.MalformedRelationIDException;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
@@ -36,7 +35,7 @@ public class SpecificationEditor implements MessageSourceAware, Serializable {
 	private final int rdbdType;
 	private static MessageSource messageSource;
 
-	public SpecificationEditor(int rdbdType) throws MalformedRelationIDException {
+	public SpecificationEditor(int rdbdType) {
 		this.rdbdType = rdbdType;
 		this.msg = "";
 		this.specText = "";

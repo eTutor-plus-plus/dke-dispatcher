@@ -23,7 +23,7 @@ relation returns [IdentifiedRelation parsedRelation]
     @init {
         $parsedRelation = new IdentifiedRelation();
     } :
-        relationId {try {$parsedRelation.setID($relationId.idString);} catch(Exception e) { e.printStackTrace();}} ':' '(' attributeSet {$parsedRelation.setAttributes($attributeSet.attributes);} ')' '(' keySet {$parsedRelation.setMinimalKeys($keySet.keys);} ')' '(' functionalDependencySet {$parsedRelation.setFunctionalDependencies($functionalDependencySet.functionalDependencies);} ')' ;
+        relationId {try {$parsedRelation.setID($relationId.idString);} catch(Exception e) { e.printStackTrace();}} ':' '(' attributeSet {$parsedRelation.setAttributes($attributeSet.attributes);} ')' '->' '(' functionalDependencySet {$parsedRelation.setFunctionalDependencies($functionalDependencySet.functionalDependencies);} ')' '#' '(' keySet {$parsedRelation.setMinimalKeys($keySet.keys);} ')' ;
 relationId returns [String idString]:
         '*' Integer {$idString = $Integer.text;}; // Note: As we needn't specify how we got to the solution, neither is there a need for subindices. ; // ('.' Integer)? ;
 
@@ -36,7 +36,7 @@ key returns [Key keyObject]
     @init {
         $keyObject = new Key();
     } :
-        '#' attributeSet {$keyObject.addAllAttributes($attributeSet.attributes);} '#' ;
+        attributeSet {$keyObject.addAllAttributes($attributeSet.attributes);} ;
 
 normalFormSubmission returns [NormalformDeterminationSubmission submission]
     @init {
@@ -60,10 +60,6 @@ normalForm returns [NormalformLevel level] :
     |   '2NF' {$level = NormalformLevel.SECOND;}
     |   '3NF' {$level = NormalformLevel.THIRD;}
     |   'BCNF' {$level = NormalformLevel.BOYCE_CODD;} ;
-
-// attributeClosure : '(' attributeSet ')+' '=' attributeSet ;                      // start rule // Do we need this?
-
-// minimalCover : functionalDependencySet ;                                         // start rule // Do we need this?
 
 functionalDependencySet returns [Set<FunctionalDependency> functionalDependencies]  // start rule
     @init {
