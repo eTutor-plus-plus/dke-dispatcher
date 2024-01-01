@@ -81,7 +81,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
 		RDBDHelper.getLogger().log(Level.INFO, "Start analyzing.");
 
-		String submissionString = passedAttributes.get(RDBDConstants.calcSubmissionIDFor(exerciseID));
+		String submissionString = passedAttributes.get("submission");
 
 		// Source: https://datacadamia.com/antlr/getting_started (Gerald Wimmer, 2023-11-27)
 		CharStream submissionLexerInput = CharStreams.fromString(submissionString);
