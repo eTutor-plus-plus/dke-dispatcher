@@ -32,4 +32,19 @@ public abstract class NFSpecification implements Serializable, Cloneable, HasSem
 
 		return clone;
 	}
+
+	@Override
+	public boolean semanticallyEquals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+
+		if (!(obj instanceof NFSpecification)) {
+			return false;
+		}
+
+		NFSpecification spec = (NFSpecification) obj;
+
+		return spec.getBaseRelation().semanticallyEquals(this.getBaseRelation());
+	}
 }

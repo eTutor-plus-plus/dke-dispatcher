@@ -52,7 +52,7 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 	 *
 	 * (h in the grading schema V3)
 	 */
-	private int penaltyPerMissedNewDependency;
+	private int penaltyPerMissingNewDependency;
 
 	/**
 	 * Points deducted for every functional dependency that exists in a resulting relation, even though it is not
@@ -143,12 +143,12 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 		this.penaltyPerExcessiveLostDependency = penaltyPerExcessiveLostDependency;
 	}
 
-	public int getPenaltyPerMissedNewDependency() {
-		return penaltyPerMissedNewDependency;
+	public int getPenaltyPerMissingNewDependency() {
+		return penaltyPerMissingNewDependency;
 	}
 
-	public void setPenaltyPerMissedNewDependency(int penaltyPerMissedNewDependency) {
-		this.penaltyPerMissedNewDependency = penaltyPerMissedNewDependency;
+	public void setPenaltyPerMissingNewDependency(int penaltyPerMissingNewDependency) {
+		this.penaltyPerMissingNewDependency = penaltyPerMissingNewDependency;
 	}
 
 	public int getPenaltyPerWrongNewDependency() {
@@ -209,8 +209,6 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 	}
 
 	public boolean semanticallyEquals(Object obj) {
-		NormalizationSpecification spec;
-		
 		if (obj == null) {
 			return false;
 		}
@@ -219,17 +217,65 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 			return false;
 		}
 
-		spec = (NormalizationSpecification)obj;
+		NormalizationSpecification spec = (NormalizationSpecification)obj;
 		
-		if (!(spec.getTargetLevel().equals(this.targetLevel))){
+		if (!(spec.getTargetLevel().equals(this.targetLevel))) {
 			return false;
 		}
 		
-		if (spec.getMaxLostDependencies() != this.maxLostDependencies){
+		if (spec.getMaxLostDependencies() != this.maxLostDependencies) {
 			return false;
 		}
 
-        return spec.getBaseRelation().semanticallyEquals(this.getBaseRelation());
+		if(spec.getPenaltyPerLostAttribute() != this.penaltyPerLostAttribute) {
+			return false;
+		}
+
+		if(spec.getPenaltyForLossyDecomposition() != this.penaltyForLossyDecomposition) {
+			return false;
+		}
+
+		if(spec.getPenaltyPerNonCanonicalDependency() != this.penaltyPerNonCanonicalDependency) {
+			return false;
+		}
+
+		if(spec.getPenaltyPerTrivialDependency() != this.penaltyPerTrivialDependency) {
+			return false;
+		}
+
+		if(spec.getPenaltyPerExtraneousAttributeInDependencies() != this.penaltyPerExtraneousAttributeInDependencies) {
+			return false;
+		}
+
+		if(spec.getPenaltyPerRedundantDependency() != this.penaltyPerRedundantDependency) {
+			return false;
+		}
+
+		if(spec.getPenaltyPerExcessiveLostDependency() != this.penaltyPerExcessiveLostDependency) {
+			return false;
+		}
+
+		if(spec.getPenaltyPerMissingNewDependency() != this.penaltyPerMissingNewDependency) {
+			return false;
+		}
+
+		if(spec.getPenaltyPerWrongNewDependency() != this.penaltyPerWrongNewDependency) {
+			return false;
+		}
+
+		if(spec.getPenaltyPerMissingKey() != this.penaltyPerMissingKey) {
+			return false;
+		}
+
+		if(spec.getPenaltyPerWrongKey() != this.penaltyPerWrongKey) {
+			return false;
+		}
+
+		if(spec.getPenaltyPerWrongNFRelation() != this.penaltyPerWrongNFRelation) {
+			return false;
+		}
+
+        return super.semanticallyEquals(spec);
     }
 
 	@Override

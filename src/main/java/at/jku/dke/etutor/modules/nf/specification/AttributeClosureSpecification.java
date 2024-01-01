@@ -82,7 +82,15 @@ public class AttributeClosureSpecification extends NFSpecification implements Cl
 			return false;
 		}
 
-        return this.baseRelation.semanticallyEquals(spec.getBaseRelation());
+		if(spec.getPenaltyPerMissingAttribute() != this.penaltyPerMissingAttribute) {
+			return false;
+		}
+
+		if(spec.getPenaltyPerIncorrectAttribute() != this.penaltyPerIncorrectAttribute) {
+			return false;
+		}
+
+        return super.semanticallyEquals(spec);
     }
 
 	@Override

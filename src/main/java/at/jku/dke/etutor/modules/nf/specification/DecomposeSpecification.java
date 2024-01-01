@@ -16,8 +16,6 @@ public class DecomposeSpecification extends NormalizationSpecification {
 	}
 	
 	public boolean semanticallyEquals(Object obj) {
-		DecomposeSpecification spec;
-		
 		if (obj == null) {
 			return false;
 		}
@@ -26,16 +24,6 @@ public class DecomposeSpecification extends NormalizationSpecification {
 			return false;
 		}
 
-		spec = (DecomposeSpecification)obj;
-		
-		if (!(spec.getTargetLevel().equals(this.targetLevel))){
-			return false;
-		}
-		
-		if (spec.getMaxLostDependencies() != this.maxLostDependencies){
-			return false;
-		}
-
-        return spec.getBaseRelation().semanticallyEquals(this.getBaseRelation());
+        return super.semanticallyEquals(obj);
     }
 }

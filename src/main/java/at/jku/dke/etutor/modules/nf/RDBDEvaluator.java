@@ -6,7 +6,6 @@ import at.jku.dke.etutor.core.evaluation.Evaluator;
 import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.core.evaluation.Report;
 import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
-import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.closure.AttributeClosureAnalysis;
@@ -365,7 +364,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			}
 			actualPoints -= normalizationAnalysis.getRbrAnalyses().values().stream()
 					.mapToInt(rbrAnalysis -> rbrAnalysis.getMissingFunctionalDependencies().size())
-					.sum() * specification.getPenaltyPerMissedNewDependency();
+					.sum() * specification.getPenaltyPerMissingNewDependency();
 			actualPoints -= normalizationAnalysis.getRbrAnalyses().values().stream()
 					.mapToInt(rbrAnalysis -> rbrAnalysis.getAdditionalFunctionalDependencies().size())
 					.sum() * specification.getPenaltyPerWrongNewDependency();

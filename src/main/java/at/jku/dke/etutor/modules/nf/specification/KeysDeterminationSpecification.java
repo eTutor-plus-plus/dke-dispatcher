@@ -11,7 +11,25 @@ public class KeysDeterminationSpecification extends NFSpecification {
 
     @Override
     public boolean semanticallyEquals(Object obj) {
-        return false; // TODO: implement
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof KeysDeterminationSpecification)) {
+            return false;
+        }
+
+        KeysDeterminationSpecification spec = (KeysDeterminationSpecification) obj;
+
+        if(spec.getPenaltyPerMissingKey() != this.penaltyPerMissingKey) {
+            return false;
+        }
+
+        if(spec.getPenaltyPerIncorrectKey() != this.penaltyPerIncorrectKey) {
+            return false;
+        }
+
+        return super.semanticallyEquals(spec);
     }
 
     public int getPenaltyPerMissingKey() {

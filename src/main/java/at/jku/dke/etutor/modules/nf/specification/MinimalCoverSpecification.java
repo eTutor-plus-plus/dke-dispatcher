@@ -68,6 +68,40 @@ public class MinimalCoverSpecification extends NFSpecification {
 
     @Override
     public boolean semanticallyEquals(Object obj) {
-        return false; // TODO: implement
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof MinimalCoverSpecification)) {
+            return false;
+        }
+
+        MinimalCoverSpecification spec = (MinimalCoverSpecification) obj;
+
+        if(spec.getPenaltyPerNonCanonicalDependency() != this.penaltyPerNonCanonicalDependency) {
+            return false;
+        }
+
+        if(spec.getPenaltyPerTrivialDependency() != this.penaltyPerTrivialDependency) {
+            return false;
+        }
+
+        if(spec.getPenaltyPerExtraneousAttribute() != this.penaltyPerExtraneousAttribute) {
+            return false;
+        }
+
+        if(spec.getPenaltyPerRedundantDependency() != this.penaltyPerRedundantDependency) {
+            return false;
+        }
+
+        if(spec.getPenaltyPerMissingDependencyVsSolution() != this.penaltyPerMissingDependencyVsSolution) {
+            return false;
+        }
+
+        if(spec.getPenaltyPerIncorrectDependencyVsSolution() != this.penaltyPerIncorrectDependencyVsSolution) {
+            return false;
+        }
+
+        return super.semanticallyEquals(spec);
     }
 }
