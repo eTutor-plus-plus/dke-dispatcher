@@ -111,66 +111,6 @@ public class ReductionByResolution {
 		}*/
 		
 	}
-	
-	public static Set<FunctionalDependency> execute_old(Relation rel, Collection<String> subScheme) {
-		List<String> attributes = new Vector<>();
-		for (String currAttribute : rel.getAttributes()) {
-			if (!subScheme.contains(currAttribute)) {
-				attributes.add(currAttribute);
-			}
-		}
-
-		Set<FunctionalDependency> dependencies = rel.getFunctionalDependencies();
-		Set<FunctionalDependency> result = MinimalCover.unfold(dependencies);
-
-		while (!attributes.isEmpty()) {
-			String currAttribute = attributes.get(0);
-			
-			/*
-			System.out.println("Processing Attribute '" + currAttribute + "'");
-			resultIterator = result.iterator();
-			System.out.println("STARTING SET OF DEPENDENCIES:");
-			while (resultIterator.hasNext()) {
-				System.out.println(resultIterator.next());
-			}*/
-			
-			result.addAll(calculateResolvents(currAttribute, dependencies));
-			//result.addAll(calculateResolvents(currAttribute, result));
-			
-			/*
-			resultIterator = result.iterator();
-			System.out.println("EXTENDED SET OF DEPENDENCIES:");
-			while (resultIterator.hasNext()) {
-				System.out.println(resultIterator.next());
-			}*/
-
-			Iterator<FunctionalDependency> resultIterator = result.iterator();
-			while (resultIterator.hasNext()) {
-				FunctionalDependency currFD = resultIterator.next();
-
-				//HACK - VORIGE VERSION - WAR FALSCH
-				//if ((!subScheme.containsAll(currFD.getLhsAttributes())) || (!subScheme.containsAll(currFD.getRhsAttributes()))){
-				//	resultIterator.remove();
-				//} else {
-					//original code
-					if ((currFD.getLhsAttributes().contains(currAttribute))	|| (currFD.getRhsAttributes().contains(currAttribute))) {
-						resultIterator.remove();
-						//System.out.println("REMOVED DEPENDENCY: " + currFD);
-					}
-				//}
-			}
-			/*
-			resultIterator = result.iterator();
-			System.out.println("CLEANED SET OF DEPENDENCIES:");
-			while (resultIterator.hasNext()) {
-				System.out.println(resultIterator.next());
-			}*/
-			
-			attributes.remove(currAttribute);
-		}
-
-		return MinimalCover.fold(result);
-	}
 
 	/**
 	 * Determines the functional dependencies of the subScheme of a base relation.
@@ -216,8 +156,8 @@ public class ReductionByResolution {
 
 	/**
 	 * Determines the resolvents for an attribute given a <code>Collection</code> of functional dependencies.
-	 * @param a The attribute whose resolvent is to be determined
-	 * @param dependencies The functional dependencies on which the resolvent is to be based
+	 * @param a The attribute whose resolvents are to be determined
+	 * @param dependencies The functional dependencies on which the resolvents are to be based
 	 * @return A <code>Set</code> of resolved functional dependencies
 	 */
 	public static Set<FunctionalDependency> calculateResolvents(String a, Collection<FunctionalDependency> dependencies) {
