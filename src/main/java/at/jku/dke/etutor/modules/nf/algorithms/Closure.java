@@ -9,6 +9,10 @@ import java.util.TreeSet;
 
 public class Closure {
 
+	private Closure() {
+		// This class is not meant to be instantiated (Gerald Wimmer, 2024-01-01).
+	}
+
 	/**
 	 * Returns the attribute closure for the passed attributes given the passed dependencies
 	 * @param attributes The <code>Collection</code> of attributes whose closure is to be determined.

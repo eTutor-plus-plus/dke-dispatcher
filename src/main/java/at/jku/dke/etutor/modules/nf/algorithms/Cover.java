@@ -6,6 +6,10 @@ import java.util.Collection;
 
 public class Cover {
 
+	private Cover() {
+		// This class is not meant to be instantiated (Gerald Wimmer, 2024-01-01).
+	}
+
 	/**
 	 * Tests whether two collections of functional dependencies cover each other.
 	 * @param fd1 a collection of <code>FunctionalDependency</code> objects

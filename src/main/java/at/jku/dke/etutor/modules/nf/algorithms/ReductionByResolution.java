@@ -12,6 +12,10 @@ import java.util.Vector;
 
 public class ReductionByResolution {
 
+	private ReductionByResolution() {
+		// This class is not meant to be instantiated (Gerald Wimmer, 2024-01-01).
+	}
+
 	public static void main(String[] args){
 		
 		
