@@ -222,14 +222,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			normalizationAnalyzerConfig.setBaseRelation(normalizationSpecification.getBaseRelation());
 			normalizationAnalyzerConfig.setDesiredNormalformLevel(normalizationSpecification.getTargetLevel());
 			normalizationAnalyzerConfig.setMaxLostDependencies(normalizationSpecification.getMaxLostDependencies());
-			/*
-			 * TODO: Replaced with call to parser (Gerald Wimmer, 2023-12-02)
-			 *
-			 * NOTE: Cast to TreeSet<IdentifiedRelation> should always work, because that is the actual type passed in
-			 *  by RDBDEditor.initPerformTask(). Also, it was cast (albeit needlessly) to TreeSet (without generics
-			 *  because there were none back then) for analysis.setSubmission(). (Gerald Wimmer, 2023-11-12)
-			 */
-			// TreeSet<IdentifiedRelation> submissionTreeSet = (TreeSet<IdentifiedRelation>) submission;
+
 			// Get normalized relations from input String. (Gerald Wimmer, 2023-12-02)
 			Set<IdentifiedRelation> submissionSet = submissionParser.relationSet().relations;
 			normalizationAnalyzerConfig.setNormalizedRelations(submissionSet);
