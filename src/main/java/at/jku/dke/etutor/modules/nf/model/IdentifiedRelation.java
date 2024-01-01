@@ -28,7 +28,7 @@ public class IdentifiedRelation extends Relation {
 	public String toString(){
 		String toString = "";
 		
-		toString = toString.concat("Relation: " + this.getName() + "(" + this.getID() + ")\n");
+		toString = toString.concat("Relation: " + this.name + "(" + this.id + ")\n");
 
 		toString = toString.concat("Attributes: \n");
 		for (String a : getAttributes()) {

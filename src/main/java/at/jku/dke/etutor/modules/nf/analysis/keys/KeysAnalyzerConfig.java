@@ -3,21 +3,22 @@ package at.jku.dke.etutor.modules.nf.analysis.keys;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.KeyComparator;
 
+import java.util.Set;
 import java.util.TreeSet;
 
 public class KeysAnalyzerConfig {
 
-	private TreeSet<Key> correctMinimalKeys;
+	private Set<Key> correctMinimalKeys;
 
 	public KeysAnalyzerConfig() {
 		this.correctMinimalKeys = new TreeSet<>(new KeyComparator());
 	}
 
-	public void setCorrectMinimalKeys(TreeSet<Key> correctMinimalKeys){
+	public void setCorrectMinimalKeys(Set<Key> correctMinimalKeys){
 		this.correctMinimalKeys = correctMinimalKeys;
 	}
 	
-	public TreeSet<Key> getCorrectMinimalKeys(){
-		return (TreeSet<Key>)this.correctMinimalKeys.clone();
+	public Set<Key> getCorrectMinimalKeys(){
+		return new TreeSet<>(this.correctMinimalKeys);
 	}
 }

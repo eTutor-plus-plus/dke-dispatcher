@@ -1,13 +1,14 @@
 package at.jku.dke.etutor.modules.nf.model;
 
 import java.io.Serializable;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class KeysContainer implements Serializable {
 
-	private TreeSet<Key> minimalKeys;
-	private TreeSet<Key> superKeys;
-	private TreeSet<Key> partialKeys;
+	private Set<Key> minimalKeys;
+	private Set<Key> superKeys;
+	private Set<Key> partialKeys;
 	
 
 	public KeysContainer() {
@@ -16,27 +17,27 @@ public class KeysContainer implements Serializable {
 		this.partialKeys = null;
 	}
 
-	public void setMinimalKeys(TreeSet<Key> minimalKeys) {
+	public void setMinimalKeys(Set<Key> minimalKeys) {
 		this.minimalKeys = minimalKeys;	
 	}
 	
-	public TreeSet<Key> getMinimalKeys() {
-		return (TreeSet<Key>)this.minimalKeys.clone();
+	public Set<Key> getMinimalKeys() {
+		return new TreeSet<>(this.minimalKeys);
 	}
 
-	public void setSuperKeys(TreeSet<Key> keys) {
+	public void setSuperKeys(Set<Key> keys) {
 		this.superKeys = keys;	
 	}
 	
-	public TreeSet<Key> getSuperKeys() {
-		return (TreeSet<Key>)this.superKeys.clone();
+	public Set<Key> getSuperKeys() {
+		return new TreeSet<>(this.superKeys);
 	}
 	
 	public void setPartialKeys(TreeSet<Key> keys) {
 		this.partialKeys = keys;	
 	}
 	
-	public TreeSet<Key> getPartialKeys() {
-		return (TreeSet<Key>)this.partialKeys.clone();
+	public Set<Key> getPartialKeys() {
+		return new TreeSet<>(this.partialKeys);
 	}
 }

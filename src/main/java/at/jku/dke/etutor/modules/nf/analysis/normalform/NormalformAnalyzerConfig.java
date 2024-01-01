@@ -5,13 +5,14 @@ import at.jku.dke.etutor.modules.nf.model.KeyComparator;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 
+import java.util.Set;
 import java.util.TreeSet;
 
 public class NormalformAnalyzerConfig {
 
 	private Relation relation;
-	private TreeSet<Key> correctMinimalKeys;
-	private TreeSet<Key> correctPartialKeys;
+	private Set<Key> correctMinimalKeys;
+	private Set<Key> correctPartialKeys;
 	private NormalformLevel desiredLevel;
 	
 	public NormalformAnalyzerConfig() {
@@ -37,19 +38,19 @@ public class NormalformAnalyzerConfig {
 		return this.relation;
 	}
 	
-	public void setCorrectMinimalKeys(TreeSet<Key> correctMinimalKeys){
+	public void setCorrectMinimalKeys(Set<Key> correctMinimalKeys){
 		this.correctMinimalKeys = correctMinimalKeys;
 	}
 	
-	public TreeSet<Key> getCorrectMinimalKeys(){
-		return (TreeSet<Key>)this.correctMinimalKeys.clone();
+	public Set<Key> getCorrectMinimalKeys(){
+		return new TreeSet<>(this.correctMinimalKeys);
 	}
 
-	public void setCorrectPartialKeys(TreeSet<Key> correctPartialKeys){
+	public void setCorrectPartialKeys(Set<Key> correctPartialKeys){
 		this.correctPartialKeys = correctPartialKeys;
 	}
 	
-	public TreeSet<Key> getCorrectPartialKeys(){
-		return (TreeSet<Key>)this.correctPartialKeys.clone();
+	public Set<Key> getCorrectPartialKeys(){
+		return new TreeSet<>(this.correctPartialKeys);
 	}
 }

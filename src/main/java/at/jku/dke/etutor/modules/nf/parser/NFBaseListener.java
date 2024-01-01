@@ -2,16 +2,6 @@
 
 package at.jku.dke.etutor.modules.nf.parser ;
 
-import java.util.Set;
-import java.util.Map;
-import java.util.HashSet;
-import java.util.HashMap;
-import at.jku.dke.etutor.modules.nf.NormalformDeterminationSubmission;
-import at.jku.dke.etutor.modules.nf.model.Key;
-import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
-import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
-import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
-
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;

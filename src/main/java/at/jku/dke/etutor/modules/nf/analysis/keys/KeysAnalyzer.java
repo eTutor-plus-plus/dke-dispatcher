@@ -4,7 +4,7 @@ import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 
-import java.util.TreeSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class KeysAnalyzer {
@@ -21,7 +21,7 @@ public class KeysAnalyzer {
 
 		KeysAnalysis analysis = new KeysAnalysis();
 
-		TreeSet<Key> correctKeys = config.getCorrectMinimalKeys();
+		Set<Key> correctKeys = config.getCorrectMinimalKeys();
 		analysis.setSubmission(relation.getMinimalKeys());
 
 		analysis.setMissingKeys(correctKeys);

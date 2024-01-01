@@ -112,7 +112,7 @@ public class KeysDeterminator {
 		container.setSuperKeys(superKeys);
 	}
 
-	public static TreeSet<Key> determineMinimalKeys(Relation relation){
+	public static Set<Key> determineMinimalKeys(Relation relation){
 		KeysContainer container = new KeysContainer();
 		determineMinimalKeys(relation, container);
 

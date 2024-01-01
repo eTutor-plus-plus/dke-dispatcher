@@ -13,7 +13,7 @@ public class Relation implements Serializable, Cloneable, HasSemanticEquality {
 
 	private static final long serialVersionUID = 7982386529581622533L;
 
-	private String name;
+	protected String name;
 	private TreeSet<String> attributes;
 	private HashSet<FunctionalDependency> functionalDependencies;
 
