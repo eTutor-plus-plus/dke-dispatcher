@@ -155,16 +155,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			//Set Submission
 			analysis.setSubmission(submission);
 
-		} /*else if (internalType == RDBDConstants.TYPE_RBR) { // Note: No longer necessary as its own task type, may be required for Decompose (Gerald Wimmer, 2023-11-27)
-			//RBR
-			RBRSpecification rbrSpecification = (RBRSpecification)specification;
-			Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0]; // TODO: Replace with call to parser (Gerald Wimmer, 2023-11-12)
-			analysis = RBRAnalyzer.analyze(rbrSpecification.getBaseRelation(), relation);
-			
-			//Set Submission
-			analysis.setSubmission(relation);
-
-		}*/ /*else if (internalType == RDBDConstants.TYPE_DECOMPOSE) {	// Note: Replaced with Normalize, now that steps no longer need to be validated
+		} /*else if (internalType == RDBDConstants.TYPE_DECOMPOSE) {	// Note: Replaced with Normalize, now that steps no longer need to be validated
 			// DecomposeSpecification decomposeSpecification = (DecomposeSpecification)specification;
 			DecomposeSpecification decomposeSpecification = null;
 			try {
@@ -387,7 +378,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			actualPoints -= normalizationAnalysis.getNormalformAnalyses().values().stream()
 					.filter(normalformAnalysis -> !normalformAnalysis.submissionSuitsSolution())
 					.count() * specification.getPenaltyPerWrongNFRelation();
-			
+
 		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
 			NormalformDeterminationSpecification specification = null;
 			try {
