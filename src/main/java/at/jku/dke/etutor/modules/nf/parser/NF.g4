@@ -25,7 +25,7 @@ relation returns [IdentifiedRelation parsedRelation]
     } :
         relationId {try {$parsedRelation.setID($relationId.idString);} catch(Exception e) { e.printStackTrace();}} ':' '(' attributeSet {$parsedRelation.setAttributes($attributeSet.attributes);} ')' '->' '(' functionalDependencySet {$parsedRelation.setFunctionalDependencies($functionalDependencySet.functionalDependencies);} ')' '#' '(' keySet {$parsedRelation.setMinimalKeys($keySet.keys);} ')' ;
 relationId returns [String idString]:
-        '*' Integer {$idString = $Integer.text;}; // Note: As we needn't specify how we got to the solution, neither is there a need for subindices. ; // ('.' Integer)? ;
+        '*' AlphaNumericChain {$idString = $AlphaNumericChain.text;} ;
 
 keySet returns [Set<Key> keys]                                                      // start rule
     @init {
