@@ -18,7 +18,9 @@ public class KeysAnalyzerConfig {
 		this.correctMinimalKeys = correctMinimalKeys;
 	}
 	
-	public Set<Key> getCorrectMinimalKeys(){
-		return new TreeSet<>(this.correctMinimalKeys);
+	public Set<Key> getCorrectMinimalKeys() {
+		TreeSet<Key> ret = new TreeSet<>(new KeyComparator());
+		ret.addAll(correctMinimalKeys);
+		return ret;
 	}
 }

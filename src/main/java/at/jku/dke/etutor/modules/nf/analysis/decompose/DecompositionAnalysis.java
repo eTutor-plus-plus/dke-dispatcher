@@ -1,6 +1,8 @@
 package at.jku.dke.etutor.modules.nf.analysis.decompose;
 
 import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
+import at.jku.dke.etutor.modules.nf.model.Key;
+import at.jku.dke.etutor.modules.nf.model.KeyComparator;
 
 import java.text.Collator;
 import java.util.Collection;
@@ -25,8 +27,10 @@ public class DecompositionAnalysis extends NFAnalysis {
 		this.missingAttributes.addAll(attributes);
 	}
 
-	public Set<String> getMissingAttributes(){
-		return new TreeSet<>(this.missingAttributes);
+	public Set<String> getMissingAttributes() {
+		TreeSet<String> ret = new TreeSet<>(Collator.getInstance());
+		ret.addAll(missingAttributes);
+		return ret;
 	}
 	
 	public void removeAllMissingAttributes(Collection<String> attributes){

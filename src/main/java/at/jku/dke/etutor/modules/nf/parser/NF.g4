@@ -70,7 +70,7 @@ functionalDependency returns [FunctionalDependency fdObject]
     @init {
         $fdObject = new FunctionalDependency();
     } :
-        attributeSet {$fdObject.setLhsAttributes($attributeSet.attributes);} '-' ('.')? '>' attributeSet {$fdObject.setRhsAttributes($attributeSet.attributes);} ;
+        attributeSet {$fdObject.setLhsAttributes($attributeSet.attributes);} '->' attributeSet {$fdObject.setRhsAttributes($attributeSet.attributes);} ;
 
 attributeSet returns [Set<String> attributes]
     @init {

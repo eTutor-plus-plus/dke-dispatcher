@@ -13,6 +13,7 @@ public class NormalformDeterminationAnalyzer {
 	public static NormalformDeterminationAnalysis analyze(NormalformDeterminationSubmission submission, NormalformAnalyzerConfig config){
 		NormalformDeterminationAnalysis analysis = new NormalformDeterminationAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
+		analysis.setOverallLevelIsCorrect(true);
 		
 		StringBuilder temp = new StringBuilder();
         for (Key key : config.getCorrectMinimalKeys()) {

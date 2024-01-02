@@ -42,8 +42,10 @@ public class NormalformAnalyzerConfig {
 		this.correctMinimalKeys = correctMinimalKeys;
 	}
 	
-	public Set<Key> getCorrectMinimalKeys(){
-		return new TreeSet<>(this.correctMinimalKeys);
+	public Set<Key> getCorrectMinimalKeys() {
+		TreeSet<Key> ret = new TreeSet<>(new KeyComparator());
+		ret.addAll(correctMinimalKeys);
+		return ret;
 	}
 
 	public void setCorrectPartialKeys(Set<Key> correctPartialKeys){
@@ -51,6 +53,8 @@ public class NormalformAnalyzerConfig {
 	}
 	
 	public Set<Key> getCorrectPartialKeys(){
-		return new TreeSet<>(this.correctPartialKeys);
+		TreeSet<Key> ret = new TreeSet<>(new KeyComparator());
+		ret.addAll(correctPartialKeys);
+		return ret;
 	}
 }

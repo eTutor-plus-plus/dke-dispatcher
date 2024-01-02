@@ -237,9 +237,9 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			analysis.setSubmission((Serializable)submissionSet);
 
 		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
-			Relation specification = null;
+			NormalformDeterminationSpecification specification = null;
 			try {
-				specification = new ObjectMapper().readValue(specificationString, Relation.class);
+				specification = new ObjectMapper().readValue(specificationString, NormalformDeterminationSpecification.class);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -249,8 +249,8 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();
 
-			normalformAnalyzerConfig.setCorrectMinimalKeys(KeysDeterminator.determineMinimalKeys(specification));
-			normalformAnalyzerConfig.setRelation(specification);
+			normalformAnalyzerConfig.setCorrectMinimalKeys(KeysDeterminator.determineMinimalKeys(specification.getBaseRelation()));
+			normalformAnalyzerConfig.setRelation(specification.getBaseRelation());
 			
 			analysis = NormalformDeterminationAnalyzer.analyze(normalformDeterminationSubmission, normalformAnalyzerConfig);
 
@@ -382,7 +382,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			NormalformDeterminationAnalysis normalformDeterminationAnalysis = (NormalformDeterminationAnalysis) nfAnalysis;
 
 			if(!normalformDeterminationAnalysis.getOverallLevelIsCorrect()) {
-				actualPoints -= specification.getPenaltyPerIncorrectNFOverall();
+				actualPoints -= specification.getPenaltyForIncorrectNFOverall();
 			}
 			actualPoints -= normalformDeterminationAnalysis.getWrongLeveledDependencies().size() * specification.getPenaltyPerIncorrectNFDependency();
 
@@ -391,7 +391,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			throw new Exception("Unsupported RDBD type.");
 		}
 
-		actualPoints = Math.min(0, actualPoints);
+		actualPoints = Math.max(0, actualPoints);
 		grading.setPoints(actualPoints);
 
 		return grading;

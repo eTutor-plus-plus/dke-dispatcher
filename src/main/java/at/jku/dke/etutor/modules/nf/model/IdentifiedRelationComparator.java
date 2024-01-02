@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.modules.nf.model;
 
 import java.io.Serializable;
+import java.text.Collator;
 import java.util.Comparator;
 import java.util.TreeSet;
 
@@ -11,14 +12,6 @@ public class IdentifiedRelationComparator  implements Comparator<IdentifiedRelat
 	}
 
 	public int compare(IdentifiedRelation o1, IdentifiedRelation o2) {
-
-		String[] id1;
-		String[] id2;
-		
-		int valueID1;
-		int valueID2;
-		int maxComparisons;
-
 		if ((o1 == null) && (o2 == null)){
 			return 0;
 		}
@@ -31,14 +24,14 @@ public class IdentifiedRelationComparator  implements Comparator<IdentifiedRelat
 			return -1;
 		}
 
-        id1 = o1.getID().split("\\.");
-		id2 = o2.getID().split("\\.");
+        String id1 = o1.getID(); //.split("\\."); // Leftover from when the IDs needed to have a particular format (R*.*) (Gerald Wimmer, 2024-01-02).
+		String id2 = o2.getID(); //.split("\\."); // Leftover from when the IDs needed to have a particular format (R*.*) (Gerald Wimmer, 2024-01-02).
 
-        maxComparisons = Math.min(id1.length, id2.length);
+        /*int maxComparisons = Math.min(id1.length, id2.length);
 		
-		for (int i=0; i<maxComparisons; i++){
-			valueID1 = Integer.parseInt(id1[i]);
-			valueID2 = Integer.parseInt(id2[i]);
+		for (int i=0; i<maxComparisons; i++) { // Leftover from when the IDs needed to have a particular format (R*.*) (Gerald Wimmer, 2024-01-02).
+			int valueID1 = Integer.parseInt(id1[i]);
+			int valueID2 = Integer.parseInt(id2[i]);
 
 			if (valueID1 > valueID2){
 				return 1;
@@ -47,9 +40,9 @@ public class IdentifiedRelationComparator  implements Comparator<IdentifiedRelat
 			if (valueID1 < valueID2){
 				return -1;
 			}
-		}
+		}*/
 
-		return Integer.compare(id1.length, id2.length);
+		return Collator.getInstance().compare(id1, id2);
 
 	}
 	

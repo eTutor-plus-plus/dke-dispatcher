@@ -22,7 +22,9 @@ public class KeysContainer implements Serializable {
 	}
 	
 	public Set<Key> getMinimalKeys() {
-		return new TreeSet<>(this.minimalKeys);
+		TreeSet<Key> ret = new TreeSet<>(new KeyComparator());
+		ret.addAll(minimalKeys);
+		return ret;
 	}
 
 	public void setSuperKeys(Set<Key> keys) {
@@ -30,7 +32,9 @@ public class KeysContainer implements Serializable {
 	}
 	
 	public Set<Key> getSuperKeys() {
-		return new TreeSet<>(this.superKeys);
+		TreeSet<Key> ret = new TreeSet<>(new KeyComparator());
+		ret.addAll(superKeys);
+		return ret;
 	}
 	
 	public void setPartialKeys(TreeSet<Key> keys) {
@@ -38,6 +42,8 @@ public class KeysContainer implements Serializable {
 	}
 	
 	public Set<Key> getPartialKeys() {
-		return new TreeSet<>(this.partialKeys);
+		TreeSet<Key> ret = new TreeSet<>(new KeyComparator());
+		ret.addAll(partialKeys);
+		return ret;
 	}
 }

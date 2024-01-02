@@ -2,7 +2,7 @@ package at.jku.dke.etutor.modules.nf.specification;
 
 public class NormalformDeterminationSpecification extends NFSpecification {
 
-    private int penaltyPerIncorrectNFOverall;
+    private int penaltyForIncorrectNFOverall;
 
     private int penaltyPerIncorrectNFDependency;
 
@@ -10,12 +10,12 @@ public class NormalformDeterminationSpecification extends NFSpecification {
         super();
     }
 
-    public int getPenaltyPerIncorrectNFOverall() {
-        return penaltyPerIncorrectNFOverall;
+    public int getPenaltyForIncorrectNFOverall() {
+        return penaltyForIncorrectNFOverall;
     }
 
-    public void setPenaltyPerIncorrectNFOverall(int penaltyPerIncorrectNFOverall) {
-        this.penaltyPerIncorrectNFOverall = penaltyPerIncorrectNFOverall;
+    public void setPenaltyForIncorrectNFOverall(int penaltyForIncorrectNFOverall) {
+        this.penaltyForIncorrectNFOverall = penaltyForIncorrectNFOverall;
     }
 
     public int getPenaltyPerIncorrectNFDependency() {

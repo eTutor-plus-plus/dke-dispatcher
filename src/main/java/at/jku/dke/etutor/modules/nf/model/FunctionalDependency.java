@@ -5,13 +5,14 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.TreeSet;
 
 public class FunctionalDependency implements Serializable{
 
-	private final TreeSet<String> lhsAttributes;
-	private final TreeSet<String> rhsAttributes;
+	private final Set<String> lhsAttributes;
+	private final Set<String> rhsAttributes;
 
 	public FunctionalDependency() {
 		this.lhsAttributes = new TreeSet<>(new AttributeCollator());
@@ -170,11 +171,15 @@ public class FunctionalDependency implements Serializable{
 		this.rhsAttributes.removeAll(attributes);
 	}
 
-	public TreeSet<String> getLhsAttributes(){
-		return (TreeSet<String>)this.lhsAttributes.clone();
+	public Set<String> getLhsAttributes() {
+		TreeSet<String> ret = new TreeSet<>(new AttributeCollator());
+		ret.addAll(lhsAttributes);
+		return ret;
 	}
 
-	public TreeSet<String> getRhsAttributes(){
-		return (TreeSet<String>)this.rhsAttributes.clone();
+	public Set<String> getRhsAttributes() {
+		TreeSet<String> ret = new TreeSet<>(new AttributeCollator());
+		ret.addAll(rhsAttributes);
+		return ret;
 	}
 }
