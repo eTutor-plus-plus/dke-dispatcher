@@ -286,19 +286,13 @@ public class SpecificationParser implements Serializable {
 	}
 	
 	private static void print(Collection<?> items, String qualifier, String delim, StringBuilder buffer) {
-		boolean first;
+		StringJoiner itemsJoiner = new StringJoiner(delim, "{", "}");
 
-		buffer.append(qualifier).append(" {");
-		first = true;
-        for (Object item : items) {
-            if (!first) {
-                buffer.append(delim);
-            } else {
-                first = false;
-            }
-            buffer.append(item);
+		for (Object item : items) {
+            itemsJoiner.add(item.toString());
         }
-		buffer.append("}");
+
+		buffer.append(qualifier).append(" ").append(itemsJoiner);
 	}
 
 	public String getText(NFSpecification specification) {
@@ -374,52 +368,49 @@ public class SpecificationParser implements Serializable {
 	}
 	
 	private static void test(SpecificationParser parser, String txt) {
-		boolean first;
 		try {
 			parser.parse(txt);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 		System.out.print("RELATION ATTRIBUTES: ");
 		if (parser.relationAttributes == null) {
 			System.out.println("No specification.");
 		} else if (parser.relationAttributes.isEmpty()) {
 			System.out.println("Empty attribute list.");
 		} else {
-			first = true;
+			StringJoiner attributesJoiner = new StringJoiner(" ");
             for (String relationAttribute : parser.relationAttributes) {
-                System.out.print((first ? "" : " ") + relationAttribute);
-                first = false;
-            }
-			System.out.println();
+                attributesJoiner.add(relationAttribute);
+			}
+			System.out.println(attributesJoiner);
 		}
+
 		System.out.print("BASE ATTRIBUTES: ");
 		if (parser.baseAttributes == null) {
 			System.out.println("No specification.");
 		} else if (parser.baseAttributes.isEmpty()) {
 			System.out.println("Empty attribute list.");
 		} else {
-			Iterator<String> it = parser.baseAttributes.iterator();
-			first = true;
-			while (it.hasNext()) {
-				System.out.print((first ? "" : " " ) + it.next());
-				first = false;
+			StringJoiner attributesJoiner = new StringJoiner(" ");
+			for (String baseAttribute : parser.baseAttributes) {
+				attributesJoiner.add(baseAttribute);
 			}
-			System.out.println();
+			System.out.println(attributesJoiner);
 		}
+
 		System.out.print("DEPENDENCIES: ");
 		if (parser.dependencies == null) {
 			System.out.println("No specification.");
 		} else if (parser.dependencies.isEmpty()) {
 			System.out.println("Empty dependencies list.");
 		} else {
-			Iterator<FunctionalDependency> it = parser.dependencies.iterator();
-			first = true;
-			while (it.hasNext()) {
-				System.out.print((first ? "" : ", " ) + it.next());
-				first = false;
+			StringJoiner dependenciesJoiner = new StringJoiner(", ");
+			for (FunctionalDependency dependency : parser.dependencies) {
+				dependenciesJoiner.add(dependency.toString());
 			}
-			System.out.println();
+			System.out.println(dependenciesJoiner);
 		}
 	}
 	

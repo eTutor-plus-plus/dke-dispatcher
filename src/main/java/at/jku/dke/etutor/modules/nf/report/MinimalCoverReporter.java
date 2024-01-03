@@ -19,7 +19,7 @@ import java.util.StringJoiner;
 import java.util.Vector;
 import java.util.logging.Level;
 
-public class MinimalCoverReporter {
+public class MinimalCoverReporter extends ErrorReporter {
 
 	private MinimalCoverReporter() {
 		// This class is not meant to be instantiated
@@ -125,16 +125,11 @@ public class MinimalCoverReporter {
 		if (config.getDiagnoseLevel() == 3){
 			String currElemID = RDBDHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.dependenciesnotcanonical", null, locale)).append(":</p>");
-			description.append("<table border='2' rules='all'>");
 
-			for (FunctionalDependency fd : analysis.getNotCanonicalDependencies()){
-				description.append("<tr><td>");
-				description.append(printDependency(fd));
-				description.append("</td></tr>");
-			}
-			description.append("</table>");
+			description.append(generateTable(analysis.getNotCanonicalDependencies()));
+
 			description.append("</body></html>");
 			description.append("\"></input>");
 
@@ -199,16 +194,11 @@ public class MinimalCoverReporter {
 		if (config.getDiagnoseLevel() == 3){
 			String currElemID = RDBDHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.trivialdependencies", null, locale)).append(":</p>");
-			description.append("<table border='2' rules='all'>");
 
-			for (FunctionalDependency fd : analysis.getTrivialDependencies()){
-				description.append("<tr><td>");
-				description.append(printDependency(fd));
-				description.append("</td></tr>");
-			}
-			description.append("</table>");
+			description.append(generateTable(analysis.getTrivialDependencies()));
+
 			description.append("</body></html>");
 			description.append("\"></input>");
 
@@ -276,9 +266,9 @@ public class MinimalCoverReporter {
 		if (config.getDiagnoseLevel() == 3){
 			String currElemID = RDBDHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>Extraneous attributes:</p>");
-			description.append("<table border='2' rules='all'>");
+			description.append(TABLE_HEADER);
 
 			description.append("<thead><tr><th>").append(messageSource.getMessage("minimalcoverreporter.functionaldependency", null, locale)).append("</th><th>").append(messageSource.getMessage("minimalcoverreporter.extraneousattributes", null, locale)).append("</th></tr></thead><tbody>");
 
@@ -359,16 +349,11 @@ public class MinimalCoverReporter {
 		if (config.getDiagnoseLevel() == 3){
 			String currElemID = RDBDHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.redundanddependencies", null, locale)).append(":</p>");
-			description.append("<table border='2' rules='all'>");
 
-			for (FunctionalDependency fd : analysis.getRedundantDependencies()){
-				description.append("<tr><td>");
-				description.append(printDependency(fd));
-				description.append("</td></tr>");
-			}
-			description.append("</table>");
+			description.append(generateTable(analysis.getRedundantDependencies()));
+
 			description.append("</body></html>");
 			description.append("\"></input>");
 
@@ -459,16 +444,11 @@ public class MinimalCoverReporter {
 			if (missingDependenciesCount > 0){
 				currElemID = RDBDHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.missingdependencies", null, locale)).append(":</p>");
-				description.append("<table border='2' rules='all'>");
 
-				for (FunctionalDependency fd : analysis.getMissingDependencies()){
-					description.append("<tr><td>");
-					description.append(printDependency(fd));
-					description.append("</td></tr>");
-				}
-				description.append("</table>");
+				description.append(generateTable(analysis.getMissingDependencies()));
+
 				description.append("</body></html>");
 				description.append("\"></input>");
 
@@ -489,16 +469,11 @@ public class MinimalCoverReporter {
 			if (additionalDependenciesCount > 0){
 				currElemID = RDBDHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.dependenciesnotderived", null, locale)).append(":</p>");
-				description.append("<table border='2' rules='all'>");
 
-				for (FunctionalDependency fd : analysis.getAdditionalDependencies()){
-					description.append("<tr><td>");
-					description.append(printDependency(fd));
-					description.append("</td></tr>");
-				}
-				description.append("</table>");
+				description.append(generateTable(analysis.getAdditionalDependencies()));
+
 				description.append("</body></html>");
 				description.append("\"></input>");
 

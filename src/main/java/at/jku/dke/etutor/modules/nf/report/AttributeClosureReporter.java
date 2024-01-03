@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.logging.Level;
 
-public class AttributeClosureReporter {
+public class AttributeClosureReporter extends ErrorReporter {
 
 	public static NFReport report(AttributeClosureAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
 		NFReport report = new NFReport();
@@ -87,16 +87,11 @@ public class AttributeClosureReporter {
 			if (config.getDiagnoseLevel() == 3){
 				currElemID = RDBDHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("attributeclosurereporter.attributesmissing", null, locale)).append("</b>:</p>");
-				description.append("<table border='2' rules='all'>");
 
-				for (String a : analysis.getMissingAttributes()){
-					description.append("<tr><td>");
-					description.append(a);
-					description.append("</td></tr>");
-				}
-				description.append("</table>");
+				description.append(generateTable(analysis.getMissingAttributes()));
+
 				description.append("</body></html>");
 				description.append("\"></input>");
 
@@ -133,16 +128,11 @@ public class AttributeClosureReporter {
 			if (config.getDiagnoseLevel() == 3){
 				currElemID = RDBDHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("attributeclosurereporter.attributestoomuch", null, locale)).append("</b>:</p>");
-				description.append("<table border='2' rules='all'>");
 
-				for (String a : analysis.getAdditionalAttributes()){
-					description.append("<tr><td>");
-					description.append(a);
-					description.append("</td></tr>");
-				}
-				description.append("</table>");
+				description.append(generateTable(analysis.getAdditionalAttributes()));
+
 				description.append("</body></html>");
 				description.append("\"></input>");
 				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(additionalAttributesCount);

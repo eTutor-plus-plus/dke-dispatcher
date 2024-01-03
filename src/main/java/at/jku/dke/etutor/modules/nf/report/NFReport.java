@@ -1,11 +1,11 @@
 package at.jku.dke.etutor.modules.nf.report;
 
-import at.jku.dke.etutor.core.evaluation.DefaultReport;
+import at.jku.dke.etutor.core.evaluation.Report;
 
 import java.util.List;
 import java.util.Vector;
 
-public class NFReport extends DefaultReport {
+public class NFReport implements Report {
 
 	private String prologue;
 

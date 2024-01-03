@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.logging.Level;
 
-public class DecomposeReporter {
+public class DecomposeReporter extends ErrorReporter {
 
 	public static NFReport report(DecomposeReporterConfig config, MessageSource messageSource, Locale locale){
 		ErrorReport reportAtom;

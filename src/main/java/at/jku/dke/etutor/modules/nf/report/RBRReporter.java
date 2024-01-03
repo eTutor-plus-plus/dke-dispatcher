@@ -10,7 +10,7 @@ import org.springframework.context.MessageSource;
 import java.util.Iterator;
 import java.util.Locale;
 
-public class RBRReporter {
+public class RBRReporter extends ErrorReporter {
 	
 	public static NFReport report(RBRAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
 		NFReport report = new NFReport();
@@ -87,16 +87,11 @@ public class RBRReporter {
 			if (config.getDiagnoseLevel() == 3){
 				currElemID = RDBDHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("rbrreporter.dependenciesmissing", null, locale)).append(":</p>");
-				description.append("<table border='2' rules='all'>");
 
-				for (FunctionalDependency fd : analysis.getMissingFunctionalDependencies()){
-					description.append("<tr><td>");
-					description.append(fd.toString());
-					description.append("</td></tr>");
-				}
-				description.append("</table>");
+				description.append(generateTable(analysis.getMissingFunctionalDependencies()));
+
 				description.append("</body></html>");
 				description.append("\"></input>");
 
@@ -133,16 +128,11 @@ public class RBRReporter {
 			if (config.getDiagnoseLevel() == 3){
 				currElemID = RDBDHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("rbrreporter.dependenciestoomuch", null, locale)).append(":</p>");
-				description.append("<table border='2' rules='all'>");
 
-				for (FunctionalDependency fd : analysis.getAdditionalFunctionalDependencies()){
-					description.append("<tr><td>");
-					description.append(fd.toString());
-					description.append("</td></tr>");
-				}
-				description.append("</table>");
+				description.append(generateTable(analysis.getAdditionalFunctionalDependencies()));
+
 				description.append("</body></html>");
 				description.append("\"></input>");
 				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(additionalDependenciesCount);

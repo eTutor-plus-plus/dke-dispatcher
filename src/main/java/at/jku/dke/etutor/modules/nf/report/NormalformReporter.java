@@ -11,8 +11,9 @@ import org.springframework.context.MessageSource;
 
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.StringJoiner;
 
-public class NormalformReporter {
+public class NormalformReporter extends ErrorReporter {
 
 	public static NFReport report(NormalformDeterminationAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
 		NFReport report = new NFReport();
@@ -143,9 +144,6 @@ public class NormalformReporter {
 		boolean first;
 		boolean appendLineBreak = false;
 
-        Iterator<String> it;
-		Iterator<? extends NormalformViolation> violations;
-
 		String currElemID;
 
 		ErrorReport report = new ErrorReport();
@@ -166,18 +164,12 @@ public class NormalformReporter {
 				appendLineBreak = true;
 			}
 
-			first = true; 
-			violations = analysis.getFirstNormalformViolations().iterator();
-			while (violations.hasNext()){
-				if (first){
-					first = false;
-				} else {
-					description.append("<br><br>");
-				}
-
-				FirstNormalformViolation firstNFViolation = (FirstNormalformViolation)violations.next();
-				description.append(messageSource.getMessage("normalformreporter.dependencyviolatesnormalform", new Object[]{firstNFViolation.getFunctionalDependency()}, locale));
+			StringJoiner violationsJoiner = new StringJoiner("<br><br>");
+			for (FirstNormalformViolation firstNFViolation : analysis.getFirstNormalformViolations()) {
+				violationsJoiner.add(messageSource.getMessage("normalformreporter.dependencyviolatesnormalform", new Object[]{firstNFViolation.getFunctionalDependency()}, locale));
 			}
+
+			description.append(violationsJoiner);
 		}
 
 		//REPORTING SECOND NORMALFORM VIOLATIONS IF NECESSARY
@@ -190,15 +182,13 @@ public class NormalformReporter {
 			}
 
 			first = true;
-			violations = analysis.getSecondNormalformViolations().iterator();
-			while (violations.hasNext()){
+			for (SecondNormalformViolation secondNFViolation : analysis.getSecondNormalformViolations()){
 				if (first){
 					first = false;
 				} else {
 					description.append("<br><br>");
 				}
 
-				SecondNormalformViolation secondNFViolation = (SecondNormalformViolation)violations.next();
 				description.append(messageSource.getMessage("normalformreporter.violatesnormalform", new Object[]{secondNFViolation.getFunctionalDependency(), "second"}, locale));
 
 				if (config.getDiagnoseLevel() == 0){
@@ -226,16 +216,11 @@ public class NormalformReporter {
 					currElemID = RDBDHelper.getNextElementID();
 					description.append("<br>");
 					description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-					description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+					description.append("<html>").append(HTML_HEADER).append("<body>");
 					description.append("<p>").append(messageSource.getMessage("normalformreporter.nonprimrightside", null, locale)).append("</p>");
-					description.append("<table border='2' rules='all'>");
 
-					for (String a : secondNFViolation.getNonPrimRHSAttributes()){
-						description.append("<tr><td>");
-						description.append(a);
-						description.append("</td></tr>");
-					}
-					description.append("</table>");
+					description.append(generateTable(secondNFViolation.getNonPrimRHSAttributes()));
+
 					description.append("</body></html>");
 					description.append("\"></input>");
 
@@ -265,15 +250,13 @@ public class NormalformReporter {
 			}
 
 			first = true;
-			violations = analysis.getThirdNormalformViolations().iterator();
-			while (violations.hasNext()){
+			for (ThirdNormalformViolation thirdNFViolation : analysis.getThirdNormalformViolations()){
 				if (first){
 					first = false;
 				} else {
 					description.append("<br><br>");
 				}
 
-				ThirdNormalformViolation thirdNFViolation = (ThirdNormalformViolation)violations.next();
 				description.append(messageSource.getMessage("normalformreporter.violatesnormalform", new Object[]{thirdNFViolation.getFunctionalDependency(), "third"}, locale));
 
 				if (config.getDiagnoseLevel() == 0){
@@ -300,16 +283,11 @@ public class NormalformReporter {
 					currElemID = RDBDHelper.getNextElementID();
 					description.append("<br>");
 					description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-					description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+					description.append("<html>").append(HTML_HEADER).append("<body>");
 					description.append("<p>").append(messageSource.getMessage("normalformreporter.nonprimrightside", null, locale)).append("</p>");
-					description.append("<table border='2' rules='all'>");
 
-					for (String a : thirdNFViolation.getNonPrimRHSAttributes()){
-						description.append("<tr><td>");
-						description.append(a);
-						description.append("</td></tr>");
-					}
-					description.append("</table>");
+					description.append(generateTable(thirdNFViolation.getNonPrimRHSAttributes()));
+
 					description.append("</body></html>");
 					description.append("\"></input>");
 
@@ -336,16 +314,14 @@ public class NormalformReporter {
 			}
 
 			first = true;
-			violations = analysis.getBoyceCoddNormalformViolations().iterator();
-			while (violations.hasNext()){
+			for (BoyceCoddNormalformViolation boyceCoddNFViolation : analysis.getBoyceCoddNormalformViolations()){
 				if (first){
 					first = false;
 				} else {
 					description.append("<br><br>");
 				}
 
-				BoyceCoddNormalformViolation boyceCoddNFViolation = (BoyceCoddNormalformViolation)violations.next();
-				description.append(messageSource.getMessage("normalformreporter.violatesnormalform", new Object[]{boyceCoddNFViolation.getFunctionalDependency(), "boyce cott"}, locale));
+				description.append(messageSource.getMessage("normalformreporter.violatesnormalform", new Object[]{boyceCoddNFViolation.getFunctionalDependency(), "boyce codd"}, locale));
 				description.append("<br>");
 				description.append(messageSource.getMessage("normalformreporter.leftsidenotsuperkey", null, locale));
 			}

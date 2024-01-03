@@ -1,14 +1,14 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
-import at.jku.dke.etutor.modules.nf.*;
+import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformViolation;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
+import at.jku.dke.etutor.modules.nf.i18n.NFMessageSource;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
-import at.jku.dke.etutor.modules.nf.model.IdentifiedRelationComparator;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
@@ -28,7 +28,12 @@ import org.springframework.context.MessageSourceAware;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.StringJoiner;
+import java.util.Vector;
 
 /**
  * Helper class for printing all types of specification implementations
@@ -43,25 +48,24 @@ public class HTMLPrinter implements MessageSourceAware {
 	public static final String LINE_SEP = System.getProperty("line.separator");
 	public static final int OFFSET = 15;
 	
-	private static MessageSource messageSource;
+	private static MessageSource messageSource = new NFMessageSource();
 
 	@SuppressWarnings("static-access")
-	@Required
+	// @Required // deprecated (Gerald Wimmer, 2024-01-03)
 	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
+		// this.messageSource = messageSource;
 	}
 
 	public static String printDecomposeStep(IdentifiedRelation relation, boolean showSplitButton, boolean showRemoveButton, boolean editable, Locale locale) throws IOException{
-		String attributesString = "";
-		String[] attributes = relation.getAttributesArray();
-		StringBuilder out = new StringBuilder();
+		StringJoiner attributesJoiner = new StringJoiner(" ");
 
-		for (int i=0; i<attributes.length; i++){
-			attributesString = attributesString.concat(attributes[i]);
-			if (i<attributes.length -1){
-				attributesString = attributesString.concat(" ");
-			}
+		for (String s : relation.getAttributesArray()) {
+			attributesJoiner.add(s);
 		}
+
+		String attributesString = attributesJoiner.toString();
+
+		StringBuilder out = new StringBuilder();
 
 		out.append("<table class='decompose_step' cellpadding='1px' cellspacing='1px' style='margin-left:").append((relation.getID().length() / 2) * OFFSET).append("px;'>").append(LINE_SEP);
 		out.append("	<tr>").append(LINE_SEP);
@@ -144,7 +148,7 @@ public class HTMLPrinter implements MessageSourceAware {
 			//PRINT ERROR REPORTS
 			if (!errorReports.isEmpty()) {
 				StringJoiner errorReportJoiner = new StringJoiner("						<div class='gap'></div>" + LINE_SEP);
-				for (ErrorReport currErrorReport: errorReports){
+				for (ErrorReport currErrorReport: errorReports) {
 					errorReportJoiner.add(printErrorReport(currErrorReport, displayIndent, codeIndent));
 				}
 				out.append(errorReportJoiner);
@@ -153,7 +157,7 @@ public class HTMLPrinter implements MessageSourceAware {
 			//PRINT ERROR REPORT GROUPS
 			if (!errorReportGroups.isEmpty()) {
 				StringJoiner errorReportGroupJoiner = new StringJoiner("						<div class='gap'></div>" + LINE_SEP);
-				for (ErrorReportGroup currErrorReportGroup : errorReportGroups){
+				for (ErrorReportGroup currErrorReportGroup : errorReportGroups) {
 					out.append(printErrorReportGroup(currErrorReportGroup, displayIndent + 1, codeIndent));
 				}
 				out.append(errorReportGroupJoiner);
@@ -222,22 +226,24 @@ public class HTMLPrinter implements MessageSourceAware {
 		out.append("	<div class='error_report_group_caption'>").append(group.getHeader()).append("</div>").append(LINE_SEP);
 		out.append("	<div class='error_report_group_content' style='margin-left:").append(displayIndent * OFFSET).append("px;'>").append(LINE_SEP);
 
-		if (!errorReports.isEmpty()){
-			for (int i=0; i<errorReports.size(); i++){
-				out.append(printErrorReport(errorReports.get(i), 0, codeIndent));
-				if (i < errorReports.size()-1){
-					out.append("						<div class='gap'></div>").append(LINE_SEP);
-				}
+		if (!errorReports.isEmpty()) {
+			StringJoiner errorReportsJoiner = new StringJoiner("						<div class='gap'></div>" + LINE_SEP);
+
+			for (ErrorReport e : errorReports) {
+				errorReportsJoiner.add(printErrorReport(e, 0, codeIndent));
 			}
+
+			out.append(errorReportsJoiner);
 		}
 
-		if (!subGroups.isEmpty()){
-			for (int i=0; i<subGroups.size(); i++){
-				out.append(printErrorReportGroup(subGroups.get(i), 1, codeIndent));
-				if (i < errorReports.size()-1){
-					out.append("						<div class='gap'></div>").append(LINE_SEP);
-				}
+		if (!subGroups.isEmpty()) {
+			StringJoiner subgroupsJoiner = new StringJoiner("						<div class='gap'></div>" + LINE_SEP);
+
+			for (ErrorReportGroup e : subGroups){
+				subgroupsJoiner.add(printErrorReportGroup(e, 1, codeIndent));
 			}
+
+			out.append(subgroupsJoiner);
 		}
 
 		out.append("	</div>").append(LINE_SEP);
@@ -246,23 +252,20 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String printParameters(Collection<IdentifiedRelation> relations, int indent) throws IOException {
-		IdentifiedRelation relation;
-		Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
 		StringBuilder out = new StringBuilder();
-		while (relationsIterator.hasNext()) {
-			relation = relationsIterator.next();
+
+		for (IdentifiedRelation relation : relations) {
 			out.append(printParameters(relation, indent));
 		}
+
 		return out.toString();
 	}
 	
 	public static String printParameters(Relation relation, int indent) throws IOException {
-		String relationID;
+		String relationID = "";
 
 		if (relation instanceof IdentifiedRelation) {
 			relationID = ((IdentifiedRelation)relation).getID();
-		} else {
-			relationID = "";
 		}
 		
 		String offset = getOffset(indent);
@@ -315,43 +318,27 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 	
 	public static String printKeysRow(Collection<Key> keys, String relationID, String title, int indent, boolean editable, Locale locale) throws IOException  {
-		String offset;
-		String content;
-		String addFunction;
-		String delFunction;
-		StringBuilder out = new StringBuilder();
+		String offset = getOffset(indent);
 
-		offset = getOffset(indent);
-
-		content = "";
-		for (int i = 0; i < keys.toArray().length; i++) {
-			if (i != 0) {
-				content = content.concat("<br>");
-			}
-			content = content.concat(keys.toArray()[i].toString());
+		StringJoiner contentJoiner = new StringJoiner("<br>");
+		for (Object key : keys.toArray()) {
+			contentJoiner.add(key.toString());
 		}
+		String content = contentJoiner.toString();
 
 		String okMessage =  messageSource.getMessage("showpopup.ok", null, locale);
 		String cancelMessage = messageSource.getMessage("showpopup.cancel", null, locale);
 		String newkeyMessage = messageSource.getMessage("showaddkeypopup.newkey", null, locale);
 		String noattributesMessage = messageSource.getMessage("showaddkeypopup.noattributes", null, locale);
-		addFunction = "onClick=\"javascript:showAddKeyPopup('" + relationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + newkeyMessage + "', '" + noattributesMessage + "');\"";
+		String addFunction = "onClick=\"javascript:showAddKeyPopup('" + relationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + newkeyMessage + "', '" + noattributesMessage + "');\"";
 		String nokeysMessage = messageSource.getMessage("showdelkeypopup.nokeys", null, locale);
 		String selectkeysMessage = messageSource.getMessage("showdelkeypopup.selectkeys", null, locale);
-		delFunction = "onClick=\"javascript:showDelKeyPopup('" + relationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + nokeysMessage + "', '" + selectkeysMessage + "');\"";
+		String delFunction = "onClick=\"javascript:showDelKeyPopup('" + relationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + nokeysMessage + "', '" + selectkeysMessage + "');\"";
 
-		out.append(offset).append("<tr>").append(LINE_SEP);
-		out.append(offset).append("	<td class='label_td'>").append(title).append(":</td>").append(LINE_SEP);
-		//out.write(offset + "	<td></td>" + LINE_SEP);
-		out.append(offset).append("	<td class='content_td' nowrap>").append(content).append("</td>").append(LINE_SEP);
-		//out.write(offset + "	<td></td>" + LINE_SEP);
-		out.append(offset).append("	<td class='button_td'>").append(LINE_SEP);
-		if (editable){
-			out.append(offset).append("		<input class='button' type='button' value='+' ").append(addFunction).append(" />").append(LINE_SEP);
-			out.append(offset).append("		<input class='button' type='button' value='-' ").append(delFunction).append(" />").append(LINE_SEP);
-		}
-		out.append(offset).append("	</td>").append(LINE_SEP);
-		out.append(offset).append("</tr>").append(LINE_SEP);
+		StringBuilder out = new StringBuilder();
+
+		out.append(generateButtons(offset, title, content, addFunction, delFunction, editable));
+
 		return out.toString();
 	}
 
@@ -360,43 +347,26 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String printDependenciesRow(Collection<FunctionalDependency> dependencies, String relationID, String title, int indent, boolean editable, Locale locale) throws IOException {
-		String content;
-		String offset;
-		String addFunction;
-		String delFunction;
-		StringBuilder out = new StringBuilder();
+		String offset = getOffset(indent);
 
-		offset = getOffset(indent);
-
-		content = "";
-		for (int i = 0; i < dependencies.toArray().length; i++) {
-			if (i != 0) {
-				content = content.concat("<br>");
-			}
-			content = content.concat(dependencies.toArray()[i].toString().replaceAll("->", "&rarr;"));
+		StringJoiner contentJoiner = new StringJoiner("<br>");
+		for (Object dependency : dependencies.toArray()) {
+			contentJoiner.add(dependency.toString().replaceAll("->", "&rarr;"));
 		}
+		String content = contentJoiner.toString();
 
 		String okMessage =  messageSource.getMessage("showpopup.ok", null, locale);
 		String cancelMessage = messageSource.getMessage("showpopup.cancel", null, locale);
 		String newdependencyMessage = messageSource.getMessage("showadddependencypopup.newdependency", null, locale);
 		String noattributesMessage = messageSource.getMessage("showadddependencypopup.noattributes", null, locale);
-		addFunction = "onClick=\"javascript:showAddDependencyPopup('" + relationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + newdependencyMessage + "', '" + noattributesMessage + "');\"";
+		String addFunction = "onClick=\"javascript:showAddDependencyPopup('" + relationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + newdependencyMessage + "', '" + noattributesMessage + "');\"";
 		String nodependenciesMessage = messageSource.getMessage("showdeldependencypopup.nodependencies", null, locale);
 		String removedependenciesMessage = messageSource.getMessage("showdeldependencypopup.removedependencies", null, locale);
-		delFunction = "onClick=\"javascript:showDelDependencyPopup('" + relationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + nodependenciesMessage + "', '" + removedependenciesMessage + "');\"";
+		String delFunction = "onClick=\"javascript:showDelDependencyPopup('" + relationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + nodependenciesMessage + "', '" + removedependenciesMessage + "');\"";
 
-		out.append(offset).append("<tr>").append(LINE_SEP);
-		out.append(offset).append("	<td class='label_td'>").append(title).append(":</td>").append(LINE_SEP);
-		//out.write(offset + "	<td></td>" + LINE_SEP);
-		out.append(offset).append("	<td class='content_td' nowrap>").append(content).append("</td>").append(LINE_SEP);
-		//out.write(offset + "	<td></td>" + LINE_SEP);
-		out.append(offset).append("	<td class='button_td'>").append(LINE_SEP);
-		if (editable){
-			out.append(offset).append("		<input class='button' type='button' value='+' ").append(addFunction).append(">").append(LINE_SEP);
-			out.append(offset).append("		<input class='button' type='button' value='-' ").append(delFunction).append(">").append(LINE_SEP);
-		}
-		out.append(offset).append("	</td>").append(LINE_SEP);
-		out.append(offset).append("</tr>").append(LINE_SEP);
+		StringBuilder out = new StringBuilder();
+		out.append(generateButtons(offset, title, content, addFunction, delFunction, editable));
+
 		return out.toString();
 	}
 	
@@ -412,13 +382,13 @@ public class HTMLPrinter implements MessageSourceAware {
 		String offset = getOffset(indent);
 		
 		String content = "";
-		for (int i = 0; i < dependencies.toArray().length; i++) {
+		for (Object dependency : dependencies.toArray()) {
 			content = content.concat(offset + "<tr>" + LINE_SEP);
 			content = content.concat(offset + "	<td>" + LINE_SEP);
-			content = content.concat(dependencies.toArray()[i].toString().replaceAll("->", "&rarr;"));
+			content = content.concat(dependency.toString().replaceAll("->", "&rarr;"));
 			content = content.concat(offset + "	</td>" + LINE_SEP);
 			content = content.concat(offset + "	<td>" + LINE_SEP);
-			content = content.concat(getNormalform((FunctionalDependency)dependencies.toArray()[i], analysis, locale));
+			content = content.concat(getNormalform((FunctionalDependency)dependency, analysis, locale));
 			content = content.concat(offset + "	</td>" + LINE_SEP);
 			content = content.concat(offset + "</tr>" + LINE_SEP);
 		}
@@ -471,41 +441,27 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 	
 	public static String printAttributesRow(Collection<String> attributes, String baseRelationID, String currRelationID, String title, int indent, boolean editable, Locale locale) throws IOException {
-		String offset;
-		String content;
-		String addFunction;
-		String delFunction;
-		StringBuilder out = new StringBuilder();
+		String offset = getOffset(indent);
 
-		offset = getOffset(indent);
-
-		content = "";
-		for (int i = 0; i < attributes.toArray().length; i++) {
-			if (i != 0) {
-				content = content.concat("<br>");
-			}
-			content = content.concat(attributes.toArray()[i].toString());
+		StringJoiner contentJoiner = new StringJoiner("<br>");
+		for (Object attribute : attributes.toArray()) {
+			contentJoiner.add(attribute.toString());
 		}
+		String content = contentJoiner.toString();
 		
 		String okMessage =  messageSource.getMessage("showpopup.ok", null, locale);
 		String cancelMessage = messageSource.getMessage("showpopup.cancel", null, locale);
 		String selectattributeMessage = messageSource.getMessage("showaddattributepopup.selectattribute", null, locale);
 		String noattributesMessage = messageSource.getMessage("showaddattributepopup.noattributes", null, locale);
-		addFunction = "onClick=\"javascript:showAddAttributePopup('" + baseRelationID + "', '" + currRelationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + selectattributeMessage + "', '" + noattributesMessage + "');\"";
+		String addFunction = "onClick=\"javascript:showAddAttributePopup('" + baseRelationID + "', '" + currRelationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + selectattributeMessage + "', '" + noattributesMessage + "');\"";
 		String noattributesMessage2 = messageSource.getMessage("showdelattributepopup.noattributes", null, locale);
 		String selectremoveattributeMessage = messageSource.getMessage("showdelattributepopup.selectremoveattribute", null, locale);
-		delFunction = "onClick=\"javascript:showDelAttributePopup('" + currRelationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + noattributesMessage2 + "', '" + selectremoveattributeMessage + "');\"";
+		String delFunction = "onClick=\"javascript:showDelAttributePopup('" + currRelationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + noattributesMessage2 + "', '" + selectremoveattributeMessage + "');\"";
 
-		out.append(offset).append("<tr>").append(LINE_SEP);
-		out.append(offset).append("	<td class='label_td'>").append(title).append(":</td>").append(LINE_SEP);
-		out.append(offset).append("	<td class='content_td' nowrap>").append(content).append("</td>").append(LINE_SEP);
-		out.append(offset).append("	<td class='button_td'>").append(LINE_SEP);
-		if (editable){
-			out.append(offset).append("		<input class='button' type='button' value='+' ").append(addFunction).append(" />").append(LINE_SEP);
-			out.append(offset).append("		<input class='button' type='button' value='-' ").append(delFunction).append(" />").append(LINE_SEP);
-		}
-		out.append(offset).append("	</td>").append(LINE_SEP);
-		out.append(offset).append("</tr>").append(LINE_SEP);
+		StringBuilder out = new StringBuilder();
+
+		out.append(generateButtons(offset, title, content, addFunction, delFunction, editable));
+
 		return out.toString();
 	}
 
@@ -518,10 +474,10 @@ public class HTMLPrinter implements MessageSourceAware {
 
 		if (spec instanceof NormalizationSpecification) {
 			maxLost = ((NormalizationSpecification)spec).getMaxLostDependencies();
-			nrDependencies = ((NormalizationSpecification)spec).getBaseRelation().getFunctionalDependencies().size();
+			nrDependencies = spec.getBaseRelation().getFunctionalDependencies().size();
 		} else if (spec instanceof DecomposeSpecification) {
 			maxLost = ((DecomposeSpecification)spec).getMaxLostDependencies();
-			nrDependencies = ((DecomposeSpecification)spec).getBaseRelation().getFunctionalDependencies().size();
+			nrDependencies = spec.getBaseRelation().getFunctionalDependencies().size();
 		} else {
 			return out.toString();
 		}
@@ -626,28 +582,27 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String printAssignmentForAttributeClosure(AttributeClosureSpecification spec, int indent, Locale locale) throws IOException {
-		StringBuilder out = new StringBuilder();
-		
 		String offset = getOffset(indent);
-		String relationAttributes = "";
-		boolean first = true;
-		for (String a : spec.getBaseRelation().getAttributes()){
-			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + a);
-			first = false;
-		}
-		String dependencies = "";
-		first = true;
-        for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
-            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
-            first = false;
-        }
-		String baseAttributes = "";
-		first = true;
-        for (String s : spec.getBaseAttributes()) {
-            baseAttributes = baseAttributes.concat((first ? "" : "&nbsp;") + s);
-            first = false;
-        }
 
+		StringJoiner attributesJoiner = new StringJoiner("&nbsp;");
+		for (String a : spec.getBaseRelation().getAttributes()){
+			attributesJoiner.add(a);
+		}
+		String relationAttributes = attributesJoiner.toString();
+
+		StringJoiner dependenciesJoiner = new StringJoiner(", ");
+		for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
+            dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
+		}
+		String dependencies = dependenciesJoiner.toString();
+
+		StringJoiner baseAttributesJoiner = new StringJoiner("&nbsp;");
+		for (String s : spec.getBaseAttributes()) {
+            baseAttributesJoiner.add(s);
+		}
+		String baseAttributes = baseAttributesJoiner.toString();
+
+		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Berechnen Sie die H&uuml;lle der Attribut Kombination <strong>A</strong> ").append(LINE_SEP);
@@ -677,22 +632,21 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String printAssignmentForNormalization(NormalizationSpecification spec, int indent, Locale locale) throws IOException {
-		StringBuilder out = new StringBuilder();
-		
 		String offset = getOffset(indent);
-		String relationAttributes = "";
-		boolean first = true;
-		for (String a : spec.getBaseRelation().getAttributes()){
-			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + a);
-			first = false;
-		}
-		String dependencies = "";
-		first = true;
-        for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
-            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
-            first = false;
-        }
 
+		StringJoiner attributesJoiner = new StringJoiner("&nbsp;");
+		for (String a : spec.getBaseRelation().getAttributes()){
+			attributesJoiner.add(a);
+		}
+		String relationAttributes = attributesJoiner.toString();
+
+		StringJoiner dependenciesJoiner = new StringJoiner(", ");
+		for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
+            dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
+		}
+		String dependencies = dependenciesJoiner.toString();
+
+		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Finden Sie eine <b>verlustfreie Zerlegung</b> der Relation ").append(LINE_SEP);
@@ -765,26 +719,21 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String printAssignmentForDecompose(DecomposeSpecification spec, int indent, Locale locale) throws IOException {
-		String relationAttributes;
-		String dependencies;
-		String offset;
-		boolean first;
-		StringBuilder out = new StringBuilder();
-		
-		offset = getOffset(indent);
-		relationAttributes = "";
-		first = true;
-		for (String a : spec.getBaseRelation().getAttributes()){
-			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + a);
-			first = false;
-		}
-		dependencies = "";
-		first = true;
-        for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
-            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
-            first = false;
-        }
+		String offset = getOffset(indent);
 
+		StringJoiner attributesJoiner = new StringJoiner("&nbsp;");
+		for (String a : spec.getBaseRelation().getAttributes()){
+			attributesJoiner.add(a);
+		}
+		String relationAttributes = attributesJoiner.toString();
+
+		StringJoiner dependenciesJoiner = new StringJoiner(", ");
+		for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
+            dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
+		}
+		String dependencies = dependenciesJoiner.toString();
+
+		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Wenden Sie den Decompose Algorithmus an, um eine <b>verlustfreie Zerlegung</b> der Relation ").append(LINE_SEP);
@@ -855,26 +804,21 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String printAssignmentForKeysDetermination(IdentifiedRelation spec, int indent, Locale locale) throws IOException {
-		String relationAttributes;
-		String dependencies;
-		String offset;
-		boolean first;
-		StringBuilder out = new StringBuilder();
-		
-		offset = getOffset(indent);
-		relationAttributes = "";
-		first = true;
-		for (String a : spec.getAttributes()){
-			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + a);
-			first = false;
-		}
-		dependencies = "";
-		first = true;
-        for (FunctionalDependency functionalDependency : spec.getFunctionalDependencies()) {
-            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
-            first = false;
-        }
+		String offset = getOffset(indent);
 
+		StringJoiner attributesJoiner = new StringJoiner("&nbsp;");
+		for (String a : spec.getAttributes()){
+			attributesJoiner.add(a);
+		}
+		String relationAttributes = attributesJoiner.toString();
+
+		StringJoiner dependenciesJoiner = new StringJoiner(", ");
+		for (FunctionalDependency functionalDependency : spec.getFunctionalDependencies()) {
+            dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
+		}
+		String dependencies = dependenciesJoiner.toString();
+
+		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Berechnen Sie alle Schl&uuml;ssel der Relation <strong>R</strong> auf ").append(LINE_SEP);
@@ -898,19 +842,15 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String printAssignmentForMinimalCover(IdentifiedRelation spec, int indent, Locale locale) throws IOException {
-		String dependencies;
-		String offset;
-		boolean first;
-		StringBuilder out = new StringBuilder();
-		
-		offset = getOffset(indent);
-		dependencies = "";
-		first = true;
-        for (FunctionalDependency functionalDependency : spec.getFunctionalDependencies()) {
-            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
-            first = false;
-        }
+		String offset = getOffset(indent);
 
+		StringJoiner dependenciesJoiner = new StringJoiner(", ");
+		for (FunctionalDependency functionalDependency : spec.getFunctionalDependencies()) {
+            dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
+		}
+		String dependencies = dependenciesJoiner.toString();
+
+		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Geben Sie f&uuml;r die Menge <b>F</b> an Funktionalen Abh&auml;ngigkeiten eine minimale  ").append(LINE_SEP);
@@ -932,26 +872,21 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String printAssignmentForNormalformDetermination(Relation spec, int indent, Locale locale) throws IOException {
-		String relationAttributes;
-		String dependencies;
-		String offset;
-		boolean first;
-		StringBuilder out = new StringBuilder();
-		
-		offset = getOffset(indent);
-		relationAttributes = "";
-		first = true;
-		for (String a : spec.getAttributes()){
-			relationAttributes = relationAttributes.concat((first ? "" : "&nbsp;") + a);
-			first = false;
-		}
-		dependencies = "";
-		first = true;
-        for (FunctionalDependency functionalDependency : spec.getFunctionalDependencies()) {
-            dependencies = dependencies.concat((first ? "" : ", ") + functionalDependency.toString().replaceAll("->", "&rarr;"));
-            first = false;
-        }
+		String offset = getOffset(indent);
 
+		StringJoiner attributesJoiner = new StringJoiner("&nbsp;");
+		for (String a : spec.getAttributes()){
+			attributesJoiner.add(a);
+		}
+		String relationAttributes = attributesJoiner.toString();
+
+		StringJoiner dependenciesJoiner = new StringJoiner(", ");
+		for (FunctionalDependency functionalDependency : spec.getFunctionalDependencies()) {
+            dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
+		}
+		String dependencies = dependenciesJoiner.toString();
+
+		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Geben Sie an, in welcher Normalform sich die Relation <strong>R</strong> ").append(LINE_SEP);
@@ -1116,18 +1051,15 @@ public class HTMLPrinter implements MessageSourceAware {
 			writer.println("<body>");
 			
 			writer.println("	<form id='commandForm' method='POST' action='/etutor/modules/rdbd/RDBDEditor'>");
-			Iterator<IdentifiedRelation> i = relations.iterator();
-			while (i.hasNext()){
-				writer.println(printParameters(i.next(), 2));
+
+			for (IdentifiedRelation i : relations){
+				writer.println(printParameters(i, 2));
 			}
 
 			writer.println("	</form>");
-			
-			i = relations.iterator();
-			IdentifiedRelation currRelation;
-			boolean isInnerNode;			
-			while (i.hasNext()){
-				currRelation = i.next();
+
+			boolean isInnerNode;
+			for (IdentifiedRelation currRelation : relations){
 				isInnerNode = RDBDHelper.isInnerNode(currRelation.getID(), relations);
 				writer.println(printDecomposeStep(currRelation, !isInnerNode, isInnerNode, true, locale));
 			}
@@ -1151,278 +1083,30 @@ public class HTMLPrinter implements MessageSourceAware {
 		}
 	}
 
-	public static void testDecompose(){
-		//CREATE RELATION 1
-		IdentifiedRelation relation = new IdentifiedRelation();
-		try{
-			relation.setID("1");
-		} catch (Exception e){
-			e.printStackTrace();
+	private static String generateButtons(String offset, String title, String content, String addFunction, String delFunction, boolean editable) {
+		StringBuilder out = new StringBuilder();
+
+		out.append(offset).append("<tr>").append(LINE_SEP);
+		out.append(offset).append("	<td class='label_td'>").append(title).append(":</td>").append(LINE_SEP);
+		out.append(offset).append("	<td class='content_td' nowrap>").append(content).append("</td>").append(LINE_SEP);
+		out.append(offset).append("	<td class='button_td'>").append(LINE_SEP);
+		if (editable){
+			out.append(offset).append("		<input class='button' type='button' value='+' ").append(addFunction).append(" />").append(LINE_SEP);
+			out.append(offset).append("		<input class='button' type='button' value='-' ").append(delFunction).append(" />").append(LINE_SEP);
 		}
-		relation.setName("R1");
-		relation.addAttribute("A");
-		relation.addAttribute("B");
-		relation.addAttribute("C");
-		relation.addAttribute("D");
-		 
-		FunctionalDependency dependency = new FunctionalDependency();
-		dependency.addLHSAttribute("A"); 
-		dependency.addRHSAttribute("B"); 
-		dependency.addRHSAttribute("C"); 
-		relation.addFunctionalDependency(dependency);
-		 
-		Key key = new Key();
-		key.addAttribute("A");
-		key.addAttribute("D");
-		relation.addMinimalKey(key);
+		out.append(offset).append("	</td>").append(LINE_SEP);
+		out.append(offset).append("</tr>").append(LINE_SEP);
 
-		TreeSet<IdentifiedRelation> relations = new TreeSet<>(new IdentifiedRelationComparator());
-		relations.add(relation);
-
-		//CREATE RELATION 2
-		relation = new IdentifiedRelation();
-		try{
-			relation.setID("2");
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-		relation.setName("R2");
-		relation.addAttribute("A");
-		relation.addAttribute("B");
-		relation.addAttribute("C");
-		relation.addAttribute("D");
-		 
-		dependency = new FunctionalDependency();
-		dependency.addLHSAttribute("A"); 
-		dependency.addRHSAttribute("B"); 
-		dependency.addRHSAttribute("C"); 
-		relation.addFunctionalDependency(dependency); 
-		 
-		key = new Key();
-		key.addAttribute("A");
-		key.addAttribute("D");
-		relation.addMinimalKey(key);
-		
-		relations.add(relation);
-
-		//CREATE RELATION 1.1
-		relation = new IdentifiedRelation();
-		try{
-			relation.setID("1.1");
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-		relation.setName("R1.1");
-		relation.addAttribute("A");
-		relation.addAttribute("B");
-		relation.addAttribute("C");
-		relation.addAttribute("D");
-		 
-		dependency = new FunctionalDependency();
-		dependency.addLHSAttribute("A"); 
-		dependency.addRHSAttribute("B"); 
-		dependency.addRHSAttribute("C"); 
-		relation.addFunctionalDependency(dependency); 
-		 
-		key = new Key();
-		key.addAttribute("A");
-		key.addAttribute("D");
-		relation.addMinimalKey(key);
-		
-		relations.add(relation);
-
-		//CREATE RELATION 1.2
-		relation = new IdentifiedRelation();
-		try{
-			relation.setID("1.2");
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-		relation.setName("R1.2");
-		relation.addAttribute("A");
-		relation.addAttribute("B");
-		relation.addAttribute("C");
-		relation.addAttribute("D");
-		 
-		dependency = new FunctionalDependency();
-		dependency.addLHSAttribute("A"); 
-		dependency.addRHSAttribute("B"); 
-		dependency.addRHSAttribute("C"); 
-		relation.addFunctionalDependency(dependency); 
-		 
-		key = new Key();
-		key.addAttribute("A");
-		key.addAttribute("D");
-		relation.addMinimalKey(key);
-		
-		relations.add(relation);
-
-		//CREATE RELATION 1.1.1
-		relation = new IdentifiedRelation();
-		try{
-			relation.setID("1.1.1");
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-		relation.setName("R1.1.1");
-		relation.addAttribute("A");
-		relation.addAttribute("B");
-		relation.addAttribute("C");
-		relation.addAttribute("D");
-		 
-		dependency = new FunctionalDependency();
-		dependency.addLHSAttribute("A"); 
-		dependency.addRHSAttribute("B"); 
-		dependency.addRHSAttribute("C"); 
-		relation.addFunctionalDependency(dependency); 
-		 
-		key = new Key();
-		key.addAttribute("A");
-		key.addAttribute("D");
-		relation.addMinimalKey(key);
-		
-		relations.add(relation);
-
-		//CREATE RELATION 1.1.2
-		relation = new IdentifiedRelation();
-		try{
-			relation.setID("1.1.2");
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-		relation.setName("R1.1.2");
-		relation.addAttribute("A");
-		relation.addAttribute("B");
-		relation.addAttribute("C");
-		relation.addAttribute("D");
-		 
-		dependency = new FunctionalDependency();
-		dependency.addLHSAttribute("A"); 
-		dependency.addRHSAttribute("B"); 
-		dependency.addRHSAttribute("C"); 
-		relation.addFunctionalDependency(dependency); 
-		 
-		key = new Key();
-		key.addAttribute("A");
-		key.addAttribute("D");
-		relation.addMinimalKey(key);
-		
-		relations.add(relation);
-
-		
-		createHTMLSiteForDecompose(relations, Locale.ENGLISH);		
-	}
-
-	public static void testReport(){
-		NFReport report = new NFReport();
-		report.setPrologue("Congratulations! Everything is correct.");
-		report.setShowPrologue(true);
-		
-		//ERROR REPORT 1
-		ErrorReport er1 = new ErrorReport();
-		er1.setHint("Hint 1");
-		er1.setError("Error 1");
-		er1.setDescription("Description 1");
-		
-		er1.setShowHint(true);
-		er1.setShowError(true);
-		er1.setShowErrorDescription(true);
-		report.addErrorReport(er1);		
-
-		//ERROR REPORT 2
-		ErrorReport er2 = new ErrorReport();
-		er2.setHint("Hint 2");
-		er2.setError("Error 2");
-		er2.setDescription("Description 2");
-		
-		er2.setShowHint(true);
-		er2.setShowError(true);
-		er2.setShowErrorDescription(true);
-		report.addErrorReport(er2);		
-
-		//ERROR REPORT GROUP 1
-		ErrorReportGroup erg1 = new ErrorReportGroup();
-		erg1.setHeader("Header for ERG 1");
-
-		ErrorReport er1_1 = new ErrorReport();
-		er1_1.setHint("Hint 1.1");
-		er1_1.setError("Error 1.1");
-		er1_1.setDescription("Description 1.1");
-		
-		er1_1.setShowHint(true);
-		er1_1.setShowError(true);
-		er1_1.setShowErrorDescription(true);
-		erg1.addErrorReport(er1_1);
-
-		ErrorReport er1_2 = new ErrorReport();
-		er1_2.setHint("Hint 1.2");
-		er1_2.setError("Error 1.2");
-		er1_2.setDescription("Description 1.2");
-		
-		er1_2.setShowHint(true);
-		er1_2.setShowError(true);
-		er1_2.setShowErrorDescription(true);
-		erg1.addErrorReport(er1_2);
-		
-		//ERROR REPORT GROUP 1.1
-		ErrorReportGroup erg1_1 = new ErrorReportGroup();
-		erg1_1.setHeader("Header for ERG 1.1");
-
-		ErrorReport er1_1_1 = new ErrorReport();
-		er1_1_1.setHint("Hint 1.1.1");
-		er1_1_1.setError("Error 1.1.1");
-		er1_1_1.setDescription("Description 1.1.1");
-		
-		er1_1_1.setShowHint(true);
-		er1_1_1.setShowError(true);
-		er1_1_1.setShowErrorDescription(true);
-		erg1_1.addErrorReport(er1_1_1);
-		erg1.addSubErrorReportGroup(erg1_1);
-
-		report.addErrorReportGroup(erg1);
-
-
-
-		//ERROR REPORT GROUP 2
-		ErrorReportGroup erg2 = new ErrorReportGroup();
-		erg2.setHeader("Header for ERG 2");
-
-		ErrorReport er2_1 = new ErrorReport();
-		er2_1.setHint("Hint 2.1");
-		er2_1.setError("Error 2.1");
-		er2_1.setDescription("Description 2.1");
-		
-		er2_1.setShowHint(true);
-		er2_1.setShowError(true);
-		er2_1.setShowErrorDescription(true);
-		erg2.addErrorReport(er2_1);
-
-		ErrorReport er2_2 = new ErrorReport();
-		er2_2.setHint("Hint 2.2");
-		er2_2.setError("Error 2.2");
-		er2_2.setDescription("Description 2.2");
-		
-		er2_2.setShowHint(true);
-		er2_2.setShowError(true);
-		er2_2.setShowErrorDescription(true);
-		erg2.addErrorReport(er2_2);
-
-		report.addErrorReportGroup(erg2);		
-
-
-		
-		createHTMLSiteForReport(report);
+		return  out.toString();
 	}
 
 	private static String getOffset(int indent) {
-		String offset;
-		offset = "";
+		StringBuilder offset = new StringBuilder();
+
 		for (int i = 0; i < indent; i++) {
-			offset = offset.concat("\t");
+			offset.append("\t");
 		}
-		return offset;
-	}
-	public static void main(String[] args){
-		//testDecompose();
+
+		return offset.toString();
 	}
 }

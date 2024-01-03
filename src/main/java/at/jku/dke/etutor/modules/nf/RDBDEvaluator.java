@@ -6,22 +6,20 @@ import at.jku.dke.etutor.core.evaluation.Evaluator;
 import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.core.evaluation.Report;
 import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
-import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
-import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.closure.AttributeClosureAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.closure.AttributeClosureAnalyzer;
-import at.jku.dke.etutor.modules.nf.analysis.decompose.DecomposeAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.MinimalCoverAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.MinimalCoverAnalyzer;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.normalformdetermination.NormalformDeterminationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalformdetermination.NormalformDeterminationAnalyzer;
+import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzerConfig;
-import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalysis;
 import at.jku.dke.etutor.modules.nf.exercises.RDBDExercisesManager;
 import at.jku.dke.etutor.modules.nf.i18n.NFMessageSource;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
@@ -33,15 +31,12 @@ import at.jku.dke.etutor.modules.nf.parser.NFLexer;
 import at.jku.dke.etutor.modules.nf.parser.NFParser;
 import at.jku.dke.etutor.modules.nf.parser.NFParserErrorCollector;
 import at.jku.dke.etutor.modules.nf.report.AttributeClosureReporter;
-import at.jku.dke.etutor.modules.nf.report.DecomposeReporter;
-import at.jku.dke.etutor.modules.nf.report.DecomposeReporterConfig;
+import at.jku.dke.etutor.modules.nf.report.ErrorReport;
 import at.jku.dke.etutor.modules.nf.report.KeysReporter;
 import at.jku.dke.etutor.modules.nf.report.MinimalCoverReporter;
-import at.jku.dke.etutor.modules.nf.report.NFReport;
 import at.jku.dke.etutor.modules.nf.report.NormalformReporter;
 import at.jku.dke.etutor.modules.nf.report.NormalizationReporter;
 import at.jku.dke.etutor.modules.nf.report.NormalizationReporterConfig;
-import at.jku.dke.etutor.modules.nf.report.RBRReporter;
 import at.jku.dke.etutor.modules.nf.report.ReporterConfig;
 import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
 import at.jku.dke.etutor.modules.nf.specification.KeysDeterminationSpecification;
@@ -68,7 +63,7 @@ import java.util.logging.Level;
 public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 	private MessageSource messageSource = new NFMessageSource();
 
-	@Required // Deprecated
+	@Required // Deprecated (Gerald Wimmer, 2024-01-03)
 	public void setMessageSource(MessageSource messageSource) {
 		// this.messageSource = messageSource;
 	}
@@ -466,7 +461,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		String actionParam = passedAttributes.get(RDBDConstants.PARAM_ACTION);
 
-		NFReport report;
+		Report report;
 		ReporterConfig config;
 		if (!actionParam.equals(RDBDConstants.EVAL_ACTION_SUBMIT)) {
 			try{
@@ -477,12 +472,12 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		}
 
 		if(nfAnalysis.getSyntaxError() != null) {
-			report = new NFReport();
-			report.setError(nfAnalysis.getSyntaxError());
-			report.setDescription("A syntax error occurred");
-			report.setShowErrorDescription(true);
+			ErrorReport errorReport = new ErrorReport();
+			errorReport.setError(nfAnalysis.getSyntaxError());
+			errorReport.setDescription("A syntax error occurred");
+			errorReport.setShowErrorDescription(true);
 
-			return report;
+			return errorReport;
 		}
 
 		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION) {
@@ -512,16 +507,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			config.setDiagnoseLevel(diagnoseLevel);
 			report = AttributeClosureReporter.report((AttributeClosureAnalysis)analysis, (DefaultGrading)grading, config, messageSource, locale);
 
-		} else if (internalType == RDBDConstants.TYPE_RBR) {
-			//RBR
-			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'RBR'");
-			
-			config = new ReporterConfig();
-			config.setAction(actionParam);
-			config.setDiagnoseLevel(diagnoseLevel);
-			report = RBRReporter.report((RBRAnalysis)analysis, (DefaultGrading)grading, config, messageSource, locale);
-
-		} else if (internalType == RDBDConstants.TYPE_DECOMPOSE) {
+		} /*else if (internalType == RDBDConstants.TYPE_DECOMPOSE) {
 			//DECOMPOSE
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'DECOMPOSE'");
 			
@@ -533,7 +519,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			report = DecomposeReporter.report(decomposeReporterConfig, messageSource, locale);
 
-		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION) {
+		} */else if (internalType == RDBDConstants.TYPE_NORMALIZATION) {
 			//NORMALIZATION
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'NORMALIZATION'");
 			
@@ -565,6 +551,9 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 	@Override
 	public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
+		NFAnalysis nfAnalysis = (NFAnalysis) analysis;
+
+
 		return null; // TODO: Implement this method (Gerald Wimmer, 2023-11-12)
 	}
 }

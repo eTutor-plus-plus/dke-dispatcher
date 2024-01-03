@@ -44,29 +44,25 @@ public class TuplesGenerator{
 
 			/*
 			System.out.println("\nDESIRED KEYS:");
-			Iterator<Key> it = keys.iterator();
-			while (it.hasNext()){
-				System.out.println(TuplesPrinter.toString((int[])it.next()));
+			for (int[] arr : keys){
+				System.out.println(TuplesPrinter.toString(arr));
 			}
 
 			System.out.println("\nCALCULATED KEYS:");
 			TupleSet calculatedKeys = KeysDeterminator.determineMinimalKeys(tuples);
-			it = calculatedKeys.iterator();
-			while (it.hasNext()){
-				System.out.println(TuplesPrinter.toString((int[])it.next()));
+			for (int[] arr : calculatedKeys){
+				System.out.println(TuplesPrinter.toString(arr));
 			}*/
 
 			System.out.println("\nINVALID KEYS:");
-			Iterator<int[]> it = invalidKeys.iterator();
-			while (it.hasNext()){
-				System.out.print("(" + TuplesPrinter.toString(it.next()) + ") ");
+			for (int[] arr : invalidKeys){
+				System.out.print("(" + TuplesPrinter.toString(arr) + ") ");
 			}
 			System.out.print("\n");
 
 			System.out.println("\nUNDESIRED KEYS:");
-			it = undesiredKeys.iterator();
-			while (it.hasNext()){
-				System.out.print("(" + TuplesPrinter.toString(it.next()) + ") ");
+			for (int [] arr : undesiredKeys){
+				System.out.print("(" + TuplesPrinter.toString(arr) + ") ");
 			}
 			System.out.print("\n");
 			

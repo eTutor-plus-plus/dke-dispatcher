@@ -7,11 +7,11 @@ import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalysis;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import org.springframework.context.MessageSource;
 
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.logging.Level;
 
-public class KeysReporter {
+public class KeysReporter extends ErrorReporter {
 
 	public static NFReport report(KeysAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
 		NFReport report = new NFReport();
@@ -86,15 +86,11 @@ public class KeysReporter {
 			if (config.getDiagnoseLevel() == 3){
 				currElemID = RDBDHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("keysreporter.keysmissing", null, locale)).append(":</p>");
-				description.append("<table border='2' rules='all'>");
 
-				for (Key k : analysis.getMissingKeys()){
-					description.append("<tr><td>").append(k.toString()).append("</td></tr>");
-				}
+				description.append(generateTable(analysis.getMissingKeys()));
 
-				description.append("</table>");
 				description.append("</body></html>");
 				description.append("\"></input>");
 
@@ -131,15 +127,11 @@ public class KeysReporter {
 			if (config.getDiagnoseLevel() == 3){
 				currElemID = RDBDHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("keysreporter.keystoomuch", null, locale)).append(":</p>");
-				description.append("<table border='2' rules='all'>");
 
-				for (Key k : analysis.getAdditionalKeys()){
-					description.append("<tr><td>").append(k.toString()).append("</td></tr>");
-				}
+				description.append(generateTable(analysis.getAdditionalKeys()));
 
-				description.append("</table>");
 				description.append("</body></html>");
 				description.append("\"></input>");
 				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(additionalKeysCount);

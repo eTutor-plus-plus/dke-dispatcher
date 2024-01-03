@@ -2,6 +2,7 @@ package at.jku.dke.etutor.modules.nf.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.StringJoiner;
 import java.util.TreeSet;
 
 public class Key implements Serializable {
@@ -40,19 +41,13 @@ public class Key implements Serializable {
 
 	@Override
 	public String toString() {
-		boolean first = true;
-		StringBuilder toStringBuilder = new StringBuilder();
+		StringJoiner toStringJoiner = new StringJoiner(" ");
 
         for (String attribute : this.attributes) {
-            if (first) {
-                first = false;
-            } else {
-                toStringBuilder.append(" ");
-            }
-            toStringBuilder.append(attribute);
+            toStringJoiner.add(attribute);
         }
 
-		return toStringBuilder.toString();
+		return toStringJoiner.toString();
 	}
 	
 	public TreeSet<String> getAttributes(){

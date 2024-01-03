@@ -14,7 +14,7 @@ import org.springframework.context.MessageSource;
 import java.util.Locale;
 import java.util.logging.Level;
 
-public class NormalizationReporter {
+public class NormalizationReporter extends ErrorReporter {
 
 	public static NFReport report(NormalizationAnalysis analysis, DefaultGrading grading, NormalizationReporterConfig config, MessageSource messageSource, Locale locale){
 		NFReport report = new NFReport();
@@ -178,16 +178,11 @@ public class NormalizationReporter {
 		if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)){
 			currElemID = RDBDHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>").append(messageSource.getMessage("normalizationreporter.dependencieslost", null, locale)).append(":</p>");
-			description.append("<table border='2' rules='all'>");
 
-			for (FunctionalDependency fd : analysis.getLostFunctionalDependencies()){
-				description.append("<tr><td>");
-				description.append(fd.toString());
-				description.append("</td></tr>");
-			}
-			description.append("</table>");
+			description.append(generateTable(analysis.getLostFunctionalDependencies()));
+
 			description.append("</body></html>");
 			description.append("\"></input>");
 
@@ -258,16 +253,11 @@ public class NormalizationReporter {
 		if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)){
 			currElemID = RDBDHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-			description.append("<html><head><link rel='stylesheet' href='/etutor/css/etutor.css'></link></head><body>");
+			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>").append(messageSource.getMessage("normalizationreporter.attributenotcomprised", null, locale)).append(":</p>");
-			description.append("<table border='2' rules='all'>");
 
-			for (String a : analysis.getMissingAttributes()){
-				description.append("<tr><td>");
-				description.append(a);
-				description.append("</td></tr>");
-			}
-			description.append("</table>");
+			description.append(generateTable(analysis.getMissingAttributes()));
+
 			description.append("</body></html>");
 			description.append("\"></input>");
 
