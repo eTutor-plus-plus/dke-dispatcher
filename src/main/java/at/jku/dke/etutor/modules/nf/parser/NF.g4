@@ -82,7 +82,7 @@ attribute : AlphaNumericChain ;
 // Lexer rules
 
 Integer : Digit+ ;
-AlphaNumericChain : Letter (Letter | Digit | '_'{})* ; // Note: Has to start with letter, to distinguish it from Integer
+AlphaNumericChain : Letter (Letter | Digit | '_')* ; // Note: Has to start with letter, to distinguish it from Integer
 Digit : '0' .. '9' ;
 Letter : 'A' .. 'Z' | 'a' .. 'z';
 

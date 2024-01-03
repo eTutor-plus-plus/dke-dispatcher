@@ -55,7 +55,6 @@ public class KeysReporter {
 	}
 
 	public static ErrorReport createKeysErrorReport(KeysAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Iterator<Key> it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();

@@ -1,11 +1,11 @@
 package at.jku.dke.etutor.modules.nf.report;
 
-import java.io.Serializable;
+import at.jku.dke.etutor.core.evaluation.DefaultReport;
+
 import java.util.List;
 import java.util.Vector;
-import at.jku.dke.etutor.core.evaluation.Report;
 
-public class NFReport implements Report, Serializable {
+public class NFReport extends DefaultReport {
 
 	private String prologue;
 

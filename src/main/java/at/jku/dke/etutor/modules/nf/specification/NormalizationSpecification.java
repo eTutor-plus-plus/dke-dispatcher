@@ -60,7 +60,7 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 	 *
 	 * (i in the grading schema V3)
 	 */
-	private int penaltyPerWrongNewDependency;
+	private int penaltyPerIncorrectNewDependency;
 
 	/**
 	 * (j in the grading schema V3)
@@ -70,12 +70,12 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 	/**
 	 * (k in the grading schema V3)
 	 */
-	private int penaltyPerWrongKey;
+	private int penaltyPerIncorrectKey;
 
 	/**
 	 * (l in the grading schema V3)
 	 */
-	private int penaltyPerWrongNFRelation;
+	private int penaltyPerIncorrectNFRelation;
 	// End of point deduction variables
 
 	protected int maxLostDependencies;
@@ -151,12 +151,12 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 		this.penaltyPerMissingNewDependency = penaltyPerMissingNewDependency;
 	}
 
-	public int getPenaltyPerWrongNewDependency() {
-		return penaltyPerWrongNewDependency;
+	public int getPenaltyPerIncorrectNewDependency() {
+		return penaltyPerIncorrectNewDependency;
 	}
 
-	public void setPenaltyPerWrongNewDependency(int penaltyPerWrongNewDependency) {
-		this.penaltyPerWrongNewDependency = penaltyPerWrongNewDependency;
+	public void setPenaltyPerIncorrectNewDependency(int penaltyPerIncorrectNewDependency) {
+		this.penaltyPerIncorrectNewDependency = penaltyPerIncorrectNewDependency;
 	}
 
 	public int getPenaltyPerMissingKey() {
@@ -167,20 +167,20 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 		this.penaltyPerMissingKey = penaltyPerMissingKey;
 	}
 
-	public int getPenaltyPerWrongKey() {
-		return penaltyPerWrongKey;
+	public int getPenaltyPerIncorrectKey() {
+		return penaltyPerIncorrectKey;
 	}
 
-	public void setPenaltyPerWrongKey(int penaltyPerWrongKey) {
-		this.penaltyPerWrongKey = penaltyPerWrongKey;
+	public void setPenaltyPerIncorrectKey(int penaltyPerIncorrectKey) {
+		this.penaltyPerIncorrectKey = penaltyPerIncorrectKey;
 	}
 
-	public int getPenaltyPerWrongNFRelation() {
-		return penaltyPerWrongNFRelation;
+	public int getPenaltyPerIncorrectNFRelation() {
+		return penaltyPerIncorrectNFRelation;
 	}
 
-	public void setPenaltyPerWrongNFRelation(int penaltyPerWrongNFRelation) {
-		this.penaltyPerWrongNFRelation = penaltyPerWrongNFRelation;
+	public void setPenaltyPerIncorrectNFRelation(int penaltyPerIncorrectNFRelation) {
+		this.penaltyPerIncorrectNFRelation = penaltyPerIncorrectNFRelation;
 	}
 
 	@Override
@@ -259,7 +259,7 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 			return false;
 		}
 
-		if(spec.getPenaltyPerWrongNewDependency() != this.penaltyPerWrongNewDependency) {
+		if(spec.getPenaltyPerIncorrectNewDependency() != this.penaltyPerIncorrectNewDependency) {
 			return false;
 		}
 
@@ -267,11 +267,11 @@ public class NormalizationSpecification extends NFSpecification implements Clone
 			return false;
 		}
 
-		if(spec.getPenaltyPerWrongKey() != this.penaltyPerWrongKey) {
+		if(spec.getPenaltyPerIncorrectKey() != this.penaltyPerIncorrectKey) {
 			return false;
 		}
 
-		if(spec.getPenaltyPerWrongNFRelation() != this.penaltyPerWrongNFRelation) {
+		if(spec.getPenaltyPerIncorrectNFRelation() != this.penaltyPerIncorrectNFRelation) {
 			return false;
 		}
 

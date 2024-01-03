@@ -23,6 +23,7 @@ import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalysis;
 import at.jku.dke.etutor.modules.nf.exercises.RDBDExercisesManager;
+import at.jku.dke.etutor.modules.nf.i18n.NFMessageSource;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.Key;
@@ -30,11 +31,13 @@ import at.jku.dke.etutor.modules.nf.model.KeysContainer;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.parser.NFLexer;
 import at.jku.dke.etutor.modules.nf.parser.NFParser;
+import at.jku.dke.etutor.modules.nf.parser.NFParserErrorCollector;
 import at.jku.dke.etutor.modules.nf.report.AttributeClosureReporter;
 import at.jku.dke.etutor.modules.nf.report.DecomposeReporter;
 import at.jku.dke.etutor.modules.nf.report.DecomposeReporterConfig;
 import at.jku.dke.etutor.modules.nf.report.KeysReporter;
 import at.jku.dke.etutor.modules.nf.report.MinimalCoverReporter;
+import at.jku.dke.etutor.modules.nf.report.NFReport;
 import at.jku.dke.etutor.modules.nf.report.NormalformReporter;
 import at.jku.dke.etutor.modules.nf.report.NormalizationReporter;
 import at.jku.dke.etutor.modules.nf.report.NormalizationReporterConfig;
@@ -63,11 +66,11 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 
 public class RDBDEvaluator implements Evaluator, MessageSourceAware {
-	private MessageSource messageSource;
+	private MessageSource messageSource = new NFMessageSource();
 
-	@Required
+	@Required // Deprecated
 	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
+		// this.messageSource = messageSource;
 	}
 
 	/*
@@ -89,6 +92,9 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		TokenStream submissionParserInput = new CommonTokenStream(submissionLexer);
 		NFParser submissionParser = new NFParser(submissionParserInput);
 
+		NFParserErrorCollector errorCollector = new NFParserErrorCollector();
+		submissionParser.addErrorListener(errorCollector);
+
 		int internalType = RDBDExercisesManager.fetchInternalType(exerciseID);
 		String specificationString = RDBDExercisesManager.fetchSpecification(exerciseID);
 
@@ -108,9 +114,15 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
 			Relation submission = new Relation();
 			Set<Key> minimalKeys = submissionParser.keySet().keys;
-			submission.setMinimalKeys(minimalKeys);
+			if(errorCollector.getSyntaxErrors().size() > 0) {
+				analysis = new KeysAnalysis();
 
-			analysis = KeysAnalyzer.analyze(submission, keysAnalyzerConfig);
+				analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
+			} else {
+				submission.setMinimalKeys(minimalKeys);
+
+				analysis = KeysAnalyzer.analyze(submission, keysAnalyzerConfig);
+			}
 			
 			//Set Submission
 			analysis.setSubmission(submission);
@@ -126,9 +138,15 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			// Assemble relation from input String. (Gerald Wimmer, 2023-11-27)
 			Relation submission = new Relation();
 			Set<FunctionalDependency> functionalDependencies = submissionParser.functionalDependencySet().functionalDependencies;
-			submission.setFunctionalDependencies(functionalDependencies);
+			if(errorCollector.getSyntaxErrors().size() > 0) {
+				analysis = new MinimalCoverAnalysis();
 
-			analysis = MinimalCoverAnalyzer.analyze(submission, specification.getBaseRelation());
+				analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
+			} else {
+				submission.setFunctionalDependencies(functionalDependencies);
+
+				analysis = MinimalCoverAnalyzer.analyze(submission, specification.getBaseRelation());
+			}
 
 			//Set Submission
 			analysis.setSubmission(submission);
@@ -144,12 +162,18 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			// Assemble relation from input String. (Gerald Wimmer, 2023-11-27)
 			Relation submission = new Relation();
 			Set<String> attributes = submissionParser.attributeSet().attributes;
-			submission.setAttributes(attributes);
+			if(errorCollector.getSyntaxErrors().size() > 0) {
+				analysis = new AttributeClosureAnalysis();
 
-			analysis = AttributeClosureAnalyzer.analyze(
-					attributeClosureSpecification.getBaseRelation().getFunctionalDependencies(),
-					attributeClosureSpecification.getBaseAttributes(),
-					submission.getAttributes());
+				analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
+			} else {
+				submission.setAttributes(attributes);
+
+				analysis = AttributeClosureAnalyzer.analyze(
+						attributeClosureSpecification.getBaseRelation().getFunctionalDependencies(),
+						attributeClosureSpecification.getBaseAttributes(),
+						submission.getAttributes());
+			}
 				
 			//Set Submission
 			analysis.setSubmission(submission);
@@ -225,9 +249,15 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			// Get normalized relations from input String. (Gerald Wimmer, 2023-12-02)
 			Set<IdentifiedRelation> submissionSet = submissionParser.relationSet().relations;
-			normalizationAnalyzerConfig.setNormalizedRelations(submissionSet);
-			
-			analysis = NormalizationAnalyzer.analyze(normalizationAnalyzerConfig);
+			if(errorCollector.getSyntaxErrors().size() > 0) {
+				analysis = new NormalizationAnalysis();
+
+				analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
+			} else {
+				normalizationAnalyzerConfig.setNormalizedRelations(submissionSet);
+
+				analysis = NormalizationAnalyzer.analyze(normalizationAnalyzerConfig);
+			}
 			
 			//Set Submission
 			/*
@@ -246,13 +276,18 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
             // Get submission from input String. (Gerald Wimmer, 2023-12-02)
 			NormalformDeterminationSubmission normalformDeterminationSubmission = submissionParser.normalFormSubmission().submission;
+			if(errorCollector.getSyntaxErrors().size() > 0) {
+				analysis = new NormalformDeterminationAnalysis();
 
-			NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();
+				analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
+			} else {
+				NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();
 
-			normalformAnalyzerConfig.setCorrectMinimalKeys(KeysDeterminator.determineMinimalKeys(specification.getBaseRelation()));
-			normalformAnalyzerConfig.setRelation(specification.getBaseRelation());
-			
-			analysis = NormalformDeterminationAnalyzer.analyze(normalformDeterminationSubmission, normalformAnalyzerConfig);
+				normalformAnalyzerConfig.setCorrectMinimalKeys(KeysDeterminator.determineMinimalKeys(specification.getBaseRelation()));
+				normalformAnalyzerConfig.setRelation(specification.getBaseRelation());
+
+				analysis = NormalformDeterminationAnalyzer.analyze(normalformDeterminationSubmission, normalformAnalyzerConfig);
+			}
 
 			//Set Submission
 			analysis.setSubmission(normalformDeterminationSubmission);
@@ -271,13 +306,18 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 	public Grading grade(Analysis analysis, int maxPoints, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
 		NFAnalysis nfAnalysis = (NFAnalysis) analysis;
 
-		int internalType = RDBDExercisesManager.fetchInternalType(nfAnalysis.getExerciseId());
-		String specificationString = RDBDExercisesManager.fetchSpecification(nfAnalysis.getExerciseId());
-
 		Grading grading = new DefaultGrading();
 		grading.setMaxPoints(maxPoints);
 
+		if(nfAnalysis.getSyntaxError() != null) {
+			grading.setPoints(0);
+			return grading;
+		}
+
 		int actualPoints = maxPoints;
+
+		int internalType = RDBDExercisesManager.fetchInternalType(nfAnalysis.getExerciseId());
+		String specificationString = RDBDExercisesManager.fetchSpecification(nfAnalysis.getExerciseId());
 
 		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION) {
 			KeysDeterminationSpecification specification = null;
@@ -324,7 +364,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			actualPoints -= attributeClosureAnalysis.getMissingAttributes().size() * specification.getPenaltyPerMissingAttribute();
 			actualPoints -= attributeClosureAnalysis.getAdditionalAttributes().size() * specification.getPenaltyPerIncorrectAttribute();
 
-		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION) { // Note: Could be identical to Decompose, now that you only have to specify the end result (Gerald Wimmer, 2023-11-27)
+		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION) {
 			NormalizationSpecification specification = null;
 			try {
 				specification = new ObjectMapper().readValue(specificationString, NormalizationSpecification.class);
@@ -360,16 +400,16 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 					.sum() * specification.getPenaltyPerMissingNewDependency();
 			actualPoints -= normalizationAnalysis.getRbrAnalyses().values().stream()
 					.mapToInt(rbrAnalysis -> rbrAnalysis.getAdditionalFunctionalDependencies().size())
-					.sum() * specification.getPenaltyPerWrongNewDependency();
+					.sum() * specification.getPenaltyPerIncorrectNewDependency();
 			actualPoints -= normalizationAnalysis.getKeysAnalyses().values().stream()
 					.mapToInt(keysAnalysis -> keysAnalysis.getMissingKeys().size())
 					.sum() * specification.getPenaltyPerMissingKey();
 			actualPoints -= normalizationAnalysis.getKeysAnalyses().values().stream()
 					.mapToInt(keysAnalysis -> keysAnalysis.getAdditionalKeys().size())
-					.sum() * specification.getPenaltyPerWrongKey();
+					.sum() * specification.getPenaltyPerIncorrectKey();
 			actualPoints -= normalizationAnalysis.getNormalformAnalyses().values().stream()
 					.filter(normalformAnalysis -> !normalformAnalysis.submissionSuitsSolution())
-					.count() * specification.getPenaltyPerWrongNFRelation();
+					.count() * specification.getPenaltyPerIncorrectNFRelation();
 
 		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
 			NormalformDeterminationSpecification specification = null;
@@ -411,22 +451,24 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 	 */
 	@Override
 	public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
-		ReporterConfig config;
-		
-		Report report;
-		String actionParam = passedAttributes.get(RDBDConstants.PARAM_ACTION);
 		/*
 		 * NOTE: Whenever the parameter with the key RDBDConstants.ATT_EXERCISE_ID was queried, its .toString() value
 		 *  was passed into Integer.parseInt(). I thus assume the values of this map to be Strings.
 		 *  (Gerald Wimmer, 2023-11-12).
 		 */
-		int exerciseIdParam = Integer.parseInt(passedAttributes.get(RDBDConstants.ATT_EXERCISE_ID));
+		NFAnalysis nfAnalysis = (NFAnalysis) analysis;
+		// int exerciseIdParam = Integer.parseInt(passedAttributes.get(RDBDConstants.ATT_EXERCISE_ID));
+		int exerciseIdParam = nfAnalysis.getExerciseId();
 		String diagnoseLevelParam = passedAttributes.get(RDBDConstants.PARAM_LEVEL);
 
 		int diagnoseLevel = 2;
 		int internalType = RDBDExercisesManager.fetchInternalType(exerciseIdParam);
 
-		if (!actionParam.equals(RDBDConstants.EVAL_ACTION_SUBMIT)){
+		String actionParam = passedAttributes.get(RDBDConstants.PARAM_ACTION);
+
+		NFReport report;
+		ReporterConfig config;
+		if (!actionParam.equals(RDBDConstants.EVAL_ACTION_SUBMIT)) {
 			try{
 				diagnoseLevel = Integer.parseInt(diagnoseLevelParam);
 			} catch (Exception ignore){
@@ -434,7 +476,16 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			}
 		}
 
-		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION){
+		if(nfAnalysis.getSyntaxError() != null) {
+			report = new NFReport();
+			report.setError(nfAnalysis.getSyntaxError());
+			report.setDescription("A syntax error occurred");
+			report.setShowErrorDescription(true);
+
+			return report;
+		}
+
+		if (internalType == RDBDConstants.TYPE_KEYS_DETERMINATION) {
 			//KEYS DETERMINATION
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'KEY_DETERMINATION'");
 			
@@ -443,7 +494,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			config.setDiagnoseLevel(diagnoseLevel);
 			report = KeysReporter.report((KeysAnalysis)analysis, (DefaultGrading)grading, config, messageSource, locale);
 
-		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER){
+		} else if (internalType == RDBDConstants.TYPE_MINIMAL_COVER) {
 			//MINIMAL COVER
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'MINIMAL_COVER'");
 			
@@ -452,7 +503,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			config.setDiagnoseLevel(diagnoseLevel);
 			report = MinimalCoverReporter.report((MinimalCoverAnalysis)analysis, grading, config, messageSource, locale);
 
-		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE){
+		} else if (internalType == RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) {
 			//ATTRIBUTE CLOSURE
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'ATTRIBUTE_CLOSURE'");
 			
@@ -461,7 +512,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			config.setDiagnoseLevel(diagnoseLevel);
 			report = AttributeClosureReporter.report((AttributeClosureAnalysis)analysis, (DefaultGrading)grading, config, messageSource, locale);
 
-		} else if (internalType == RDBDConstants.TYPE_RBR){
+		} else if (internalType == RDBDConstants.TYPE_RBR) {
 			//RBR
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'RBR'");
 			
@@ -470,7 +521,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			config.setDiagnoseLevel(diagnoseLevel);
 			report = RBRReporter.report((RBRAnalysis)analysis, (DefaultGrading)grading, config, messageSource, locale);
 
-		} else if (internalType == RDBDConstants.TYPE_DECOMPOSE){
+		} else if (internalType == RDBDConstants.TYPE_DECOMPOSE) {
 			//DECOMPOSE
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'DECOMPOSE'");
 			
@@ -482,7 +533,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			report = DecomposeReporter.report(decomposeReporterConfig, messageSource, locale);
 
-		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION){
+		} else if (internalType == RDBDConstants.TYPE_NORMALIZATION) {
 			//NORMALIZATION
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'NORMALIZATION'");
 			
@@ -494,7 +545,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			report = NormalizationReporter.report((NormalizationAnalysis)analysis, (DefaultGrading)grading, normalizationReporterConfig, messageSource, locale);
 		
-		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION){
+		} else if (internalType == RDBDConstants.TYPE_NORMALFORM_DETERMINATION) {
 			//NORMALFORM DETERMINATION
 			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'NORMALFORM DETERMINATION'");
 
