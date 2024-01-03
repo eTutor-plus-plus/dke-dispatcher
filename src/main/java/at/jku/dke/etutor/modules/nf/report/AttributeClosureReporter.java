@@ -6,7 +6,6 @@ import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.closure.AttributeClosureAnalysis;
 import org.springframework.context.MessageSource;
 
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.logging.Level;
 
@@ -54,10 +53,8 @@ public class AttributeClosureReporter extends ErrorReporter {
 	}
 
 	public static ErrorReport createAttributeClosureErrorReport(AttributeClosureAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Iterator<String> it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
-		StringBuilder prologue = new StringBuilder();
 		StringBuilder description = new StringBuilder();
 
 		int missingAttributesCount = analysis.getMissingAttributes().size();

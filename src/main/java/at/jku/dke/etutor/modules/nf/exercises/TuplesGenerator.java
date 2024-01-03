@@ -4,7 +4,7 @@ import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.model.Key;
 
-import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -239,7 +239,7 @@ public class TuplesGenerator{
 		
 		tuples = TuplesGenerator.generate(keys, 5, 5, 0, 9);
 		
-		Vector<String> prefixes = new Vector<>();
+		List<String> prefixes = new Vector<>();
 		prefixes.add("A");
 		prefixes.add("B");
 		prefixes.add("C");

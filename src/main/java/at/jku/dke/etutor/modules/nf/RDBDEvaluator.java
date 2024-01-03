@@ -54,6 +54,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -340,7 +341,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			actualPoints -= minimalCoverAnalysis.getCanonicalRepresentationAnalysis().getNotCanonicalDependencies().size() * specification.getPenaltyPerNonCanonicalDependency();
 			actualPoints -= minimalCoverAnalysis.getTrivialDependenciesAnalysis().getTrivialDependencies().size() * specification.getPenaltyPerTrivialDependency();
 			actualPoints -= minimalCoverAnalysis.getExtraneousAttributesAnalysis().getExtraneousAttributes().values().stream()
-					.mapToInt(attributes -> attributes.size())
+					.mapToInt(List::size)
 					.sum() * specification.getPenaltyPerExtraneousAttribute();
 			actualPoints -= minimalCoverAnalysis.getRedundantDependenciesAnalysis().getRedundantDependencies().size() * specification.getPenaltyPerRedundantDependency();
 			actualPoints -= minimalCoverAnalysis.getDependenciesCoverAnalysis().getMissingDependencies().size() * specification.getPenaltyPerMissingDependencyVsSolution();
@@ -381,7 +382,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 					.sum() * specification.getPenaltyPerTrivialDependency();
 			actualPoints -= normalizationAnalysis.getExtraneousAttributesAnalyses().values().stream()
 					.mapToInt(extraneousAttributeAnalysis -> extraneousAttributeAnalysis.getExtraneousAttributes().values().stream()
-							.mapToInt(attributes -> attributes.size())
+							.mapToInt(List::size)
 							.sum())
 					.sum() * specification.getPenaltyPerExtraneousAttributeInDependencies();
 			actualPoints -= normalizationAnalysis.getRedundantDependenciesAnalyses().values().stream()

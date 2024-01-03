@@ -4,10 +4,8 @@ import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.nf.RDBDConstants;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalysis;
-import at.jku.dke.etutor.modules.nf.model.Key;
 import org.springframework.context.MessageSource;
 
-import java.util.Collection;
 import java.util.Locale;
 import java.util.logging.Level;
 

@@ -4,7 +4,6 @@ import at.jku.dke.etutor.modules.nf.algorithms.Member;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 public class CoverAnalyzer {
 

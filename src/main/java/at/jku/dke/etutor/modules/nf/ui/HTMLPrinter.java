@@ -21,7 +21,6 @@ import at.jku.dke.etutor.modules.nf.specification.DecomposeSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.RBRSpecification;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 
@@ -29,7 +28,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringJoiner;
@@ -1101,12 +1099,6 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	private static String getOffset(int indent) {
-		StringBuilder offset = new StringBuilder();
-
-		for (int i = 0; i < indent; i++) {
-			offset.append("\t");
-		}
-
-		return offset.toString();
+		return "\t".repeat(Math.max(0, indent));
 	}
 }

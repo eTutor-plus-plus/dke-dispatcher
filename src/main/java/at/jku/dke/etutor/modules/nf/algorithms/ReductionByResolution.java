@@ -5,7 +5,6 @@ import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
@@ -141,14 +140,7 @@ public class ReductionByResolution {
 			 * Remove all those functional dependencies which contain currAttribute on their left-hand side
 			 * (i.e., cannot be resolved) or right-hand side (because currAttribute is NOT present in the subScheme).
 			 */
-            Iterator<FunctionalDependency> resultIterator = result.iterator();
-			while (resultIterator.hasNext()) {
-				FunctionalDependency currFD = resultIterator.next();
-
-				if ((currFD.getLhsAttributes().contains(currAttribute))	|| (currFD.getRhsAttributes().contains(currAttribute))) {
-					resultIterator.remove();
-				}
-			}
+            result.removeIf(currFD -> (currFD.getLhsAttributes().contains(currAttribute)) || (currFD.getRhsAttributes().contains(currAttribute)));
 		}
 
 		return MinimalCover.fold(result);

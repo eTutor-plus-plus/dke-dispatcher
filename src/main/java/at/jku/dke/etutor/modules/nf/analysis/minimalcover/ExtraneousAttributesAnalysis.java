@@ -4,19 +4,20 @@ import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 public class ExtraneousAttributesAnalysis extends NFAnalysis {
 
-	private final Map<FunctionalDependency, Vector<String>> extraneousAttributes;
+	private final Map<FunctionalDependency, List<String>> extraneousAttributes;
 
 	public ExtraneousAttributesAnalysis() {
 		super();
 		this.extraneousAttributes = new HashMap<>();
 	}
 
-	public Map<FunctionalDependency, Vector<String>> getExtraneousAttributes() {
+	public Map<FunctionalDependency, List<String>> getExtraneousAttributes() {
 		return new HashMap<>(this.extraneousAttributes);
 	}
 

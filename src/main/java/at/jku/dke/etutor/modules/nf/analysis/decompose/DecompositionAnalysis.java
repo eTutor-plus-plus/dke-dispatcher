@@ -1,8 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis.decompose;
 
 import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
-import at.jku.dke.etutor.modules.nf.model.Key;
-import at.jku.dke.etutor.modules.nf.model.KeyComparator;
 
 import java.text.Collator;
 import java.util.Collection;

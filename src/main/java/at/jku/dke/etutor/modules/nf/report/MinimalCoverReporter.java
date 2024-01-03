@@ -12,7 +12,6 @@ import at.jku.dke.etutor.modules.nf.analysis.minimalcover.TrivialDependenciesAna
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import org.springframework.context.MessageSource;
 
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -388,7 +387,6 @@ public class MinimalCoverReporter extends ErrorReporter {
 	}
 	
 	public static ErrorReport createDependenciesCoverErrorReport(DependenciesCoverAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Iterator<FunctionalDependency> it;
 		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
