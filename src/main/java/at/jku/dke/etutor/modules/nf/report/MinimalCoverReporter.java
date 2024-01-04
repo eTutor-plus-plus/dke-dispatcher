@@ -12,6 +12,7 @@ import at.jku.dke.etutor.modules.nf.analysis.minimalcover.TrivialDependenciesAna
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import org.springframework.context.MessageSource;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -237,8 +238,8 @@ public class MinimalCoverReporter extends ErrorReporter {
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
 
-        //COUNT BAD DEPENDECIES
-        for (Vector<String> extraneousAttributes : analysis.getExtraneousAttributes().values()) {
+        //COUNT BAD DEPENDENCCIES
+        for (List<String> extraneousAttributes : analysis.getExtraneousAttributes().values()) {
             count += extraneousAttributes.size();
         }
 
@@ -272,7 +273,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 			description.append("<thead><tr><th>").append(messageSource.getMessage("minimalcoverreporter.functionaldependency", null, locale)).append("</th><th>").append(messageSource.getMessage("minimalcoverreporter.extraneousattributes", null, locale)).append("</th></tr></thead><tbody>");
 
 			boolean first = true;
-            for (Map.Entry<FunctionalDependency, Vector<String>> currEntry : analysis.getExtraneousAttributes().entrySet()) {
+            for (Map.Entry<FunctionalDependency, List<String>> currEntry : analysis.getExtraneousAttributes().entrySet()) {
                 description.append("<tr><td>");
                 description.append(printDependency(currEntry.getKey()));
                 description.append("</td><td>");

@@ -304,6 +304,10 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 	public Grading grade(Analysis analysis, int maxPoints, Map<String, String> passedAttributes, Map<String, String> passedParameters) throws Exception {
 		NFAnalysis nfAnalysis = (NFAnalysis) analysis;
 
+		if(nfAnalysis.getGrading() != null) {
+			return nfAnalysis.getGrading();
+		}
+
 		Grading grading = new DefaultGrading();
 		grading.setMaxPoints(maxPoints);
 
@@ -432,6 +436,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		actualPoints = Math.max(0, actualPoints);
 		grading.setPoints(actualPoints);
 
+		nfAnalysis.setGrading(grading);
 		return grading;
 	}
 
@@ -555,14 +560,14 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		}
 
 		nfAnalysis.setReport(report);
-
 		return report;
 	}
 
 	@Override
 	public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
 		try {
-			NFReport nfReport = (NFReport) report(analysis, null, passedAttributes, null, locale);
+			NFAnalysis nfAnalysis = (NFAnalysis) analysis;
+			NFReport nfReport = (NFReport) report(nfAnalysis, nfAnalysis.getGrading(), passedAttributes, null, locale);
 			return HTMLPrinter.printReport(nfReport, 0, 0, locale);
 		} catch (Exception e) {
 			e.printStackTrace();

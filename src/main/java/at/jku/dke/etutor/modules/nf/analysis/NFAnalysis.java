@@ -1,6 +1,7 @@
 package at.jku.dke.etutor.modules.nf.analysis;
 
 import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
+import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.modules.nf.report.NFReport;
 
 import java.util.StringJoiner;
@@ -9,6 +10,8 @@ public class NFAnalysis extends DefaultAnalysis {
     private int exerciseId;
 
     private String syntaxError;
+
+    private Grading grading;
 
     private NFReport report;
 
@@ -40,6 +43,14 @@ public class NFAnalysis extends DefaultAnalysis {
         }
 
         this.syntaxError = sj.toString();
+    }
+
+    public Grading getGrading() {
+        return grading;
+    }
+
+    public void setGrading(Grading grading) {
+        this.grading = grading;
     }
 
     public NFReport getReport() {
