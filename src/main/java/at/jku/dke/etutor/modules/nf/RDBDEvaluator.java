@@ -34,6 +34,7 @@ import at.jku.dke.etutor.modules.nf.report.AttributeClosureReporter;
 import at.jku.dke.etutor.modules.nf.report.ErrorReport;
 import at.jku.dke.etutor.modules.nf.report.KeysReporter;
 import at.jku.dke.etutor.modules.nf.report.MinimalCoverReporter;
+import at.jku.dke.etutor.modules.nf.report.NFReport;
 import at.jku.dke.etutor.modules.nf.report.NormalformReporter;
 import at.jku.dke.etutor.modules.nf.report.NormalizationReporter;
 import at.jku.dke.etutor.modules.nf.report.NormalizationReporterConfig;
@@ -43,6 +44,7 @@ import at.jku.dke.etutor.modules.nf.specification.KeysDeterminationSpecification
 import at.jku.dke.etutor.modules.nf.specification.MinimalCoverSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NormalformDeterminationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
+import at.jku.dke.etutor.modules.nf.ui.HTMLPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -110,7 +112,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
 			Relation submission = new Relation();
 			Set<Key> minimalKeys = submissionParser.keySet().keys;
-			if(errorCollector.getSyntaxErrors().size() > 0) {
+			if(!errorCollector.getSyntaxErrors().isEmpty()) {
 				analysis = new KeysAnalysis();
 
 				analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
@@ -134,7 +136,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			// Assemble relation from input String. (Gerald Wimmer, 2023-11-27)
 			Relation submission = new Relation();
 			Set<FunctionalDependency> functionalDependencies = submissionParser.functionalDependencySet().functionalDependencies;
-			if(errorCollector.getSyntaxErrors().size() > 0) {
+			if(!errorCollector.getSyntaxErrors().isEmpty()) {
 				analysis = new MinimalCoverAnalysis();
 
 				analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
@@ -158,7 +160,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			// Assemble relation from input String. (Gerald Wimmer, 2023-11-27)
 			Relation submission = new Relation();
 			Set<String> attributes = submissionParser.attributeSet().attributes;
-			if(errorCollector.getSyntaxErrors().size() > 0) {
+			if(!errorCollector.getSyntaxErrors().isEmpty()) {
 				analysis = new AttributeClosureAnalysis();
 
 				analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
@@ -245,7 +247,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			// Get normalized relations from input String. (Gerald Wimmer, 2023-12-02)
 			Set<IdentifiedRelation> submissionSet = submissionParser.relationSet().relations;
-			if(errorCollector.getSyntaxErrors().size() > 0) {
+			if(!errorCollector.getSyntaxErrors().isEmpty()) {
 				analysis = new NormalizationAnalysis();
 
 				analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
@@ -272,7 +274,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
             // Get submission from input String. (Gerald Wimmer, 2023-12-02)
 			NormalformDeterminationSubmission normalformDeterminationSubmission = submissionParser.normalFormSubmission().submission;
-			if(errorCollector.getSyntaxErrors().size() > 0) {
+			if(!errorCollector.getSyntaxErrors().isEmpty()) {
 				analysis = new NormalformDeterminationAnalysis();
 
 				analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
@@ -453,6 +455,11 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		 *  (Gerald Wimmer, 2023-11-12).
 		 */
 		NFAnalysis nfAnalysis = (NFAnalysis) analysis;
+
+		if(nfAnalysis.getReport() != null) {
+			return nfAnalysis.getReport();
+		}
+
 		// int exerciseIdParam = Integer.parseInt(passedAttributes.get(RDBDConstants.ATT_EXERCISE_ID));
 		int exerciseIdParam = nfAnalysis.getExerciseId();
 		String diagnoseLevelParam = passedAttributes.get(RDBDConstants.PARAM_LEVEL);
@@ -462,7 +469,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 		String actionParam = passedAttributes.get(RDBDConstants.PARAM_ACTION);
 
-		Report report;
+		NFReport report;
 		ReporterConfig config;
 		if (!actionParam.equals(RDBDConstants.EVAL_ACTION_SUBMIT)) {
 			try{
@@ -547,14 +554,20 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			throw new Exception("Unsupported RDBD type.");
 		}
 
+		nfAnalysis.setReport(report);
+
 		return report;
 	}
 
 	@Override
 	public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
-		NFAnalysis nfAnalysis = (NFAnalysis) analysis;
+		try {
+			NFReport nfReport = (NFReport) report(analysis, null, passedAttributes, null, locale);
+			return HTMLPrinter.printReport(nfReport, 0, 0, locale);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-
-		return null; // TODO: Implement this method (Gerald Wimmer, 2023-11-12)
+		return null;
 	}
 }
