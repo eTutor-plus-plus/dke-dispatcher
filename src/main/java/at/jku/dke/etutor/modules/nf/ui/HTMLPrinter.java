@@ -911,7 +911,7 @@ public class HTMLPrinter implements MessageSourceAware {
 		return out.toString();
 	}
 	
-	public static String printSpecificationSyntax(SpecificationParser parser, int indent, Locale locale) throws IOException {
+	/*public static String printSpecificationSyntax(SpecificationParser parser, int indent, Locale locale) throws IOException {
 		String offset;
 		String qualBase;
 		String qualRel;
@@ -985,7 +985,7 @@ public class HTMLPrinter implements MessageSourceAware {
 		out.append(offset).append("</tr>").append(LINE_SEP);
 		out.append(offset).append("</table>").append(LINE_SEP);
 		return out.toString();
-	}
+	}*/
 
 	public static void createHTMLSiteForReport(NFReport report){
 

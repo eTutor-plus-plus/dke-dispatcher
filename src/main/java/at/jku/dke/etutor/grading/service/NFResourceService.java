@@ -192,7 +192,7 @@ public class NFResourceService {
                 };
 
                 try {
-                    return RDBDHelper.getAssignmentText(specification, 0, locale, rdbdTypeId);
+                    return RDBDHelper.getAssignmentText(specification, 0, locale, rdbdType);
                 } catch (IOException i) {
                     i.printStackTrace();
                     return null;

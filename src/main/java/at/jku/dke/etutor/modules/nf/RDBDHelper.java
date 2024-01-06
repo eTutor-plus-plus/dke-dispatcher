@@ -15,7 +15,6 @@ import at.jku.dke.etutor.modules.nf.specification.NormalformDeterminationSpecifi
 import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.RBRSpecification;
 import at.jku.dke.etutor.modules.nf.ui.HTMLPrinter;
-import at.jku.dke.etutor.modules.nf.ui.SpecificationParser;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -573,168 +572,33 @@ public class RDBDHelper {
 		}
 	}
 
-	/*public static NFSpecification clone(NFSpecification specToClone, int rdbdType) {
-		//TODO: add clone() to interface NFSpecification (compatible with serialized specifications?)
-		try {
-            return switch (rdbdType) {
-                case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION) -> (NormalformDeterminationSpecification) specToClone.clone();
-                case (RDBDConstants.TYPE_KEYS_DETERMINATION) -> (KeysDeterminationSpecification) specToClone.clone();
-                case (RDBDConstants.TYPE_MINIMAL_COVER) -> (MinimalCoverSpecification) specToClone.clone();
-                case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) ->
-                        (AttributeClosureSpecification) specToClone.clone();
-                case (RDBDConstants.TYPE_RBR) -> (RBRSpecification) specToClone.clone();
-                case (RDBDConstants.TYPE_NORMALIZATION) ->
-                        (NormalizationSpecification) specToClone.clone();
-                case (RDBDConstants.TYPE_DECOMPOSE) ->
-                        (DecomposeSpecification) specToClone.clone();
-                default -> throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
-            };
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
-	}*/
-	
-	public static NFSpecification initSpecification(int rdbdType) {
-		NFSpecification spec;
-		IdentifiedRelation relation;
-		switch (rdbdType) {
-			case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION): {
-				relation = new IdentifiedRelation();
-				relation.setName("R");
-
-				spec = new NormalformDeterminationSpecification();
-				spec.setBaseRelation(relation);
-				break;
-			}
-			case (RDBDConstants.TYPE_KEYS_DETERMINATION): {
-				relation = new IdentifiedRelation();
-				relation.setID("0");
-				relation.setName("R0");
-
-				spec = new KeysDeterminationSpecification();
-				spec.setBaseRelation(relation);
-				break;
-			}
-			case (RDBDConstants.TYPE_MINIMAL_COVER): {
-				relation = new IdentifiedRelation();
-				relation.setID("0");
-				relation.setName("R0");
-
-				spec = new MinimalCoverSpecification();
-				spec.setBaseRelation(relation);
-				break;
-			}
-			case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE): {
-				relation = new IdentifiedRelation();
-				relation.setID("0");
-				relation.setName("R0");
-
-				spec = new AttributeClosureSpecification();
-				spec.setBaseRelation(relation);
-				break;
-			}
-			case (RDBDConstants.TYPE_RBR): {
-				relation = new IdentifiedRelation();
-				relation.setID("0");
-				relation.setName("R0");
-
-				spec = new RBRSpecification();
-				spec.setBaseRelation(relation);
-				break;
-			}
-			case (RDBDConstants.TYPE_NORMALIZATION): {
-				relation = new IdentifiedRelation();
-				relation.setID("0");
-				relation.setName("R0");
-
-				spec = new NormalizationSpecification();
-				spec.setBaseRelation(relation);
-				((NormalizationSpecification)spec).setMaxLostDependencies(0);
-				((NormalizationSpecification)spec).setTargetLevel(NormalformLevel.THIRD);
-				break;
-			}
-			case (RDBDConstants.TYPE_DECOMPOSE): {
-				relation = new IdentifiedRelation();
-				relation.setID("1");
-				relation.setName("R1");
-
-				spec = new DecomposeSpecification();
-				spec.setBaseRelation(relation);
-				((DecomposeSpecification)spec).setMaxLostDependencies(0);
-				((DecomposeSpecification)spec).setTargetLevel(NormalformLevel.THIRD);
-				break;
-			}
-			default: {
-				throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
-			}
-		}
-		return spec;
-	}
-
-	
-	public static SpecificationParser initParser(int rdbdType) {
-        return switch (rdbdType) {
-            case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION) -> new SpecificationParser("R", null, "F");
-            case (RDBDConstants.TYPE_KEYS_DETERMINATION) -> new SpecificationParser("R", null, "F");
-            case (RDBDConstants.TYPE_MINIMAL_COVER) -> new SpecificationParser("R", null, "F");
-            case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) -> new SpecificationParser("R", "A", "F");
-            case (RDBDConstants.TYPE_RBR) -> new SpecificationParser("R", "S", "F");
-            case (RDBDConstants.TYPE_NORMALIZATION) -> new SpecificationParser("R", null, "F");
-            case (RDBDConstants.TYPE_DECOMPOSE) -> new SpecificationParser("R", null, "F");
-            default -> throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
-        };
-	}
-
-	public static boolean isOfRdbdType(NFSpecification spec, int rdbdType) {
+	public static boolean isOfRdbdType(NFSpecification spec, RDBDConstants.Type rdbdType) {
 		if (spec == null) {
 			return true;
 		}
         return switch (rdbdType) {
-            case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION) -> spec instanceof NormalformDeterminationSpecification;
-            case (RDBDConstants.TYPE_KEYS_DETERMINATION) -> spec instanceof KeysDeterminationSpecification;
-            case (RDBDConstants.TYPE_MINIMAL_COVER) -> spec instanceof MinimalCoverSpecification;
-            case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE) -> spec instanceof AttributeClosureSpecification;
-            case (RDBDConstants.TYPE_RBR) -> spec instanceof RBRSpecification;
-            case (RDBDConstants.TYPE_NORMALIZATION) -> spec instanceof NormalizationSpecification;
-            case (RDBDConstants.TYPE_DECOMPOSE) -> spec instanceof DecomposeSpecification;
+            case NORMALFORM_DETERMINATION -> spec instanceof NormalformDeterminationSpecification;
+            case KEYS_DETERMINATION -> spec instanceof KeysDeterminationSpecification;
+            case MINIMAL_COVER -> spec instanceof MinimalCoverSpecification;
+            case ATTRIBUTE_CLOSURE -> spec instanceof AttributeClosureSpecification;
+            case RBR -> spec instanceof RBRSpecification;
+            case NORMALIZATION -> spec instanceof NormalizationSpecification;
+            case DECOMPOSE -> spec instanceof DecomposeSpecification;
             default -> throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
         };
 	}
 	
-	public static String getAssignmentText(NFSpecification specTmp, int indent, Locale locale, int rdbdType) throws IOException {
+	public static String getAssignmentText(NFSpecification specTmp, int indent, Locale locale, RDBDConstants.Type rdbdType) throws IOException {
 		StringWriter writer = new StringWriter();
 		switch (rdbdType) {
-			case (RDBDConstants.TYPE_NORMALFORM_DETERMINATION): {
-				writer.append(HTMLPrinter.printAssignmentForNormalformDetermination(specTmp.getBaseRelation(), indent, locale));
-				break;
-			}
-			case (RDBDConstants.TYPE_KEYS_DETERMINATION): {
-				writer.append(HTMLPrinter.printAssignmentForKeysDetermination(specTmp.getBaseRelation(), indent, locale));
-				break;
-			}
-			case (RDBDConstants.TYPE_MINIMAL_COVER): {
-				writer.append(HTMLPrinter.printAssignmentForMinimalCover(specTmp.getBaseRelation(), indent, locale));
-				break;
-			}
-			case (RDBDConstants.TYPE_ATTRIBUTE_CLOSURE): {
-				writer.append(HTMLPrinter.printAssignmentForAttributeClosure((AttributeClosureSpecification)specTmp, indent, locale));
-				break;
-			}
-			case (RDBDConstants.TYPE_RBR): {
-				writer.append(HTMLPrinter.printAssignmentForRBR((RBRSpecification)specTmp, indent, locale));
-				break;
-			}
-			case (RDBDConstants.TYPE_NORMALIZATION): {
-				writer.append(HTMLPrinter.printAssignmentForNormalization((NormalizationSpecification)specTmp, indent, locale));
-				break;
-			}
-			case (RDBDConstants.TYPE_DECOMPOSE): {
-				writer.append(HTMLPrinter.printAssignmentForDecompose((DecomposeSpecification)specTmp, indent, locale));
-				break;
-			}
-			default: {
-				throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
-			}
+			case NORMALFORM_DETERMINATION -> writer.append(HTMLPrinter.printAssignmentForNormalformDetermination(specTmp.getBaseRelation(), indent, locale));
+			case KEYS_DETERMINATION -> writer.append(HTMLPrinter.printAssignmentForKeysDetermination(specTmp.getBaseRelation(), indent, locale));
+			case MINIMAL_COVER -> writer.append(HTMLPrinter.printAssignmentForMinimalCover(specTmp.getBaseRelation(), indent, locale));
+			case ATTRIBUTE_CLOSURE -> writer.append(HTMLPrinter.printAssignmentForAttributeClosure((AttributeClosureSpecification)specTmp, indent, locale));
+			case RBR -> writer.append(HTMLPrinter.printAssignmentForRBR((RBRSpecification)specTmp, indent, locale));
+			case NORMALIZATION -> writer.append(HTMLPrinter.printAssignmentForNormalization((NormalizationSpecification)specTmp, indent, locale));
+			case DECOMPOSE -> writer.append(HTMLPrinter.printAssignmentForDecompose((DecomposeSpecification)specTmp, indent, locale));
+			default -> throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
 		}
 		return writer.toString();
 	}

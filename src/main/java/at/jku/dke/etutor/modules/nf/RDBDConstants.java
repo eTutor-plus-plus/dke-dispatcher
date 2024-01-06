@@ -25,26 +25,12 @@ public class RDBDConstants {
 	public final static String EXERCISE_SPEC_CMD_BACK = "back";
 	public final static String EXERCISE_SPEC_CMD_NEXT = "next";
 	public final static String EXERCISE_SPEC_CMD_CANCEL = "cancel";
-	
-	//BUSINESS LOGIC RDBD-CONSTANTS
-	public static final int TYPE_RBR = 5;
-	public static final int TYPE_DECOMPOSE = 6;
-	public static final int TYPE_NORMALIZATION = 1;
-	public static final int TYPE_MINIMAL_COVER = 2;
-	public static final int TYPE_ATTRIBUTE_CLOSURE = 3;
-	public static final int TYPE_KEYS_DETERMINATION = 0;
-	public static final int TYPE_NORMALFORM_DETERMINATION = 4;
 
+	// DIAGNOSE LEVELS
 	public static final int LEVEL_NONE = 0;
 	public static final int LEVEL_LOW = 1;
 	public static final int LEVEL_MEDIUM = 2;
 	public static final int LEVEL_HIGH = 3;
-
-	//CONNECTION PROPERTIES (password/user/url as alternative to JNDI datasource, but generally deprecated)
-	public static final String CONN_PWD = "rdbd";
-	public static final String CONN_USER = "rdbd";
-	public static final String CONN_STRING = "jdbc:oracle:thin:@mond.dke.uni-linz.ac.at:1521:etutor";
-	public static final String NAMING_DATASOURCE = "java:comp/env/jdbc/etutor/modules/rdbd/rdbdDS";
 	
 	//USER INTERFACE RDBD-CONSTANTS
 	public static final String PREFIX_SUBMISSION_ATT = "RDBD_SUBMISSION_";
