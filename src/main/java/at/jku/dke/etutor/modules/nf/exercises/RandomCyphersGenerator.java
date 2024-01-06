@@ -8,7 +8,7 @@ public class RandomCyphersGenerator {
 
 	private boolean directDuplicates;
 	
-	public RandomCyphersGenerator(){
+	public RandomCyphersGenerator() {
 		super();
 		
 		this.minCypher = 0;
@@ -17,19 +17,16 @@ public class RandomCyphersGenerator {
 		this.directDuplicates = true;
 	}
 	
-	public RandomCyphersGenerator(int minCypher, int maxCypher, boolean directDuplicates){
+	public RandomCyphersGenerator(int minCypher, int maxCypher, boolean directDuplicates) {
 		this();
 		this.minCypher = minCypher;
 		this.maxCypher = maxCypher;
 		this.directDuplicates = directDuplicates;
 	}
 
-	public int nextCypher(){
-		int nextCypher;
-		String currentTimeMillis;
-
-		currentTimeMillis = Long.toString(System.currentTimeMillis());
-		nextCypher = Integer.parseInt(currentTimeMillis.substring(currentTimeMillis.length()-1));
+	public int nextCypher() {
+		String currentTimeMillis = Long.toString(System.currentTimeMillis());
+		int nextCypher = Integer.parseInt(currentTimeMillis.substring(currentTimeMillis.length()-1));
 
 		if (!this.directDuplicates){
 			while ((nextCypher == this.lastCypher) || (nextCypher > this.maxCypher) || (nextCypher < this.minCypher)){

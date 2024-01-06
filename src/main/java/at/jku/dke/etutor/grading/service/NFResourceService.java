@@ -1,5 +1,6 @@
 package at.jku.dke.etutor.grading.service;
 
+import at.jku.dke.etutor.modules.nf.RDBDConstants;
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
@@ -9,6 +10,7 @@ import at.jku.dke.etutor.modules.nf.parser.NFParser;
 import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
 import at.jku.dke.etutor.modules.nf.specification.KeysDeterminationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.MinimalCoverSpecification;
+import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NormalformDeterminationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.objects.dispatcher.nf.NFExerciseDTO;
@@ -23,16 +25,17 @@ import org.antlr.v4.runtime.TokenStream;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Locale;
 import java.util.Set;
 
 @Service
 public class NFResourceService {
-
     public int createExercise(NFExerciseDTO dto) throws DatabaseException, ExerciseNotValidException {
         int exerciseId = 1;
 
@@ -49,7 +52,6 @@ public class NFResourceService {
         }
 
         int numericSubtypeId = getNumericSubtypeId(dto.getNfTaskSubtypeId());
-        // JSONObject specificationJSON = convertToJSONString(dto);
         String specificationJSON = convertToJSONString(dto);
 
         try (
@@ -80,7 +82,6 @@ public class NFResourceService {
 
     public boolean modifyExercise(int exerciseId, NFExerciseDTO dto) throws DatabaseException, ExerciseNotValidException {
         int numericSubtypeId = getNumericSubtypeId(dto.getNfTaskSubtypeId());
-        // JSONObject specificationJSON = convertToJSONString(dto);
         String specificationJSON = convertToJSONString(dto);
 
         try (
@@ -133,6 +134,77 @@ public class NFResourceService {
         }
     }
 
+    public String generateAssignmentText(int exerciseId, Locale locale) throws DatabaseException {
+        try (
+                Connection conn = RDBDHelper.getPooledConnection();
+                PreparedStatement stmt = conn.prepareStatement(
+                "SELECT rdbd_type, specification FROM exercises " +
+                    "WHERE id = ?"
+                )
+        ) {
+            stmt.setInt(1, exerciseId);
+
+            ResultSet rset = stmt.executeQuery();
+
+            if(rset.next()) {
+                int rdbdTypeId = rset.getInt("rdbd_type");
+                String specificationString = rset.getString("specification");
+
+                RDBDConstants.Type rdbdType = RDBDConstants.Type.values()[rdbdTypeId];
+
+                NFSpecification specification = switch (rdbdType) {
+                    case KEYS_DETERMINATION -> {
+                        try {	// Source: https://mkyong.com/java/how-to-convert-java-object-to-from-json-jackson/
+                            yield new ObjectMapper().readValue(specificationString, KeysDeterminationSpecification.class);
+                        } catch (Exception e) {
+                            throw new DatabaseException("Invalid KeysDeterminationSpecification in database for exercise id " + exerciseId);
+                        }
+                    }
+                    case MINIMAL_COVER -> {
+                        try {
+                            yield new ObjectMapper().readValue(specificationString, MinimalCoverSpecification.class);
+                        } catch (Exception e) {
+                            throw new DatabaseException("Invalid KeysDeterminationSpecification in database for exercise id " + exerciseId);
+                        }
+                    }
+                    case ATTRIBUTE_CLOSURE -> {
+                        try {
+                            yield new ObjectMapper().readValue(specificationString, AttributeClosureSpecification.class);
+                        } catch (Exception e) {
+                            throw new DatabaseException("Invalid KeysDeterminationSpecification in database for exercise id " + exerciseId);
+                        }
+                    }
+                    case NORMALIZATION -> {
+                        try {
+                            yield new ObjectMapper().readValue(specificationString, NormalizationSpecification.class);
+                        } catch (Exception e) {
+                            throw new DatabaseException("Invalid KeysDeterminationSpecification in database for exercise id " + exerciseId);
+                        }
+                    }
+                    case NORMALFORM_DETERMINATION -> {
+                        try {
+                            yield new ObjectMapper().readValue(specificationString, NormalformDeterminationSpecification.class);
+                        } catch (Exception e) {
+                            throw new DatabaseException("Invalid KeysDeterminationSpecification in database for exercise id " + exerciseId);
+                        }
+                    }
+                    default -> throw new DatabaseException("Cannot handle rdbd_type " + rdbdType + " for exercise id " + exerciseId);
+                };
+
+                try {
+                    return RDBDHelper.getAssignmentText(specification, 0, locale, rdbdTypeId);
+                } catch (IOException i) {
+                    i.printStackTrace();
+                    return null;
+                }
+            } else {
+                throw new DatabaseException("Exercise id " + exerciseId + " not present.");
+            }
+        } catch (SQLException s) {
+            throw new DatabaseException(s);
+        }
+    }
+
     private int getNumericSubtypeId(String subTypeString) {
         return switch (subTypeString) {
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#NFTask#KeysDeterminationTask" -> 0;
@@ -164,8 +236,8 @@ public class NFResourceService {
         baseRelation.setAttributes(baseAttributes);
         baseRelation.setFunctionalDependencies(baseDependencies);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectWriter objectWriter = objectMapper.writer();
+        // source: https://stackoverflow.com/a/15786175 (Gerald Wimmer, 2024-01-05)
+        ObjectWriter objectWriter = new ObjectMapper().writer();
 
         JSONArray baseDependenciesJSON = new JSONArray();
         baseDependencies.forEach(baseDependenciesJSON::put);
