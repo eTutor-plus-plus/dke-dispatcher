@@ -226,20 +226,26 @@ public class NFResourceService {
         TokenStream baseAttributesParserInput = new CommonTokenStream(baseAttributesLexer);
         NFParser baseAttributesParser = new NFParser(baseAttributesParserInput);
 
-
         baseAttributesParser.addErrorListener(errorCollector);
 
         Set<String> baseAttributes = baseAttributesParser.attributeSet().attributes;
+
+        if(!errorCollector.getSyntaxErrors().isEmpty()) {
+            throw new ExerciseNotValidException("Syntax error(s) in base attributes: " + errorCollector.getStringOfAllErrors());
+        }
 
         CharStream baseDependenciesLexerInput = CharStreams.fromString(dto.getNfBaseDependencies());
         Lexer baseDependenciesLexer = new NFLexer(baseDependenciesLexerInput);
         TokenStream baseDependenciesParserInput = new CommonTokenStream(baseDependenciesLexer);
         NFParser baseDependenciesParser = new NFParser(baseDependenciesParserInput);
 
-        NFParserErrorCollector baseDependenciesErrorCollector = new NFParserErrorCollector();
-        baseDependenciesParser.addErrorListener(baseDependenciesErrorCollector);
+        baseDependenciesParser.addErrorListener(errorCollector);
 
         Set<FunctionalDependency> baseDependencies = baseDependenciesParser.functionalDependencySet().functionalDependencies;
+
+        if(!errorCollector.getSyntaxErrors().isEmpty()) {
+            throw new ExerciseNotValidException("Syntax error(s) in base dependencies: " + errorCollector.getStringOfAllErrors());
+        }
 
         IdentifiedRelation baseRelation = new IdentifiedRelation();
         baseRelation.setAttributes(baseAttributes);
@@ -268,10 +274,13 @@ public class NFResourceService {
                     TokenStream targetLevelParserInput = new CommonTokenStream(targetLevelLexer);
                     NFParser targetLevelParser = new NFParser(targetLevelParserInput);
 
-                    NFParserErrorCollector targetLevelErrorCollector = new NFParserErrorCollector();
-                    targetLevelParser.addErrorListener(targetLevelErrorCollector);
+                    targetLevelParser.addErrorListener(errorCollector);
 
                     NormalformLevel targetLevel = targetLevelParser.normalForm().level;
+
+                    if(!errorCollector.getSyntaxErrors().isEmpty()) {
+                        throw new ExerciseNotValidException("Syntax error(s) in target level: " + errorCollector.getStringOfAllErrors());
+                    }
 
                     NormalizationSpecification specification = new NormalizationSpecification();
                     specification.setBaseRelation(baseRelation);
@@ -313,10 +322,13 @@ public class NFResourceService {
                     TokenStream acBaseAttributesParserInput = new CommonTokenStream(acBaseAttributesLexer);
                     NFParser acBaseAttributesParser = new NFParser(acBaseAttributesParserInput);
 
-                    NFParserErrorCollector acBaseAttributesErrorCollector = new NFParserErrorCollector();
-                    acBaseAttributesParser.addErrorListener(acBaseAttributesErrorCollector);
+                    acBaseAttributesParser.addErrorListener(errorCollector);
 
                     Set<String> acBaseAttributes = acBaseAttributesParser.attributeSet().attributes;
+
+                    if(!errorCollector.getSyntaxErrors().isEmpty()) {
+                        throw new ExerciseNotValidException("Syntax error(s) in attribute closure base attributes: " + errorCollector.getStringOfAllErrors());
+                    }
 
                     AttributeClosureSpecification specification = new AttributeClosureSpecification();
                     specification.setBaseRelation(baseRelation);

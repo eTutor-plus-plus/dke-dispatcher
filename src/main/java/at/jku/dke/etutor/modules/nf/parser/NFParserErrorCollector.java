@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class NFParserErrorCollector implements ANTLRErrorListener {
 
@@ -41,5 +42,15 @@ public class NFParserErrorCollector implements ANTLRErrorListener {
 
     public List<String> getSyntaxErrors() {
         return syntaxErrors;
+    }
+
+    public String getStringOfAllErrors() {
+        StringJoiner ret = new StringJoiner(";");
+
+        for(String s : syntaxErrors) {
+            ret.add(s);
+        }
+
+        return ret.toString();
     }
 }
