@@ -573,7 +573,7 @@ public class RDBDHelper {
 		}
 	}
 
-	public static NFSpecification clone(NFSpecification specToClone, int rdbdType) {
+	/*public static NFSpecification clone(NFSpecification specToClone, int rdbdType) {
 		//TODO: add clone() to interface NFSpecification (compatible with serialized specifications?)
 		try {
             return switch (rdbdType) {
@@ -592,7 +592,7 @@ public class RDBDHelper {
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e);
 		}
-	}
+	}*/
 	
 	public static NFSpecification initSpecification(int rdbdType) {
 		NFSpecification spec;

@@ -88,26 +88,4 @@ public class RDBDExercisesManager {
 
 		return type;
 	}
-
-	/*public String generateHtml(Serializable s, Locale locale) {
-		if (s == null) {
-			String msg = "Expected object of type " + SpecificationEditor.class.getName();
-			msg += ", but passed object is null";
-			logger.log(Level.SEVERE, msg);
-		} else if (!(s instanceof SpecificationEditor)) {
-			String msg = "Expected object of type " + SpecificationEditor.class.getName();
-			msg += ", but passed object is of type " + s.getClass().getName();
-			logger.log(Level.SEVERE, msg);
-		} else {
-			try {
-				return RDBDHelper.getAssignmentText(((SpecificationEditor)s).getSpecTmp(), 0, locale, this.rdbdType);
-			} catch (IOException e) {
-				String msg = "Unexpected exception occurred when generating assignment text ";
-				msg += "for RDBD specification of type " + this.rdbdType;
-				logger.log(Level.SEVERE, msg);
-			}			
-		}
-		
-		return null;
-	}*/
 }

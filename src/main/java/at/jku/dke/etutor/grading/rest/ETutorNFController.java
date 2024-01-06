@@ -86,7 +86,7 @@ public class ETutorNFController {
     }
 
     /**
-     * Maps a String to a Locale (shamelessly copied from ETutorSubmissionController (Gerald Wimmer, 2024-01-06).
+     * Maps a String to a Locale (shamelessly copied from ETutorSubmissionController) (Gerald Wimmer, 2024-01-06).
      * @param language the language
      * @return the Locale
      */
