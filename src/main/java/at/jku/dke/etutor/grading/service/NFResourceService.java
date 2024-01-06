@@ -7,6 +7,7 @@ import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.parser.NFLexer;
 import at.jku.dke.etutor.modules.nf.parser.NFParser;
+import at.jku.dke.etutor.modules.nf.parser.NFParserErrorCollector;
 import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
 import at.jku.dke.etutor.modules.nf.specification.KeysDeterminationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.MinimalCoverSpecification;
@@ -217,11 +218,16 @@ public class NFResourceService {
     }
 
     private String convertToJSONString(NFExerciseDTO dto) throws ExerciseNotValidException {
+        NFParserErrorCollector errorCollector = new NFParserErrorCollector();
+
         // Source: https://datacadamia.com/antlr/getting_started (Gerald Wimmer, 2023-11-27)
         CharStream baseAttributesLexerInput = CharStreams.fromString(dto.getNfBaseAttributes());
         Lexer baseAttributesLexer = new NFLexer(baseAttributesLexerInput);
         TokenStream baseAttributesParserInput = new CommonTokenStream(baseAttributesLexer);
         NFParser baseAttributesParser = new NFParser(baseAttributesParserInput);
+
+
+        baseAttributesParser.addErrorListener(errorCollector);
 
         Set<String> baseAttributes = baseAttributesParser.attributeSet().attributes;
 
@@ -229,6 +235,9 @@ public class NFResourceService {
         Lexer baseDependenciesLexer = new NFLexer(baseDependenciesLexerInput);
         TokenStream baseDependenciesParserInput = new CommonTokenStream(baseDependenciesLexer);
         NFParser baseDependenciesParser = new NFParser(baseDependenciesParserInput);
+
+        NFParserErrorCollector baseDependenciesErrorCollector = new NFParserErrorCollector();
+        baseDependenciesParser.addErrorListener(baseDependenciesErrorCollector);
 
         Set<FunctionalDependency> baseDependencies = baseDependenciesParser.functionalDependencySet().functionalDependencies;
 
@@ -258,6 +267,9 @@ public class NFResourceService {
                     Lexer targetLevelLexer = new NFLexer(targetLevelLexerInput);
                     TokenStream targetLevelParserInput = new CommonTokenStream(targetLevelLexer);
                     NFParser targetLevelParser = new NFParser(targetLevelParserInput);
+
+                    NFParserErrorCollector targetLevelErrorCollector = new NFParserErrorCollector();
+                    targetLevelParser.addErrorListener(targetLevelErrorCollector);
 
                     NormalformLevel targetLevel = targetLevelParser.normalForm().level;
 
@@ -300,6 +312,9 @@ public class NFResourceService {
                     Lexer acBaseAttributesLexer = new NFLexer(acBaseAttributesLexerInput);
                     TokenStream acBaseAttributesParserInput = new CommonTokenStream(acBaseAttributesLexer);
                     NFParser acBaseAttributesParser = new NFParser(acBaseAttributesParserInput);
+
+                    NFParserErrorCollector acBaseAttributesErrorCollector = new NFParserErrorCollector();
+                    acBaseAttributesParser.addErrorListener(acBaseAttributesErrorCollector);
 
                     Set<String> acBaseAttributes = acBaseAttributesParser.attributeSet().attributes;
 
