@@ -4,7 +4,8 @@ import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 
 import java.io.Serial;
 import java.util.Collection;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 
 public class AttributeClosureSpecification extends NFSpecification implements Cloneable {
 
@@ -15,25 +16,25 @@ public class AttributeClosureSpecification extends NFSpecification implements Cl
 	@Serial
 	private static final long serialVersionUID = 7948740045298387409L;
 
-	private Vector<String> baseAttributes;
+	private List<String> baseAttributes;
 
 	public AttributeClosureSpecification() {
 		super();
-		this.baseAttributes = new Vector<>();
+		this.baseAttributes = new LinkedList<>();
 	}
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		AttributeClosureSpecification clone = (AttributeClosureSpecification)super.clone();
-		clone.baseAttributes = (Vector<String>)this.baseAttributes.clone();
+		clone.baseAttributes = new LinkedList<> (this.baseAttributes);
 		if (this.baseRelation != null) {
 			clone.baseRelation = (IdentifiedRelation)this.baseRelation.clone();
 		}
 		return clone;
 	}
 
-	public Vector<String> getBaseAttributes() {
-		return (Vector<String>)this.baseAttributes.clone();
+	public List<String> getBaseAttributes() {
+		return new LinkedList<>(this.baseAttributes);
 	}
 
 	public void setBaseAttributes(Collection<String> attributeCombination) {
