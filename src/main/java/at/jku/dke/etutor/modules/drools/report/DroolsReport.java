@@ -8,12 +8,13 @@ import java.util.Locale;
 import java.util.Map;
 
 public class DroolsReport extends DefaultReport implements Serializable {
-    private DroolsAnalysis droolsAnalysis;
-    private StringBuilder errorMessage;
-    private StringBuilder hintMessage;
-    private Map<String,String> passedAttributes;
-    private Locale locale;
-    public DroolsReport(DroolsAnalysis droolsAnalysis, Map<String,String> passedAttributes, Locale locale) {
+    private final DroolsAnalysis droolsAnalysis;
+    private final StringBuilder errorMessage;
+    private final StringBuilder hintMessage;
+    private final Map<String, String> passedAttributes;
+    private final Locale locale;
+
+    public DroolsReport(DroolsAnalysis droolsAnalysis, Map<String, String> passedAttributes, Locale locale) {
         super();
         this.droolsAnalysis = droolsAnalysis;
         this.locale = locale;
@@ -23,9 +24,10 @@ public class DroolsReport extends DefaultReport implements Serializable {
         report();
     }
 
-    public void report(){
-        if(this.droolsAnalysis.isHasSyntaxError()){
-            if(isGermanLocale()) this.errorMessage.append("Die Regeln konnten aufgrund eines Syntaxfehlers nicht ausgeführt werden. ");
+    public void report() {
+        if (this.droolsAnalysis.isHasSyntaxError()) {
+            if (isGermanLocale())
+                this.errorMessage.append("Die Regeln konnten aufgrund eines Syntaxfehlers nicht ausgeführt werden. ");
             else this.errorMessage.append("Rules could not be built due to a syntax error. ");
             this.setShowErrorDescription(true);
             this.errorMessage.append(droolsAnalysis.getSyntaxErrorMessage());
@@ -34,56 +36,51 @@ public class DroolsReport extends DefaultReport implements Serializable {
         }
 
 
-        if((this.droolsAnalysis.getAdditionalFacts() != 0 || this.droolsAnalysis.getWrongFactList().isEmpty())){
-            if(passedAttributes.get("diagnoseLevel").equals("0")) {
-               this.setShowHint(true);
-               if(isGermanLocale()){
-                   this.hintMessage.append("Die Regeln enthalten semantische Fehler. ");
-               }
-               else{
-                   this.hintMessage.append("Rules contain semantic errors. ");
-               }
+        if ((this.droolsAnalysis.getAdditionalFacts() != 0 || this.droolsAnalysis.getWrongFactList().isEmpty())) {
+            if (passedAttributes.get("diagnoseLevel").equals("0")) {
+                this.setShowHint(true);
+                if (isGermanLocale()) {
+                    this.hintMessage.append("Die Regeln enthalten semantische Fehler. ");
+                } else {
+                    this.hintMessage.append("Rules contain semantic errors. ");
+                }
             }
 
-            if(passedAttributes.get("diagnoseLevel").equals("1")) {
+            if (passedAttributes.get("diagnoseLevel").equals("1")) {
                 this.setShowHint(true);
-                if(droolsAnalysis.getAdditionalFacts() > 0) {
-                    if (isGermanLocale()){
+                if (droolsAnalysis.getAdditionalFacts() > 0) {
+                    if (isGermanLocale()) {
                         this.hintMessage.append("Es wurden zu viele Fakten erzeugt. ");
-                    }
-                    else{
+                    } else {
                         this.hintMessage.append("Rules produces additional facts. ");
                     }
-                }else{
-                    if (isGermanLocale()){
+                } else {
+                    if (isGermanLocale()) {
                         this.hintMessage.append("Es wurden zu wenig Fakten erzeugt. ");
-                    }
-                    else{
+                    } else {
                         this.hintMessage.append("Rules produces too few facts. ");
                     }
                 }
             }
 
-            if(passedAttributes.get("diagnoseLevel").equals("2")) {
+            if (passedAttributes.get("diagnoseLevel").equals("2")) {
                 this.setShowHint(true);
-                if(droolsAnalysis.getAdditionalFacts() > 0) {
-                    if (isGermanLocale()){
+                if (droolsAnalysis.getAdditionalFacts() > 0) {
+                    if (isGermanLocale()) {
                         this.hintMessage.append("Es wurden um ")
                                 .append(droolsAnalysis.getAdditionalFacts())
                                 .append(" zu viele Fakten erzeugt. ");
-                    }
-                    else{
+                    } else {
                         this.hintMessage.append("Rules are generating ")
                                 .append(droolsAnalysis.getAdditionalFacts())
                                 .append(" facts too many.");
                     }
-                }else{
-                    if (isGermanLocale()){
+                } else {
+                    if (isGermanLocale()) {
                         this.hintMessage.append("Es wurden um ")
                                 .append(Math.abs(droolsAnalysis.getAdditionalFacts()))
                                 .append(" zu wenig Fakten erzeugt. ");
-                    }
-                    else{
+                    } else {
                         this.hintMessage.append("Rules are generating ")
                                 .append(droolsAnalysis.getAdditionalFacts())
                                 .append(" facts too few.");
@@ -91,20 +88,18 @@ public class DroolsReport extends DefaultReport implements Serializable {
                 }
             }
 
-            if(passedAttributes.get("diagnoseLevel").equals("3")) {
+            if (passedAttributes.get("diagnoseLevel").equals("3")) {
                 this.setShowHint(true);
-                if(droolsAnalysis.getAdditionalFacts() > 0) {
-                    if (isGermanLocale()){
+                if (droolsAnalysis.getAdditionalFacts() > 0) {
+                    if (isGermanLocale()) {
                         this.hintMessage.append("Es wurden zu viel Fakten erzeugt. ");
-                    }
-                    else{
+                    } else {
                         this.hintMessage.append("Rules produces additional facts. ");
                     }
-                }else{
-                    if (isGermanLocale()){
+                } else {
+                    if (isGermanLocale()) {
                         this.hintMessage.append("Es wurden zu wenig Fakten erzeugt. ");
-                    }
-                    else{
+                    } else {
                         this.hintMessage.append("Rules produces too few facts. ");
                     }
                 }
@@ -131,18 +126,17 @@ public class DroolsReport extends DefaultReport implements Serializable {
         }
 
 
-
     }
 
 
     /**
      * Returns whether the locale equals Locale.GERMAN
+     *
      * @return a boolean
      */
-    private boolean isGermanLocale(){
+    private boolean isGermanLocale() {
         return this.locale == Locale.GERMAN;
     }
-
 
 
 }

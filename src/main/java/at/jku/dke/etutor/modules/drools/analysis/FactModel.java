@@ -2,6 +2,9 @@ package at.jku.dke.etutor.modules.drools.analysis;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * Represents a Drools Fact Model
+ */
 public class FactModel {
     private String fullClassname;
     private int objectId;

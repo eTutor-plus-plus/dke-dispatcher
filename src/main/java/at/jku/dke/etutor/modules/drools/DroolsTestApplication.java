@@ -8,7 +8,7 @@ public class DroolsTestApplication {
 
     public static void main(String[] args) throws IOException, ReflectiveOperationException {
 
-        DroolsAnalysis analysis = new DroolsAnalysis(1,RULES, true);
+        DroolsAnalysis analysis = new DroolsAnalysis(1, RULES, true);
         analysis.analyze();
 
 //        analysis.hasSyntaxError();
@@ -21,14 +21,14 @@ public class DroolsTestApplication {
                 .mapToLong(Long::longValue)
                 .sum();
 
-        if(additionalFacts > 0) System.out.println("Es sind um " + additionalFacts + " Fakten zu viel.");
-        if(additionalFacts < 0) System.out.println("Es sind um " + additionalFacts + " Fakten zu wenig.");
+        if (additionalFacts > 0) System.out.println("Es sind um " + additionalFacts + " Fakten zu viel.");
+        if (additionalFacts < 0) System.out.println("Es sind um " + additionalFacts + " Fakten zu wenig.");
 
         int wrongFacts = analysis.getWrongFactList().size();
-        if(wrongFacts == 0) System.out.println("Regeln sind korrekt");
-        else System.out.println("Es sind "+ wrongFacts +" Fakten falsch.");
+        if (wrongFacts == 0) System.out.println("Regeln sind korrekt");
+        else System.out.println("Es sind " + wrongFacts + " Fakten falsch.");
 
-        System.out.println(analysis.toString());
+        System.out.println(analysis);
 
     }
 
@@ -36,7 +36,7 @@ public class DroolsTestApplication {
 
     private static final String RULES = """
             package at.jku.dke.etutor.modules.drools.jit;
-            
+                        
             rule "Combine parking intervals if reentry within 15 min"
             when
                 $enter1 : EnterParkingLotEvent()

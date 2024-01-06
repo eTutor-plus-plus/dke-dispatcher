@@ -158,7 +158,7 @@ public class DynamicDroolsBuilder implements AutoCloseable {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.write("src/main/resources/rules/DynamicRules.drl", rules);
-        KieBuilder kb = ks.newKieBuilder(kfs,this.classLoader).buildAll();
+        KieBuilder kb = ks.newKieBuilder(kfs, this.classLoader).buildAll();
         Results results = kb.getResults();
         return results;
     }
@@ -169,6 +169,7 @@ public class DynamicDroolsBuilder implements AutoCloseable {
 
 
     //TODO: Am ende aufrufen und den ordner löschen
+
     /**
      * Deletes all temporary files.
      *

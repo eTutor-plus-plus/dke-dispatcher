@@ -8,14 +8,13 @@ import at.jku.dke.etutor.grading.config.ApplicationProperties;
 import at.jku.dke.etutor.modules.drools.analysis.DroolsAnalysis;
 import at.jku.dke.etutor.modules.drools.grading.DroolsGrading;
 import at.jku.dke.etutor.modules.drools.report.DroolsReport;
-import org.springframework.beans.InvalidPropertyException;
 
 import java.util.Locale;
 import java.util.Map;
 
 public class DroolsEvaluator implements Evaluator {
 
-    private ApplicationProperties applicationProperties;
+    private final ApplicationProperties applicationProperties;
 
     public DroolsEvaluator(ApplicationProperties properties) {
         super();
@@ -26,7 +25,7 @@ public class DroolsEvaluator implements Evaluator {
     public Analysis analyze(int taskId, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
         Boolean isForDiagnose = null;
 
-        if(passedAttributes.get("action").equalsIgnoreCase("diagnose")) isForDiagnose = true;
+        if (passedAttributes.get("action").equalsIgnoreCase("diagnose")) isForDiagnose = true;
         else if (passedAttributes.get("action").equalsIgnoreCase("submit")) isForDiagnose = false;
 
         DroolsAnalysis analysis = new DroolsAnalysis(taskId, passedAttributes.get("submission"), isForDiagnose);

@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import springfox.documentation.swagger2.mappers.ModelMapper;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +34,9 @@ public class DroolsResourceService {
     private final String PWD;
     private final Logger logger;
 
-    private ApplicationProperties applicationProperties;
-    private SubmissionDispatcherService dispatcherService;
-    private GradingDTORepository gradingDTORepository;
+    private final ApplicationProperties applicationProperties;
+    private final SubmissionDispatcherService dispatcherService;
+    private final GradingDTORepository gradingDTORepository;
     private final ModelMapper modelMapper;
     private final SubmissionRepository submissionRepository;
 
@@ -47,7 +46,7 @@ public class DroolsResourceService {
                                  ApplicationProperties applicationProperties,
                                  ModelMapper modelMapper,
                                  SubmissionRepository submissionRepository) {
-        this.logger = (Logger) LoggerFactory.getLogger(DroolsResourceService.class);
+        this.logger = LoggerFactory.getLogger(DroolsResourceService.class);
         this.applicationProperties = applicationProperties;
         this.dispatcherService = dispatcherService;
         this.gradingDTORepository = gradingDTORepository;
@@ -174,8 +173,8 @@ public class DroolsResourceService {
                 jsonArray.put(obj);
             }
             return jsonArray.toString();
-        } catch (SQLException | JSONException throwables) {
-            throw new SQLException(throwables);
+        } catch (SQLException | JSONException throwable) {
+            throw new SQLException(throwable);
         }
     }
 
@@ -186,12 +185,12 @@ public class DroolsResourceService {
      * @throws DatabaseException if an SQLException occurs
      */
     public int getAvailableExerciseId() throws DatabaseException {
-        try (Connection con = DriverManager.getConnection(URL, USER, PWD);) {
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
             con.setAutoCommit(false);
             return getAvailableExerciseIdUtil(con);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            throw new DatabaseException(throwables);
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            throw new DatabaseException(throwable);
         }
     }
 
@@ -200,7 +199,7 @@ public class DroolsResourceService {
         int maxId = -1;
 
         try (PreparedStatement fetchMaxIdStmt = con.prepareStatement(fetchMaxIdQuery);
-             ResultSet maxIdSet = fetchMaxIdStmt.executeQuery();
+             ResultSet maxIdSet = fetchMaxIdStmt.executeQuery()
         ) {
             if (maxIdSet.next()) {
                 maxId = maxIdSet.getInt("task_id");
@@ -208,9 +207,9 @@ public class DroolsResourceService {
             } else throw new DatabaseException("Internal Error: could not fetch exercise id");
 
             con.commit();
-        } catch (SQLException throwables) {
-            logger.error(throwables.getMessage(), throwables);
-            throw new DatabaseException(throwables);
+        } catch (SQLException throwable) {
+            logger.error(throwable.getMessage(), throwable);
+            throw new DatabaseException(throwable);
         }
         return maxId;
     }
@@ -263,9 +262,9 @@ public class DroolsResourceService {
             }
             con.rollback();
             return -1;
-        } catch (SQLException throwables) {
-            logger.error(throwables.getMessage(), throwables);
-            throw new DatabaseException(throwables);
+        } catch (SQLException throwable) {
+            logger.error(throwable.getMessage(), throwable);
+            throw new DatabaseException(throwable);
         } catch (IOException | ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
@@ -307,9 +306,9 @@ public class DroolsResourceService {
             return rowsInserted.length;
 
 
-        } catch (Exception throwables) {
-            logger.error(throwables.getMessage(), throwables);
-            throw new DatabaseException(throwables);
+        } catch (Exception throwable) {
+            logger.error(throwable.getMessage(), throwable);
+            throw new DatabaseException(throwable);
         }
     }
 
@@ -321,7 +320,7 @@ public class DroolsResourceService {
      * @return
      * @throws DatabaseException
      */
-    public int createObjects(DroolsTaskDTO taskDTO, int taskId, Connection con) throws DatabaseException { //TODO: CSV Exception einbauen LK
+    public int createObjects(DroolsTaskDTO taskDTO, int taskId, Connection con) throws DatabaseException {
         logger.debug("Enter: Creating objects");
         String objectsCsv = taskDTO.getObjects();
 
@@ -421,12 +420,12 @@ public class DroolsResourceService {
      * @throws DatabaseException if an SQLException occurs
      */
     public int getAvailableObjectId(int taskId) throws DatabaseException {
-        try (Connection con = DriverManager.getConnection(URL, USER, PWD);) {
+        try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
             con.setAutoCommit(false);
             return getAvailableObjectIdUtil(con, taskId);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            throw new DatabaseException(throwables);
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            throw new DatabaseException(throwable);
         }
     }
 
@@ -445,9 +444,9 @@ public class DroolsResourceService {
             } else throw new DatabaseException("Internal Error: could not fetch object id");
 
             con.commit();
-        } catch (SQLException throwables) {
-            logger.error(throwables.getMessage(), throwables);
-            throw new DatabaseException(throwables);
+        } catch (SQLException throwable) {
+            logger.error(throwable.getMessage(), throwable);
+            throw new DatabaseException(throwable);
         }
         return maxId;
     }
@@ -486,9 +485,8 @@ public class DroolsResourceService {
      * @param id
      * @param taskDTO
      * @throws SQLException
-     * @throws DatabaseException
      */
-    public void editTask(int id, DroolsTaskDTO taskDTO) throws SQLException, DatabaseException {
+    public void editTask(int id, DroolsTaskDTO taskDTO) throws SQLException {
         logger.debug("Enter: editTask()");
         try (Connection con = DriverManager.getConnection(URL, USER, PWD)){
             con.setAutoCommit(false);
@@ -503,7 +501,7 @@ public class DroolsResourceService {
                 parameters.add(taskDTO.getSolution());
             }
 
-            if(newMaxPoints > 0 ) { //TODO: braucht es jemals 0 Punkte bei einer Aufgabe? derzeit über update nicht möglich. 20231202 Lukas Knogler
+            if(newMaxPoints > 0 ) {
                 queryBuilder.append("max_points = ?, ");
                 parameters.add(taskDTO.getMaxPoints());
             }
@@ -521,6 +519,9 @@ public class DroolsResourceService {
             statement.executeUpdate();
 
             con.commit();
+        }catch (SQLException throwable) {
+            logger.error(throwable.getMessage(), throwable);
+            throw new SQLException(throwable);
         }
     }
 

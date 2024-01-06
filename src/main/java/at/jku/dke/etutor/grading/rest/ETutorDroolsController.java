@@ -21,7 +21,7 @@ public class ETutorDroolsController {
 
 
     public ETutorDroolsController(DroolsResourceService resourceService){
-        this.logger = (Logger) LoggerFactory.getLogger(ETutorDroolsController.class);
+        this.logger = LoggerFactory.getLogger(ETutorDroolsController.class);
         this.resourceService = resourceService;
     }
 
@@ -215,8 +215,6 @@ public class ETutorDroolsController {
         logger.info("Enter: addTask()");
         try {
             int id = resourceService.addTask(taskDTO);
-
-            //TODO: Eventuell Syntax der Regeln vor dem erstellen Prüfen? 20231202
 
             logger.info("Exit: addTask() for id: {} with Status Code 200", id);
             return ResponseEntity.ok(id);
