@@ -1,6 +1,8 @@
 package at.jku.dke.etutor.modules.nf.model;
 
 import at.jku.dke.etutor.modules.nf.specification.HasSemanticEquality;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -8,6 +10,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
+
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 
 public class Relation implements Serializable, Cloneable, HasSemanticEquality {
 
@@ -220,7 +224,8 @@ public class Relation implements Serializable, Cloneable, HasSemanticEquality {
 	public TreeSet<String> getAttributes(){
 		return (TreeSet<String>)this.attributes.clone();
 	}
-	
+
+	@JsonIgnore
 	public String[] getAttributesArray() {
 		String[] attributesArray = new String[this.attributes.size()];
 

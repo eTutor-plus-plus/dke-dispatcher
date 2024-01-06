@@ -1,12 +1,14 @@
 package at.jku.dke.etutor.modules.nf.specification;
 
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serial;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AttributeClosureSpecification extends NFSpecification implements Cloneable {
 
 	private int penaltyPerMissingAttribute;

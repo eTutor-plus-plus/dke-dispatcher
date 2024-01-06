@@ -2,9 +2,11 @@ package at.jku.dke.etutor.modules.nf.specification;
 
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serial;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class NormalizationSpecification extends NFSpecification implements Cloneable {
 
 	@Serial

@@ -1,10 +1,13 @@
 package at.jku.dke.etutor.modules.nf.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.StringJoiner;
 import java.util.TreeSet;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Key implements Serializable {
 
 	private final TreeSet<String> attributes;

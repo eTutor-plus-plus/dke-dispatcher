@@ -1,9 +1,11 @@
 package at.jku.dke.etutor.modules.nf.specification;
 
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public abstract class NFSpecification implements Serializable, Cloneable, HasSemanticEquality {
 	protected IdentifiedRelation baseRelation;
 

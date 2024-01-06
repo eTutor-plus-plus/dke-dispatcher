@@ -1,7 +1,10 @@
 package at.jku.dke.etutor.modules.nf.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Collection;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class IdentifiedRelation extends Relation {
 
 	private static final long serialVersionUID = -8880131949030576416L;

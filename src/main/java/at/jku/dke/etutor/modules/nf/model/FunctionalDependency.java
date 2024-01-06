@@ -1,5 +1,8 @@
 package at.jku.dke.etutor.modules.nf.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -9,6 +12,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.TreeSet;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FunctionalDependency implements Serializable{
 
 	private final Set<String> lhsAttributes;
@@ -50,6 +54,7 @@ public class FunctionalDependency implements Serializable{
 	 * @return whether either side of this <code>FunctionalDependency</code> is empty or if the left-hand side contains
 	 * the right-hand side
 	 */
+	@JsonIgnore
 	public boolean isTrivial() {
 		return this.lhsAttributes.isEmpty() || this.rhsAttributes.isEmpty() || this.lhsAttributes.containsAll(this.rhsAttributes);
 	}

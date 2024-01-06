@@ -1,11 +1,12 @@
 package at.jku.dke.etutor.modules.nf.report;
 
-import at.jku.dke.etutor.core.evaluation.Report;
+import at.jku.dke.etutor.core.evaluation.DefaultReport;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-public class NFReport implements Report {
+public class NFReport extends DefaultReport {
 
 	private String prologue;
 
@@ -39,16 +40,16 @@ public class NFReport implements Report {
 		return this.prologue;
 	}
 
-	public List<ErrorReport> getErrorReports(){
-		return (Vector<ErrorReport>)this.errorReports.clone();
+	public List<ErrorReport> getErrorReports() {
+		return new LinkedList<>(this.errorReports);
 	}
 
 	public void addErrorReport(ErrorReport report){
 		this.errorReports.add(report);
 	}
 
-	public List<ErrorReportGroup> getErrorReportGroups(){
-		return (Vector<ErrorReportGroup>)this.errorReportGroups.clone();
+	public List<ErrorReportGroup> getErrorReportGroups() {
+		return new LinkedList<>(this.errorReportGroups);
 	}
 
 	public void addErrorReportGroup(ErrorReportGroup reportGroup){

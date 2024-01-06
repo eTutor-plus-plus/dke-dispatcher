@@ -1,5 +1,8 @@
 package at.jku.dke.etutor.modules.nf.specification;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class KeysDeterminationSpecification extends NFSpecification {
     private int penaltyPerMissingKey;
 

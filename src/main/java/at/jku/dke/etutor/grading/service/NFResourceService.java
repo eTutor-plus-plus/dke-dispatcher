@@ -2,11 +2,17 @@ package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.parser.NFLexer;
 import at.jku.dke.etutor.modules.nf.parser.NFParser;
+import at.jku.dke.etutor.modules.nf.specification.KeysDeterminationSpecification;
+import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
 import at.jku.dke.etutor.objects.dispatcher.nf.NFExerciseDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -43,7 +49,8 @@ public class NFResourceService {
         }
 
         int numericSubtypeId = getNumericSubtypeId(dto.getNfTaskSubtypeId());
-        JSONObject specificationJSON = convertToJSON(dto);
+        // JSONObject specificationJSON = convertToJSONString(dto);
+        String specificationJSON = convertToJSONString(dto);
 
         try (
                 Connection conn = RDBDHelper.getPooledConnection();
@@ -73,7 +80,8 @@ public class NFResourceService {
 
     public boolean modifyExercise(int exerciseId, NFExerciseDTO dto) throws DatabaseException, ExerciseNotValidException {
         int numericSubtypeId = getNumericSubtypeId(dto.getNfTaskSubtypeId());
-        JSONObject specificationJSON = convertToJSON(dto);
+        // JSONObject specificationJSON = convertToJSONString(dto);
+        String specificationJSON = convertToJSONString(dto);
 
         try (
                 Connection conn = RDBDHelper.getPooledConnection();
@@ -136,7 +144,7 @@ public class NFResourceService {
         };
     }
 
-    private JSONObject convertToJSON(NFExerciseDTO dto) throws ExerciseNotValidException {
+    private String convertToJSONString(NFExerciseDTO dto) throws ExerciseNotValidException {
         JSONObject baseRelationJSON = new JSONObject();
 
         // Source: https://datacadamia.com/antlr/getting_started (Gerald Wimmer, 2023-11-27)
@@ -153,22 +161,45 @@ public class NFResourceService {
         NFParser baseDependenciesParser = new NFParser(baseDependenciesParserInput);
 
         Set<FunctionalDependency> baseDependencies = baseDependenciesParser.functionalDependencySet().functionalDependencies;
+
+        IdentifiedRelation baseRelation = new IdentifiedRelation();
+        baseRelation.setAttributes(baseAttributes);
+        baseRelation.setFunctionalDependencies(baseDependencies);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectWriter objectWriter = objectMapper.writer();
+
         JSONArray baseDependenciesJSON = new JSONArray();
         baseDependencies.forEach(baseDependenciesJSON::put);
 
         JSONObject specificationJSON = new JSONObject();
         try {
-            baseRelationJSON.put("attributes", new JSONArray(baseAttributes));
+            /*baseRelationJSON.put("attributes", new JSONArray(baseAttributes));
             baseRelationJSON.put("functionalDependencies", baseDependenciesJSON);
-            specificationJSON.put("baseRelation", baseRelationJSON);
+            specificationJSON.put("baseRelation", baseRelationJSON);*/
 
             switch (dto.getNfTaskSubtypeId()) {
                 case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#NFTask#KeysDeterminationTask" -> {
-                    specificationJSON.put("penaltyPerMissingKey", dto.getNfKeysDeterminationPenaltyPerMissingKey());
-                    specificationJSON.put("penaltyPerIncorrectKey", dto.getNfKeysDeterminationPenaltyPerIncorrectKey());
+                    KeysDeterminationSpecification specification = new KeysDeterminationSpecification();
+                    specification.setBaseRelation(baseRelation);
+                    specification.setPenaltyPerMissingKey(dto.getNfKeysDeterminationPenaltyPerMissingKey());
+                    specification.setPenaltyPerIncorrectKey(dto.getNfKeysDeterminationPenaltyPerIncorrectKey());
+
+                    return objectWriter.writeValueAsString(specification);
+                    /*specificationJSON.put("penaltyPerMissingKey", dto.getNfKeysDeterminationPenaltyPerMissingKey());
+                    specificationJSON.put("penaltyPerIncorrectKey", dto.getNfKeysDeterminationPenaltyPerIncorrectKey());*/
                 }
                 case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#NFTask#NormalizationTask" -> {
-                    specificationJSON.put("penaltyPerLostAttribute", dto.getNfNormalizationPenaltyPerLostAttribute());
+                    CharStream targetLevelLexerInput = CharStreams.fromString(dto.getNfNormalizationTargetLevel());
+                    Lexer targetLevelLexer = new NFLexer(targetLevelLexerInput);
+                    TokenStream targetLevelParserInput = new CommonTokenStream(targetLevelLexer);
+                    NFParser targetLevelParser = new NFParser(targetLevelParserInput);
+
+                    NormalformLevel level = targetLevelParser.normalForm().level;
+
+                    return null;
+
+                    /*specificationJSON.put("penaltyPerLostAttribute", dto.getNfNormalizationPenaltyPerLostAttribute());
                     specificationJSON.put("penaltyForLossyDecomposition", dto.getNfNormalizationPenaltyForLossyDecomposition());
                     specificationJSON.put("penaltyPerNonCanonicalDependency", dto.getNfNormalizationPenaltyPerNonCanonicalDependency());
                     specificationJSON.put("penaltyPerTrivialDependency", dto.getNfNormalizationPenaltyPerTrivialDependency());
@@ -180,24 +211,19 @@ public class NFResourceService {
                     specificationJSON.put("penaltyPerMissingKey", dto.getNfNormalizationPenaltyPerMissingKey());
                     specificationJSON.put("penaltyPerIncorrectKey", dto.getNfNormalizationPenaltyPerIncorrectKey());
                     specificationJSON.put("penaltyPerIncorrectNFRelation", dto.getNfNormalizationPenaltyPerIncorrectNFRelation());
-                    specificationJSON.put("maxLostDependencies", dto.getNfNormalizationMaxLostDependencies());
+                    specificationJSON.put("maxLostDependencies", dto.getNfNormalizationMaxLostDependencies());*/
 
-                    CharStream targetLevelLexerInput = CharStreams.fromString(dto.getNfNormalizationTargetLevel());
-                    Lexer targetLevelLexer = new NFLexer(targetLevelLexerInput);
-                    TokenStream targetLevelParserInput = new CommonTokenStream(targetLevelLexer);
-                    NFParser targetLevelParser = new NFParser(targetLevelParserInput);
-
-                    NormalformLevel level = targetLevelParser.normalForm().level;
-
-                    specificationJSON.put("targetLevel", level.toString());
+                    // specificationJSON.put("targetLevel", level.toString());
                 }
                 case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#NFTask#MinimalCoverTask" -> {
-                    specificationJSON.put("penaltyPerNonCanonicalDependency", dto.getNfMinimalCoverPenaltyPerNonCanonicalDependency());
+                    return null;
+
+                    /*specificationJSON.put("penaltyPerNonCanonicalDependency", dto.getNfMinimalCoverPenaltyPerNonCanonicalDependency());
                     specificationJSON.put("penaltyPerTrivialDependency", dto.getNfMinimalCoverPenaltyPerTrivialDependency());
                     specificationJSON.put("penaltyPerExtraneousAttribute", dto.getNfMinimalCoverPenaltyPerExtraneousAttribute());
                     specificationJSON.put("penaltyPerRedundantDependency", dto.getNfMinimalCoverPenaltyPerRedundantDependency());
                     specificationJSON.put("penaltyPerMissingDependencyVsSolution", dto.getNfMinimalCoverPenaltyPerMissingDependencyVsSolution());
-                    specificationJSON.put("penaltyPerIncorrectDependencyVsSolution", dto.getNfMinimalCoverPenaltyPerIncorrectDependencyVsSolution());
+                    specificationJSON.put("penaltyPerIncorrectDependencyVsSolution", dto.getNfMinimalCoverPenaltyPerIncorrectDependencyVsSolution());*/
                 }
                 case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#NFTask#AttributeClosureTask" -> {
                     CharStream acBaseAttributesLexerInput = CharStreams.fromString(dto.getNfAttributeClosureBaseAttributes());
@@ -207,23 +233,30 @@ public class NFResourceService {
 
                     Set<String> acBaseAttributes = acBaseAttributesParser.attributeSet().attributes;
 
-                    specificationJSON.put("baseAttributes", new JSONArray(acBaseAttributes));
+                    return null;
+                    /*specificationJSON.put("baseAttributes", new JSONArray(acBaseAttributes));
                     specificationJSON.put("penaltyPerMissingAttribute", dto.getNfAttributeClosurePenaltyPerMissingAttribute());
-                    specificationJSON.put("penaltyPerIncorrectAttribute", dto.getNfAttributeClosurePenaltyPerIncorrectAttribute());
+                    specificationJSON.put("penaltyPerIncorrectAttribute", dto.getNfAttributeClosurePenaltyPerIncorrectAttribute());*/
                 }
                 case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#NFTask#NormalformDeterminationTask" -> {
-                    specificationJSON.put("penaltyForIncorrectNFOverall", dto.getNfNormalFormDeterminationPenaltyForIncorrectOverallNormalform());
-                    specificationJSON.put("penaltyPerIncorrectNFDependency", dto.getNfNormalFormDeterminationPenaltyPerIncorrectDependencyNormalform());
+                    return null;
+
+                    /*specificationJSON.put("penaltyForIncorrectNFOverall", dto.getNfNormalFormDeterminationPenaltyForIncorrectOverallNormalform());
+                    specificationJSON.put("penaltyPerIncorrectNFDependency", dto.getNfNormalFormDeterminationPenaltyPerIncorrectDependencyNormalform());*/
                 }
                 default -> {
+                    throw new ExerciseNotValidException("Could not generate JSON for exercise specification because task type is not recognized.");
                     // do nothing
                 }
             }
-        } catch (JSONException j) {
+        } /*catch (JSONException j) {
             j.printStackTrace();
             throw new ExerciseNotValidException("Could not generate JSON for exercise specification because: " + j.getMessage());
+        } */catch (JsonProcessingException jp) {
+            jp.printStackTrace();
+            throw new ExerciseNotValidException("Could not generate JSON for exercise specification because: " + jp.getMessage());
         }
 
-        return specificationJSON;
+        // return specificationJSON;
     }
 }
