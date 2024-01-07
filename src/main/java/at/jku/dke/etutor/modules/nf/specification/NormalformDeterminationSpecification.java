@@ -31,6 +31,24 @@ public class NormalformDeterminationSpecification extends NFSpecification {
 
     @Override
     public boolean semanticallyEquals(Object obj) {
-        return false; // TODO: implement
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof NormalformDeterminationSpecification)) {
+            return false;
+        }
+
+        NormalformDeterminationSpecification spec = (NormalformDeterminationSpecification) obj;
+
+        if(spec.getPenaltyForIncorrectNFOverall() != this.penaltyForIncorrectNFOverall) {
+            return false;
+        }
+
+        if(spec.getPenaltyPerIncorrectNFDependency() != this.penaltyPerIncorrectNFDependency) {
+            return false;
+        }
+
+        return super.semanticallyEquals(spec);
     }
 }
