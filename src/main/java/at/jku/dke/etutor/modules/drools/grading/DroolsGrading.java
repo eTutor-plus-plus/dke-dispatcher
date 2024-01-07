@@ -26,7 +26,7 @@ public class DroolsGrading extends DefaultGrading {
         logger.debug("Enter: grade()");
         if (analysis.isHasSyntaxError()) this.setPoints(0);
         else {
-            double points = this.getMaxPoints() - (analysis.getWrongFactList().size() + Math.abs(analysis.getAdditionalFacts())) * analysis.getTaskErrorWeighting() / 100.0;
+            double points = this.getMaxPoints() - ((analysis.getWrongFactList().size() + Math.abs(analysis.getAdditionalFacts())) * analysis.getTaskErrorWeighting() * this.getMaxPoints() / 100.0);
             if (points < 0) points = 0;
             this.setPoints(points);
             logger.debug("set points to: {}", points);

@@ -617,25 +617,12 @@ public class DroolsAnalysis extends DefaultAnalysis {
         this.facts = facts;
     }
 
-
-    public String getSolutionRules() {
-        return solutionRules;
-    }
-
     public int getTaskErrorWeighting() {
         return taskErrorWeighting;
     }
 
-    public String getTaskValidationClassname() {
-        return taskValidationClassname;
-    }
-
     public List<Map<String, Object>> getSampleSolutionOutput() {
         return sampleSolutionOutput;
-    }
-
-    public boolean isForDiagnose() {
-        return isForDiagnose;
     }
 
     public List<Map<String, Object>> getStudentOutput() {
@@ -662,6 +649,8 @@ public class DroolsAnalysis extends DefaultAnalysis {
     public String getSyntaxErrorMessage() {
         return syntaxErrorMessage.toString();
     }
+
+
 
     @Override
     public String toString() {

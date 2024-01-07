@@ -233,7 +233,7 @@ public class DroolsResourceService {
             String validationClassname = taskDTO.getValidationClassname();
 
             PreparedStatement createTaskStmt = con.prepareStatement("INSERT INTO tasks " +
-                    "(task_id, solution, error_weighting, validation_classname) " +
+                    "(task_id, solution, max_points, error_weighting, validation_classname) " +
                     "VALUES(?,?,?,?,?)");
             createTaskStmt.setInt(1, taskId);
             createTaskStmt.setString(2, solution);

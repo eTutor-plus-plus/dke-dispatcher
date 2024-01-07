@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class DroolsEvaluator implements Evaluator {
 
-    private final ApplicationProperties applicationProperties;
+    private ApplicationProperties applicationProperties;
 
     public DroolsEvaluator(ApplicationProperties properties) {
         super();
