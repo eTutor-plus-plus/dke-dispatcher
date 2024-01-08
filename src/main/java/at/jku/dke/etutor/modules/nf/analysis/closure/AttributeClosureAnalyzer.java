@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis.closure;
 
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.algorithms.Closure;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
@@ -20,7 +20,7 @@ public class AttributeClosureAnalyzer {
 		analysis.removeAllMissingAttributes(submittedAttributes);
 		if (!analysis.getMissingAttributes().isEmpty()){
 			analysis.setSubmissionSuitsSolution(false);
-			RDBDHelper.getLogger().log(Level.INFO, "FOUND MISSING ATTRIBUTES");
+			NFHelper.getLogger().log(Level.INFO, "FOUND MISSING ATTRIBUTES");
 		}
 		
 		//DETERMINING ADDITIONAL ATTRIBUTES
@@ -28,7 +28,7 @@ public class AttributeClosureAnalyzer {
 		analysis.removeAllAdditionalAttributes(correctAttributes);
 		if (!analysis.getAdditionalAttributes().isEmpty()){
 			analysis.setSubmissionSuitsSolution(false);
-			RDBDHelper.getLogger().log(Level.INFO, "FOUND ADDITIONAL ATTRIBUTES");
+			NFHelper.getLogger().log(Level.INFO, "FOUND ADDITIONAL ATTRIBUTES");
 		}
 
 		return analysis;

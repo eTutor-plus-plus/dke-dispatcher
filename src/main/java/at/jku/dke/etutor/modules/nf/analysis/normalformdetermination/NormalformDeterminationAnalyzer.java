@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.nf.analysis.normalformdetermination;
 
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.NormalformDeterminationSubmission;
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.model.*;
@@ -19,11 +19,11 @@ public class NormalformDeterminationAnalyzer {
         for (Key key : config.getCorrectMinimalKeys()) {
             temp.append(key).append("; ");
         }
-		RDBDHelper.getLogger().log(Level.INFO, "Correct Minimal Keys: " + temp);
+		NFHelper.getLogger().log(Level.INFO, "Correct Minimal Keys: " + temp);
 		
 		//CHECK DEPENDENCIES
 		for (FunctionalDependency currDependency : config.getRelation().getFunctionalDependencies()){
-			//RDBDHelper.getLogger().log(Level.INFO, "Check Dependency: " + currDependency);
+			//NFHelper.getLogger().log(Level.INFO, "Check Dependency: " + currDependency);
 
 			if (NormalformAnalyzer.satisfiesFirstNormalform(analysis, currDependency, config)){
                 if (NormalformAnalyzer.satisfiesSecondNormalform(analysis, currDependency, config)){
@@ -59,14 +59,14 @@ public class NormalformDeterminationAnalyzer {
 		NormalformLevel foundViolatedLevel;
 		NormalformLevel correctViolatedLevel;
 		for (FunctionalDependency currDependency : config.getRelation().getFunctionalDependencies()){
-			RDBDHelper.getLogger().log(Level.INFO, "Check NF-Level of dependency: " + currDependency);
+			NFHelper.getLogger().log(Level.INFO, "Check NF-Level of dependency: " + currDependency);
 			
 			foundViolatedLevel = submission.getViolatedNormalformLevel(currDependency);
 			correctViolatedLevel = analysis.getViolatedNormalformLevel(currDependency);
-			RDBDHelper.getLogger().log(Level.INFO, "Found: " + foundViolatedLevel + " Correct: " + correctViolatedLevel);
+			NFHelper.getLogger().log(Level.INFO, "Found: " + foundViolatedLevel + " Correct: " + correctViolatedLevel);
 			
 			if (foundViolatedLevel != correctViolatedLevel) { // Note: Simplified because NormalFormLevel is now an enum. (Gerald Wimmer, 2023-12-02)
-				RDBDHelper.getLogger().log(Level.INFO, "ADD WRONG LEVELED DEPENDENCY");
+				NFHelper.getLogger().log(Level.INFO, "ADD WRONG LEVELED DEPENDENCY");
 				analysis.addWrongLeveledDependency(currDependency, correctViolatedLevel, foundViolatedLevel);
 				analysis.setSubmissionSuitsSolution(false);
 			}

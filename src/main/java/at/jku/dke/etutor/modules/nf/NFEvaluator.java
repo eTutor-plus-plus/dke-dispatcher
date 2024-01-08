@@ -21,7 +21,6 @@ import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.exercises.RDBDExercisesManager;
-import at.jku.dke.etutor.modules.nf.i18n.NFMessageSource;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.Key;
@@ -51,9 +50,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.context.MessageSource;
-import org.springframework.context.MessageSourceAware;
+import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.List;
@@ -63,14 +60,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 
-public class RDBDEvaluator implements Evaluator, MessageSourceAware {
-	private MessageSource messageSource = new NFMessageSource();
-
-	@Required // Deprecated (Gerald Wimmer, 2024-01-03)
-	public void setMessageSource(MessageSource messageSource) {
-		// this.messageSource = messageSource;
-	}
-
+@Service
+public class NFEvaluator implements Evaluator {
 	/*
 	 * TODO: In the old eTutor, the Map parameters were effectively
 	 *  passedAttributes: Map<String, Serializable>
@@ -80,7 +71,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 	 */
 	@Override
 	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
-		RDBDHelper.getLogger().log(Level.INFO, "Start analyzing.");
+		NFHelper.getLogger().log(Level.INFO, "Start analyzing.");
 
 		String submissionString = passedAttributes.get("submission");
 
@@ -94,7 +85,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		submissionParser.addErrorListener(errorCollector);
 
 		int internalTypeId = RDBDExercisesManager.fetchInternalType(exerciseID);
-		RDBDConstants.Type type = RDBDConstants.Type.values()[internalTypeId];
+		NFConstants.Type type = NFConstants.Type.values()[internalTypeId];
 		String specificationString = RDBDExercisesManager.fetchSpecification(exerciseID);
 
 		NFAnalysis analysis;
@@ -203,33 +194,33 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 				allRelations.addAll(submissionTreeSet);
 
 				String baseRelationID;
-				if (passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION) != null && !passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION).isEmpty()){
-					baseRelationID = passedParameters.get(RDBDConstants.PARAM_DIAGNOSE_RELATION);
+				if (passedParameters.get(NFConstants.PARAM_DIAGNOSE_RELATION) != null && !passedParameters.get(NFConstants.PARAM_DIAGNOSE_RELATION).isEmpty()){
+					baseRelationID = passedParameters.get(NFConstants.PARAM_DIAGNOSE_RELATION);
 				} else {
 					baseRelationID = decomposeSpecification.getBaseRelation().getID();
 				}
 
-				decomposeAnalyzerConfig.setBaseRelation(RDBDHelper.findRelation(baseRelationID, allRelations));
-				RDBDHelper.getLogger().log(Level.INFO, "BaseRelation: '" + baseRelationID + "'.");
+				decomposeAnalyzerConfig.setBaseRelation(NFHelper.findRelation(baseRelationID, allRelations));
+				NFHelper.getLogger().log(Level.INFO, "BaseRelation: '" + baseRelationID + "'.");
 
 				temp = new StringBuilder();
 				for(IdentifiedRelation ir : allRelations){
 					temp.append("Relation '").append(ir.getID()).append("' ");
 				}
-				RDBDHelper.getLogger().log(Level.INFO, "All submitted Relations: " + temp + ".");
+				NFHelper.getLogger().log(Level.INFO, "All submitted Relations: " + temp + ".");
 
-				decomposeAnalyzerConfig.setDecomposedRelations(RDBDHelper.findSubRelations(baseRelationID, allRelations));
+				decomposeAnalyzerConfig.setDecomposedRelations(NFHelper.findSubRelations(baseRelationID, allRelations));
 				temp = new StringBuilder();
 				for(IdentifiedRelation ir : decomposeAnalyzerConfig.getDecomposedRelations()){
 					temp.append("Relation '").append(ir.getID()).append("' ");
 				}
-				RDBDHelper.getLogger().log(Level.INFO, "Decomposed Relations: " + temp + ".");
+				NFHelper.getLogger().log(Level.INFO, "Decomposed Relations: " + temp + ".");
 
 				decomposeAnalyzerConfig.setDesiredNormalformLevel(decomposeSpecification.getTargetLevel());
-				RDBDHelper.getLogger().log(Level.INFO, "Target NormalformLevel: '" + decomposeSpecification.getTargetLevel() + "'.");
+				NFHelper.getLogger().log(Level.INFO, "Target NormalformLevel: '" + decomposeSpecification.getTargetLevel() + "'.");
 
 				decomposeAnalyzerConfig.setMaxLostDependencies(decomposeSpecification.getMaxLostDependencies());
-				RDBDHelper.getLogger().log(Level.INFO, "Max Lost Dependencies: '" + decomposeSpecification.getMaxLostDependencies() + "'.");
+				NFHelper.getLogger().log(Level.INFO, "Max Lost Dependencies: '" + decomposeSpecification.getMaxLostDependencies() + "'.");
 
 				analysis = DecomposeAnalyzer.analyze(decomposeAnalyzerConfig);
 
@@ -299,7 +290,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			}
 			default ->  {
-				RDBDHelper.getLogger().log(Level.SEVERE, "RDBD internal type '" + internalTypeId + "' is not supported.");
+				NFHelper.getLogger().log(Level.SEVERE, "RDBD internal type '" + internalTypeId + "' is not supported.");
 				throw new Exception("Unsupported RDBD type.");
 			}
 		}
@@ -328,7 +319,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		int actualPoints = maxPoints;
 
 		int internalType = RDBDExercisesManager.fetchInternalType(nfAnalysis.getExerciseId());
-		RDBDConstants.Type type = RDBDConstants.Type.values()[internalType];
+		NFConstants.Type type = NFConstants.Type.values()[internalType];
 		String specificationString = RDBDExercisesManager.fetchSpecification(nfAnalysis.getExerciseId());
 
 
@@ -446,7 +437,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 
 			}
 			default ->  {
-				RDBDHelper.getLogger().log(Level.SEVERE, "RDBD internal type '" + internalType + "' is not supported.");
+				NFHelper.getLogger().log(Level.SEVERE, "RDBD internal type '" + internalType + "' is not supported.");
 				throw new Exception("Unsupported RDBD type.");
 			}
 		}
@@ -473,7 +464,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 	@Override
 	public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
 		/*
-		 * NOTE: Whenever the parameter with the key RDBDConstants.ATT_EXERCISE_ID was queried, its .toString() value
+		 * NOTE: Whenever the parameter with the key NFConstants.ATT_EXERCISE_ID was queried, its .toString() value
 		 *  was passed into Integer.parseInt(). I thus assume the values of this map to be Strings.
 		 *  (Gerald Wimmer, 2023-11-12).
 		 */
@@ -483,23 +474,23 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 			return nfAnalysis.getReport();
 		}
 
-		// int exerciseIdParam = Integer.parseInt(passedAttributes.get(RDBDConstants.ATT_EXERCISE_ID));
+		// int exerciseIdParam = Integer.parseInt(passedAttributes.get(NFConstants.ATT_EXERCISE_ID));
 		int exerciseIdParam = nfAnalysis.getExerciseId();
-		String diagnoseLevelParam = passedAttributes.get(RDBDConstants.PARAM_LEVEL);
+		String diagnoseLevelParam = passedAttributes.get(NFConstants.PARAM_LEVEL);
 
 		int diagnoseLevel = 2;
 		int internalType = RDBDExercisesManager.fetchInternalType(exerciseIdParam);
-		RDBDConstants.Type type = RDBDConstants.Type.values()[internalType];
+		NFConstants.Type type = NFConstants.Type.values()[internalType];
 
-		String actionParam = passedAttributes.get(RDBDConstants.PARAM_ACTION);
+		String actionParam = passedAttributes.get(NFConstants.PARAM_ACTION);
 
 		NFReport report;
 		ReporterConfig config;
-		if (!actionParam.equals(RDBDConstants.EVAL_ACTION_SUBMIT)) {
+		if (!actionParam.equals(NFConstants.EVAL_ACTION_SUBMIT)) {
 			try{
 				diagnoseLevel = Integer.parseInt(diagnoseLevelParam);
 			} catch (Exception ignore){
-				RDBDHelper.getLogger().log(Level.WARNING, "Diagnose Level '" + diagnoseLevelParam + "' is not a number! Using default Diagnose Level '0'");
+				NFHelper.getLogger().log(Level.WARNING, "Diagnose Level '" + diagnoseLevelParam + "' is not a number! Using default Diagnose Level '0'");
 			}
 		}
 
@@ -515,37 +506,37 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		switch (type) {
 			case KEYS_DETERMINATION -> {
 				//KEYS DETERMINATION
-				RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'KEY_DETERMINATION'");
+				NFHelper.getLogger().log(Level.INFO, "Printing report for internal type 'KEY_DETERMINATION'");
 
 				config = new ReporterConfig();
 				config.setAction(actionParam);
 				config.setDiagnoseLevel(diagnoseLevel);
-				report = KeysReporter.report((KeysAnalysis) analysis, (DefaultGrading) grading, config, messageSource, locale);
+				report = KeysReporter.report((KeysAnalysis) analysis, (DefaultGrading) grading, config, locale);
 
 			}
 			case MINIMAL_COVER -> {
 				//MINIMAL COVER
-				RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'MINIMAL_COVER'");
+				NFHelper.getLogger().log(Level.INFO, "Printing report for internal type 'MINIMAL_COVER'");
 
 				config = new ReporterConfig();
 				config.setAction(actionParam);
 				config.setDiagnoseLevel(diagnoseLevel);
-				report = MinimalCoverReporter.report((MinimalCoverAnalysis) analysis, grading, config, messageSource, locale);
+				report = MinimalCoverReporter.report((MinimalCoverAnalysis) analysis, grading, config, locale);
 
 			}
 			case ATTRIBUTE_CLOSURE -> {
 				//ATTRIBUTE CLOSURE
-				RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'ATTRIBUTE_CLOSURE'");
+				NFHelper.getLogger().log(Level.INFO, "Printing report for internal type 'ATTRIBUTE_CLOSURE'");
 
 				config = new ReporterConfig();
 				config.setAction(actionParam);
 				config.setDiagnoseLevel(diagnoseLevel);
-				report = AttributeClosureReporter.report((AttributeClosureAnalysis) analysis, (DefaultGrading) grading, config, messageSource, locale);
+				report = AttributeClosureReporter.report((AttributeClosureAnalysis) analysis, (DefaultGrading) grading, config, locale);
 
 			}
 			/*case DECOMPOSE) {
 			//DECOMPOSE
-			RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'DECOMPOSE'");
+			NFHelper.getLogger().log(Level.INFO, "Printing report for internal type 'DECOMPOSE'");
 			
 			DecomposeReporterConfig decomposeReporterConfig = new DecomposeReporterConfig();
 			decomposeReporterConfig.setAction(actionParam);
@@ -558,7 +549,7 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 		} */
 			case NORMALIZATION -> {
 				//NORMALIZATION
-				RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'NORMALIZATION'");
+				NFHelper.getLogger().log(Level.INFO, "Printing report for internal type 'NORMALIZATION'");
 
 				NormalizationReporterConfig normalizationReporterConfig = new NormalizationReporterConfig();
 				normalizationReporterConfig.setAction(actionParam);
@@ -566,22 +557,22 @@ public class RDBDEvaluator implements Evaluator, MessageSourceAware {
 				normalizationReporterConfig.setDecomposedRelations((TreeSet<IdentifiedRelation>) analysis.getSubmission());
 				normalizationReporterConfig.setDesiredNormalformLevel(((NormalizationAnalysis) analysis).getDesiredNormalformLevel());
 
-				report = NormalizationReporter.report((NormalizationAnalysis) analysis, (DefaultGrading) grading, normalizationReporterConfig, messageSource, locale);
+				report = NormalizationReporter.report((NormalizationAnalysis) analysis, (DefaultGrading) grading, normalizationReporterConfig, locale);
 
 			}
 			case NORMALFORM_DETERMINATION -> {
 				//NORMALFORM DETERMINATION
-				RDBDHelper.getLogger().log(Level.INFO, "Printing report for internal type 'NORMALFORM DETERMINATION'");
+				NFHelper.getLogger().log(Level.INFO, "Printing report for internal type 'NORMALFORM DETERMINATION'");
 
 				config = new ReporterConfig();
 				config.setAction(actionParam);
 				config.setDiagnoseLevel(diagnoseLevel);
 
-				report = NormalformReporter.report((NormalformDeterminationAnalysis) analysis, (DefaultGrading) grading, config, messageSource, locale);
+				report = NormalformReporter.report((NormalformDeterminationAnalysis) analysis, (DefaultGrading) grading, config, locale);
 
 			}
 			default -> {
-				RDBDHelper.getLogger().log(Level.SEVERE, "RDBD internal type '" + internalType + "' is not supported.");
+				NFHelper.getLogger().log(Level.SEVERE, "RDBD internal type '" + internalType + "' is not supported.");
 				throw new Exception("Unsupported RDBD type.");
 			}
 		}

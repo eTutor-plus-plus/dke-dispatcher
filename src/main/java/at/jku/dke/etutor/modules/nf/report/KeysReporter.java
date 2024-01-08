@@ -1,22 +1,21 @@
 package at.jku.dke.etutor.modules.nf.report;
 
 import at.jku.dke.etutor.core.evaluation.DefaultGrading;
-import at.jku.dke.etutor.modules.nf.RDBDConstants;
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFConstants;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalysis;
-import org.springframework.context.MessageSource;
 
 import java.util.Locale;
 import java.util.logging.Level;
 
 public class KeysReporter extends ErrorReporter {
 
-	public static NFReport report(KeysAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
+	public static NFReport report(KeysAnalysis analysis, DefaultGrading grading, ReporterConfig config, Locale locale){
 		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
-		if (config.getAction().equalsIgnoreCase(RDBDConstants.EVAL_ACTION_SUBMIT)) {
+		if (config.getAction().equalsIgnoreCase(NFConstants.EVAL_ACTION_SUBMIT)) {
 			if (analysis.submissionSuitsSolution()) {
 				prologue.append(messageSource.getMessage("keysreporter.correctsolution", null, locale));
 			} else {
@@ -42,8 +41,8 @@ public class KeysReporter extends ErrorReporter {
 		report.setPrologue(prologue.toString());
 		
 		//SET ERROR REPORT IF NECESSARY
-		if ((!analysis.submissionSuitsSolution()) && (!config.getAction().equals(RDBDConstants.EVAL_ACTION_CHECK))){
-			report.addErrorReport(createKeysErrorReport(analysis, config, messageSource, locale));
+		if ((!analysis.submissionSuitsSolution()) && (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK))){
+			report.addErrorReport(createKeysErrorReport(analysis, config, locale));
 		}
 		
 		//CONFIGURE REPORT
@@ -52,7 +51,7 @@ public class KeysReporter extends ErrorReporter {
 		return report;	
 	}
 
-	public static ErrorReport createKeysErrorReport(KeysAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
+	public static ErrorReport createKeysErrorReport(KeysAnalysis analysis, ReporterConfig config, Locale locale){
 		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
@@ -60,7 +59,7 @@ public class KeysReporter extends ErrorReporter {
 		int missingKeysCount = analysis.getMissingKeys().size();
 		int additionalKeysCount = analysis.getAdditionalKeys().size();
 
-		RDBDHelper.getLogger().log(Level.INFO, "Reporting for diagnose level: " + config.getDiagnoseLevel());
+		NFHelper.getLogger().log(Level.INFO, "Reporting for diagnose level: " + config.getDiagnoseLevel());
 		
 		//SET ERROR
 		report.setError(messageSource.getMessage("keysreporter.incorrectkeys", null, locale));
@@ -81,8 +80,10 @@ public class KeysReporter extends ErrorReporter {
 				description.append(messageSource.getMessage("keysreporter.missing", null, locale)).append(".");
 			}
 			
-			if (config.getDiagnoseLevel() == 3){
-				currElemID = RDBDHelper.getNextElementID();
+			if (config.getDiagnoseLevel() == 3) {
+				description.append(generateLevel3Div(analysis.getMissingKeys(), missingKeysCount, "keysreporter.keyisa", "keysreporter.keysarea", "keysreporter.missing", messageSource, locale));
+
+				/*currElemID = NFHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("keysreporter.keysmissing", null, locale)).append(":</p>");
@@ -99,7 +100,7 @@ public class KeysReporter extends ErrorReporter {
 				} else {
 					description.append(" ").append(messageSource.getMessage("keysreporter.keysarea", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("keysreporter.missing", null, locale)).append(".");
+				description.append(messageSource.getMessage("keysreporter.missing", null, locale)).append(".");*/
 			}
 		}
 		
@@ -122,24 +123,32 @@ public class KeysReporter extends ErrorReporter {
 				description.append(messageSource.getMessage("keysreporter.toomuch", null, locale)).append(".");
 			}
 			
-			if (config.getDiagnoseLevel() == 3){
-				currElemID = RDBDHelper.getNextElementID();
-				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html>").append(HTML_HEADER).append("<body>");
-				description.append("<p>").append(messageSource.getMessage("keysreporter.keystoomuch", null, locale)).append(":</p>");
+			if (config.getDiagnoseLevel() == 3) {
+				description.append(generateLevel3Div(analysis.getAdditionalKeys(), missingKeysCount, "keysreporter.keyisa", "keysreporter.keysarea", "keysreporter.toomuch", messageSource, locale));
 
-				description.append(generateTable(analysis.getAdditionalKeys()));
-
-				description.append("</body></html>");
-				description.append("\"></input>");
-				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(additionalKeysCount);
-
+				/*description.append("<div>").append(additionalKeysCount);
 				if (additionalKeysCount == 1){
 					description.append(" ").append(messageSource.getMessage("keysreporter.keyisa", null, locale)).append(" ");
 				} else {
 					description.append(" ").append(messageSource.getMessage("keysreporter.keysarea", null, locale)).append(" ");
 				}
 				description.append(messageSource.getMessage("keysreporter.toomuch", null, locale)).append(".");
+				description.append("<p/>");*/
+
+				/*currElemID = NFHelper.getNextElementID();*description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
+				description.append("<html>").append(HTML_HEADER).append("<body>");*/
+				// description.append("<p>").append(messageSource.getMessage("keysreporter.keystoomuch", null, locale)).append(":</p>");
+
+				// description.append(generateTable(analysis.getAdditionalKeys()));
+
+				/*description.append("</body></html>");
+				description.append("\"></input>");*/
+
+				// description.append("</div>");
+
+				// description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">");
+
+
 			}
 		}
 		report.setDescription(description.toString());

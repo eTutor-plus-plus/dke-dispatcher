@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis.normalform;
 
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
@@ -29,11 +29,11 @@ public class NormalformAnalyzer {
             temp.append(key).append("; ");
         }
 
-		RDBDHelper.getLogger().log(Level.INFO, "Correct Minimal Keys: " + temp);
+		NFHelper.getLogger().log(Level.INFO, "Correct Minimal Keys: " + temp);
 		
 		//CHECK DEPENDENCIES
 		for (FunctionalDependency currDependency : config.getRelation().getFunctionalDependencies()){
-			RDBDHelper.getLogger().log(Level.INFO, "Check Dependency: " + currDependency);
+			NFHelper.getLogger().log(Level.INFO, "Check Dependency: " + currDependency);
 
 			if (satisfiesFirstNormalform(analysis, currDependency, config)){
                 if (satisfiesSecondNormalform(analysis, currDependency, config)){
@@ -97,7 +97,7 @@ public class NormalformAnalyzer {
 			analysis.addSecondNormalformViolation(violation);
 		} 
 
-		RDBDHelper.getLogger().log(Level.INFO, "FINISHED SECOND NF CHECK. Is violated: " + isViolated);
+		NFHelper.getLogger().log(Level.INFO, "FINISHED SECOND NF CHECK. Is violated: " + isViolated);
 		return !isViolated;
 	}
 	
@@ -109,7 +109,7 @@ public class NormalformAnalyzer {
 			analysis.addThirdNormalformViolation(violation);
 		}
 
-		RDBDHelper.getLogger().log(Level.INFO, "FINISHED THIRD NF CHECK. Is violated: " + isViolated);
+		NFHelper.getLogger().log(Level.INFO, "FINISHED THIRD NF CHECK. Is violated: " + isViolated);
 		return !isViolated;
 	}
 
@@ -121,7 +121,7 @@ public class NormalformAnalyzer {
 			analysis.addBoyceCoddNormalformViolation(violation);
 		}
 		
-		RDBDHelper.getLogger().log(Level.INFO, "FINISHED BC NF CHECK. Is violated: " + isViolated);
+		NFHelper.getLogger().log(Level.INFO, "FINISHED BC NF CHECK. Is violated: " + isViolated);
 		return !isViolated;	
 	}
 
@@ -172,7 +172,7 @@ public class NormalformAnalyzer {
 		 */
 		if (rhsContainsNonPrimeAttribute) {
             for (Key currKey : config.getCorrectMinimalKeys()) {
-                //RDBDHelper.getLogger().log(Level.INFO, "Check Key: " + currKey + " (Key: " + currKey.getAttributes().size() + " -  Dependency: " + dependency.getLhsAttributes().size() + ")");
+                //NFHelper.getLogger().log(Level.INFO, "Check Key: " + currKey + " (Key: " + currKey.getAttributes().size() + " -  Dependency: " + dependency.getLhsAttributes().size() + ")");
 
                 if ((currKey.getAttributes().containsAll(dependency.getLhsAttributes())) && (currKey.getAttributes().size() > dependency.getLhsAttributes().size())) {
                     isViolated = true;
@@ -224,13 +224,13 @@ public class NormalformAnalyzer {
 		 * (Gerald Wimmer, 2023-12-01)
 		 */
 		if (rhsContainsNonPrimeAttribute) {
-			RDBDHelper.getLogger().log(Level.INFO, "RHS comprises non prim attribute. Is violated: " + isViolated);
+			NFHelper.getLogger().log(Level.INFO, "RHS comprises non prim attribute. Is violated: " + isViolated);
 
 			for (Key currKey : config.getCorrectMinimalKeys()) {
-				//RDBDHelper.getLogger().log(Level.INFO, "Check Key: " + currKey + " (Key: " + currKey.getAttributes().size() + " -  Dependency: " + dependency.getLhsAttributes().size() + ")");
+				//NFHelper.getLogger().log(Level.INFO, "Check Key: " + currKey + " (Key: " + currKey.getAttributes().size() + " -  Dependency: " + dependency.getLhsAttributes().size() + ")");
 				if (dependency.getLhsAttributes().containsAll(currKey.getAttributes())){
 					isViolated = false;
-					RDBDHelper.getLogger().log(Level.INFO, "LHS is a super key. Is violated: " + isViolated);
+					NFHelper.getLogger().log(Level.INFO, "LHS is a super key. Is violated: " + isViolated);
 					break;
 				}
 			}

@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis.decompose;
 
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.MinimalCoverAnalyzer;
@@ -24,12 +24,12 @@ public class DecomposeStepAnalyzer {
 		analysis.setDesiredNormalformLevel(config.getDesiredNormalformLevel());
 		
 		StringBuilder temp = new StringBuilder();
-		RDBDHelper.getLogger().log(Level.INFO, "ANALYZING Decomposition of Relation '" + config.getBaseRelation().getID() + "'.");
+		NFHelper.getLogger().log(Level.INFO, "ANALYZING Decomposition of Relation '" + config.getBaseRelation().getID() + "'.");
 
 		for(IdentifiedRelation currDecomposedRelation : config.getNormalizedRelations()) {
 			temp.append("Relation '").append(currDecomposedRelation.getID()).append("' ");
 		}
-		RDBDHelper.getLogger().log(Level.INFO, "With Sub-Relations: " + temp + ".");
+		NFHelper.getLogger().log(Level.INFO, "With Sub-Relations: " + temp + ".");
 		
 		
 		//ANALYZE DECOMPOSITION
@@ -125,7 +125,7 @@ public class DecomposeStepAnalyzer {
 			normalformAnalyzerConfig.setCorrectPartialKeys(correctKeysOfDecomposedRelations.get(currRelation.getID()).getPartialKeys());
 
 			analysis.addNormalformAnalysis(currRelation.getID(), NormalformAnalyzer.analyze(normalformAnalyzerConfig));
-			if (!RDBDHelper.isInnerNode(currRelation.getID(), config.getAllRelations())){
+			if (!NFHelper.isInnerNode(currRelation.getID(), config.getAllRelations())){
 				if (!analysis.getNormalformAnalysis(currRelation.getID()).submissionSuitsSolution()){
 					analysis.setSubmissionSuitsSolution(false);
 				}

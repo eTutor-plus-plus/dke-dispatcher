@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.exercises;
 
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.model.Key;
 
@@ -160,7 +160,7 @@ public class TuplesGenerator{
 		int newValue;
 		int oldValue;
 
-        RDBDHelper.getTestLogger().log(Level.INFO, "MUTATE TUPLE: " + TuplesPrinter.toString(tuple));
+        NFHelper.getTestLogger().log(Level.INFO, "MUTATE TUPLE: " + TuplesPrinter.toString(tuple));
 		
 		for (int pos=0; pos<key.length; pos++){
 			oldValue = tuple[key[pos]];

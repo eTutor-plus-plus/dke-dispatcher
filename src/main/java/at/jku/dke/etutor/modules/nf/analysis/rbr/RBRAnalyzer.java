@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis.rbr;
 
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.algorithms.Member;
 import at.jku.dke.etutor.modules.nf.algorithms.ReductionByResolution;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
@@ -19,8 +19,8 @@ public class RBRAnalyzer {
 	 * @return An <code>RBRAnalysis</code> for the supplied subrelation with respect to the base relation
 	 */
 	public static RBRAnalysis analyze(Relation baseRelation, Relation subRelation){
-		RDBDHelper.getLogger().log(Level.INFO, "ANALYZE RBR for base-relation: " + baseRelation);
-		RDBDHelper.getLogger().log(Level.INFO, "ANALYZE RBR for sub-relation: " + subRelation);
+		NFHelper.getLogger().log(Level.INFO, "ANALYZE RBR for base-relation: " + baseRelation);
+		NFHelper.getLogger().log(Level.INFO, "ANALYZE RBR for sub-relation: " + subRelation);
 		
 		RBRAnalysis analysis = new RBRAnalysis();
 		analysis.setSubmissionSuitsSolution(true);
@@ -31,7 +31,7 @@ public class RBRAnalyzer {
 		for (FunctionalDependency currDependency : correctDependencies){
 			temp.append(currDependency).append("; ");
 		}
-		RDBDHelper.getLogger().log(Level.INFO, "CORRECT DEPENDENCIES: " + temp);
+		NFHelper.getLogger().log(Level.INFO, "CORRECT DEPENDENCIES: " + temp);
 
 		/*
 		 * Check if there is an equivalent for each correct dependency in the submission (i.e., whether any
@@ -42,7 +42,7 @@ public class RBRAnalyzer {
 				analysis.addMissingFunctionalDependency(currCorrectDependency);
 				analysis.setSubmissionSuitsSolution(false);
 
-				RDBDHelper.getLogger().log(Level.INFO, "Found missing functional dependency: " + currCorrectDependency);
+				NFHelper.getLogger().log(Level.INFO, "Found missing functional dependency: " + currCorrectDependency);
 			}
 		}
 
@@ -55,7 +55,7 @@ public class RBRAnalyzer {
 				analysis.addAdditionalFunctionalDependency(currSubmittedDependency);
 				analysis.setSubmissionSuitsSolution(false);
 
-				RDBDHelper.getLogger().log(Level.INFO, "Found additional functional dependency: " + currSubmittedDependency);
+				NFHelper.getLogger().log(Level.INFO, "Found additional functional dependency: " + currSubmittedDependency);
 			}
 		}
 

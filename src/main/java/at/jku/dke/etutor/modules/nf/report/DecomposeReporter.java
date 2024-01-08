@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.modules.nf.report;
 
-import at.jku.dke.etutor.modules.nf.RDBDConstants;
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFConstants;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
@@ -20,7 +20,7 @@ public class DecomposeReporter extends ErrorReporter {
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
-		if (config.getAction().equalsIgnoreCase(RDBDConstants.EVAL_ACTION_SUBMIT)) {
+		if (config.getAction().equalsIgnoreCase(NFConstants.EVAL_ACTION_SUBMIT)) {
 			if (config.getDecomposeAnalysis().submissionSuitsSolution()) {
 				prologue.append(messageSource.getMessage("decomposereporter.correctsolution", null, locale));
 			} else {
@@ -46,14 +46,14 @@ public class DecomposeReporter extends ErrorReporter {
 		report.setPrologue(prologue.toString());
 		
 		//SET ERROR REPORT FOR LOST FUNCTIONAL DEPENDENCIES IF NECESSARY
-		if ((!config.getDecomposeAnalysis().getOverallDependenciesPreservationAnalysis().submissionSuitsSolution()) && (!config.getAction().equals(RDBDConstants.EVAL_ACTION_CHECK))){
+		if ((!config.getDecomposeAnalysis().getOverallDependenciesPreservationAnalysis().submissionSuitsSolution()) && (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK))){
 			reportAtom = NormalizationReporter.createDependenciesPreservationErrorReport(config.getDecomposeAnalysis().getOverallDependenciesPreservationAnalysis(), config, messageSource, locale); 
 			reportAtom.setError(messageSource.getMessage("decomposereporter.toomanylost", new Object[]{config.getDecomposeAnalysis().getMaxLostDependencies(), config.getDecomposeAnalysis().getOverallDependenciesPreservationAnalysis().lostFunctionalDependenciesCount()}, locale));
 			report.addErrorReport(reportAtom);
 		}
 
 		//ADD REPORT_ATOM_GROUP FOR EACH DECOMPOSE STEP
-		if (!config.getAction().equals(RDBDConstants.EVAL_ACTION_CHECK)){
+		if (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK)){
 			String baseRelationID;
 			Iterator<String> decomposeStepAnalysesIterator = config.getDecomposeAnalysis().iterAnalysedDecomposeStepBaseRelations();
 			while (decomposeStepAnalysesIterator.hasNext()) {
@@ -119,7 +119,7 @@ public class DecomposeReporter extends ErrorReporter {
 		NormalformReporterConfig nfReporterConfig;
 		ErrorReportGroup group = new ErrorReportGroup();
 
-		RDBDHelper.getLogger().log(Level.INFO, "Create report for relation: '" + relationID + "'. Normalization-analysis is null: " + (analysis == null));
+		NFHelper.getLogger().log(Level.INFO, "Create report for relation: '" + relationID + "'. Normalization-analysis is null: " + (analysis == null));
 
 		//SET HEADER
 		group.setHeader(messageSource.getMessage("decomposereporter.relationreports", new Object[]{relationID}, locale));
@@ -154,13 +154,13 @@ public class DecomposeReporter extends ErrorReporter {
 		
 		//ADD NORMALFORM_ANALYSIS REPORT_ATOM
 		if (analysis.getNormalformAnalysis(relationID) != null){
-			if ((!analysis.getNormalformAnalysis(relationID).submissionSuitsSolution()) && (!RDBDHelper.isInnerNode(relationID, decomposedRelations))){
+			if ((!analysis.getNormalformAnalysis(relationID).submissionSuitsSolution()) && (!NFHelper.isInnerNode(relationID, decomposedRelations))){
 				nfReporterConfig = new NormalformReporterConfig();
 				nfReporterConfig.setAction(config.getAction());
 				nfReporterConfig.setDiagnoseLevel(config.getDiagnoseLevel());
 				nfReporterConfig.setDesiredNormalformLevel(config.getDecomposeAnalysis().getTargetLevel());
 
-				reportAtom = NormalformReporter.createNormalformErrorReport(analysis.getNormalformAnalysis(relationID), nfReporterConfig, messageSource, locale);
+				reportAtom = NormalformReporter.createNormalformErrorReport(analysis.getNormalformAnalysis(relationID), nfReporterConfig, locale);
 			}	else {
 				reportAtom = new ErrorReport();
 
@@ -191,7 +191,7 @@ public class DecomposeReporter extends ErrorReporter {
 		//ADD KEYS_ANALYSIS REPORT_ATOM
 		if (analysis.getKeysAnalysis(relationID) != null){
 			if (!analysis.getKeysAnalysis(relationID).submissionSuitsSolution()){
-				group.addErrorReport(KeysReporter.createKeysErrorReport(analysis.getKeysAnalysis(relationID), config, messageSource, locale));
+				group.addErrorReport(KeysReporter.createKeysErrorReport(analysis.getKeysAnalysis(relationID), config, locale));
 			}
 		}
 

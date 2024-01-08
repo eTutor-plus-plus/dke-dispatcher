@@ -1,8 +1,8 @@
 package at.jku.dke.etutor.modules.nf.report;
 
 import at.jku.dke.etutor.core.evaluation.Grading;
-import at.jku.dke.etutor.modules.nf.RDBDConstants;
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFConstants;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.CanonicalRepresentationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.DependenciesCoverAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.ExtraneousAttributesAnalysis;
@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringJoiner;
-import java.util.Vector;
 import java.util.logging.Level;
 
 public class MinimalCoverReporter extends ErrorReporter {
@@ -25,7 +24,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 		// This class is not meant to be instantiated
 	}
 
-	public static NFReport report(MinimalCoverAnalysis analysis, Grading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
+	public static NFReport report(MinimalCoverAnalysis analysis, Grading grading, ReporterConfig config, Locale locale){
 		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
@@ -49,12 +48,12 @@ public class MinimalCoverReporter extends ErrorReporter {
 		}
 		report.setPrologue(prologue.toString());
 
-		if (!config.getAction().equals(RDBDConstants.EVAL_ACTION_CHECK)){
+		if (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK)){
 			//ADDING ERROR REPORT FOR CANONICAL REPRESENTATION ANALYSIS, IF NECESSARY
 			if (analysis.getCanonicalRepresentationAnalysis() != null){
 				if (!analysis.getCanonicalRepresentationAnalysis().submissionSuitsSolution()){
 					report.addErrorReport(createCanonicalRepresentationErrorReport(analysis.getCanonicalRepresentationAnalysis(), config, messageSource, locale));
-					RDBDHelper.getLogger().log(Level.INFO, "Added canonical representation error report");
+					NFHelper.getLogger().log(Level.INFO, "Added canonical representation error report");
 				}
 			}
 	
@@ -62,14 +61,14 @@ public class MinimalCoverReporter extends ErrorReporter {
 			if (analysis.getTrivialDependenciesAnalysis() != null){
 				if (!analysis.getTrivialDependenciesAnalysis().submissionSuitsSolution()){
 					report.addErrorReport(createTrivialDependenciesErrorReport(analysis.getTrivialDependenciesAnalysis(), config, messageSource, locale));
-					RDBDHelper.getLogger().log(Level.INFO, "Added trivial dependencies error report");
+					NFHelper.getLogger().log(Level.INFO, "Added trivial dependencies error report");
 				}
 			}
 			
 			//ADDING ERROR REPORT FOR EXTRANEOUS ATTRIBUTE ANALYSIS, IF NECESSARY
 			if (analysis.getExtraneousAttributesAnalysis() != null){
 				if (!analysis.getExtraneousAttributesAnalysis().submissionSuitsSolution()){
-					RDBDHelper.getLogger().log(Level.INFO, "Added extraneous attributes error report");
+					NFHelper.getLogger().log(Level.INFO, "Added extraneous attributes error report");
 					report.addErrorReport(createExtraneousAttributesErrorReport(analysis.getExtraneousAttributesAnalysis(), config, messageSource, locale));
 				}
 			}
@@ -78,7 +77,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 			if (analysis.getRedundantDependenciesAnalysis() != null){
 				if (!analysis.getRedundantDependenciesAnalysis().submissionSuitsSolution()){
 					report.addErrorReport(createRedundantDependenciesErrorReport(analysis.getRedundantDependenciesAnalysis(), config, messageSource, locale));
-					RDBDHelper.getLogger().log(Level.INFO, "Added redundant dependencies error report");
+					NFHelper.getLogger().log(Level.INFO, "Added redundant dependencies error report");
 				}
 			}
 			
@@ -86,7 +85,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 			if (analysis.getDependenciesCoverAnalysis() != null){
 				if (!analysis.getDependenciesCoverAnalysis().submissionSuitsSolution()){
 					report.addErrorReport(createDependenciesCoverErrorReport(analysis.getDependenciesCoverAnalysis(), config, messageSource, locale));
-					RDBDHelper.getLogger().log(Level.INFO, "Added dependencies cover error report");
+					NFHelper.getLogger().log(Level.INFO, "Added dependencies cover error report");
 				}
 			}
 		}
@@ -122,8 +121,10 @@ public class MinimalCoverReporter extends ErrorReporter {
 			description.append(" ").append(messageSource.getMessage("minimalcoverreporter.notcanonicalrepresentation", null, locale)).append(".");
 		}
 		
-		if (config.getDiagnoseLevel() == 3){
-			String currElemID = RDBDHelper.getNextElementID();
+		if (config.getDiagnoseLevel() == 3) {
+			generateLevel3Div(analysis.getNotCanonicalDependencies(), count, "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.notcanonicalrepresentation", messageSource, locale);
+
+			/*String currElemID = NFHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.dependenciesnotcanonical", null, locale)).append(":</p>");
@@ -140,7 +141,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 			} else {
 				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
 			}
-			description.append(messageSource.getMessage("minimalcoverreporter.notcanonicalrepresentation", null, locale));
+			description.append(messageSource.getMessage("minimalcoverreporter.notcanonicalrepresentation", null, locale));*/
 		}
 		report.setDescription(description.toString());
 
@@ -191,8 +192,10 @@ public class MinimalCoverReporter extends ErrorReporter {
 		}
 		
 		
-		if (config.getDiagnoseLevel() == 3){
-			String currElemID = RDBDHelper.getNextElementID();
+		if (config.getDiagnoseLevel() == 3) {
+			generateLevel3Div(analysis.getTrivialDependencies(), count, "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.trivial", messageSource, locale);
+
+			/*String currElemID = NFHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.trivialdependencies", null, locale)).append(":</p>");
@@ -209,7 +212,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 			} else {
 				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
 			}
-			description.append(messageSource.getMessage("minimalcoverreporter.trivial", null, locale)).append(".");
+			description.append(messageSource.getMessage("minimalcoverreporter.trivial", null, locale)).append(".");*/
 		}
 		report.setDescription(description.toString());
 
@@ -264,7 +267,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 		}
 		
 		if (config.getDiagnoseLevel() == 3){
-			String currElemID = RDBDHelper.getNextElementID();
+			String currElemID = NFHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>Extraneous attributes:</p>");
@@ -347,7 +350,9 @@ public class MinimalCoverReporter extends ErrorReporter {
 		}
 		
 		if (config.getDiagnoseLevel() == 3){
-			String currElemID = RDBDHelper.getNextElementID();
+			generateLevel3Div(analysis.getRedundantDependencies(), count, "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.redundand", messageSource, locale);
+
+			/*String currElemID = NFHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.redundanddependencies", null, locale)).append(":</p>");
@@ -364,7 +369,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 			} else {
 				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
 			}
-			description.append(messageSource.getMessage("minimalcoverreporter.redundand", null, locale)).append(".");
+			description.append(messageSource.getMessage("minimalcoverreporter.redundand", null, locale)).append(".");*/
 		}
 		report.setDescription(description.toString());
 
@@ -440,8 +445,10 @@ public class MinimalCoverReporter extends ErrorReporter {
 		}
 		
 		if (config.getDiagnoseLevel() == 3){
-			if (missingDependenciesCount > 0){
-				currElemID = RDBDHelper.getNextElementID();
+			if (missingDependenciesCount > 0) {
+				generateLevel3Div(analysis.getMissingDependencies(), missingDependenciesCount, "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.missing", messageSource, locale);
+
+				/*currElemID = NFHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.missingdependencies", null, locale)).append(":</p>");
@@ -458,15 +465,17 @@ public class MinimalCoverReporter extends ErrorReporter {
 				} else {
 					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("minimalcoverreporter.missing", null, locale)).append(".");
+				description.append(messageSource.getMessage("minimalcoverreporter.missing", null, locale)).append(".");*/
 			}
 			
 			if ((missingDependenciesCount > 0) && (additionalDependenciesCount > 0)){
 				description.append("<br>");
 			}
 			
-			if (additionalDependenciesCount > 0){
-				currElemID = RDBDHelper.getNextElementID();
+			if (additionalDependenciesCount > 0) {
+				generateLevel3Div(analysis.getAdditionalDependencies(), additionalDependenciesCount, "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.determinedcannotbederived", messageSource, locale);
+
+				/*currElemID = NFHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.dependenciesnotderived", null, locale)).append(":</p>");
@@ -483,7 +492,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 				} else {
 					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("minimalcoverreporter.determinedcannotbederived", null, locale));
+				description.append(messageSource.getMessage("minimalcoverreporter.determinedcannotbederived", null, locale));*/
 			}
 		}
 		report.setDescription(description.toString());

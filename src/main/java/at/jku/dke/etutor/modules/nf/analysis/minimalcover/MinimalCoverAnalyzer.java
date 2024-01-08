@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis.minimalcover;
 
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.algorithms.Cover;
 import at.jku.dke.etutor.modules.nf.algorithms.Member;
 import at.jku.dke.etutor.modules.nf.algorithms.MinimalCover;
@@ -90,7 +90,7 @@ public class MinimalCoverAnalyzer {
 			if (!Member.execute(currDependency, correctDependencies)){
 				analysis.addAdditionalDependency(currDependency);
 				analysis.setSubmissionSuitsSolution(false);
-				RDBDHelper.getLogger().log(Level.INFO, "Found additional functional dependency.");
+				NFHelper.getLogger().log(Level.INFO, "Found additional functional dependency.");
 			}
 		}
 
@@ -99,7 +99,7 @@ public class MinimalCoverAnalyzer {
 			if (!Member.execute(currDependency, submittedDependencies)){
 				analysis.addMissingDependency(currDependency);
 				analysis.setSubmissionSuitsSolution(false);
-				RDBDHelper.getLogger().log(Level.INFO, "Found missing functional dependency.");
+				NFHelper.getLogger().log(Level.INFO, "Found missing functional dependency.");
 			}
 		}
 		
@@ -130,7 +130,7 @@ public class MinimalCoverAnalyzer {
 			 * (i.e., whether currDependency is redundant) (Gerald Wimmer, 2023-12-31).
 			 */
 			if (Cover.execute(tempDependencies, dependencies)){
-				RDBDHelper.getLogger().log(Level.INFO, "Found redundant functional dependency.");
+				NFHelper.getLogger().log(Level.INFO, "Found redundant functional dependency.");
 				analysis.addRedundantDependency(currDependency);
 				analysis.setSubmissionSuitsSolution(false);
 			}
@@ -184,7 +184,7 @@ public class MinimalCoverAnalyzer {
 				if (Cover.execute(dependencies, tempDependencies)) {
 					analysis.setSubmissionSuitsSolution(false);
 					analysis.addExtraneousAttribute(currDependency, currAttribute);
-					RDBDHelper.getLogger().log(Level.INFO, "Found extraneous attributes.");
+					NFHelper.getLogger().log(Level.INFO, "Found extraneous attributes.");
 				}
 			}
 		}
@@ -206,7 +206,7 @@ public class MinimalCoverAnalyzer {
 			if (currDependency.isTrivial()){
 				analysis.addTrivialDependency(currDependency);
 				analysis.setSubmissionSuitsSolution(false);
-				RDBDHelper.getLogger().log(Level.INFO, "Found trivial dependency.");
+				NFHelper.getLogger().log(Level.INFO, "Found trivial dependency.");
 			}
 		}
 		
@@ -225,7 +225,7 @@ public class MinimalCoverAnalyzer {
 		for (FunctionalDependency currDependency : dependencies) {
 			if (currDependency.getRhsAttributes().size() > 1) {
 				analysis.addNotCanonicalDependency(currDependency);
-				RDBDHelper.getLogger().log(Level.INFO, "Found not canonically represented dependency.");
+				NFHelper.getLogger().log(Level.INFO, "Found not canonically represented dependency.");
 				analysis.setSubmissionSuitsSolution(false);
 			}
 		}

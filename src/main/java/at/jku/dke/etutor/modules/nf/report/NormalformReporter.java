@@ -1,25 +1,24 @@
 package at.jku.dke.etutor.modules.nf.report;
 
 import at.jku.dke.etutor.core.evaluation.DefaultGrading;
-import at.jku.dke.etutor.modules.nf.RDBDConstants;
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFConstants;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.*;
 import at.jku.dke.etutor.modules.nf.analysis.normalformdetermination.NormalformDeterminationAnalysis;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevelComparator;
-import org.springframework.context.MessageSource;
 
 import java.util.Locale;
 import java.util.StringJoiner;
 
 public class NormalformReporter extends ErrorReporter {
 
-	public static NFReport report(NormalformDeterminationAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
+	public static NFReport report(NormalformDeterminationAnalysis analysis, DefaultGrading grading, ReporterConfig config, Locale locale){
 		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
-		if (config.getAction().equals(RDBDConstants.EVAL_ACTION_SUBMIT)){
+		if (config.getAction().equals(NFConstants.EVAL_ACTION_SUBMIT)){
 			if (analysis.submissionSuitsSolution()) {
 				prologue.append(messageSource.getMessage("normalformreporter.correctsolution", null, locale));
 			} else {
@@ -43,15 +42,15 @@ public class NormalformReporter extends ErrorReporter {
 		}
 		report.setPrologue(prologue.toString());
 		
-		if (!config.getAction().equals(RDBDConstants.EVAL_ACTION_CHECK)){
+		if (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK)){
 			//REPORT OVERALL_NF_LEVEL 
 			if (!analysis.getOverallNormalformLevel().equals(analysis.getSubmittedLevel())){
-				report.addErrorReport(createNormalformLevelDeterminationErrorReport(analysis, config, messageSource, locale));
+				report.addErrorReport(createNormalformLevelDeterminationErrorReport(analysis, config, locale));
 			}
 
 			//REPORT NF_LEVEL_VIOLATIONS
 			if (!analysis.getWrongLeveledDependencies().isEmpty()){
-				report.addErrorReport(createNormalformLevelViolationErrorReport(analysis, config, messageSource, locale));
+				report.addErrorReport(createNormalformLevelViolationErrorReport(analysis, config, locale));
 			}
 		}
 		
@@ -61,7 +60,7 @@ public class NormalformReporter extends ErrorReporter {
 		return report;	
 	}
 
-	public static ErrorReport createNormalformLevelDeterminationErrorReport(NormalformDeterminationAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
+	public static ErrorReport createNormalformLevelDeterminationErrorReport(NormalformDeterminationAnalysis analysis, ReporterConfig config, Locale locale){
 		ErrorReport report = new ErrorReport();
 
 		//SET ERROR
@@ -75,7 +74,7 @@ public class NormalformReporter extends ErrorReporter {
 		}
 		
 		if (config.getDiagnoseLevel() == 3){
-			report.setDescription(messageSource.getMessage("normalformreporter.normalformdoesnotmatch", new Object[]{normalformLevelToString(analysis.getSubmittedLevel(), messageSource, locale), normalformLevelToString(analysis.getOverallNormalformLevel(), messageSource, locale)}, locale));
+			report.setDescription(messageSource.getMessage("normalformreporter.normalformdoesnotmatch", new Object[]{normalformLevelToString(analysis.getSubmittedLevel(), locale), normalformLevelToString(analysis.getOverallNormalformLevel(), locale)}, locale));
 		}
 
 		//CONFIGURE REPORT
@@ -86,7 +85,7 @@ public class NormalformReporter extends ErrorReporter {
 		return report;
 	}
 
-	public static ErrorReport createNormalformLevelViolationErrorReport(NormalformDeterminationAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
+	public static ErrorReport createNormalformLevelViolationErrorReport(NormalformDeterminationAnalysis analysis, ReporterConfig config, Locale locale){
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
 		
@@ -122,8 +121,8 @@ public class NormalformReporter extends ErrorReporter {
 			for (Object[] entry : analysis.getWrongLeveledDependencies()){
 				description.append("	<tr>");
 				description.append("		<td align='center'>").append(entry[0].toString().replaceAll("->", "&rarr;")).append("</td>");
-				description.append("		<td align='center'>").append(normalformLevelToString((NormalformLevel) entry[1], messageSource, locale)).append("</td>");
-				description.append("		<td align='center'>").append(normalformLevelToString((NormalformLevel) entry[2], messageSource, locale)).append("</td>");
+				description.append("		<td align='center'>").append(normalformLevelToString((NormalformLevel) entry[1], locale)).append("</td>");
+				description.append("		<td align='center'>").append(normalformLevelToString((NormalformLevel) entry[2], locale)).append("</td>");
 				description.append("	</tr>");
 			}
 			description.append("</table>");
@@ -139,7 +138,7 @@ public class NormalformReporter extends ErrorReporter {
 		return report;
 	}
 
-	public static ErrorReport createNormalformErrorReport(NormalformAnalysis analysis, NormalformReporterConfig config, MessageSource messageSource, Locale locale){
+	public static ErrorReport createNormalformErrorReport(NormalformAnalysis analysis, NormalformReporterConfig config, Locale locale){
 		boolean first;
 		boolean appendLineBreak = false;
 
@@ -149,7 +148,7 @@ public class NormalformReporter extends ErrorReporter {
 		StringBuilder description = new StringBuilder();
 
         //SET ERROR
-		report.setError(messageSource.getMessage("normalformreporter.insufficientnormalformlevel", new Object[]{normalformLevelToString(config.getDesiredNormalformLevel(), messageSource, locale),  normalformLevelToString(analysis.getOverallNormalformLevel(), messageSource, locale)}, locale));
+		report.setError(messageSource.getMessage("normalformreporter.insufficientnormalformlevel", new Object[]{normalformLevelToString(config.getDesiredNormalformLevel(), locale),  normalformLevelToString(analysis.getOverallNormalformLevel(), locale)}, locale));
 		
 		//SET HINT
 
@@ -212,7 +211,7 @@ public class NormalformReporter extends ErrorReporter {
 				}
 
 				if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)){
-					currElemID = RDBDHelper.getNextElementID();
+					currElemID = NFHelper.getNextElementID();
 					description.append("<br>");
 					description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 					description.append("<html>").append(HTML_HEADER).append("<body>");
@@ -231,7 +230,7 @@ public class NormalformReporter extends ErrorReporter {
 						description.append(" ").append(messageSource.getMessage("normalformreporter.attributesnotprim", null, locale)).append("</a>.");
 					}
 
-					currElemID = RDBDHelper.getNextElementID();
+					currElemID = NFHelper.getNextElementID();
 					description.append("<br>");
 					description.append(messageSource.getMessage("normalformreporter.leftsidepartialkey", null, locale));
 					
@@ -279,7 +278,7 @@ public class NormalformReporter extends ErrorReporter {
 				}
 
 				if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)){
-					currElemID = RDBDHelper.getNextElementID();
+					currElemID = NFHelper.getNextElementID();
 					description.append("<br>");
 					description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 					description.append("<html>").append(HTML_HEADER).append("<body>");
@@ -336,7 +335,7 @@ public class NormalformReporter extends ErrorReporter {
 		return report;
 	}
 	
-	public static String normalformLevelToString(NormalformLevel level, MessageSource messageSource, Locale locale){
+	public static String normalformLevelToString(NormalformLevel level, Locale locale){
 		if (level == null){
 			return messageSource.getMessage("normalformreporter.none", null, locale);
 		} else if (level.equals(NormalformLevel.FIRST)){

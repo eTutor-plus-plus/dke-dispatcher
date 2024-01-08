@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.exercises;
 
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -44,9 +44,9 @@ public class RDBDExercisesManager {
 		String specification = null;
 
 		try (
-			Connection conn = RDBDHelper.getPooledConnection();
-			Statement stmt = conn.createStatement();
-			ResultSet rset = stmt.executeQuery("SELECT specification FROM exercises WHERE id = " + exerciseID)
+                Connection conn = NFHelper.getPooledConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rset = stmt.executeQuery("SELECT specification FROM exercises WHERE id = " + exerciseID)
         ) {
 			// conn.setAutoCommit(false);
 
@@ -60,10 +60,10 @@ public class RDBDExercisesManager {
 				try {
 					conn.rollback();
 				} catch (SQLException ex){
-					RDBDHelper.getLogger().log(Level.SEVERE, "", ex);
+					NFHelper.getLogger().log(Level.SEVERE, "", ex);
 				}
 			}*/ // Note: Again, why would we have to rollback() a SELECT query? (Gerald Wimmer, 2023-12-01)
-			RDBDHelper.getLogger().log(Level.SEVERE, "", e);
+			NFHelper.getLogger().log(Level.SEVERE, "", e);
 			throw e;
 		}
 
@@ -74,15 +74,15 @@ public class RDBDExercisesManager {
 		int type = -1;
 		
 		try (
-			Connection conn = RDBDHelper.getPooledConnection();
-			Statement stmt = conn.createStatement();
-			ResultSet rset = stmt.executeQuery("SELECT rdbd_type FROM exercises WHERE id = " + exerciseID)
+                Connection conn = NFHelper.getPooledConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rset = stmt.executeQuery("SELECT rdbd_type FROM exercises WHERE id = " + exerciseID)
 		) {
 			if (rset.next()) {
 				type = rset.getInt("rdbd_type");
 			}
 		} catch (Exception e) {
-			RDBDHelper.getLogger().log(Level.SEVERE, "", e);
+			NFHelper.getLogger().log(Level.SEVERE, "", e);
 			throw e;
 		}
 

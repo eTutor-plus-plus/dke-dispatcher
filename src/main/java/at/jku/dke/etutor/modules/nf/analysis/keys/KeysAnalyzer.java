@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis.keys;
 
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 
@@ -17,7 +17,7 @@ public class KeysAnalyzer {
 	 */
 	public static KeysAnalysis analyze(Relation relation, KeysAnalyzerConfig config){
 		// Log progress
-		RDBDHelper.getLogger().log(Level.INFO, "Start analyzing keys determination.");
+		NFHelper.getLogger().log(Level.INFO, "Start analyzing keys determination.");
 
 		KeysAnalysis analysis = new KeysAnalysis();
 
@@ -32,11 +32,11 @@ public class KeysAnalyzer {
 
 		analysis.setSubmissionSuitsSolution(analysis.getMissingKeys().isEmpty() && analysis.getAdditionalKeys().isEmpty());
 
-		RDBDHelper.getLogger().log(Level.INFO, "Found " + analysis.getMissingKeys().size() + " missing keys.");
-		RDBDHelper.getLogger().log(Level.INFO, "Found " + analysis.getAdditionalKeys().size() + " additional keys.");
+		NFHelper.getLogger().log(Level.INFO, "Found " + analysis.getMissingKeys().size() + " missing keys.");
+		NFHelper.getLogger().log(Level.INFO, "Found " + analysis.getAdditionalKeys().size() + " additional keys.");
 
 		// Log Progress
-		RDBDHelper.getLogger().log(Level.INFO, "Exit analyzing keys determination.");
+		NFHelper.getLogger().log(Level.INFO, "Exit analyzing keys determination.");
 		
 		return analysis;
 	}

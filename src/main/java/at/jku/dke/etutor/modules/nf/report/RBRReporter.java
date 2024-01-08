@@ -1,8 +1,8 @@
 package at.jku.dke.etutor.modules.nf.report;
 
 import at.jku.dke.etutor.core.evaluation.DefaultGrading;
-import at.jku.dke.etutor.modules.nf.RDBDConstants;
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFConstants;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import org.springframework.context.MessageSource;
@@ -17,7 +17,7 @@ public class RBRReporter extends ErrorReporter {
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
-		if (config.getAction().equalsIgnoreCase(RDBDConstants.EVAL_ACTION_SUBMIT)) {
+		if (config.getAction().equalsIgnoreCase(NFConstants.EVAL_ACTION_SUBMIT)) {
 			if (analysis.submissionSuitsSolution()) {
 				prologue.append(messageSource.getMessage("rbrreporter.correctsolution", null, locale));
 			} else {
@@ -43,7 +43,7 @@ public class RBRReporter extends ErrorReporter {
 		report.setPrologue(prologue.toString());
 		
 		//SET ERROR REPORT IF NECESSARY
-		if (!config.getAction().equals(RDBDConstants.EVAL_ACTION_CHECK)){
+		if (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK)){
 			if (!analysis.submissionSuitsSolution()){
 				report.addErrorReport(createRBRErrorReport(analysis, config, messageSource, locale));
 			}
@@ -85,7 +85,7 @@ public class RBRReporter extends ErrorReporter {
 			}
 			
 			if (config.getDiagnoseLevel() == 3){
-				currElemID = RDBDHelper.getNextElementID();
+				currElemID = NFHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("rbrreporter.dependenciesmissing", null, locale)).append(":</p>");
@@ -126,7 +126,7 @@ public class RBRReporter extends ErrorReporter {
 			}
 			
 			if (config.getDiagnoseLevel() == 3){
-				currElemID = RDBDHelper.getNextElementID();
+				currElemID = NFHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("rbrreporter.dependenciestoomuch", null, locale)).append(":</p>");

@@ -1,7 +1,7 @@
 package at.jku.dke.etutor.grading.service;
 
-import at.jku.dke.etutor.modules.nf.RDBDConstants;
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFConstants;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
@@ -23,7 +23,6 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,6 +30,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.Locale;
 import java.util.Set;
@@ -41,9 +41,9 @@ public class NFResourceService {
         int exerciseId = 1;
 
         try (
-            Connection conn = RDBDHelper.getPooledConnection();
-            Statement stmt = conn.createStatement();
-            ResultSet rset = stmt.executeQuery("SELECT MAX(id) FROM exercises")
+                Connection conn = NFHelper.getPooledConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rset = stmt.executeQuery("SELECT MAX(id) FROM exercises")
         ) {
             if(rset.next()) {
                 exerciseId = rset.getInt("max") + 1;
@@ -56,7 +56,7 @@ public class NFResourceService {
         String specificationJSON = convertToJSONString(dto);
 
         try (
-                Connection conn = RDBDHelper.getPooledConnection();
+                Connection conn = NFHelper.getPooledConnection();
                 PreparedStatement stmt = conn.prepareStatement(
                         "INSERT INTO exercises (id, rdbd_type, specification) " +
                             "VALUES (?, ?, ?::JSONB)"
@@ -74,7 +74,14 @@ public class NFResourceService {
             }
 
             conn.commit();
+        } catch (SQLIntegrityConstraintViolationException si) {
+            si.printStackTrace();
+            throw new DatabaseException(si);
         } catch (SQLException s) {
+            if(s.getMessage().contains("type_and_spec_combo_unique")) {
+                int existingId = getIdOfExistingCombo(numericSubtypeId, specificationJSON.toString());
+                throw new DatabaseException("Tried to save exercise " + exerciseId + " as duplicate of exercise " + existingId + ".");
+            }
             throw new DatabaseException(s);
         }
 
@@ -86,7 +93,7 @@ public class NFResourceService {
         String specificationJSON = convertToJSONString(dto);
 
         try (
-                Connection conn = RDBDHelper.getPooledConnection();
+                Connection conn = NFHelper.getPooledConnection();
                 PreparedStatement stmt = conn.prepareStatement(
                         "UPDATE exercises " +
                             "SET rdbd_type=?, specification=?::JSONB " +
@@ -113,7 +120,7 @@ public class NFResourceService {
 
     public boolean deleteExercise(int exerciseId) throws DatabaseException {
         try (
-                Connection conn = RDBDHelper.getPooledConnection();
+                Connection conn = NFHelper.getPooledConnection();
                 PreparedStatement stmt = conn.prepareStatement(
                         "DELETE FROM exercises " +
                             "WHERE id = ?"
@@ -137,7 +144,7 @@ public class NFResourceService {
 
     public String generateAssignmentText(int exerciseId, Locale locale) throws DatabaseException {
         try (
-                Connection conn = RDBDHelper.getPooledConnection();
+                Connection conn = NFHelper.getPooledConnection();
                 PreparedStatement stmt = conn.prepareStatement(
                 "SELECT rdbd_type, specification FROM exercises " +
                     "WHERE id = ?"
@@ -151,7 +158,7 @@ public class NFResourceService {
                 int rdbdTypeId = rset.getInt("rdbd_type");
                 String specificationString = rset.getString("specification");
 
-                RDBDConstants.Type rdbdType = RDBDConstants.Type.values()[rdbdTypeId];
+                NFConstants.Type rdbdType = NFConstants.Type.values()[rdbdTypeId];
 
                 NFSpecification specification = switch (rdbdType) {
                     case KEYS_DETERMINATION -> {
@@ -193,7 +200,7 @@ public class NFResourceService {
                 };
 
                 try {
-                    return RDBDHelper.getAssignmentText(specification, 0, locale, rdbdType);
+                    return NFHelper.getAssignmentText(specification, 0, locale, rdbdType);
                 } catch (IOException i) {
                     i.printStackTrace();
                     return null;
@@ -204,6 +211,31 @@ public class NFResourceService {
         } catch (SQLException s) {
             throw new DatabaseException(s);
         }
+    }
+
+    private int getIdOfExistingCombo(int rdbdType, String specificationString) throws DatabaseException {
+        int id = -1;
+
+        try (
+                Connection conn = NFHelper.getPooledConnection();
+                PreparedStatement stmt = conn.prepareStatement(
+                        "SELECT id FROM exercises " +
+                        "WHERE rdbd_type = ? AND specification = ?::JSONB"
+                )
+        ) {
+            stmt.setInt(1, rdbdType);
+            stmt.setObject(2, specificationString);
+
+            ResultSet rset = stmt.executeQuery();
+
+            if(rset.next()) {
+                id = rset.getInt("id");
+            }
+        } catch (SQLException s) {
+            throw new DatabaseException(s);
+        }
+
+        return id;
     }
 
     private int getNumericSubtypeId(String subTypeString) {
@@ -218,6 +250,8 @@ public class NFResourceService {
     }
 
     private String convertToJSONString(NFExerciseDTO dto) throws ExerciseNotValidException {
+        IdentifiedRelation baseRelation = new IdentifiedRelation();
+
         NFParserErrorCollector errorCollector = new NFParserErrorCollector();
 
         // Source: https://datacadamia.com/antlr/getting_started (Gerald Wimmer, 2023-11-27)
@@ -234,28 +268,28 @@ public class NFResourceService {
             throw new ExerciseNotValidException("Syntax error(s) in base attributes: " + errorCollector.getStringOfAllErrors());
         }
 
-        CharStream baseDependenciesLexerInput = CharStreams.fromString(dto.getNfBaseDependencies());
-        Lexer baseDependenciesLexer = new NFLexer(baseDependenciesLexerInput);
-        TokenStream baseDependenciesParserInput = new CommonTokenStream(baseDependenciesLexer);
-        NFParser baseDependenciesParser = new NFParser(baseDependenciesParserInput);
-
-        baseDependenciesParser.addErrorListener(errorCollector);
-
-        Set<FunctionalDependency> baseDependencies = baseDependenciesParser.functionalDependencySet().functionalDependencies;
-
-        if(!errorCollector.getSyntaxErrors().isEmpty()) {
-            throw new ExerciseNotValidException("Syntax error(s) in base dependencies: " + errorCollector.getStringOfAllErrors());
-        }
-
-        IdentifiedRelation baseRelation = new IdentifiedRelation();
         baseRelation.setAttributes(baseAttributes);
-        baseRelation.setFunctionalDependencies(baseDependencies);
+
+        if(!dto.getNfBaseDependencies().isBlank()) {
+
+            CharStream baseDependenciesLexerInput = CharStreams.fromString(dto.getNfBaseDependencies());
+            Lexer baseDependenciesLexer = new NFLexer(baseDependenciesLexerInput);
+            TokenStream baseDependenciesParserInput = new CommonTokenStream(baseDependenciesLexer);
+            NFParser baseDependenciesParser = new NFParser(baseDependenciesParserInput);
+
+            baseDependenciesParser.addErrorListener(errorCollector);
+
+            Set<FunctionalDependency> baseDependencies = baseDependenciesParser.functionalDependencySet().functionalDependencies;
+
+            if (!errorCollector.getSyntaxErrors().isEmpty()) {
+                throw new ExerciseNotValidException("Syntax error(s) in base dependencies: " + errorCollector.getStringOfAllErrors());
+            }
+
+            baseRelation.setFunctionalDependencies(baseDependencies);
+        }
 
         // source: https://stackoverflow.com/a/15786175 (Gerald Wimmer, 2024-01-05)
         ObjectWriter objectWriter = new ObjectMapper().writer();
-
-        JSONArray baseDependenciesJSON = new JSONArray();
-        baseDependencies.forEach(baseDependenciesJSON::put);
 
         try {
             switch (dto.getNfTaskSubtypeId()) {
@@ -342,6 +376,7 @@ public class NFResourceService {
                 }
                 case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#NFTask#NormalformDeterminationTask" -> {
                     NormalformDeterminationSpecification specification = new NormalformDeterminationSpecification();
+                    specification.setBaseRelation(baseRelation);
 
                     specification.setPenaltyForIncorrectNFOverall(dto.getNfNormalFormDeterminationPenaltyForIncorrectOverallNormalform());
                     specification.setPenaltyPerIncorrectNFDependency(dto.getNfNormalFormDeterminationPenaltyPerIncorrectDependencyNormalform());

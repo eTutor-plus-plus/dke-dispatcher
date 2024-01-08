@@ -1,8 +1,8 @@
 package at.jku.dke.etutor.modules.nf.report;
 
 import at.jku.dke.etutor.core.evaluation.DefaultGrading;
-import at.jku.dke.etutor.modules.nf.RDBDConstants;
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFConstants;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.decompose.DecompositionAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.DependenciesPreservationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.LosslessAnalysis;
@@ -15,12 +15,12 @@ import java.util.logging.Level;
 
 public class NormalizationReporter extends ErrorReporter {
 
-	public static NFReport report(NormalizationAnalysis analysis, DefaultGrading grading, NormalizationReporterConfig config, MessageSource messageSource, Locale locale){
+	public static NFReport report(NormalizationAnalysis analysis, DefaultGrading grading, NormalizationReporterConfig config, Locale locale){
 		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 		
 		//SET PROLOGUE
-		if (config.getAction().equals(RDBDConstants.EVAL_ACTION_SUBMIT)){
+		if (config.getAction().equals(NFConstants.EVAL_ACTION_SUBMIT)){
 			if (analysis.submissionSuitsSolution()) {
 				prologue.append(messageSource.getMessage("normalizationreporter.correctsolution", null, locale));
 			} else {
@@ -46,7 +46,7 @@ public class NormalizationReporter extends ErrorReporter {
 		
 		//SET SUB REPORTS
 
-		if (!config.getAction().equals(RDBDConstants.EVAL_ACTION_CHECK)){
+		if (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK)){
 			//REPORT DECOMPOSITION_ANALYSIS
 			if ((analysis.getDecompositionAnalysis() != null) && (!analysis.getDecompositionAnalysis().submissionSuitsSolution())){
 				report.addErrorReport(createDecompositionErrorReport(analysis.getDecompositionAnalysis(), config, messageSource, locale));		
@@ -60,7 +60,7 @@ public class NormalizationReporter extends ErrorReporter {
 			//REPORT DEPENDENCIES_PRESERVATION_ANALYSIS
 			if ((analysis.getDepPresAnalysis() != null) && (!analysis.getDepPresAnalysis().submissionSuitsSolution())){
 				ErrorReport reportAtom = createDependenciesPreservationErrorReport(analysis.getDepPresAnalysis(), config, messageSource, locale);
-				RDBDHelper.getLogger().log(Level.INFO, "Max Lost Dependencies: " + analysis.getMaxLostDependencies() +  " - Lost Dependencies: " + analysis.getDepPresAnalysis().lostFunctionalDependenciesCount());
+				NFHelper.getLogger().log(Level.INFO, "Max Lost Dependencies: " + analysis.getMaxLostDependencies() +  " - Lost Dependencies: " + analysis.getDepPresAnalysis().lostFunctionalDependenciesCount());
 	
 				if (analysis.getMaxLostDependencies() < analysis.getDepPresAnalysis().lostFunctionalDependenciesCount()){
 					reportAtom.setError(messageSource.getMessage("normalizationreporter.toomanylost", new Object[]{analysis.getMaxLostDependencies(), analysis.getDepPresAnalysis().lostFunctionalDependenciesCount()}, locale));
@@ -122,7 +122,7 @@ public class NormalizationReporter extends ErrorReporter {
 		//ADD KEYS_ANALYSIS REPORT_ATOM		
 		if (analysis.getKeysAnalysis(relationID) != null){
 			if (!analysis.getKeysAnalysis(relationID).submissionSuitsSolution()){
-				group.addErrorReport(KeysReporter.createKeysErrorReport(analysis.getKeysAnalysis(relationID), config, messageSource, locale));
+				group.addErrorReport(KeysReporter.createKeysErrorReport(analysis.getKeysAnalysis(relationID), config, locale));
 			}
 		}
 
@@ -134,7 +134,7 @@ public class NormalizationReporter extends ErrorReporter {
 				nfReporterConfig.setDiagnoseLevel(config.getDiagnoseLevel());
 				nfReporterConfig.setDesiredNormalformLevel(config.getDesiredNormalformLevel());
 
-				group.addErrorReport(NormalformReporter.createNormalformErrorReport(analysis.getNormalformAnalysis(relationID), nfReporterConfig, messageSource, locale));
+				group.addErrorReport(NormalformReporter.createNormalformErrorReport(analysis.getNormalformAnalysis(relationID), nfReporterConfig, locale));
 			}
 		}
 
@@ -175,7 +175,7 @@ public class NormalizationReporter extends ErrorReporter {
 		} 
 		
 		if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)){
-			currElemID = RDBDHelper.getNextElementID();
+			currElemID = NFHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>").append(messageSource.getMessage("normalizationreporter.dependencieslost", null, locale)).append(":</p>");
@@ -250,7 +250,7 @@ public class NormalizationReporter extends ErrorReporter {
 		} 
 		
 		if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)){
-			currElemID = RDBDHelper.getNextElementID();
+			currElemID = NFHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>").append(messageSource.getMessage("normalizationreporter.attributenotcomprised", null, locale)).append(":</p>");

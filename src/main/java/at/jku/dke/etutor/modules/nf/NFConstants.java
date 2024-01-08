@@ -1,11 +1,13 @@
 package at.jku.dke.etutor.modules.nf;
 
 
-public class RDBDConstants {
+public class NFConstants {
 
-	private RDBDConstants() {
+	private NFConstants() {
 		// This class is not meant to be instantiated. (Gerald Wimmer, 2023-12-01)
 	}
+
+	public static final String MESSAGE_SOURCE_PATH = "nf/messages";
 	
     //USER INTERFACE ETUTOR-CORE CONSTANTS
     public static final String ATT_USER_ID = "userID";			//CoreConstants.ATTR_USER_ID

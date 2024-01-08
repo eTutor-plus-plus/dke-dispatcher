@@ -1,6 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis.decompose;
 
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
@@ -17,7 +17,7 @@ public class DecomposeAnalyzer {
 	}
 	
 	public static DecomposeAnalysis analyze(DecomposeAnalyzerConfig config) {
-		RDBDHelper.getLogger().log(Level.INFO, "Analyze Decompose.");
+		NFHelper.getLogger().log(Level.INFO, "Analyze Decompose.");
 		
 		//INIT DECOMPOSE ANALYSIS
 		DecomposeAnalysis analysis = new DecomposeAnalysis();
@@ -36,20 +36,20 @@ public class DecomposeAnalyzer {
 		while((relationsIterator.hasNext()) && (analysis.submissionSuitsSolution())){
 			IdentifiedRelation relation = relationsIterator.next();
 			
-			if (RDBDHelper.isInnerNode(relation.getID(), allRelations)){
+			if (NFHelper.isInnerNode(relation.getID(), allRelations)){
 				DecomposeStepAnalyzerConfig decomposeStepAnalyzerConfig = new DecomposeStepAnalyzerConfig();
 				decomposeStepAnalyzerConfig.setBaseRelation(relation);
 				decomposeStepAnalyzerConfig.setAllRelations(allRelations);
 				decomposeStepAnalyzerConfig.setDesiredNormalformLevel(config.getDesiredNormalformLevel());
-				decomposeStepAnalyzerConfig.addNormalizedRelation(RDBDHelper.findRelation(relation.getID() + ".1", allRelations));
-				decomposeStepAnalyzerConfig.addNormalizedRelation(RDBDHelper.findRelation(relation.getID() + ".2", allRelations));
+				decomposeStepAnalyzerConfig.addNormalizedRelation(NFHelper.findRelation(relation.getID() + ".1", allRelations));
+				decomposeStepAnalyzerConfig.addNormalizedRelation(NFHelper.findRelation(relation.getID() + ".2", allRelations));
 
 				NormalizationAnalysis decomposeStepAnalysis = DecomposeStepAnalyzer.analyze(decomposeStepAnalyzerConfig);
 				analysis.addDecomposeStepAnalysis(relation.getID(),decomposeStepAnalysis);
-				RDBDHelper.getLogger().log(Level.INFO, "Add DecomposeStepAnalysis for Relation '" + relation.getID() + "'.");
+				NFHelper.getLogger().log(Level.INFO, "Add DecomposeStepAnalysis for Relation '" + relation.getID() + "'.");
 				if (!decomposeStepAnalysis.submissionSuitsSolution()){
 					analysis.setSubmissionSuitsSolution(false);
-					RDBDHelper.getLogger().log(Level.INFO, "DecomposeStepAnalysis for Relation '" + relation.getID() + "' does not suit the solution.");
+					NFHelper.getLogger().log(Level.INFO, "DecomposeStepAnalysis for Relation '" + relation.getID() + "' does not suit the solution.");
 				}
 			}
 		}
@@ -57,7 +57,7 @@ public class DecomposeAnalyzer {
 		//ANALYZE DEPENDENCIES PRESERVATION FOR LEAF-RELATIONS
 		TreeSet<IdentifiedRelation> leafRelations = new TreeSet<>(new IdentifiedRelationComparator());
 		for (IdentifiedRelation relation : allRelations){
-			if (!RDBDHelper.isInnerNode(relation.getID(), allRelations)){
+			if (!NFHelper.isInnerNode(relation.getID(), allRelations)){
 				leafRelations.add(relation);			
 			}
 		}		 

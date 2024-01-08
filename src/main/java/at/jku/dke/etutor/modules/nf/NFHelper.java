@@ -4,7 +4,6 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelationComparator;
 import at.jku.dke.etutor.modules.nf.model.Key;
-import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
 import at.jku.dke.etutor.modules.nf.specification.DecomposeSpecification;
@@ -40,9 +39,9 @@ import java.util.logging.Logger;
  * @author Georg Nitsche (10.01.2006)
  *
  */
-public class RDBDHelper {
+public class NFHelper {
 
-	private RDBDHelper() {
+	private NFHelper() {
 		// This class is not meant to be instantiated
 	}
 	
@@ -102,10 +101,10 @@ public class RDBDHelper {
 		
 		while (relationsIterator.hasNext()){
 			currRelation = relationsIterator.next();
-			RDBDHelper.getLogger().log(Level.INFO, "Check Relation: '" + currRelation.getID() + "'.");			
+			NFHelper.getLogger().log(Level.INFO, "Check Relation: '" + currRelation.getID() + "'.");
 			if ((currRelation.getID().startsWith(relationID)) && (currRelation.getID().length() > relationID.length())){
 				subRelations.add(currRelation);
-				RDBDHelper.getLogger().log(Level.INFO, "Found Sub Relation: '" + currRelation.getID() + "'.");			
+				NFHelper.getLogger().log(Level.INFO, "Found Sub Relation: '" + currRelation.getID() + "'.");
 			}
 		}
 		
@@ -134,10 +133,10 @@ public class RDBDHelper {
 		while ((it.hasNext()) && (!isInnerNode)){
 			
 			currRelation = it.next();
-			//RDBDHelper.getLogger().log(Level.INFO, "RELATION IS NULL: " + (currRelation == null));
+			//NFHelper.getLogger().log(Level.INFO, "RELATION IS NULL: " + (currRelation == null));
 			
 			currID = currRelation.getID();
-			//RDBDHelper.getLogger().log(Level.INFO, "ID IS NULL: " + (currID == null));
+			//NFHelper.getLogger().log(Level.INFO, "ID IS NULL: " + (currID == null));
 
 			if (currID.startsWith(relationID) && currID.length() > relationID.length()){
 				isInnerNode = true;
@@ -439,15 +438,15 @@ public class RDBDHelper {
 	public static void delKeys(Collection<IdentifiedRelation> relations, String relationID, String[] attributes, String[] keysToDelete) throws Exception{
 		IdentifiedRelation currRelation;
 
-		RDBDHelper.getLogger().log(Level.INFO, "DELETING KEYS");
+		NFHelper.getLogger().log(Level.INFO, "DELETING KEYS");
 
 		if ((relationID != null) && (!relationID.isEmpty())){
-			RDBDHelper.getLogger().log(Level.INFO, "SEARCHING FOR RELATION '" + relationID + "'");
+			NFHelper.getLogger().log(Level.INFO, "SEARCHING FOR RELATION '" + relationID + "'");
 
             for (IdentifiedRelation relation : relations) {
                 currRelation = relation;
                 if (currRelation.getID().equals(relationID)) {
-                    RDBDHelper.getLogger().log(Level.INFO, "FOUND RELATION '" + relationID + "'");
+                    NFHelper.getLogger().log(Level.INFO, "FOUND RELATION '" + relationID + "'");
                     delKeys(currRelation, keysToDelete);
                 }
             }
@@ -458,7 +457,7 @@ public class RDBDHelper {
 		Key keyToDelete;
 
         for (String s : keysToDelete) {
-            RDBDHelper.getLogger().log(Level.INFO, "DELETING NEXT KEY");
+            NFHelper.getLogger().log(Level.INFO, "DELETING NEXT KEY");
 
             keyToDelete = new Key();
 			String[] attributes = s.split(" ");
@@ -468,9 +467,9 @@ public class RDBDHelper {
 
             boolean removed = relation.removeMinimalKey(keyToDelete);
             if (removed) {
-                RDBDHelper.getLogger().log(Level.INFO, "REMOVED KEY '" + keyToDelete + "'.");
+                NFHelper.getLogger().log(Level.INFO, "REMOVED KEY '" + keyToDelete + "'.");
             } else {
-                RDBDHelper.getLogger().log(Level.INFO, "COULD NOT REMOVE KEY '" + keyToDelete + "'.");
+                NFHelper.getLogger().log(Level.INFO, "COULD NOT REMOVE KEY '" + keyToDelete + "'.");
             }
         }
 	}
@@ -572,7 +571,7 @@ public class RDBDHelper {
 		}
 	}
 
-	public static boolean isOfRdbdType(NFSpecification spec, RDBDConstants.Type rdbdType) {
+	public static boolean isOfRdbdType(NFSpecification spec, NFConstants.Type rdbdType) {
 		if (spec == null) {
 			return true;
 		}
@@ -588,7 +587,7 @@ public class RDBDHelper {
         };
 	}
 	
-	public static String getAssignmentText(NFSpecification specTmp, int indent, Locale locale, RDBDConstants.Type rdbdType) throws IOException {
+	public static String getAssignmentText(NFSpecification specTmp, int indent, Locale locale, NFConstants.Type rdbdType) throws IOException {
 		StringWriter writer = new StringWriter();
 		switch (rdbdType) {
 			case NORMALFORM_DETERMINATION -> writer.append(HTMLPrinter.printAssignmentForNormalformDetermination(specTmp.getBaseRelation(), indent, locale));

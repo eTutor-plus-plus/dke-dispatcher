@@ -1,12 +1,12 @@
 package at.jku.dke.etutor.modules.nf.ui;
 
-import at.jku.dke.etutor.modules.nf.RDBDHelper;
+import at.jku.dke.etutor.modules.nf.NFConstants;
+import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformViolation;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
-import at.jku.dke.etutor.modules.nf.i18n.NFMessageSource;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.Key;
@@ -23,6 +23,7 @@ import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.RBRSpecification;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
+import org.springframework.context.support.ResourceBundleMessageSource;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,12 +47,18 @@ public class HTMLPrinter implements MessageSourceAware {
 	public static final String LINE_SEP = System.getProperty("line.separator");
 	public static final int OFFSET = 15;
 	
-	private static MessageSource messageSource = new NFMessageSource();
+	private static final MessageSource MESSAGE_SOURCE;
 
 	@SuppressWarnings("static-access")
 	// @Required // deprecated (Gerald Wimmer, 2024-01-03)
 	public void setMessageSource(MessageSource messageSource) {
 		// this.messageSource = messageSource;
+	}
+
+	static {
+		ResourceBundleMessageSource msgSrc = new ResourceBundleMessageSource();
+		msgSrc.setBasename(NFConstants.MESSAGE_SOURCE_PATH);
+		MESSAGE_SOURCE = msgSrc;
 	}
 
 	public static String printDecomposeStep(IdentifiedRelation relation, boolean showSplitButton, boolean showRemoveButton, boolean editable, Locale locale) throws IOException{
@@ -79,16 +86,16 @@ public class HTMLPrinter implements MessageSourceAware {
 
 		if (showSplitButton || showRemoveButton){
 			out.append("					<td class='button_td'>").append(LINE_SEP);
-			String okMessage =  messageSource.getMessage("showpopup.ok", null, locale);
-			String cancelMessage = messageSource.getMessage("showpopup.cancel", null, locale);
+			String okMessage =  MESSAGE_SOURCE.getMessage("showpopup.ok", null, locale);
+			String cancelMessage = MESSAGE_SOURCE.getMessage("showpopup.cancel", null, locale);
 			if (showSplitButton){
-				String specifyattributesMessage = messageSource.getMessage("showsplitrelationpopup.specifyattributes", null, locale);
-				String noattributesMessage = messageSource.getMessage("showsplitrelationpopup.noattributes", null, locale);
-				out.append("						<input type='button' value='").append(messageSource.getMessage("printdecomposestep.split", null, locale)).append("' class='decompose_button' onClick=\"javascript:showSplitRelationPopup('").append(relation.getID()).append("', '%%IDPREFIX%%', '").append(okMessage).append("', '").append(cancelMessage).append("', '").append(specifyattributesMessage).append("', '").append(noattributesMessage).append("');\" />").append(LINE_SEP);
+				String specifyattributesMessage = MESSAGE_SOURCE.getMessage("showsplitrelationpopup.specifyattributes", null, locale);
+				String noattributesMessage = MESSAGE_SOURCE.getMessage("showsplitrelationpopup.noattributes", null, locale);
+				out.append("						<input type='button' value='").append(MESSAGE_SOURCE.getMessage("printdecomposestep.split", null, locale)).append("' class='decompose_button' onClick=\"javascript:showSplitRelationPopup('").append(relation.getID()).append("', '%%IDPREFIX%%', '").append(okMessage).append("', '").append(cancelMessage).append("', '").append(specifyattributesMessage).append("', '").append(noattributesMessage).append("');\" />").append(LINE_SEP);
 			}
 			if (showRemoveButton){
-				String removerelationsMessage = messageSource.getMessage("showdelsubrelationspopup.removerelations", null, locale);
-				out.append("						<input type='button' value='").append(messageSource.getMessage("printdecomposestep.remove", null, locale)).append("' class='decompose_button' onClick=\"javascript:showDelSubRelationsPopup('").append(relation.getID()).append("', '%%IDPREFIX%%', '").append(okMessage).append("', '").append(cancelMessage).append("', '").append(removerelationsMessage).append("');\" />").append(LINE_SEP);
+				String removerelationsMessage = MESSAGE_SOURCE.getMessage("showdelsubrelationspopup.removerelations", null, locale);
+				out.append("						<input type='button' value='").append(MESSAGE_SOURCE.getMessage("printdecomposestep.remove", null, locale)).append("' class='decompose_button' onClick=\"javascript:showDelSubRelationsPopup('").append(relation.getID()).append("', '%%IDPREFIX%%', '").append(okMessage).append("', '").append(cancelMessage).append("', '").append(removerelationsMessage).append("');\" />").append(LINE_SEP);
 			}
 			out.append("					</td>").append(LINE_SEP);
 		}
@@ -125,7 +132,7 @@ public class HTMLPrinter implements MessageSourceAware {
 			out.append("		<tr>").append(LINE_SEP);
 			out.append("			<td>").append(LINE_SEP);
 			out.append("				<div class='section'>").append(LINE_SEP);
-			out.append("					<div class='section_caption'>").append(messageSource.getMessage("printreport.result", null, locale)).append("</div>").append(LINE_SEP);
+			out.append("					<div class='section_caption'>").append(MESSAGE_SOURCE.getMessage("printreport.result", null, locale)).append("</div>").append(LINE_SEP);
 			out.append("					<div class='section_content'>").append(report.getPrologue()).append("</div>").append(LINE_SEP);
 			out.append("				</div>").append(LINE_SEP);
 			out.append("			</td>").append(LINE_SEP);
@@ -140,7 +147,7 @@ public class HTMLPrinter implements MessageSourceAware {
 			out.append("		<tr>").append(LINE_SEP);
 			out.append("			<td>").append(LINE_SEP);
 			out.append("				<div class='section'>").append(LINE_SEP);
-			out.append("					<div class='section_caption'>").append(messageSource.getMessage("printreport.reports", null, locale)).append("</div>").append(LINE_SEP);
+			out.append("					<div class='section_caption'>").append(MESSAGE_SOURCE.getMessage("printreport.reports", null, locale)).append("</div>").append(LINE_SEP);
 			out.append("					<div class='section_content'>").append(LINE_SEP);
 			
 			//PRINT ERROR REPORTS
@@ -312,7 +319,7 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String printKeysRow(Collection<Key> keys, String relationID, int indent, boolean editable, Locale locale) throws IOException  {
-		return printKeysRow(keys, relationID, messageSource.getMessage("printkeysrow.title", null, locale), indent, editable, locale);
+		return printKeysRow(keys, relationID, MESSAGE_SOURCE.getMessage("printkeysrow.title", null, locale), indent, editable, locale);
 	}
 	
 	public static String printKeysRow(Collection<Key> keys, String relationID, String title, int indent, boolean editable, Locale locale) throws IOException  {
@@ -324,13 +331,13 @@ public class HTMLPrinter implements MessageSourceAware {
 		}
 		String content = contentJoiner.toString();
 
-		String okMessage =  messageSource.getMessage("showpopup.ok", null, locale);
-		String cancelMessage = messageSource.getMessage("showpopup.cancel", null, locale);
-		String newkeyMessage = messageSource.getMessage("showaddkeypopup.newkey", null, locale);
-		String noattributesMessage = messageSource.getMessage("showaddkeypopup.noattributes", null, locale);
+		String okMessage =  MESSAGE_SOURCE.getMessage("showpopup.ok", null, locale);
+		String cancelMessage = MESSAGE_SOURCE.getMessage("showpopup.cancel", null, locale);
+		String newkeyMessage = MESSAGE_SOURCE.getMessage("showaddkeypopup.newkey", null, locale);
+		String noattributesMessage = MESSAGE_SOURCE.getMessage("showaddkeypopup.noattributes", null, locale);
 		String addFunction = "onClick=\"javascript:showAddKeyPopup('" + relationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + newkeyMessage + "', '" + noattributesMessage + "');\"";
-		String nokeysMessage = messageSource.getMessage("showdelkeypopup.nokeys", null, locale);
-		String selectkeysMessage = messageSource.getMessage("showdelkeypopup.selectkeys", null, locale);
+		String nokeysMessage = MESSAGE_SOURCE.getMessage("showdelkeypopup.nokeys", null, locale);
+		String selectkeysMessage = MESSAGE_SOURCE.getMessage("showdelkeypopup.selectkeys", null, locale);
 		String delFunction = "onClick=\"javascript:showDelKeyPopup('" + relationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + nokeysMessage + "', '" + selectkeysMessage + "');\"";
 
 		StringBuilder out = new StringBuilder();
@@ -341,7 +348,7 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 
 	public static String printDependenciesRow(Collection<FunctionalDependency> dependencies, String relationID, int indent, boolean editable, Locale locale) throws IOException {
-		return printDependenciesRow(dependencies, relationID, messageSource.getMessage("printdependenciesrow.title", null, locale), indent, editable, locale);
+		return printDependenciesRow(dependencies, relationID, MESSAGE_SOURCE.getMessage("printdependenciesrow.title", null, locale), indent, editable, locale);
 	}
 
 	public static String printDependenciesRow(Collection<FunctionalDependency> dependencies, String relationID, String title, int indent, boolean editable, Locale locale) throws IOException {
@@ -353,13 +360,13 @@ public class HTMLPrinter implements MessageSourceAware {
 		}
 		String content = contentJoiner.toString();
 
-		String okMessage =  messageSource.getMessage("showpopup.ok", null, locale);
-		String cancelMessage = messageSource.getMessage("showpopup.cancel", null, locale);
-		String newdependencyMessage = messageSource.getMessage("showadddependencypopup.newdependency", null, locale);
-		String noattributesMessage = messageSource.getMessage("showadddependencypopup.noattributes", null, locale);
+		String okMessage =  MESSAGE_SOURCE.getMessage("showpopup.ok", null, locale);
+		String cancelMessage = MESSAGE_SOURCE.getMessage("showpopup.cancel", null, locale);
+		String newdependencyMessage = MESSAGE_SOURCE.getMessage("showadddependencypopup.newdependency", null, locale);
+		String noattributesMessage = MESSAGE_SOURCE.getMessage("showadddependencypopup.noattributes", null, locale);
 		String addFunction = "onClick=\"javascript:showAddDependencyPopup('" + relationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + newdependencyMessage + "', '" + noattributesMessage + "');\"";
-		String nodependenciesMessage = messageSource.getMessage("showdeldependencypopup.nodependencies", null, locale);
-		String removedependenciesMessage = messageSource.getMessage("showdeldependencypopup.removedependencies", null, locale);
+		String nodependenciesMessage = MESSAGE_SOURCE.getMessage("showdeldependencypopup.nodependencies", null, locale);
+		String removedependenciesMessage = MESSAGE_SOURCE.getMessage("showdeldependencypopup.removedependencies", null, locale);
 		String delFunction = "onClick=\"javascript:showDelDependencyPopup('" + relationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + nodependenciesMessage + "', '" + removedependenciesMessage + "');\"";
 
 		StringBuilder out = new StringBuilder();
@@ -415,23 +422,23 @@ public class HTMLPrinter implements MessageSourceAware {
 
         for (NormalformViolation violation : analysis.getSecondNormalformViolations()) {
             if (violation.getFunctionalDependency().equals(dependency)) {
-                return messageSource.getMessage("getnormalform.first", null, locale);
+                return MESSAGE_SOURCE.getMessage("getnormalform.first", null, locale);
             }
         }
 
         for (NormalformViolation violation : analysis.getThirdNormalformViolations()) {
             if (violation.getFunctionalDependency().equals(dependency)) {
-                return messageSource.getMessage("getnormalform.second", null, locale);
+                return MESSAGE_SOURCE.getMessage("getnormalform.second", null, locale);
             }
         }
 
         for (NormalformViolation violation : analysis.getBoyceCoddNormalformViolations()) {
             if (violation.getFunctionalDependency().equals(dependency)) {
-                return messageSource.getMessage("getnormalform.third", null, locale);
+                return MESSAGE_SOURCE.getMessage("getnormalform.third", null, locale);
             }
         }
 		
-		return messageSource.getMessage("getnormalform.boycecodd", null, locale);
+		return MESSAGE_SOURCE.getMessage("getnormalform.boycecodd", null, locale);
 	}
 	
 	public static String printAttributesRow(Collection<String> attributes, String baseRelationID, String currRelationID, int indent, boolean editable, Locale locale) throws IOException {
@@ -447,13 +454,13 @@ public class HTMLPrinter implements MessageSourceAware {
 		}
 		String content = contentJoiner.toString();
 		
-		String okMessage =  messageSource.getMessage("showpopup.ok", null, locale);
-		String cancelMessage = messageSource.getMessage("showpopup.cancel", null, locale);
-		String selectattributeMessage = messageSource.getMessage("showaddattributepopup.selectattribute", null, locale);
-		String noattributesMessage = messageSource.getMessage("showaddattributepopup.noattributes", null, locale);
+		String okMessage =  MESSAGE_SOURCE.getMessage("showpopup.ok", null, locale);
+		String cancelMessage = MESSAGE_SOURCE.getMessage("showpopup.cancel", null, locale);
+		String selectattributeMessage = MESSAGE_SOURCE.getMessage("showaddattributepopup.selectattribute", null, locale);
+		String noattributesMessage = MESSAGE_SOURCE.getMessage("showaddattributepopup.noattributes", null, locale);
 		String addFunction = "onClick=\"javascript:showAddAttributePopup('" + baseRelationID + "', '" + currRelationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + selectattributeMessage + "', '" + noattributesMessage + "');\"";
-		String noattributesMessage2 = messageSource.getMessage("showdelattributepopup.noattributes", null, locale);
-		String selectremoveattributeMessage = messageSource.getMessage("showdelattributepopup.selectremoveattribute", null, locale);
+		String noattributesMessage2 = MESSAGE_SOURCE.getMessage("showdelattributepopup.noattributes", null, locale);
+		String selectremoveattributeMessage = MESSAGE_SOURCE.getMessage("showdelattributepopup.selectremoveattribute", null, locale);
 		String delFunction = "onClick=\"javascript:showDelAttributePopup('" + currRelationID + "', '%%IDPREFIX%%', '" + okMessage + "', '" + cancelMessage + "', '" + noattributesMessage2 + "', '" + selectremoveattributeMessage + "');\"";
 
 		StringBuilder out = new StringBuilder();
@@ -483,15 +490,15 @@ public class HTMLPrinter implements MessageSourceAware {
 		offset = getOffset(indent);
 		
 		if (maxLost > nrDependencies) {
-			content = messageSource.getMessage("printmaxlostrow.unlimited", null, locale)+" (" + maxLost + " " + messageSource.getMessage("printmaxlostrow.exceedsdependencies", null, locale) + ", " + nrDependencies + ")";
+			content = MESSAGE_SOURCE.getMessage("printmaxlostrow.unlimited", null, locale)+" (" + maxLost + " " + MESSAGE_SOURCE.getMessage("printmaxlostrow.exceedsdependencies", null, locale) + ", " + nrDependencies + ")";
 		} else if (maxLost == nrDependencies) {
-			content = messageSource.getMessage("printmaxlostrow.unlimited", null, locale)+" (" + maxLost + " " + messageSource.getMessage("printmaxlostrow.equalsdependencies", null, locale) + ", " + nrDependencies + ")";
+			content = MESSAGE_SOURCE.getMessage("printmaxlostrow.unlimited", null, locale)+" (" + maxLost + " " + MESSAGE_SOURCE.getMessage("printmaxlostrow.equalsdependencies", null, locale) + ", " + nrDependencies + ")";
 		} else {
 			content = Integer.toString(maxLost);
 		}
 		
 		out.append(offset).append("<tr>").append(LINE_SEP);
-		out.append(offset).append("	<td class='label_td'>").append(messageSource.getMessage("printmaxlostrow.maxlostdependencies", null, locale)).append(":</td>").append(LINE_SEP);
+		out.append(offset).append("	<td class='label_td'>").append(MESSAGE_SOURCE.getMessage("printmaxlostrow.maxlostdependencies", null, locale)).append(":</td>").append(LINE_SEP);
 		out.append(offset).append("	<td class='content_td' nowrap>").append(content).append("</td>").append(LINE_SEP);
 		out.append(offset).append("	<td class='button_td'>").append(LINE_SEP);
 		out.append(offset).append("	</td>").append(LINE_SEP);
@@ -515,15 +522,15 @@ public class HTMLPrinter implements MessageSourceAware {
 		offset = getOffset(indent);
 
 		String content = switch (level) {
-			case FIRST -> messageSource.getMessage("printtargetlevelrow.first", null, locale);
-			case SECOND -> messageSource.getMessage("printtargetlevelrow.second", null, locale);
-			case THIRD -> messageSource.getMessage("printtargetlevelrow.third", null, locale);
-			case BOYCE_CODD -> messageSource.getMessage("printtargetlevelrow.boycecodd", null, locale);
+			case FIRST -> MESSAGE_SOURCE.getMessage("printtargetlevelrow.first", null, locale);
+			case SECOND -> MESSAGE_SOURCE.getMessage("printtargetlevelrow.second", null, locale);
+			case THIRD -> MESSAGE_SOURCE.getMessage("printtargetlevelrow.third", null, locale);
+			case BOYCE_CODD -> MESSAGE_SOURCE.getMessage("printtargetlevelrow.boycecodd", null, locale);
 			default -> "";
 		};
 		
 		out.append(offset).append("<tr>").append(LINE_SEP);
-		out.append(offset).append("	<td class='label_td'>").append(messageSource.getMessage("printtargetlevelrow.normalform", null, locale)).append(":</td>").append(LINE_SEP);
+		out.append(offset).append("	<td class='label_td'>").append(MESSAGE_SOURCE.getMessage("printtargetlevelrow.normalform", null, locale)).append(":</td>").append(LINE_SEP);
 		out.append(offset).append("	<td class='content_td' nowrap>").append(content).append("</td>").append(LINE_SEP);
 		out.append(offset).append("	<td class='button_td'>").append(LINE_SEP);
 		out.append(offset).append("	</td>").append(LINE_SEP);
@@ -532,25 +539,15 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 	
 	public static String printAssignmentForRBR(RBRSpecification spec, int indent, Locale locale) throws IOException {
-		String offset;
+		String offset = getOffset(indent);
+
+		String relationAttributes = generateAttributeSetHTML(spec.getBaseRelation().getAttributes());
+
+		String dependencies = generateFunctionalDependencySetHTML(spec.getBaseRelation().getFunctionalDependencies());
+
+		String baseAttributes = generateAttributeSetHTML(spec.getBaseAttributes());
+
 		StringBuilder out = new StringBuilder();
-		
-		offset = getOffset(indent);
-		StringJoiner relationAttributes = new StringJoiner("&nbsp;");
-		for (String a : spec.getBaseRelation().getAttributes()){
-			relationAttributes.add(a);
-		}
-
-		StringJoiner dependencies = new StringJoiner(", ");
-        for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
-            dependencies.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
-		}
-
-		StringJoiner baseAttributes = new StringJoiner("&nbsp;");
-        for (String s : spec.getBaseAttributes()) {
-            baseAttributes.add(s);
-        }
-
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Berechnen Sie die funktionalen Abh&auml;ngigkeiten <strong>F<sub><code>S</code></sub></strong> ").append(LINE_SEP);
@@ -582,23 +579,11 @@ public class HTMLPrinter implements MessageSourceAware {
 	public static String printAssignmentForAttributeClosure(AttributeClosureSpecification spec, int indent, Locale locale) throws IOException {
 		String offset = getOffset(indent);
 
-		StringJoiner attributesJoiner = new StringJoiner("&nbsp;");
-		for (String a : spec.getBaseRelation().getAttributes()){
-			attributesJoiner.add(a);
-		}
-		String relationAttributes = attributesJoiner.toString();
+		String relationAttributes = generateAttributeSetHTML(spec.getBaseRelation().getAttributes());
 
-		StringJoiner dependenciesJoiner = new StringJoiner(", ");
-		for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
-            dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
-		}
-		String dependencies = dependenciesJoiner.toString();
+		String dependencies = generateFunctionalDependencySetHTML(spec.getBaseRelation().getFunctionalDependencies());
 
-		StringJoiner baseAttributesJoiner = new StringJoiner("&nbsp;");
-		for (String s : spec.getBaseAttributes()) {
-            baseAttributesJoiner.add(s);
-		}
-		String baseAttributes = baseAttributesJoiner.toString();
+		String baseAttributes = generateAttributeSetHTML(spec.getBaseAttributes());
 
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
@@ -632,17 +617,9 @@ public class HTMLPrinter implements MessageSourceAware {
 	public static String printAssignmentForNormalization(NormalizationSpecification spec, int indent, Locale locale) throws IOException {
 		String offset = getOffset(indent);
 
-		StringJoiner attributesJoiner = new StringJoiner("&nbsp;");
-		for (String a : spec.getBaseRelation().getAttributes()){
-			attributesJoiner.add(a);
-		}
-		String relationAttributes = attributesJoiner.toString();
+		String relationAttributes = generateAttributeSetHTML(spec.getBaseRelation().getAttributes());
 
-		StringJoiner dependenciesJoiner = new StringJoiner(", ");
-		for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
-            dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
-		}
-		String dependencies = dependenciesJoiner.toString();
+		String dependencies = generateFunctionalDependencySetHTML(spec.getBaseRelation().getFunctionalDependencies());
 
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
@@ -719,17 +696,9 @@ public class HTMLPrinter implements MessageSourceAware {
 	public static String printAssignmentForDecompose(DecomposeSpecification spec, int indent, Locale locale) throws IOException {
 		String offset = getOffset(indent);
 
-		StringJoiner attributesJoiner = new StringJoiner("&nbsp;");
-		for (String a : spec.getBaseRelation().getAttributes()){
-			attributesJoiner.add(a);
-		}
-		String relationAttributes = attributesJoiner.toString();
+		String relationAttributes = generateAttributeSetHTML(spec.getBaseRelation().getAttributes());
 
-		StringJoiner dependenciesJoiner = new StringJoiner(", ");
-		for (FunctionalDependency functionalDependency : spec.getBaseRelation().getFunctionalDependencies()) {
-            dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
-		}
-		String dependencies = dependenciesJoiner.toString();
+		String dependencies = generateFunctionalDependencySetHTML(spec.getBaseRelation().getFunctionalDependencies());
 
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
@@ -804,17 +773,9 @@ public class HTMLPrinter implements MessageSourceAware {
 	public static String printAssignmentForKeysDetermination(IdentifiedRelation spec, int indent, Locale locale) throws IOException {
 		String offset = getOffset(indent);
 
-		StringJoiner attributesJoiner = new StringJoiner("&nbsp;");
-		for (String a : spec.getAttributes()){
-			attributesJoiner.add(a);
-		}
-		String relationAttributes = attributesJoiner.toString();
+		String relationAttributes = generateAttributeSetHTML(spec.getAttributes());
 
-		StringJoiner dependenciesJoiner = new StringJoiner(", ");
-		for (FunctionalDependency functionalDependency : spec.getFunctionalDependencies()) {
-            dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
-		}
-		String dependencies = dependenciesJoiner.toString();
+		String dependencies = generateFunctionalDependencySetHTML(spec.getFunctionalDependencies());
 
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
@@ -842,17 +803,13 @@ public class HTMLPrinter implements MessageSourceAware {
 	public static String printAssignmentForMinimalCover(IdentifiedRelation spec, int indent, Locale locale) throws IOException {
 		String offset = getOffset(indent);
 
-		StringJoiner dependenciesJoiner = new StringJoiner(", ");
-		for (FunctionalDependency functionalDependency : spec.getFunctionalDependencies()) {
-            dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
-		}
-		String dependencies = dependenciesJoiner.toString();
+		String dependencies = generateFunctionalDependencySetHTML(spec.getFunctionalDependencies());
 
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Geben Sie f&uuml;r die Menge <b>F</b> an Funktionalen Abh&auml;ngigkeiten eine minimale  ").append(LINE_SEP);
-			out.append(offset).append("	�berdeckung an. Streichen Sie alle redundanten Funktionalen Abh&auml;ngigkeiten ").append(LINE_SEP);
+			out.append(offset).append("	Überdeckung an. Streichen Sie alle redundanten Funktionalen Abh&auml;ngigkeiten ").append(LINE_SEP);
 			out.append(offset).append("	und alle redundanten Attribute in den linken Seiten der Funktionalen Abh&auml;ngigkeiten. ").append(LINE_SEP);
 		} else {
 			out.append(offset).append("	Indicate a minimal cover for <b>F</b>. Eliminate all redundant functional ").append(LINE_SEP);
@@ -872,17 +829,9 @@ public class HTMLPrinter implements MessageSourceAware {
 	public static String printAssignmentForNormalformDetermination(Relation spec, int indent, Locale locale) throws IOException {
 		String offset = getOffset(indent);
 
-		StringJoiner attributesJoiner = new StringJoiner("&nbsp;");
-		for (String a : spec.getAttributes()){
-			attributesJoiner.add(a);
-		}
-		String relationAttributes = attributesJoiner.toString();
+		String relationAttributes = generateAttributeSetHTML(spec.getAttributes());
 
-		StringJoiner dependenciesJoiner = new StringJoiner(", ");
-		for (FunctionalDependency functionalDependency : spec.getFunctionalDependencies()) {
-            dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
-		}
-		String dependencies = dependenciesJoiner.toString();
+		String dependencies = generateFunctionalDependencySetHTML(spec.getFunctionalDependencies());
 
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
@@ -1058,7 +1007,7 @@ public class HTMLPrinter implements MessageSourceAware {
 
 			boolean isInnerNode;
 			for (IdentifiedRelation currRelation : relations){
-				isInnerNode = RDBDHelper.isInnerNode(currRelation.getID(), relations);
+				isInnerNode = NFHelper.isInnerNode(currRelation.getID(), relations);
 				writer.println(printDecomposeStep(currRelation, !isInnerNode, isInnerNode, true, locale));
 			}
 			
@@ -1079,6 +1028,26 @@ public class HTMLPrinter implements MessageSourceAware {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private static String generateAttributeSetHTML(Collection<String> attributes) {
+		StringJoiner attributesJoiner = new StringJoiner("&nbsp;");
+
+		for (String a : attributes) {
+			attributesJoiner.add(a);
+		}
+
+		return attributesJoiner.toString();
+	}
+
+	private static String generateFunctionalDependencySetHTML(Collection<FunctionalDependency> dependencies) {
+		StringJoiner dependenciesJoiner = new StringJoiner(", ");
+
+		for (FunctionalDependency functionalDependency : dependencies) {
+			dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
+		}
+
+		return dependenciesJoiner.toString();
 	}
 
 	private static String generateButtons(String offset, String title, String content, String addFunction, String delFunction, boolean editable) {
