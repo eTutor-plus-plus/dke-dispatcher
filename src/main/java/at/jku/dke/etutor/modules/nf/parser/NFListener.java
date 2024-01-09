@@ -2,6 +2,16 @@
 
 package at.jku.dke.etutor.modules.nf.parser ;
 
+import java.util.Set;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.HashMap;
+import at.jku.dke.etutor.modules.nf.NormalformDeterminationSubmission;
+import at.jku.dke.etutor.modules.nf.model.Key;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
+
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -10,15 +20,15 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface NFListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link NFParser#relationSet}.
+	 * Enter a parse tree produced by {@link NFParser#relationSetSubmission}.
 	 * @param ctx the parse tree
 	 */
-	void enterRelationSet(NFParser.RelationSetContext ctx);
+	void enterRelationSetSubmission(NFParser.RelationSetSubmissionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link NFParser#relationSet}.
+	 * Exit a parse tree produced by {@link NFParser#relationSetSubmission}.
 	 * @param ctx the parse tree
 	 */
-	void exitRelationSet(NFParser.RelationSetContext ctx);
+	void exitRelationSetSubmission(NFParser.RelationSetSubmissionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NFParser#relation}.
 	 * @param ctx the parse tree
@@ -39,6 +49,16 @@ public interface NFListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitRelationId(NFParser.RelationIdContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link NFParser#keySetSubmission}.
+	 * @param ctx the parse tree
+	 */
+	void enterKeySetSubmission(NFParser.KeySetSubmissionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NFParser#keySetSubmission}.
+	 * @param ctx the parse tree
+	 */
+	void exitKeySetSubmission(NFParser.KeySetSubmissionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NFParser#keySet}.
 	 * @param ctx the parse tree
@@ -90,6 +110,16 @@ public interface NFListener extends ParseTreeListener {
 	 */
 	void exitNormalFormViolation(NFParser.NormalFormViolationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link NFParser#normalFormSpecification}.
+	 * @param ctx the parse tree
+	 */
+	void enterNormalFormSpecification(NFParser.NormalFormSpecificationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NFParser#normalFormSpecification}.
+	 * @param ctx the parse tree
+	 */
+	void exitNormalFormSpecification(NFParser.NormalFormSpecificationContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link NFParser#normalForm}.
 	 * @param ctx the parse tree
 	 */
@@ -99,6 +129,16 @@ public interface NFListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNormalForm(NFParser.NormalFormContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link NFParser#functionalDependencySetSubmission}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionalDependencySetSubmission(NFParser.FunctionalDependencySetSubmissionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NFParser#functionalDependencySetSubmission}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionalDependencySetSubmission(NFParser.FunctionalDependencySetSubmissionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NFParser#functionalDependencySet}.
 	 * @param ctx the parse tree
@@ -119,6 +159,16 @@ public interface NFListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionalDependency(NFParser.FunctionalDependencyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link NFParser#attributeSetSubmission}.
+	 * @param ctx the parse tree
+	 */
+	void enterAttributeSetSubmission(NFParser.AttributeSetSubmissionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NFParser#attributeSetSubmission}.
+	 * @param ctx the parse tree
+	 */
+	void exitAttributeSetSubmission(NFParser.AttributeSetSubmissionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NFParser#attributeSet}.
 	 * @param ctx the parse tree

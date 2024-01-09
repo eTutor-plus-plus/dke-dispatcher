@@ -2,6 +2,16 @@
 
 package at.jku.dke.etutor.modules.nf.parser ;
 
+import java.util.Set;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.HashMap;
+import at.jku.dke.etutor.modules.nf.NormalformDeterminationSubmission;
+import at.jku.dke.etutor.modules.nf.model.Key;
+import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
+
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -19,13 +29,13 @@ public class NFBaseListener implements NFListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRelationSet(NFParser.RelationSetContext ctx) { }
+	@Override public void enterRelationSetSubmission(NFParser.RelationSetSubmissionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRelationSet(NFParser.RelationSetContext ctx) { }
+	@Override public void exitRelationSetSubmission(NFParser.RelationSetSubmissionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -50,6 +60,18 @@ public class NFBaseListener implements NFListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitRelationId(NFParser.RelationIdContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterKeySetSubmission(NFParser.KeySetSubmissionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitKeySetSubmission(NFParser.KeySetSubmissionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -115,6 +137,18 @@ public class NFBaseListener implements NFListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterNormalFormSpecification(NFParser.NormalFormSpecificationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNormalFormSpecification(NFParser.NormalFormSpecificationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterNormalForm(NFParser.NormalFormContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -122,6 +156,18 @@ public class NFBaseListener implements NFListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNormalForm(NFParser.NormalFormContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunctionalDependencySetSubmission(NFParser.FunctionalDependencySetSubmissionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionalDependencySetSubmission(NFParser.FunctionalDependencySetSubmissionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -146,6 +192,18 @@ public class NFBaseListener implements NFListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFunctionalDependency(NFParser.FunctionalDependencyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAttributeSetSubmission(NFParser.AttributeSetSubmissionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAttributeSetSubmission(NFParser.AttributeSetSubmissionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

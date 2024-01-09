@@ -104,7 +104,7 @@ public class NFEvaluator implements Evaluator {
 
 				// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
 				Relation submission = new Relation();
-				Set<Key> minimalKeys = submissionParser.keySet().keys;
+				Set<Key> minimalKeys = submissionParser.keySetSubmission().keys;
 				if (!errorCollector.getSyntaxErrors().isEmpty()) {
 					analysis = new KeysAnalysis();
 
@@ -129,7 +129,7 @@ public class NFEvaluator implements Evaluator {
 
 				// Assemble relation from input String. (Gerald Wimmer, 2023-11-27)
 				Relation submission = new Relation();
-				Set<FunctionalDependency> functionalDependencies = submissionParser.functionalDependencySet().functionalDependencies;
+				Set<FunctionalDependency> functionalDependencies = submissionParser.functionalDependencySetSubmission().functionalDependencies;
 				if (!errorCollector.getSyntaxErrors().isEmpty()) {
 					analysis = new MinimalCoverAnalysis();
 
@@ -154,7 +154,7 @@ public class NFEvaluator implements Evaluator {
 
 				// Assemble relation from input String. (Gerald Wimmer, 2023-11-27)
 				Relation submission = new Relation();
-				Set<String> attributes = submissionParser.attributeSet().attributes;
+				Set<String> attributes = submissionParser.attributeSetSubmission().attributes;
 				if (!errorCollector.getSyntaxErrors().isEmpty()) {
 					analysis = new AttributeClosureAnalysis();
 
@@ -243,7 +243,7 @@ public class NFEvaluator implements Evaluator {
 				normalizationAnalyzerConfig.setMaxLostDependencies(normalizationSpecification.getMaxLostDependencies());
 
 				// Get normalized relations from input String. (Gerald Wimmer, 2023-12-02)
-				Set<IdentifiedRelation> submissionSet = submissionParser.relationSet().relations;
+				Set<IdentifiedRelation> submissionSet = submissionParser.relationSetSubmission().relations;
 				if (!errorCollector.getSyntaxErrors().isEmpty()) {
 					analysis = new NormalizationAnalysis();
 

@@ -37,11 +37,11 @@ import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 }
 
-relationSet returns [Set<IdentifiedRelation> relations]                              // start rule
+relationSetSubmission returns [Set<IdentifiedRelation> relations]                              // start rule
     @init {
         $relations = new HashSet<>();
     } :
-        relation {$relations.add($relation.parsedRelation);} (';' relation {$relations.add($relation.parsedRelation);})* ;
+        relation {$relations.add($relation.parsedRelation);} (';' relation {$relations.add($relation.parsedRelation);})* EOF ;
 relation returns [IdentifiedRelation parsedRelation]
     @init {
         $parsedRelation = new IdentifiedRelation();
@@ -50,7 +50,13 @@ relation returns [IdentifiedRelation parsedRelation]
 relationId returns [String idString]:
         '*' AlphaNumericChain {$idString = $AlphaNumericChain.text;} ;
 
-keySet returns [Set<Key> keys]                                                      // start rule
+keySetSubmission returns [Set<Key> keys]
+    @init {
+            $keys = new HashSet<>();
+        } :
+            keySet {$keys.addAll($keySet.keys);} EOF ;  // start rule
+
+keySet returns [Set<Key> keys]
     @init {
         $keys = new HashSet<>();
     } :
@@ -65,7 +71,7 @@ normalFormSubmission returns [NormalformDeterminationSubmission submission]
     @init {
         $submission = new NormalformDeterminationSubmission();
     } :
-        normalForm {$submission.setOverallLevel($normalForm.level);} '.' (normalFormViolationSet {$submission.setNormalformViolations($normalFormViolationSet.violations); } )? ;                    // start rule
+        normalForm {$submission.setOverallLevel($normalForm.level);} '.' (normalFormViolationSet {$submission.setNormalformViolations($normalFormViolationSet.violations); } )? EOF ;                    // start rule
 normalFormViolationSet returns [Map<FunctionalDependency, NormalformLevel> violations]
     @init {
         $violations = new HashMap<>();
@@ -78,13 +84,22 @@ normalFormViolationSet returns [Map<FunctionalDependency, NormalformLevel> viola
 */
 normalFormViolation returns [FunctionalDependency funcDependency, NormalformLevel level] :
     functionalDependency {$funcDependency = $functionalDependency.fdObject;} ':' normalForm {$level = $normalForm.level;} ;
+normalFormSpecification returns [NormalformLevel level] :
+    normalForm {$level = $normalForm.level;} EOF; // only used for creating exercise specifications in the platform frontend
+
 normalForm returns [NormalformLevel level] :
         '1NF' {$level = NormalformLevel.FIRST;}
     |   '2NF' {$level = NormalformLevel.SECOND;}
     |   '3NF' {$level = NormalformLevel.THIRD;}
     |   'BCNF' {$level = NormalformLevel.BOYCE_CODD;} ;
 
-functionalDependencySet returns [Set<FunctionalDependency> functionalDependencies]  // start rule
+functionalDependencySetSubmission returns [Set<FunctionalDependency> functionalDependencies]  // start rule
+    @init {
+        $functionalDependencies = new HashSet<>();
+    } :
+        functionalDependencySet {$functionalDependencies.addAll($functionalDependencySet.functionalDependencies);} EOF ;
+
+functionalDependencySet returns [Set<FunctionalDependency> functionalDependencies]
     @init {
         $functionalDependencies = new HashSet<>();
     } :
@@ -94,6 +109,12 @@ functionalDependency returns [FunctionalDependency fdObject]
         $fdObject = new FunctionalDependency();
     } :
         attributeSet {$fdObject.setLhsAttributes($attributeSet.attributes);} '->' attributeSet {$fdObject.setRhsAttributes($attributeSet.attributes);} ;
+
+attributeSetSubmission returns [Set<String> attributes]
+    @init {
+        $attributes = new HashSet<>();
+    } :
+        attributeSet {$attributes.addAll($attributeSet.attributes);} EOF ;  // start rule
 
 attributeSet returns [Set<String> attributes]
     @init {

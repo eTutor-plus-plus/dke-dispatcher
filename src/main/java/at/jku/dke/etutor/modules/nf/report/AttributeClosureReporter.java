@@ -74,9 +74,9 @@ public class AttributeClosureReporter extends ErrorReporter {
 			if (config.getDiagnoseLevel() == 2){
 				description.append(missingAttributesCount);
 				if (missingAttributesCount == 1){
-					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeis", null, locale)).append(" ");
+					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeisa", null, locale)).append(" ");
 				} else {
-					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeare", null, locale)).append(" ");
+					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributesarea", null, locale)).append(" ");
 				}
 				description.append(messageSource.getMessage("attributeclosurereporter.missing", null, locale));
 			}
@@ -117,9 +117,9 @@ public class AttributeClosureReporter extends ErrorReporter {
 			if (config.getDiagnoseLevel() == 2) {
 				description.append(additionalAttributesCount);
 				if (missingAttributesCount == 1){
-					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeis", null, locale)).append(" ");
+					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeisa", null, locale)).append(" ");
 				} else {
-					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributesare", null, locale)).append(" ");
+					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributesarea", null, locale)).append(" ");
 				}
 				description.append(messageSource.getMessage("attributeclosurereporter.toomuch", null, locale));
 			}

@@ -262,7 +262,7 @@ public class NFResourceService {
 
         baseAttributesParser.addErrorListener(errorCollector);
 
-        Set<String> baseAttributes = baseAttributesParser.attributeSet().attributes;
+        Set<String> baseAttributes = baseAttributesParser.attributeSetSubmission().attributes;
 
         if(!errorCollector.getSyntaxErrors().isEmpty()) {
             throw new ExerciseNotValidException("Syntax error(s) in base attributes: " + errorCollector.getStringOfAllErrors());
@@ -279,7 +279,7 @@ public class NFResourceService {
 
             baseDependenciesParser.addErrorListener(errorCollector);
 
-            Set<FunctionalDependency> baseDependencies = baseDependenciesParser.functionalDependencySet().functionalDependencies;
+            Set<FunctionalDependency> baseDependencies = baseDependenciesParser.functionalDependencySetSubmission().functionalDependencies;
 
             if (!errorCollector.getSyntaxErrors().isEmpty()) {
                 throw new ExerciseNotValidException("Syntax error(s) in base dependencies: " + errorCollector.getStringOfAllErrors());
@@ -310,7 +310,7 @@ public class NFResourceService {
 
                     targetLevelParser.addErrorListener(errorCollector);
 
-                    NormalformLevel targetLevel = targetLevelParser.normalForm().level;
+                    NormalformLevel targetLevel = targetLevelParser.normalFormSpecification().level;
 
                     if(!errorCollector.getSyntaxErrors().isEmpty()) {
                         throw new ExerciseNotValidException("Syntax error(s) in target level: " + errorCollector.getStringOfAllErrors());
@@ -358,7 +358,7 @@ public class NFResourceService {
 
                     acBaseAttributesParser.addErrorListener(errorCollector);
 
-                    Set<String> acBaseAttributes = acBaseAttributesParser.attributeSet().attributes;
+                    Set<String> acBaseAttributes = acBaseAttributesParser.attributeSetSubmission().attributes;
 
                     if(!errorCollector.getSyntaxErrors().isEmpty()) {
                         throw new ExerciseNotValidException("Syntax error(s) in attribute closure base attributes: " + errorCollector.getStringOfAllErrors());
