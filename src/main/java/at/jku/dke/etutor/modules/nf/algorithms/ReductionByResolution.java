@@ -5,9 +5,9 @@ import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 public class ReductionByResolution {
 
@@ -85,7 +85,7 @@ public class ReductionByResolution {
 		}*/
 		
 		/*
-		Vector<String> subScheme = new Vector<String>();
+		List<String> subScheme = new LinkedList<String>();
 		subScheme.add("A");
 		subScheme.add("C");
 		subScheme.add("E");
@@ -118,7 +118,7 @@ public class ReductionByResolution {
 	 * @return The functional dependencies of the subScheme
 	 */
 	public static Set<FunctionalDependency> execute(Relation rel, Collection<String> subScheme) {
-		List<String> attributes = new Vector<>();
+		List<String> attributes = new LinkedList<>();
 
 		/*
 		 * Add only those attributes of the base relation that are absent from the subScheme
@@ -153,7 +153,7 @@ public class ReductionByResolution {
 	 * @return A <code>Set</code> of resolved functional dependencies
 	 */
 	public static Set<FunctionalDependency> calculateResolvents(String a, Collection<FunctionalDependency> dependencies) {
-		List<FunctionalDependency> containingDependencies = new Vector<>();
+		List<FunctionalDependency> containingDependencies = new LinkedList<>();
         for (FunctionalDependency currDependency : dependencies) {
             if (currDependency.getRhsAttributes().contains(a)) {
                 containingDependencies.add(currDependency);

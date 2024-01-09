@@ -4,9 +4,9 @@ import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 public class ExtraneousAttributesAnalysis extends NFAnalysis {
 
@@ -23,7 +23,7 @@ public class ExtraneousAttributesAnalysis extends NFAnalysis {
 
 	public void addExtraneousAttribute(FunctionalDependency dependency, String attribute){
 		if (!this.extraneousAttributes.containsKey(dependency)){
-			this.extraneousAttributes.put(dependency, new Vector<>());
+			this.extraneousAttributes.put(dependency, new LinkedList<>());
 		}
 
 		this.extraneousAttributes.get(dependency).add(attribute);

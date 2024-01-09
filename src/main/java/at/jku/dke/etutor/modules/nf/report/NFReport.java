@@ -4,7 +4,6 @@ import at.jku.dke.etutor.core.evaluation.DefaultReport;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
 public class NFReport extends DefaultReport {
 
@@ -12,16 +11,16 @@ public class NFReport extends DefaultReport {
 
 	private boolean showPrologue;
 
-	private final Vector<ErrorReport> errorReports;
-	private final Vector<ErrorReportGroup> errorReportGroups;
+	private final List<ErrorReport> errorReports;
+	private final List<ErrorReportGroup> errorReportGroups;
 	
 	public NFReport() {
 		super();
 		this.prologue = null;
 		this.showPrologue = true;
 		
-		this.errorReports = new Vector<>();
-		this.errorReportGroups = new Vector<>();
+		this.errorReports = new LinkedList<>();
+		this.errorReportGroups = new LinkedList<>();
 	}
 
 	public boolean showPrologue() {

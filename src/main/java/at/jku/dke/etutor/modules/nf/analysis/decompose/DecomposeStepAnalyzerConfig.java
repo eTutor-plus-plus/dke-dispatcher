@@ -4,15 +4,16 @@ import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 
 import java.util.Collection;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 
 public class DecomposeStepAnalyzerConfig extends NormalizationAnalyzerConfig {
 
-	private final Vector<IdentifiedRelation> allRelations;
+	private final List<IdentifiedRelation> allRelations;
 
 	public DecomposeStepAnalyzerConfig() {
 		super();
-		this.allRelations = new Vector<>();
+		this.allRelations = new LinkedList<>();
 	}
 
 	public void setAllRelations(Collection<IdentifiedRelation> allRelations){
@@ -24,7 +25,7 @@ public class DecomposeStepAnalyzerConfig extends NormalizationAnalyzerConfig {
 		this.allRelations.add(relation);
 	}
 
-	public Vector<IdentifiedRelation> getAllRelations(){
-		return (Vector<IdentifiedRelation>)this.allRelations.clone();
+	public List<IdentifiedRelation> getAllRelations(){
+		return new LinkedList<>(this.allRelations);
 	}
 }

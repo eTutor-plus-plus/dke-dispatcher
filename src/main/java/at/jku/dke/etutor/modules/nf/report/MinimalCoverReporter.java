@@ -38,7 +38,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 		if (config.getAction().equalsIgnoreCase("SUBMIT")) {
 			prologue.append(messageSource.getMessage("minimalcoverreporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
 
-			if (grading.getPoints() == 1){
+			if (grading.getPoints() == 1) {
 				prologue.append(" ").append(messageSource.getMessage("minimalcoverreporter.point", null, locale)).append(" ");
 			} else {
 				prologue.append(" ").append(messageSource.getMessage("minimalcoverreporter.points", null, locale)).append(" ");
@@ -48,42 +48,42 @@ public class MinimalCoverReporter extends ErrorReporter {
 		}
 		report.setPrologue(prologue.toString());
 
-		if (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK)){
+		if (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK)) {
 			//ADDING ERROR REPORT FOR CANONICAL REPRESENTATION ANALYSIS, IF NECESSARY
-			if (analysis.getCanonicalRepresentationAnalysis() != null){
-				if (!analysis.getCanonicalRepresentationAnalysis().submissionSuitsSolution()){
+			if (analysis.getCanonicalRepresentationAnalysis() != null) {
+				if (!analysis.getCanonicalRepresentationAnalysis().submissionSuitsSolution()) {
 					report.addErrorReport(createCanonicalRepresentationErrorReport(analysis.getCanonicalRepresentationAnalysis(), config, messageSource, locale));
 					NFHelper.getLogger().log(Level.INFO, "Added canonical representation error report");
 				}
 			}
 	
 			//ADDING ERROR REPORT FOR TRIVIAL FUNCTIONAL DEPENDENCIES ANALYSIS, IF NECESSARY
-			if (analysis.getTrivialDependenciesAnalysis() != null){
-				if (!analysis.getTrivialDependenciesAnalysis().submissionSuitsSolution()){
+			if (analysis.getTrivialDependenciesAnalysis() != null) {
+				if (!analysis.getTrivialDependenciesAnalysis().submissionSuitsSolution()) {
 					report.addErrorReport(createTrivialDependenciesErrorReport(analysis.getTrivialDependenciesAnalysis(), config, messageSource, locale));
 					NFHelper.getLogger().log(Level.INFO, "Added trivial dependencies error report");
 				}
 			}
 			
 			//ADDING ERROR REPORT FOR EXTRANEOUS ATTRIBUTE ANALYSIS, IF NECESSARY
-			if (analysis.getExtraneousAttributesAnalysis() != null){
-				if (!analysis.getExtraneousAttributesAnalysis().submissionSuitsSolution()){
+			if (analysis.getExtraneousAttributesAnalysis() != null) {
+				if (!analysis.getExtraneousAttributesAnalysis().submissionSuitsSolution()) {
 					NFHelper.getLogger().log(Level.INFO, "Added extraneous attributes error report");
 					report.addErrorReport(createExtraneousAttributesErrorReport(analysis.getExtraneousAttributesAnalysis(), config, messageSource, locale));
 				}
 			}
 			
 			//ADDING ERROR REPORT FOR REDUNDANT FUNCTIONAL DEPENDENCIES ANALYSIS, IF NECESSARY
-			if (analysis.getRedundantDependenciesAnalysis() != null){
-				if (!analysis.getRedundantDependenciesAnalysis().submissionSuitsSolution()){
+			if (analysis.getRedundantDependenciesAnalysis() != null) {
+				if (!analysis.getRedundantDependenciesAnalysis().submissionSuitsSolution()) {
 					report.addErrorReport(createRedundantDependenciesErrorReport(analysis.getRedundantDependenciesAnalysis(), config, messageSource, locale));
 					NFHelper.getLogger().log(Level.INFO, "Added redundant dependencies error report");
 				}
 			}
 			
 			//ADDING ERROR REPORT FOR FUNCTIONAL DEPENDENCIES COVER ANALYSIS, IF NECESSARY
-			if (analysis.getDependenciesCoverAnalysis() != null){
-				if (!analysis.getDependenciesCoverAnalysis().submissionSuitsSolution()){
+			if (analysis.getDependenciesCoverAnalysis() != null) {
+				if (!analysis.getDependenciesCoverAnalysis().submissionSuitsSolution()) {
 					report.addErrorReport(createDependenciesCoverErrorReport(analysis.getDependenciesCoverAnalysis(), config, messageSource, locale));
 					NFHelper.getLogger().log(Level.INFO, "Added dependencies cover error report");
 				}
@@ -122,7 +122,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 		}
 		
 		if (config.getDiagnoseLevel() == 3) {
-			generateLevel3Div(analysis.getNotCanonicalDependencies(), count, "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.notcanonicalrepresentation", messageSource, locale);
+			description.append(generateLevel3Div(analysis.getNotCanonicalDependencies(), "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.notcanonicalrepresentation", locale));
 
 			/*String currElemID = NFHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
@@ -193,7 +193,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 		
 		
 		if (config.getDiagnoseLevel() == 3) {
-			generateLevel3Div(analysis.getTrivialDependencies(), count, "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.trivial", messageSource, locale);
+			description.append(generateLevel3Div(analysis.getTrivialDependencies(), "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.trivial", locale));
 
 			/*String currElemID = NFHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
@@ -236,12 +236,11 @@ public class MinimalCoverReporter extends ErrorReporter {
 	}
 	
 	public static ErrorReport createExtraneousAttributesErrorReport(ExtraneousAttributesAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		int count = 0;
-
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
 
-        //COUNT BAD DEPENDENCCIES
+        //COUNT BAD DEPENDENCIES
+		int count = 0;
         for (List<String> extraneousAttributes : analysis.getExtraneousAttributes().values()) {
             count += extraneousAttributes.size();
         }
@@ -252,11 +251,11 @@ public class MinimalCoverReporter extends ErrorReporter {
 		//SET HINT
 
 		//SET DESCRIPTION
-		if (config.getDiagnoseLevel() == 1){
+		if (config.getDiagnoseLevel() == 1) {
 			description.append(messageSource.getMessage("minimalcoverreporter.minoneextraneousattribute", null, locale));
 		}
 		
-		if (config.getDiagnoseLevel() == 2){
+		if (config.getDiagnoseLevel() == 2) {
 			description.append(count);
 	
 			if (count == 1){
@@ -266,42 +265,47 @@ public class MinimalCoverReporter extends ErrorReporter {
 			}
 		}
 		
-		if (config.getDiagnoseLevel() == 3){
-			String currElemID = NFHelper.getNextElementID();
-			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-			description.append("<html>").append(HTML_HEADER).append("<body>");
-			description.append("<p>Extraneous attributes:</p>");
+		if (config.getDiagnoseLevel() == 3) {
+			description.append("<div>").append(count);
+			if (count == 1){
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.extraneousattributefounda", null, locale)).append(" ");
+			} else {
+				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.extraneousattributesfounda", null, locale)).append(" ");
+			}
+			description.append(messageSource.getMessage("minimalcoverreporter.extraneousattributes", null, locale)).append(".");
+			description.append("<p/>");
+
 			description.append(TABLE_HEADER);
 
 			description.append("<thead><tr><th>").append(messageSource.getMessage("minimalcoverreporter.functionaldependency", null, locale)).append("</th><th>").append(messageSource.getMessage("minimalcoverreporter.extraneousattributes", null, locale)).append("</th></tr></thead><tbody>");
 
-			boolean first = true;
-            for (Map.Entry<FunctionalDependency, List<String>> currEntry : analysis.getExtraneousAttributes().entrySet()) {
-                description.append("<tr><td>");
-                description.append(printDependency(currEntry.getKey()));
-                description.append("</td><td>");
+			for (Map.Entry<FunctionalDependency, List<String>> currEntry : analysis.getExtraneousAttributes().entrySet()) {
+				description.append("<tr><td>");
+				description.append(printDependency(currEntry.getKey()));
+				description.append("</td><td>");
 
-                for (String extraneousAttribute : currEntry.getValue()) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        description.append(" ");
-                        description.append(extraneousAttribute);
-                    }
-                }
-                description.append("</td></tr>");
-            }
+				StringJoiner attributesJoiner = new StringJoiner(" ");
+				for (String extraneousAttribute : currEntry.getValue()) {
+					attributesJoiner.add(extraneousAttribute);
+				}
+				description.append(attributesJoiner);
+
+				description.append("</td></tr>");
+			}
 			description.append("</tbody></table>");
+
+			description.append("</div>");
+
+			/*String currElemID = NFHelper.getNextElementID();
+			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
+			description.append("<html>").append(HTML_HEADER).append("<body>");
+
+			// table generation
+
 			description.append("</body></html>");
 			description.append("\"></input>");
 
-			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(count);
-
-			if (count == 1){
-				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.extraneousattributefounda", null, locale));
-			} else {
-				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.extraneousattributesfounda", null, locale));
-			}
+			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(count);*/
 		}
 		report.setDescription(description.toString());
 
@@ -335,13 +339,13 @@ public class MinimalCoverReporter extends ErrorReporter {
 		//SET HINT
 
 		//SET DESCRIPTION
-		if (config.getDiagnoseLevel() == 1){
+		if (config.getDiagnoseLevel() == 1) {
 			description.append(messageSource.getMessage("minimalcoverreporter.minoneredundant", null, locale));
 		}
 		
-		if (config.getDiagnoseLevel() == 2){
+		if (config.getDiagnoseLevel() == 2) {
 			description.append(count);
-			if (count == 1){
+			if (count == 1) {
 				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyis", null, locale)).append(" ");
 			} else {
 				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesare", null, locale)).append(" ");
@@ -349,8 +353,8 @@ public class MinimalCoverReporter extends ErrorReporter {
 			description.append(messageSource.getMessage("minimalcoverreporter.redundand", null, locale)).append(".");
 		}
 		
-		if (config.getDiagnoseLevel() == 3){
-			generateLevel3Div(analysis.getRedundantDependencies(), count, "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.redundand", messageSource, locale);
+		if (config.getDiagnoseLevel() == 3) {
+			description.append(generateLevel3Div(analysis.getRedundantDependencies(), "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.redundand", locale));
 
 			/*String currElemID = NFHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
@@ -393,7 +397,6 @@ public class MinimalCoverReporter extends ErrorReporter {
 	}
 	
 	public static ErrorReport createDependenciesCoverErrorReport(DependenciesCoverAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
 		int missingDependenciesCount = analysis.getMissingDependencies().size();
@@ -446,7 +449,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 		
 		if (config.getDiagnoseLevel() == 3){
 			if (missingDependenciesCount > 0) {
-				generateLevel3Div(analysis.getMissingDependencies(), missingDependenciesCount, "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.missing", messageSource, locale);
+				description.append(generateLevel3Div(analysis.getMissingDependencies(), "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.missing", locale));
 
 				/*currElemID = NFHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
@@ -473,7 +476,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 			}
 			
 			if (additionalDependenciesCount > 0) {
-				generateLevel3Div(analysis.getAdditionalDependencies(), additionalDependenciesCount, "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.determinedcannotbederived", messageSource, locale);
+				description.append(generateLevel3Div(analysis.getAdditionalDependencies(), "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.determinedcannotbederived", locale));
 
 				/*currElemID = NFHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");

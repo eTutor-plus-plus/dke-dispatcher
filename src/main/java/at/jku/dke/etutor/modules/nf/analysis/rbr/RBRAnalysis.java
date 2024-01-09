@@ -3,30 +3,31 @@ package at.jku.dke.etutor.modules.nf.analysis.rbr;
 import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 
 public class RBRAnalysis extends NFAnalysis {
 
-	private final Vector<FunctionalDependency> missingFunctionalDependencies;
-	private final Vector<FunctionalDependency> additionalFunctionalDependencies;
+	private final List<FunctionalDependency> missingFunctionalDependencies;
+	private final List<FunctionalDependency> additionalFunctionalDependencies;
 
 	public RBRAnalysis() {
 		super();
 		
-		this.missingFunctionalDependencies = new Vector<>();
-		this.additionalFunctionalDependencies = new Vector<>();
+		this.missingFunctionalDependencies = new LinkedList<>();
+		this.additionalFunctionalDependencies = new LinkedList<>();
 	}
 
-	public Vector<FunctionalDependency> getMissingFunctionalDependencies() {
-		return (Vector<FunctionalDependency>)this.missingFunctionalDependencies.clone();
+	public List<FunctionalDependency> getMissingFunctionalDependencies() {
+		return new LinkedList<>(this.missingFunctionalDependencies);
 	}
 
 	public void addMissingFunctionalDependency(FunctionalDependency lostDependency) {
 		this.missingFunctionalDependencies.add(lostDependency);
 	}
 
-	public Vector<FunctionalDependency> getAdditionalFunctionalDependencies() {
-		return (Vector<FunctionalDependency>)this.additionalFunctionalDependencies.clone();
+	public List<FunctionalDependency> getAdditionalFunctionalDependencies() {
+		return new LinkedList<>(this.additionalFunctionalDependencies);
 	}
 
 	public void addAdditionalFunctionalDependency(FunctionalDependency additionalDependency) {

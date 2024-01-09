@@ -21,15 +21,19 @@ public abstract class ErrorReporter {
 
     protected static final String TABLE_HEADER = "<table border='2' rules='all'>";
 
-    protected static String generateLevel3Div(Collection<?> collection, int count, String singularNameKey, String pluralNameKey, String issueNameKey, MessageSource messageSource, Locale locale) {
+    protected static String generateLevel3Div(Collection<?> collection, String singularNameKey, String pluralNameKey, String issueNameKey, Locale locale) {
         StringBuilder description = new StringBuilder();
 
-        description.append("<div>").append(count);
-        if (count == 1){
-            description.append(" ").append(messageSource.getMessage(singularNameKey, null, locale)).append(" ");
+        description.append("<div>").append(collection.size());
+
+        description.append(" ");
+        if (collection.size() == 1) {
+            description.append(messageSource.getMessage(singularNameKey, null, locale));
         } else {
-            description.append(" ").append(messageSource.getMessage(pluralNameKey, null, locale)).append(" ");
+            description.append(messageSource.getMessage(pluralNameKey, null, locale));
         }
+        description.append(" ");
+
         description.append(messageSource.getMessage(issueNameKey, null, locale)).append(".");
         description.append("<p/>");
 
@@ -40,7 +44,7 @@ public abstract class ErrorReporter {
         return description.toString();
     }
 
-    protected static String generateTable(Collection<?> collection) {
+    private static String generateTable(Collection<?> collection) {
         StringBuilder ret = new StringBuilder(TABLE_HEADER);
 
         for (Object k : collection) {

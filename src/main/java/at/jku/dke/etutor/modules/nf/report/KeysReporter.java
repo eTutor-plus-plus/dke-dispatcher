@@ -52,7 +52,6 @@ public class KeysReporter extends ErrorReporter {
 	}
 
 	public static ErrorReport createKeysErrorReport(KeysAnalysis analysis, ReporterConfig config, Locale locale){
-		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
 
@@ -81,7 +80,7 @@ public class KeysReporter extends ErrorReporter {
 			}
 			
 			if (config.getDiagnoseLevel() == 3) {
-				description.append(generateLevel3Div(analysis.getMissingKeys(), missingKeysCount, "keysreporter.keyisa", "keysreporter.keysarea", "keysreporter.missing", messageSource, locale));
+				description.append(generateLevel3Div(analysis.getMissingKeys(), "keysreporter.keyisa", "keysreporter.keysarea", "keysreporter.missing", locale));
 
 				/*currElemID = NFHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
@@ -124,7 +123,7 @@ public class KeysReporter extends ErrorReporter {
 			}
 			
 			if (config.getDiagnoseLevel() == 3) {
-				description.append(generateLevel3Div(analysis.getAdditionalKeys(), missingKeysCount, "keysreporter.keyisa", "keysreporter.keysarea", "keysreporter.toomuch", messageSource, locale));
+				description.append(generateLevel3Div(analysis.getAdditionalKeys(), "keysreporter.keyisa", "keysreporter.keysarea", "keysreporter.toomuch", locale));
 
 				/*description.append("<div>").append(additionalKeysCount);
 				if (additionalKeysCount == 1){

@@ -54,7 +54,7 @@ public class NormalizationReporter extends ErrorReporter {
 	
 			//REPORT LOSS_LESS_ANALYSIS
 			if ((analysis.getLossLessAnalysis() != null) && (!analysis.getLossLessAnalysis().submissionSuitsSolution())){
-				report.addErrorReport(createLossLessErrorReport(analysis.getLossLessAnalysis(), config, messageSource, locale));
+				report.addErrorReport(createLosslessErrorReport(analysis.getLossLessAnalysis(), config, messageSource, locale));
 			}
 	
 			//REPORT DEPENDENCIES_PRESERVATION_ANALYSIS
@@ -149,7 +149,6 @@ public class NormalizationReporter extends ErrorReporter {
 	}
 
 	public static ErrorReport createDependenciesPreservationErrorReport(DependenciesPreservationAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
 		int numberOfLostDependencies = analysis.getLostFunctionalDependencies().size();		
@@ -174,8 +173,10 @@ public class NormalizationReporter extends ErrorReporter {
 			description.append(" ").append(messageSource.getMessage("normalizationreporter.lost", null, locale)).append(".");
 		} 
 		
-		if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)){
-			currElemID = NFHelper.getNextElementID();
+		if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)) {
+			description.append(generateLevel3Div(analysis.getLostFunctionalDependencies(), "normalizationreporter.dependencybaserelationa", "normalizationreporter.dependenciesbaserelationa", "normalizationreporter.lost", locale));
+
+			/*currElemID = NFHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>").append(messageSource.getMessage("normalizationreporter.dependencieslost", null, locale)).append(":</p>");
@@ -192,7 +193,7 @@ public class NormalizationReporter extends ErrorReporter {
 			} else {
 				description.append(" ").append(messageSource.getMessage("normalizationreporter.dependenciesbaserelationa", null, locale)).append(" ");
 			}
-			description.append(messageSource.getMessage("normalizationreporter.lost", null, locale)).append(".");
+			description.append(messageSource.getMessage("normalizationreporter.lost", null, locale)).append(".");*/
 		}
 		report.setDescription(description.toString());
 
@@ -204,7 +205,7 @@ public class NormalizationReporter extends ErrorReporter {
 		return report;
 	}
 
-	public static ErrorReport createLossLessErrorReport(LosslessAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
+	public static ErrorReport createLosslessErrorReport(LosslessAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
 		ErrorReport report = new ErrorReport();
 
 		//SET ERROR
@@ -224,7 +225,6 @@ public class NormalizationReporter extends ErrorReporter {
 	}
 	
 	public static ErrorReport createDecompositionErrorReport(DecompositionAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
 		int numberOfMissingAttributes = analysis.getMissingAttributes().size();
@@ -249,8 +249,10 @@ public class NormalizationReporter extends ErrorReporter {
 			description.append(messageSource.getMessage("normalizationreporter.notcompriseddecomposed", null, locale));
 		} 
 		
-		if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)){
-			currElemID = NFHelper.getNextElementID();
+		if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)) {
+			description.append(generateLevel3Div(analysis.getMissingAttributes(), "normalizationreporter.attributeisa", "normalizationreporter.attributesarea", "normalizationreporter.missing", locale));
+
+			/*currElemID = NFHelper.getNextElementID();
 			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 			description.append("<html>").append(HTML_HEADER).append("<body>");
 			description.append("<p>").append(messageSource.getMessage("normalizationreporter.attributenotcomprised", null, locale)).append(":</p>");
@@ -267,7 +269,7 @@ public class NormalizationReporter extends ErrorReporter {
 			} else {
 				description.append(" ").append(messageSource.getMessage("normalizationreporter.attributesarea", null, locale)).append(" ");
 			}
-			description.append(messageSource.getMessage("normalizationreporter.missing", null, locale)).append(".");
+			description.append(messageSource.getMessage("normalizationreporter.missing", null, locale)).append(".");*/
 		}
 		report.setDescription(description.toString());
 

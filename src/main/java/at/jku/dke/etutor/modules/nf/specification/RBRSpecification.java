@@ -4,26 +4,26 @@ import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 
 import java.io.Serial;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
-import java.util.Vector;
 
 public class RBRSpecification extends NFSpecification implements Cloneable {
 
 	@Serial
 	private static final long serialVersionUID = 2025183566330710558L;
 
-	private Vector<String> baseAttributes;
+	private List<String> baseAttributes;
 	private IdentifiedRelation baseRelation;
 
 	public RBRSpecification() {
 		super();
-		this.baseAttributes = new Vector<>();
+		this.baseAttributes = new LinkedList<>();
 	}
 
 	public Object clone() throws CloneNotSupportedException {
 		RBRSpecification clone = (RBRSpecification)super.clone();
-		clone.baseAttributes = (Vector<String>)this.baseAttributes.clone();
+		clone.baseAttributes = new LinkedList<>(this.baseAttributes);
 		if (this.baseRelation != null) {
 			clone.baseRelation = (IdentifiedRelation)this.baseRelation.clone();
 		}
@@ -32,7 +32,7 @@ public class RBRSpecification extends NFSpecification implements Cloneable {
 	
 	public List<String> getBaseAttributes() {
 		checkAttributes();
-		return (Vector<String>)this.baseAttributes.clone();
+		return new LinkedList<>(this.baseAttributes);
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class RBRSpecification extends NFSpecification implements Cloneable {
 				attributeSet.add(baseAttributes.get(i));
 			}
 		}
-		this.baseAttributes = new Vector<>();
+		this.baseAttributes = new LinkedList<>();
 		this.baseAttributes.addAll(attributeSet);
 	}
 

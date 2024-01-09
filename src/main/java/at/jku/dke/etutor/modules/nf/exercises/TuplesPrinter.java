@@ -1,23 +1,23 @@
 package at.jku.dke.etutor.modules.nf.exercises;
 
+import java.util.List;
 import java.util.StringJoiner;
-import java.util.Vector;
 
 public class TuplesPrinter {
 	
-	public static void printToConsole(TupleSet tuplePopulation, Vector<String> prefixes) {
+	public static void printToConsole(TupleSet tuplePopulation, List<String> prefixes) {
 		System.out.println(toString(tuplePopulation, prefixes));
 	}
 
-	public static String toString(TupleSet tuplePopulation, Vector<String> prefixes) {
-		String s = "";
+	public static String toString(TupleSet tuplePopulation, List<String> prefixes) {
+		StringBuilder s = new StringBuilder();
 
         for (int[] ints : tuplePopulation) {
-            s = s.concat(toString(ints, prefixes));
-            s = s.concat("\n");
+            s.append(toString(ints, prefixes));
+            s.append("\n");
         }
 		
-		return s;
+		return s.toString();
 	}
 
 	public static String toString(int[] tuple) {
@@ -30,7 +30,7 @@ public class TuplesPrinter {
 		return s.toString();
 	}
 
-	public static String toString(int[] tuple, Vector<String> prefixes) {
+	public static String toString(int[] tuple, List<String> prefixes) {
 		String s = "";
 		
 		for (int i=0; i<tuple.length; i++){

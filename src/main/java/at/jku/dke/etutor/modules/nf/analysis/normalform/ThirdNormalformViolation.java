@@ -1,24 +1,25 @@
 package at.jku.dke.etutor.modules.nf.analysis.normalform;
 
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ThirdNormalformViolation extends NormalformViolation {
 
-	private final Vector<String> nonPrimRHSAttributes;
+	private final List<String> nonPrimRHSAttributes;
 
 	public ThirdNormalformViolation() {
-		this.nonPrimRHSAttributes = new Vector<>();
+		this.nonPrimRHSAttributes = new LinkedList<>();
 	}
 
-	public void addNonPrimeRHSAttribute(String attribute){
+	public void addNonPrimeRHSAttribute(String attribute) {
 		this.nonPrimRHSAttributes.add(attribute);
 	}
 
-	public Vector<String> getNonPrimRHSAttributes(){
-		return (Vector<String>)this.nonPrimRHSAttributes.clone();
+	public List<String> getNonPrimRHSAttributes() {
+		return new LinkedList<>(this.nonPrimRHSAttributes);
 	}
 	
-	public int nonPrimRHSAttributesCount(){
+	public int nonPrimRHSAttributesCount() {
 		return this.nonPrimRHSAttributes.size();
 	}
 }

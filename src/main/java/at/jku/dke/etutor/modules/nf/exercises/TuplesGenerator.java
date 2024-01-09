@@ -4,14 +4,14 @@ import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.model.Key;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Level;
 
 public class TuplesGenerator{
 	
 	public static TupleSet generate(TupleSet keys, int valuesNumber, int tuplesNumber, int minValue, int maxValue){
-		Vector<String> prefixes = new Vector<>();
+		List<String> prefixes = new LinkedList<>();
 		prefixes.add("A");
 		prefixes.add("B");
 		prefixes.add("C");
@@ -99,7 +99,7 @@ public class TuplesGenerator{
 	}
 	
 	private static void disableKey(int[] key, TupleSet tuples){
-		Vector<String> prefixes = new Vector<>();
+		List<String> prefixes = new LinkedList<>();
 		prefixes.add("A");
 		prefixes.add("B");
 		prefixes.add("C");
@@ -180,7 +180,7 @@ public class TuplesGenerator{
 		return tuple;
 	}
 	
-	private static boolean causesNewKey(int[] newTuple, TupleSet tuples, Vector<Key> expectedKeys){
+	private static boolean causesNewKey(int[] newTuple, TupleSet tuples, List<Key> expectedKeys){
 		TupleSet keys;
 		TupleSet temp; 
 
@@ -191,7 +191,7 @@ public class TuplesGenerator{
 		return !(keys.size() == expectedKeys.size());
 	}
 	
-	private static boolean holdsAllKeys(Vector<int[]> keys, TupleSet tuples, int[] tuple){
+	private static boolean holdsAllKeys(List<int[]> keys, TupleSet tuples, int[] tuple){
         for (int[] key : keys) {
             if (!KeysDeterminator.holdsKey(key, tuple, tuples)) {
                 return false;
@@ -239,7 +239,7 @@ public class TuplesGenerator{
 		
 		tuples = TuplesGenerator.generate(keys, 5, 5, 0, 9);
 		
-		List<String> prefixes = new Vector<>();
+		List<String> prefixes = new LinkedList<>();
 		prefixes.add("A");
 		prefixes.add("B");
 		prefixes.add("C");

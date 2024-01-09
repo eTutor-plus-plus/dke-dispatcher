@@ -2,20 +2,21 @@ package at.jku.dke.etutor.modules.nf.report;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ErrorReportGroup implements Serializable {
 
 	private String header;
-	private final Vector<ErrorReport> errorReports;
-	private final Vector<ErrorReportGroup> subErrorReportGroups;
+	private final List<ErrorReport> errorReports;
+	private final List<ErrorReportGroup> subErrorReportGroups;
 	
 	public ErrorReportGroup() {
 		super();
 		
 		this.header = null;
-		this.errorReports = new Vector<>();
-		this.subErrorReportGroups = new Vector<>();
+		this.errorReports = new LinkedList<>();
+		this.subErrorReportGroups = new LinkedList<>();
 	}
 	
 	public String getHeader() {
@@ -26,8 +27,8 @@ public class ErrorReportGroup implements Serializable {
 		this.header = header;
 	}
 
-	public Vector<ErrorReport> getErrorReports() {
-		return (Vector<ErrorReport>)this.errorReports.clone();
+	public List<ErrorReport> getErrorReports() {
+		return new LinkedList<>(this.errorReports);
 	}
 
 	public void setErrorReports(Collection<ErrorReport> reports) {
@@ -39,8 +40,8 @@ public class ErrorReportGroup implements Serializable {
 		this.errorReports.add(report);
 	}
 
-	public Vector<ErrorReportGroup> getSubErrorReportGroups() {
-		return (Vector<ErrorReportGroup>)this.subErrorReportGroups.clone();
+	public List<ErrorReportGroup> getSubErrorReportGroups() {
+		return new LinkedList<>(this.subErrorReportGroups);
 	}
 
 	public void setSubErrorReportGroups(Collection<ErrorReportGroup> reportGroups) {

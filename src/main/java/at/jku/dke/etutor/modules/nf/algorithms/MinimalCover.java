@@ -75,7 +75,7 @@ public class MinimalCover {
 
                 if (Cover.execute(dependencies, tempFDs)) {
                     if (!extraneousAttributes.containsKey(currFD)) {
-                        extraneousAttributes.put(currFD, new Vector<>());
+                        extraneousAttributes.put(currFD, new LinkedList<>());
                     }
                     extraneousAttributes.get(currFD).add(currAttribute);
                 }

@@ -22,10 +22,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -540,7 +540,7 @@ public class NFHelper {
 		}
 		if (spec instanceof AttributeClosureSpecification) {
 			attributes = ((AttributeClosureSpecification)spec).getBaseAttributes();
-			((AttributeClosureSpecification)spec).setBaseAttributes(new Vector<>());
+			((AttributeClosureSpecification)spec).setBaseAttributes(new LinkedList<>());
             for (String attribute : attributes) {
                 remove = false;
                 for (int j = 0; !remove && j < attributesToDelete.length; j++) {
@@ -555,7 +555,7 @@ public class NFHelper {
             }
 		} else if (spec instanceof RBRSpecification) {
 			attributes = ((RBRSpecification)spec).getBaseAttributes();
-			((RBRSpecification)spec).setBaseAttributes(new Vector<>());
+			((RBRSpecification)spec).setBaseAttributes(new LinkedList<>());
             for (String attribute : attributes) {
                 remove = false;
                 for (int j = 0; !remove && j < attributesToDelete.length; j++) {

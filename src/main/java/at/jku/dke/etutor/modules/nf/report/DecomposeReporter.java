@@ -80,7 +80,7 @@ public class DecomposeReporter extends ErrorReporter {
 		//REPORT LOSS_LESS_ANALYSIS (IF NECESSARY)
 		if (analysis.getLossLessAnalysis() != null){
 			if (!analysis.getLossLessAnalysis().submissionSuitsSolution()){
-				group.addErrorReport(NormalizationReporter.createLossLessErrorReport(analysis.getLossLessAnalysis(), config, messageSource, locale));
+				group.addErrorReport(NormalizationReporter.createLosslessErrorReport(analysis.getLossLessAnalysis(), config, messageSource, locale));
 			}
 		}
 

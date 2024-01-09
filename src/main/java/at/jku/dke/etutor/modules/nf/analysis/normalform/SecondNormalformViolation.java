@@ -1,43 +1,25 @@
 package at.jku.dke.etutor.modules.nf.analysis.normalform;
 
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SecondNormalformViolation extends NormalformViolation {
 	
-	private final Vector<String> nonPrimRHSAttributes;
-	//private Vector comprisedPartialKeys;
+	private final List<String> nonPrimRHSAttributes;
 
 	public SecondNormalformViolation() {
-		this.nonPrimRHSAttributes = new Vector<>();
-		//this.comprisedPartialKeys = new Vector();
+		this.nonPrimRHSAttributes = new LinkedList<>();
 	}
 
 	public void addNonPrimeRHSAttribute(String attribute){
 		this.nonPrimRHSAttributes.add(attribute);
 	}
 
+	public List<String> getNonPrimRHSAttributes(){
+		return new LinkedList<>(this.nonPrimRHSAttributes);
+	}
+
 	public int nonPrimRHSAttributesCount(){
 		return this.nonPrimRHSAttributes.size();
 	}
-
-	public Vector<String> getNonPrimRHSAttributes(){
-		return (Vector<String>)this.nonPrimRHSAttributes.clone();
-	}
-
-	/*
-	public void addComprisedPartialKey(Key partialKey){
-		this.comprisedPartialKeys.add(partialKey);
-	}
-	
-	public Iterator iterComprisedPartialKeys(){
-		return this.comprisedPartialKeys.iterator();
-	}
-	
-	public Vector getComprisedPartialKeys(){
-		return (Vector)this.comprisedPartialKeys.clone();
-	}
-	
-	public int comprisedPartialKeysCount(){
-		return this.comprisedPartialKeys.size();
-	}*/
 }

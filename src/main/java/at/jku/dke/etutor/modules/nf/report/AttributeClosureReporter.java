@@ -53,7 +53,6 @@ public class AttributeClosureReporter extends ErrorReporter {
 	}
 
 	public static ErrorReport createAttributeClosureErrorReport(AttributeClosureAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
-		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
 
@@ -82,7 +81,7 @@ public class AttributeClosureReporter extends ErrorReporter {
 			}
 			
 			if (config.getDiagnoseLevel() == 3) {
-				description.append(generateLevel3Div(analysis.getMissingAttributes(), missingAttributesCount, "attributeclosurereporter.attributeisa", "attributeclosurereporter.attributesarea", "attributeclosurereporter.attributesmissing", messageSource, locale));
+				description.append(generateLevel3Div(analysis.getMissingAttributes(), "attributeclosurereporter.attributeisa", "attributeclosurereporter.attributesarea", "attributeclosurereporter.attributesmissing", locale));
 
 				/*currElemID = NFHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
@@ -125,7 +124,7 @@ public class AttributeClosureReporter extends ErrorReporter {
 			}
 			
 			if (config.getDiagnoseLevel() == 3) {
-				description.append(generateLevel3Div(analysis.getAdditionalAttributes(), missingAttributesCount, "attributeclosurereporter.attributeisa", "attributeclosurereporter.attributesarea", "attributeclosurereporter.attributestoomuch", messageSource, locale));
+				description.append(generateLevel3Div(analysis.getAdditionalAttributes(), "attributeclosurereporter.attributeisa", "attributeclosurereporter.attributesarea", "attributeclosurereporter.attributestoomuch", locale));
 
 				/*currElemID = NFHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");

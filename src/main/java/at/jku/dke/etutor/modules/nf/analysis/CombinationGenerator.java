@@ -95,7 +95,7 @@ public class CombinationGenerator {
 		int[] indices;
 		int[] keyCandidate;
 		int[] keyAttributePositions;
-		Vector keyCandidates;
+		List keyCandidates;
 
 		keyAttributePositions = new int[] { 0, 1, 2, 3 };
 

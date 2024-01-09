@@ -5,20 +5,20 @@ import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
 public class NormalformDeterminationAnalysis extends NormalformAnalysis implements Analysis {
 
 	private NormalformLevel submittedLevel;
 	private boolean overallLevelIsCorrect;
-	private final Vector<Object[]> wrongLeveledDependencies;
+	private final List<Object[]> wrongLeveledDependencies;
 
 	public NormalformDeterminationAnalysis() {
 		super();
 		
 		this.submittedLevel = NormalformLevel.FIRST;
-		this.wrongLeveledDependencies = new Vector<>();
+		this.wrongLeveledDependencies = new LinkedList<>();
 	}
 
 	public void addWrongLeveledDependency(FunctionalDependency dependency, NormalformLevel correctLevel, NormalformLevel foundLevel){
@@ -31,7 +31,7 @@ public class NormalformDeterminationAnalysis extends NormalformAnalysis implemen
 	}
 
 	public List<Object[]> getWrongLeveledDependencies(){
-		return (Vector<Object[]>)this.wrongLeveledDependencies.clone();
+		return new LinkedList<>(this.wrongLeveledDependencies);
 	}
 
 	public int wrongLeveledDependenciesCount(){

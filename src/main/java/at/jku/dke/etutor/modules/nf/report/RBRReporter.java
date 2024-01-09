@@ -2,12 +2,9 @@ package at.jku.dke.etutor.modules.nf.report;
 
 import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.nf.NFConstants;
-import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalysis;
-import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import org.springframework.context.MessageSource;
 
-import java.util.Iterator;
 import java.util.Locale;
 
 public class RBRReporter extends ErrorReporter {
@@ -56,8 +53,6 @@ public class RBRReporter extends ErrorReporter {
 	}	
 
 	public static ErrorReport createRBRErrorReport(RBRAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
-		Iterator<FunctionalDependency> it;
-		String currElemID;
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
 		int missingDependenciesCount = analysis.getMissingFunctionalDependencies().size();
@@ -84,8 +79,10 @@ public class RBRReporter extends ErrorReporter {
 				description.append(messageSource.getMessage("rbrreporter.missing", null, locale)).append(".");
 			}
 			
-			if (config.getDiagnoseLevel() == 3){
-				currElemID = NFHelper.getNextElementID();
+			if (config.getDiagnoseLevel() == 3) {
+				description.append(generateLevel3Div(analysis.getMissingFunctionalDependencies(), "rbrreporter.dependencyisa", "rbrreporter.dependenciesarea", "rbrreporter.missing", locale));
+
+				/*currElemID = NFHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("rbrreporter.dependenciesmissing", null, locale)).append(":</p>");
@@ -102,7 +99,7 @@ public class RBRReporter extends ErrorReporter {
 				} else {
 					description.append(" ").append(messageSource.getMessage("rbrreporter.dependenciesarea", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("rbrreporter.missing", null, locale)).append(".");
+				description.append(messageSource.getMessage("rbrreporter.missing", null, locale)).append(".");*/
 			}
 		}
 
@@ -125,8 +122,10 @@ public class RBRReporter extends ErrorReporter {
 				description.append(messageSource.getMessage("rbrreporter.toomuch", null, locale)).append(".");
 			}
 			
-			if (config.getDiagnoseLevel() == 3){
-				currElemID = NFHelper.getNextElementID();
+			if (config.getDiagnoseLevel() == 3) {
+				description.append(generateLevel3Div(analysis.getAdditionalFunctionalDependencies(), "rbrreporter.dependencyisa", "rbrreporter.dependenciesarea", "rbrreporter.toomuch", locale));
+
+				/*currElemID = NFHelper.getNextElementID();
 				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
 				description.append("<html>").append(HTML_HEADER).append("<body>");
 				description.append("<p>").append(messageSource.getMessage("rbrreporter.dependenciestoomuch", null, locale)).append(":</p>");
@@ -142,7 +141,7 @@ public class RBRReporter extends ErrorReporter {
 				} else {
 					description.append(" ").append(messageSource.getMessage("rbrreporter.dependenciesarea", null, locale)).append(" ");
 				}
-				description.append(messageSource.getMessage("rbrreporter.toomuch", null, locale)).append(".");
+				description.append(messageSource.getMessage("rbrreporter.toomuch", null, locale)).append(".");*/
 			}
 		}
 		report.setDescription(description.toString());

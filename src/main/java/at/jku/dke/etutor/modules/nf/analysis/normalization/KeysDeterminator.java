@@ -11,7 +11,7 @@ public class KeysDeterminator {
 	
 	public static TupleSet determineMinimalKeys(TupleSet tuples){
 		TupleSet keys = new TupleSet();
-		Vector<int[]> keyCandidates = calculateKeyCandidates(tuples.get(0).length);
+		List<int[]> keyCandidates = calculateKeyCandidates(tuples.get(0).length);
 
         for (int[] key : keyCandidates) {
             boolean isKey = true;
@@ -29,10 +29,10 @@ public class KeysDeterminator {
 		return keys;
 	}
 
-	public static Vector<int[]> calculateKeyCandidates(int valueNumber){
+	public static List<int[]> calculateKeyCandidates(int valueNumber){
 		int[] keyAttributePositions = new int[valueNumber];
 
-        Vector<int[]> keyCandidates = new Vector<>();
+        List<int[]> keyCandidates = new LinkedList<>();
 
 		//CALCULATE KEY ATTRIBUTE POSITIONS
 		for (int i=0; i<valueNumber; i++){

@@ -4,24 +4,25 @@ import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 
 public class NormalformAnalysis extends NFAnalysis {
 
 
-	private final Vector<FirstNormalformViolation> firstNormalFormViolations;
-	private final Vector<SecondNormalformViolation> secondNormalFormViolations;
-	private final Vector<ThirdNormalformViolation> thirdNormalFormViolations;
-	private final Vector<BoyceCoddNormalformViolation> boyceCoddNormalFormViolations;
+	private final List<FirstNormalformViolation> firstNormalFormViolations;
+	private final List<SecondNormalformViolation> secondNormalFormViolations;
+	private final List<ThirdNormalformViolation> thirdNormalFormViolations;
+	private final List<BoyceCoddNormalformViolation> boyceCoddNormalFormViolations;
 
 	private NormalformLevel overallNormalformLevel;
 
 	public NormalformAnalysis() {
 		super();
-		this.thirdNormalFormViolations = new Vector<>();
-		this.firstNormalFormViolations = new Vector<>();
-		this.secondNormalFormViolations = new Vector<>();
-		this.boyceCoddNormalFormViolations = new Vector<>();
+		this.thirdNormalFormViolations = new LinkedList<>();
+		this.firstNormalFormViolations = new LinkedList<>();
+		this.secondNormalFormViolations = new LinkedList<>();
+		this.boyceCoddNormalFormViolations = new LinkedList<>();
 		this.overallNormalformLevel = NormalformLevel.FIRST;
 	}
 	
@@ -57,32 +58,32 @@ public class NormalformAnalysis extends NFAnalysis {
 		this.firstNormalFormViolations.add(violation);
 	}
 
-	public Vector<FirstNormalformViolation> getFirstNormalformViolations(){
-		return (Vector<FirstNormalformViolation>)this.firstNormalFormViolations.clone();
+	public List<FirstNormalformViolation> getFirstNormalformViolations(){
+		return new LinkedList<>(this.firstNormalFormViolations);
 	}
 
 	public void addSecondNormalformViolation(SecondNormalformViolation violation){
 		this.secondNormalFormViolations.add(violation);
 	}
 
-	public Vector<SecondNormalformViolation> getSecondNormalformViolations(){
-		return (Vector<SecondNormalformViolation>)this.secondNormalFormViolations.clone();
+	public List<SecondNormalformViolation> getSecondNormalformViolations(){
+		return new LinkedList<>(this.secondNormalFormViolations);
 	}
 
 	public void addThirdNormalformViolation(ThirdNormalformViolation violation){
 		this.thirdNormalFormViolations.add(violation);
 	}
 
-	public Vector<ThirdNormalformViolation> getThirdNormalformViolations(){
-		return (Vector<ThirdNormalformViolation>)this.thirdNormalFormViolations.clone();
+	public List<ThirdNormalformViolation> getThirdNormalformViolations(){
+		return new LinkedList<>(this.thirdNormalFormViolations);
 	}
 
 	public void addBoyceCoddNormalformViolation(BoyceCoddNormalformViolation violation){
 		this.boyceCoddNormalFormViolations.add(violation);
 	}
 
-	public Vector<BoyceCoddNormalformViolation> getBoyceCoddNormalformViolations(){
-		return (Vector<BoyceCoddNormalformViolation>)this.boyceCoddNormalFormViolations.clone();
+	public List<BoyceCoddNormalformViolation> getBoyceCoddNormalformViolations(){
+		return new LinkedList<>(this.boyceCoddNormalFormViolations);
 	}
 
 }

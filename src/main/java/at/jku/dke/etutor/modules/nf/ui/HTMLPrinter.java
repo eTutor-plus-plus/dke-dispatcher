@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringJoiner;
-import java.util.Vector;
 
 /**
  * Helper class for printing all types of specification implementations
@@ -223,8 +222,8 @@ public class HTMLPrinter implements MessageSourceAware {
 	}
 	
 	public static String printErrorReportGroup(ErrorReportGroup group, int displayIndent, int codeIndent) throws IOException{
-		Vector<ErrorReport> errorReports = group.getErrorReports();
-		Vector<ErrorReportGroup> subGroups = group.getSubErrorReportGroups();
+		List<ErrorReport> errorReports = group.getErrorReports();
+		List<ErrorReportGroup> subGroups = group.getSubErrorReportGroups();
 		StringBuilder out = new StringBuilder();
 
 		out.append("<div class='error_report_group'>").append(LINE_SEP);
