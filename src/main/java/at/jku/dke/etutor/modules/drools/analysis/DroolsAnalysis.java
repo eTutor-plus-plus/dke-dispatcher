@@ -357,55 +357,31 @@ public class DroolsAnalysis extends DefaultAnalysis {
      * @throws ReflectiveOperationException
      * @throws IOException
      */
-    public int createSampleSolution() throws ReflectiveOperationException, IOException {
+    public DroolsObjectDTO createSampleSolution() throws ReflectiveOperationException, IOException {
 
         try {
             List<Map<String, Object>> listOfKeyValuePairs = createOutputFactList();
 
             ObjectMapper objectMapper = new ObjectMapper();
-
             String jsonOutput = null;
-            String requestBody = null;
-            try {
-                // Konvertierung der Liste von Key-Value-Paaren in JSON
-                jsonOutput = objectMapper.writeValueAsString(listOfKeyValuePairs);
 
-                DroolsObjectDTO objectDTO = new DroolsObjectDTO();
-                objectDTO.setDataType("output");
-                objectDTO.setFullClassname("");
-                objectDTO.setTaskId(taskId);
-                objectDTO.setParameter(jsonOutput);
-                String submissionType = "submit";
-                if (this.isForDiagnose) submissionType = "diagnose";
-                objectDTO.setSubmissionType(submissionType);
+            // Konvertierung der Liste von Key-Value-Paaren in JSON
+            jsonOutput = objectMapper.writeValueAsString(listOfKeyValuePairs);
 
-                requestBody = objectMapper.writeValueAsString(objectDTO);
+            DroolsObjectDTO objectDTO = new DroolsObjectDTO();
+            objectDTO.setDataType("output");
+            objectDTO.setFullClassname("");
+            objectDTO.setTaskId(taskId);
+            objectDTO.setParameter(jsonOutput);
+            String submissionType = "submit";
+            if (this.isForDiagnose) submissionType = "diagnose";
+            objectDTO.setSubmissionType(submissionType);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            final HttpClient client = HttpClient.newHttpClient();
-            URI uri = URI.create("http://localhost:8081/drools/task/createOutput");
-            assert requestBody != null;
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                    .build();
-
-            try {
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                return response.statusCode();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            return objectDTO;
 
         } catch (IOException | ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
-        return -1;
     }
 
     private List<Map<String, Object>> convertOutputJsonToListUtil(String jsonOutput) {

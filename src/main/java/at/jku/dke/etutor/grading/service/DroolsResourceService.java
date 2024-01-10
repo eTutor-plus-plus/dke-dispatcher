@@ -251,8 +251,8 @@ public class DroolsResourceService {
                         DroolsAnalysis analysisSubmit = new DroolsAnalysis(taskId, solution, false);
                         DroolsAnalysis analysisDiagnose = new DroolsAnalysis(taskId, solution, true);
                         if(!analysisSubmit.isHasSyntaxError()){
-                            if(analysisSubmit.createSampleSolution() == 200
-                                    && analysisDiagnose.createSampleSolution() == 200){
+                            if(createOutput(analysisSubmit.createSampleSolution()) == 1
+                                    && createOutput(analysisDiagnose.createSampleSolution()) == 1){
                                 return taskId;
                             }
                         }
@@ -376,7 +376,7 @@ public class DroolsResourceService {
      * @return
      * @throws DatabaseException
      */
-    public int createOutput(DroolsObjectDTO droolsObjectDTO) throws DatabaseException{
+    private int createOutput(DroolsObjectDTO droolsObjectDTO) throws DatabaseException{
         logger.debug("Enter: Creating objects");
         try (Connection con = DriverManager.getConnection(URL, USER, PWD)){
             con.setAutoCommit(false);

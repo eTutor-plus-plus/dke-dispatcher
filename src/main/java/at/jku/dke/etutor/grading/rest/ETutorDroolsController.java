@@ -126,30 +126,30 @@ public class ETutorDroolsController {
         }
     }
 
-    /**
-     * Saves the output facts to the database
-     * @param objectDTO
-     * @return
-     * @throws ApiException
-     * @throws DatabaseException
-     */
-    @PostMapping("/task/createOutput")
-    public ResponseEntity<String> createOutput(@RequestBody DroolsObjectDTO objectDTO) throws ApiException, DatabaseException {
-        logger.info("Enter: createOutput()");
-        try{
-            int insertedRows = resourceService.createOutput(objectDTO);
-            if(insertedRows == -1){
-                logger.info("Exit: createOutput() with status 404");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find task");
-            }else{
-                logger.info("Exit: createOutput() with status 200");
-                return ResponseEntity.status(HttpStatus.OK).body("Created " + insertedRows + " new output-object.");
-            }
-        } catch (Exception e){
-            logger.info("Exit: createOutput() - Internal Server Error - Code 500");
-            throw new RuntimeException(e);
-        }
-    }
+//    /**
+//     * Saves the output facts to the database
+//     * @param objectDTO
+//     * @return
+//     * @throws ApiException
+//     * @throws DatabaseException
+//     */
+//    @PostMapping("/task/createOutput")
+//    public ResponseEntity<String> createOutput(@RequestBody DroolsObjectDTO objectDTO) throws ApiException, DatabaseException {
+//        logger.info("Enter: createOutput()");
+//        try{
+//            int insertedRows = resourceService.createOutput(objectDTO);
+//            if(insertedRows == -1){
+//                logger.info("Exit: createOutput() with status 404");
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find task");
+//            }else{
+//                logger.info("Exit: createOutput() with status 200");
+//                return ResponseEntity.status(HttpStatus.OK).body("Created " + insertedRows + " new output-object.");
+//            }
+//        } catch (Exception e){
+//            logger.info("Exit: createOutput() - Internal Server Error - Code 500");
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     /**
      * Fetches the output facts for the selected task (submit/diagnose)
@@ -216,8 +216,15 @@ public class ETutorDroolsController {
         try {
             int id = resourceService.addTask(taskDTO);
 
-            logger.info("Exit: addTask() for id: {} with Status Code 200", id);
-            return ResponseEntity.ok(id);
+            if(id > 0){
+                logger.info("Exit: addTask() for id: {} with Status Code 200", id);
+                return ResponseEntity.ok(id);
+            }else{
+                logger.info("Exit: addTask() for id: {} with Status Code 400", id);
+                logger.info("rollback...");
+                return ResponseEntity.badRequest().build();
+            }
+
         } catch (DatabaseException e) {
             logger.error("Exit: addTask() with Status Code 500", e);
             logger.info("Rollback. Deleting task.");
