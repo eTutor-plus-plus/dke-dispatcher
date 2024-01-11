@@ -41,7 +41,7 @@ import java.util.StringJoiner;
  * @author Christian Fischer (25.12.2009)
  *
  */
-public class HTMLPrinter implements MessageSourceAware {
+public class HTMLPrinter {
 
 	public static final String LINE_SEP = System.getProperty("line.separator");
 	public static final int OFFSET = 15;

@@ -10,9 +10,18 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AttributeClosureSpecification extends NFSpecification implements Cloneable {
-
+	/**
+	 * Points deducted for every missing key, as compared to the correct solution.
+	 * <br><br>
+	 * (a in the grading schema V3)
+	 */
 	private int penaltyPerMissingAttribute;
 
+	/**
+	 * Points deducted for every incorrect key, as compared to the correct solution.
+	 * <br><br>
+	 * (b in the grading schema V3)
+	 */
 	private int penaltyPerIncorrectAttribute;
 
 	@Serial

@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Locale;
 
+/**
+ * REST-controller that manages requests for handling NF exercises
+ */
 @RestController
 @RequestMapping("/nf")
 public class ETutorNFController {
@@ -27,6 +30,12 @@ public class ETutorNFController {
         this.resourceService = resourceService;
     }
 
+    /**
+     * Creates a new exercise in the database from the supplied <code>NFExerciseDTO</code>.
+     * @param exerciseDTO The <code>NFExerciseDTO</code> with the content of the new exercise
+     * @return The id of the newly created exercise
+     * @throws ApiException If an error occurs during the exercise's creation
+     */
     @PutMapping("/exercise")
     public ResponseEntity<Integer> createExercise(@RequestBody NFExerciseDTO exerciseDTO) throws ApiException {
         try {
@@ -37,38 +46,61 @@ public class ETutorNFController {
             }
 
             return ResponseEntity.ok(newId);
-        } catch (DatabaseException | ExerciseNotValidException e) {
+        } catch (ExerciseNotValidException e) {
+            throw new ApiException(400, e.toString(), null);
+        } catch (DatabaseException e) {
             throw new ApiException(500, e.toString(), null);
         }
     }
 
+    /**
+     * Replaces the specified exercise in the database with one specified in the supplied <code>NFExerciseDTO</code>.
+     * @param id The id of the exercise to be replaced
+     * @param exerciseDTO The <code>NFExerciseDTO</code> whose content is to replace the existing exercise
+     * @return A boolean string indicating whether the operation succeeded
+     * @throws ApiException If an error occurs during the replacement of the exercise
+     */
     @PostMapping("/exercise/{id}")
     public ResponseEntity<String> modifyExercise(@PathVariable int id, @RequestBody NFExerciseDTO exerciseDTO) throws ApiException {
         try {
             if(resourceService.modifyExercise(id, exerciseDTO)) {
                 return ResponseEntity.ok("Exercise id " + id + " modified.");
             } else {
-                return ResponseEntity.badRequest().body("Exercise id " + id + " could not be modified.");
+                throw new ApiException(400, "Exercise id " + id + " could not be modified.", null);
             }
 
-        } catch (DatabaseException | ExerciseNotValidException e) {
+        } catch (ExerciseNotValidException e) {
+            throw new ApiException(400, e.toString(), null);
+        } catch (DatabaseException e) {
             throw new ApiException(500, e.toString(), null);
         }
     }
 
+    /**
+     * Deletes the exercise with the specified id from the database.
+     * @param id The id of the exercise to be deleted
+     * @return Whether the deletion succeeded
+     * @throws ApiException If an error occurs during the deletion of the exercise
+     */
     @DeleteMapping("/exercise/{id}")
     public ResponseEntity<String> deleteExercise(@PathVariable int id) throws ApiException {
         try {
             if(resourceService.deleteExercise(id)) {
                 return ResponseEntity.ok("Exercise id " + id + " deleted.");
             } else {
-                return ResponseEntity.badRequest().body("Exercise id " + id + " could not be deleted.");
+                throw new ApiException(400, "Exercise id " + id + " could not be deleted.", null);
             }
         } catch (DatabaseException e) {
             throw new ApiException(500, e.toString(), null);
         }
     }
 
+    /**
+     * Returns the auto-generated assignment text for the exercise with the specified id.
+     * @param id The id of the exercise whose assignment text is to be generated.
+     * @return The auto-generated assignment text for the exercise with the specified id.
+     * @throws ApiException If an error occurs during the assignment text generation.
+     */
     @GetMapping("/exercise/{id}/instruction")
     public ResponseEntity<String> getAssignmentText(@PathVariable int id) throws ApiException {
         try {

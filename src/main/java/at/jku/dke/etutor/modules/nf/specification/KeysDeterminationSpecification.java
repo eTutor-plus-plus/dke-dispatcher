@@ -4,8 +4,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class KeysDeterminationSpecification extends NFSpecification {
+    /**
+     * Points deducted for every missing attribute, as compared to the correct solution.
+     * <br><br>
+     * (a in the grading schema V3)
+     */
     private int penaltyPerMissingKey;
 
+    /**
+     * Points deducted for every incorrect attribute, as compared to the correct solution.
+     * <br><br>
+     * (b in the grading schema V3)
+     */
     private int penaltyPerIncorrectKey;
 
     public KeysDeterminationSpecification() {

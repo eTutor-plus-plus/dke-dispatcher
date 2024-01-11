@@ -5,17 +5,50 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MinimalCoverSpecification extends NFSpecification {
 
+    // Start of point deduction variables
+    /**
+     * Points deducted for every non-canonical functional dependency.
+     * <br><br>
+     * (a in the grading schema V3)
+     */
     private int penaltyPerNonCanonicalDependency;
 
+    /**
+     * Points deducted for every trivial functional dependency.
+     * <br><br>
+     * (b in the grading schema V3)
+     */
     private int penaltyPerTrivialDependency;
 
+    /**
+     * Points deducted for every extraneous attribute on the left-hand side of a functional dependency.
+     * <br><br>
+     * (c in the grading schema V3)
+     */
     private int penaltyPerExtraneousAttribute;
 
+    /**
+     * Points deducted for every redundant functional dependency.
+     * <br><br>
+     * (d in the grading schema V3)
+     */
     private int penaltyPerRedundantDependency;
 
+    /**
+     * Points deducted for every functional dependency that would have to be present in the correct solution but is not.
+     * <br><br>
+     * (e in the grading schema V3)
+     */
     private int penaltyPerMissingDependencyVsSolution;
 
+    /**
+     * Points deducted for every functional dependency that exists the submission, even though it is not present in the
+     * correct solution.
+     * <br><br>
+     * (f in the grading schema V3)
+     */
     private int penaltyPerIncorrectDependencyVsSolution;
+    // End of point deduction variables
 
     public MinimalCoverSpecification() {
         super();

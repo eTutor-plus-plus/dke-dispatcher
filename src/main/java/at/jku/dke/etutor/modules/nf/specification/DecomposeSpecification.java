@@ -11,10 +11,6 @@ public class DecomposeSpecification extends NormalizationSpecification {
 		super();
 	}
 
-	public boolean obligatoryDependenciesPreservation() {
-		return this.maxLostDependencies == 0;
-	}
-	
 	public boolean semanticallyEquals(Object obj) {
 		if (obj == null) {
 			return false;

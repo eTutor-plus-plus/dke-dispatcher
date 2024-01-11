@@ -60,6 +60,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 
+/**
+ * Class for evaluating, grading, and reporting on normalization-related tasks
+ */
 @Service
 public class NFEvaluator implements Evaluator {
 	/*

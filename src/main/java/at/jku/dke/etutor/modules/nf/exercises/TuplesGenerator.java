@@ -8,9 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class TuplesGenerator{
+public class TuplesGenerator {
 	
-	public static TupleSet generate(TupleSet keys, int valuesNumber, int tuplesNumber, int minValue, int maxValue){
+	public static TupleSet generate(TupleSet keys, int valuesNumber, int tuplesNumber, int minValue, int maxValue) {
 		List<String> prefixes = new LinkedList<>();
 		prefixes.add("A");
 		prefixes.add("B");
@@ -23,7 +23,6 @@ public class TuplesGenerator{
 
 		int[] tuple;
 		TupleSet tuples = new TupleSet();
-		TupleSet triedMutations = new TupleSet();
 		RandomCyphersGenerator cyphersGenerator = new RandomCyphersGenerator(minValue, maxValue, false);
 	
 		for (int tuplePos=0; tuplePos<tuplesNumber; tuplePos++){
@@ -95,10 +94,10 @@ public class TuplesGenerator{
 		return tuples;
 	}
 	
-	private static void enableKey(int[] key, TupleSet tuples){
+	private static void enableKey(int[] key, TupleSet tuples) {
 	}
 	
-	private static void disableKey(int[] key, TupleSet tuples){
+	private static void disableKey(int[] key, TupleSet tuples) {
 		List<String> prefixes = new LinkedList<>();
 		prefixes.add("A");
 		prefixes.add("B");
@@ -141,7 +140,7 @@ public class TuplesGenerator{
 		}
 	}
 	
-	private static TupleSet calcInvalidKeys(TupleSet tuples, TupleSet desiredKeys){
+	private static TupleSet calcInvalidKeys(TupleSet tuples, TupleSet desiredKeys) {
 		TupleSet invalidKeys = new TupleSet();
 		invalidKeys.addAll(desiredKeys); 
 		invalidKeys.removeAll(KeysDeterminator.determineMinimalKeys(tuples));
@@ -149,14 +148,14 @@ public class TuplesGenerator{
 		return invalidKeys; 
 	}
 
-	private static TupleSet calcUndesiredKeys(TupleSet tuples, TupleSet desiredKeys){
+	private static TupleSet calcUndesiredKeys(TupleSet tuples, TupleSet desiredKeys) {
 		TupleSet undesiredKeys = KeysDeterminator.determineMinimalKeys(tuples);
 		undesiredKeys.removeAll(desiredKeys);
 
 		return undesiredKeys; 
 	}
 
-	private static int[] mutateTuple(int[] tuple, int[] key, int maxValue, int minValue, TupleSet triedMutations) throws Exception{
+	private static int[] mutateTuple(int[] tuple, int[] key, int maxValue, int minValue, TupleSet triedMutations) throws Exception {
 		int newValue;
 		int oldValue;
 
@@ -180,7 +179,7 @@ public class TuplesGenerator{
 		return tuple;
 	}
 	
-	private static boolean causesNewKey(int[] newTuple, TupleSet tuples, List<Key> expectedKeys){
+	private static boolean causesNewKey(int[] newTuple, TupleSet tuples, List<Key> expectedKeys) {
 		TupleSet keys;
 		TupleSet temp; 
 
@@ -200,7 +199,7 @@ public class TuplesGenerator{
 		return true;
 	}
 
-	private static int incrementValue(int value, int maxValue, int minValue){
+	private static int incrementValue(int value, int maxValue, int minValue) {
 		int incrementedValue = value + 1;
 		if (incrementedValue > maxValue){
 			incrementedValue = minValue;
@@ -208,7 +207,7 @@ public class TuplesGenerator{
 		return incrementedValue;
 	}
 
-	private static int[] generateRandomTuple(int valuesNumber, int minValue, int maxValue, RandomCyphersGenerator generator){
+	private static int[] generateRandomTuple(int valuesNumber, int minValue, int maxValue, RandomCyphersGenerator generator) {
 		int[] tuple = new int[valuesNumber];
 		
 		for (int pos=0; pos<valuesNumber; pos++){

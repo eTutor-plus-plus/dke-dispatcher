@@ -30,13 +30,23 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.Locale;
 import java.util.Set;
 
+/**
+ * Service used for managing the exercises of the NF module
+ */
 @Service
 public class NFResourceService {
+    /**
+     * Creates a new exercise in the database from the supplied <code>NFExerciseDTO</code>.
+     * @param dto The <code>NFExerciseDTO</code> with the content of the new exercise
+     * @return The id of the newly created exercise
+     * @throws DatabaseException If the changed exercise would be a duplicate of an existing exercise or any other
+     * error occurs regarding database access.
+     * @throws ExerciseNotValidException If a valid exercise cannot be created from the supplied dto.
+     */
     public int createExercise(NFExerciseDTO dto) throws DatabaseException, ExerciseNotValidException {
         int exerciseId = 1;
 
@@ -74,9 +84,6 @@ public class NFResourceService {
             }
 
             conn.commit();
-        } catch (SQLIntegrityConstraintViolationException si) {
-            si.printStackTrace();
-            throw new DatabaseException(si);
         } catch (SQLException s) {
             if(s.getMessage().contains("type_and_spec_combo_unique")) {
                 int existingId = getIdOfExistingCombo(numericSubtypeId, specificationJSON.toString());
@@ -88,6 +95,15 @@ public class NFResourceService {
         return exerciseId;
     }
 
+    /**
+     * Replaces the specified exercise in the database with one specified in the supplied <code>NFExerciseDTO</code>.
+     * @param exerciseId The id of the exercise to be replaced
+     * @param dto The <code>NFExerciseDTO</code> whose content is to replace the existing exercise
+     * @return Whether the operation succeeded
+     * @throws DatabaseException If the changed exercise would be a duplicate of an existing exercise or any other
+     * error occurs regarding database access.
+     * @throws ExerciseNotValidException If a valid exercise cannot be created from the supplied dto.
+     */
     public boolean modifyExercise(int exerciseId, NFExerciseDTO dto) throws DatabaseException, ExerciseNotValidException {
         int numericSubtypeId = getNumericSubtypeId(dto.getNfTaskSubtypeId());
         String specificationJSON = convertToJSONString(dto);
@@ -114,10 +130,20 @@ public class NFResourceService {
                 return true;
             }
         } catch (SQLException s) {
+            if(s.getMessage().contains("type_and_spec_combo_unique")) {
+                int existingId = getIdOfExistingCombo(numericSubtypeId, specificationJSON.toString());
+                throw new DatabaseException("Tried to save exercise " + exerciseId + " as duplicate of exercise " + existingId + ".");
+            }
             throw new DatabaseException(s);
         }
     }
 
+    /**
+     * Deletes the exercise with the specified id from the database.
+     * @param exerciseId The id of the exercise to be deleted
+     * @return Whether the operation succeeded
+     * @throws DatabaseException If an error occurs with the database access.
+     */
     public boolean deleteExercise(int exerciseId) throws DatabaseException {
         try (
                 Connection conn = NFHelper.getPooledConnection();
@@ -142,6 +168,15 @@ public class NFResourceService {
         }
     }
 
+    /**
+     * Automatically generates the assignment text for the exercise with the specified id, in the suitable language for
+     * the specified locale
+     * @param exerciseId The id of the exercise whose assignment text is to be generated.
+     * @param locale The locale whose language is to be used for the exercise generation. Currently, only an English
+     *               and German locale are supported.
+     * @return An HTML string containing the auto-generated assignment text.
+     * @throws DatabaseException If an error occurs with the database access.
+     */
     public String generateAssignmentText(int exerciseId, Locale locale) throws DatabaseException {
         try (
                 Connection conn = NFHelper.getPooledConnection();
@@ -213,6 +248,14 @@ public class NFResourceService {
         }
     }
 
+    /**
+     * Returns the id of an existing exercise with the supplied combination of rdbd_type and specification JSON.
+     * @param rdbdType The rdbd_type of the searched exercise.
+     * @param specificationString The JSON specification String of the searched exercise.
+     * @return The id of an existing exercise with the supplied combination of rdbd_type and specification JSON,
+     * -1 otherwise.
+     * @throws DatabaseException If an error occurs with the database access.
+     */
     private int getIdOfExistingCombo(int rdbdType, String specificationString) throws DatabaseException {
         int id = -1;
 
@@ -238,6 +281,11 @@ public class NFResourceService {
         return id;
     }
 
+    /**
+     * Returns the numeric equivalent of the supplied platform task type URL.
+     * @param subTypeString The URL used to denote the task type within the platform.
+     * @return the numeric equivalent of the supplied platform task type URL.
+     */
     private int getNumericSubtypeId(String subTypeString) {
         return switch (subTypeString) {
             case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#NFTask#KeysDeterminationTask" -> 0;
@@ -249,6 +297,13 @@ public class NFResourceService {
         };
     }
 
+    /**
+     * Takes an <code>NFExerciseDTO</code> and converts it to a JSON serialized <code>String</code> of the appropriate
+     * NF exercise specification class.
+     * @param dto The <code>NFExerciseDTO</code> to be converted
+     * @return A JSON serialized <code>String</code> of the appropriate NF exercise specification class.
+     * @throws ExerciseNotValidException if the supplied NF task subtype is not supported or JSON serialization fails.
+     */
     private String convertToJSONString(NFExerciseDTO dto) throws ExerciseNotValidException {
         IdentifiedRelation baseRelation = new IdentifiedRelation();
 
