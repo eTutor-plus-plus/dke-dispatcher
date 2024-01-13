@@ -68,7 +68,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class NFEvaluator implements Evaluator {
-	
+
 	@Override
 	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
 		NFHelper.getLogger().log(Level.INFO, "Start analyzing.");
@@ -575,7 +575,8 @@ public class NFEvaluator implements Evaluator {
 			/*
 			 * Note: The way I understood it in my meetings with Martin Straßer, submissions coming from Moodle (which
 			 *  is where online exams would be held) use CHECK for submissions. As students are not supposed to know
-			 * 	their grading during the exam, we simply return an empty error report (Gerald Wimmer, 2024-01-13).
+			 *  whether their answer is correct during the exam, an empty error report is
+			 *  returned (Gerald Wimmer, 2024-01-13).
 			 */
 
 			ErrorReport errorReport = new ErrorReport();
