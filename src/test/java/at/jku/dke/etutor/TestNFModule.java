@@ -11,6 +11,7 @@ import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+import org.checkerframework.checker.units.qual.K;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -178,7 +179,7 @@ public class TestNFModule {
 
     @Test
     void minimalCover306Correct() {
-        String submission = "A->F;A->G;F->E;G->C;G->B;B,C->D";
+        String submission = "A->F; A->G; F->E; G->C; G->B; B,C->D";
 
         MinimalCoverAnalysis analysis = (MinimalCoverAnalysis) submit(306, submission);
 
@@ -290,7 +291,7 @@ public class TestNFModule {
 
     @Test
     void minimalCover307Correct() {
-        String submission = "C,E->D;A->C;A->E;C,E->B";
+        String submission = "C,E->D; A->C; A->E; C,E->B";
 
         MinimalCoverAnalysis analysis = (MinimalCoverAnalysis) submit(307, submission);
 
@@ -398,7 +399,7 @@ public class TestNFModule {
 
     @Test
     void minimalCover310Correct() {
-        String submission = "H,I->B;F,G->H;F->C;F->I;E,G->A;E,G->F;C,I->D";
+        String submission = "H,I->B; F,G->H; F->C; F->I; E,G->A; E,G->F; C,I->D";
 
         MinimalCoverAnalysis analysis = (MinimalCoverAnalysis) submit(310, submission);
 
@@ -602,7 +603,7 @@ public class TestNFModule {
 
     @Test
     void nFDetermination376IncorrectDependency() {
-        String submission = "BCNF.C->B:3NF";
+        String submission = "BCNF. C->B: 3NF";
 
         NormalformDeterminationAnalysis analysis = (NormalformDeterminationAnalysis) submit(376, submission);
 
@@ -650,7 +651,10 @@ public class TestNFModule {
 
     @Test
     void normalization571Correct() {
-        String submission = "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G) # (A,B,E;A,B,F;A,F,G) ; *R2: (A,C,D) -> (A->C ; A-> D) # (A) ; *R3: (G,H) -> (G -> H) # (G)";
+        String submission =
+                "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G) # (A,B,E;A,B,F;A,F,G) ; " +
+                "*R2: (A,C,D) -> (A->C ; A-> D) # (A) ; " +
+                "*R3: (G,H) -> (G -> H) # (G)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(571, submission);
 
@@ -691,7 +695,10 @@ public class TestNFModule {
 
     @Test
     void normalization571LostAttribute() {
-        String submission = "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G) # (A,B,E;A,B,F;A,F,G) ; *R2: (A,C,D) -> (A->C ; A-> D) # (A) ; *R3: (G) -> (G -> H) # (G)";
+        String submission =
+                "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G) # (A,B,E;A,B,F;A,F,G) ; " +
+                "*R2: (A,C,D) -> (A->C ; A-> D) # (A) ; " +
+                "*R3: (G) -> (G -> H) # (G)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(571, submission);
 
@@ -798,7 +805,10 @@ public class TestNFModule {
 
     @Test
     void normalization571ExtraneousAttributeInDependency() {
-        String submission = "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; E,B,F->G) # (A,B,E;A,B,F;A,F,G) ; *R2: (A,C,D) -> (A->C ; A-> D) # (A) ; *R3: (G,H) -> (G -> H) # (G)";
+        String submission =
+                "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; E,B,F->G) # (A,B,E;A,B,F;A,F,G) ; " +
+                "*R2: (A,C,D) -> (A->C ; A-> D) # (A) ; " +
+                "*R3: (G,H) -> (G -> H) # (G)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(571, submission);
 
@@ -896,8 +906,8 @@ public class TestNFModule {
     void normalization571Trivial() {
         String submission =
                 "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G) # (A,B,E;A,B,F;A,F,G) ; " +
-                        "*R2: (A,C,D) -> (A->C;A->D;A->A) # (A) ; " +
-                        "*R3: (G,H) -> (G -> H) # (G)";
+                "*R2: (A,C,D) -> (A->C;A->D;A->A) # (A) ; " +
+                "*R3: (G,H) -> (G -> H) # (G)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(571, submission);
 
@@ -940,8 +950,8 @@ public class TestNFModule {
     void normalization571Redundant() {
         String submission =
                 "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G; B,F->E) # (A,B,E;A,B,F;A,F,G) ; " +
-                        "*R2: (A,C,D) -> (A->C;A->D) # (A) ; " +
-                        "*R3: (G,H) -> (G -> H) # (G)";
+                "*R2: (A,C,D) -> (A->C;A->D) # (A) ; " +
+                "*R3: (G,H) -> (G -> H) # (G)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(571, submission);
 
@@ -1038,7 +1048,10 @@ public class TestNFModule {
 
     @Test
     void normalization571RBRMissing() {
-        String submission = "*R1: (A,B,E,F,G) -> (F,G->E; B,E->F; B,F->G) # (A,B,E;A,B,F;A,F,G) ; *R2: (A,C,D) -> (A->C ; A-> D) # (A) ; *R3: (G,H) -> (G -> H) # (G)";
+        String submission =
+                "*R1: (A,B,E,F,G) -> (F,G->E; B,E->F; B,F->G) # (A,B,E;A,B,F;A,F,G) ; " +
+                "*R2: (A,C,D) -> (A->C ; A-> D) # (A) ; " +
+                "*R3: (G,H) -> (G -> H) # (G)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(571, submission);
 
@@ -1093,7 +1106,10 @@ public class TestNFModule {
 
     @Test
     void normalization571RBRIncorrect() {
-        String submission = "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G) # (A,B,E;A,B,F;A,F,G) ; *R2: (A,C,D) -> (A->C ; A-> D ; C->D) # (A) ; *R3: (G,H) -> (G -> H) # (G)";
+        String submission =
+                "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G) # (A,B,E;A,B,F;A,F,G) ; " +
+                "*R2: (A,C,D) -> (A->C ; A-> D ; C->D) # (A) ; " +
+                "*R3: (G,H) -> (G -> H) # (G)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(571, submission);
 
@@ -1145,7 +1161,10 @@ public class TestNFModule {
 
     @Test
     void normalization571MissingKey() {
-        String submission = "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G) # (A,B,E;A,F,G) ; *R2: (A,C,D) -> (A->C ; A-> D) # (A) ; *R3: (G,H) -> (G -> H) # (G)";
+        String submission =
+                "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G) # (A,B,E;A,F,G) ; " +
+                "*R2: (A,C,D) -> (A->C ; A-> D) # (A) ; " +
+                "*R3: (G,H) -> (G -> H) # (G)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(571, submission);
 
@@ -1186,7 +1205,10 @@ public class TestNFModule {
 
     @Test
     void normalization571AdditionalKey() {
-        String submission = "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G) # (A,B,E;A,B,F;A,F,G) ; *R2: (A,C,D) -> (A->C ; A-> D) # (A) ; *R3: (G,H) -> (G -> H) # (G;H)";
+        String submission =
+                "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G) # (A,B,E;A,B,F;A,F,G) ; " +
+                "*R2: (A,C,D) -> (A->C ; A-> D) # (A) ; " +
+                "*R3: (G,H) -> (G -> H) # (G;H)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(571, submission);
 
@@ -1227,7 +1249,10 @@ public class TestNFModule {
 
     @Test
     void normalization571WrongNF() {
-        String submission = "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G) # (A,B,E;A,B,F;A,F,G) ; *R2: (A,C,D) -> (A->C ; A-> D ; C->D) # (A) ; *R3: (G,H) -> (G -> H) # (G)";
+        String submission =
+                "*R1: (A,B,E,F,G) -> (F,G->B; F,G->E; B,E->F; B,F->G) # (A,B,E;A,B,F;A,F,G) ; " +
+                "*R2: (A,C,D) -> (A->C ; A-> D ; C->D) # (A) ; " +
+                "*R3: (G,H) -> (G -> H) # (G)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(571, submission);
 
@@ -1325,8 +1350,8 @@ public class TestNFModule {
     void normalization573LostAttribute() { // Former decompose task
         String submission =
                 "*R1: (A,B,C,H) -> (A->H; H->A) # (A,B,C,G;B,C,G,H) ; " +
-                        "*R2: (C,D) -> (C->D) # (C) ; " +
-                        "*R3: (D,E,F) -> (D->E; D->F; E,F->D) # (D;E,F)";
+                "*R2: (C,D) -> (C->D) # (C) ; " +
+                "*R3: (D,E,F) -> (D->E; D->F; E,F->D) # (D;E,F)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(573, submission);
 
@@ -1379,8 +1404,8 @@ public class TestNFModule {
     void normalization573Lossy() { // Former decompose task
         String submission =
                 "*R1: (A,B,C,G,H) -> (A->H; H->A) # (A,B,C,G;B,C,G,H) ; " +
-                        "*R2: (C,D) -> (C->D) # (C) ; " +
-                        "*R3: (D,E,F) -> (D->F; E,F->D) # (D;E,F)";
+                "*R2: (C,D) -> (C->D) # (C) ; " +
+                "*R3: (D,E,F) -> (D->F; E,F->D) # (D;E,F)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(573, submission);
 
@@ -1439,8 +1464,8 @@ public class TestNFModule {
     void normalization573ExtraneousAttributeInDependency() { // Former decompose task
         String submission =
                 "*R1: (A,B,C,G,H) -> (A->H; H->A) # (A,B,C,G;B,C,G,H) ; " +
-                        "*R2: (C,D) -> (C->D) # (C) ; " +
-                        "*R3: (D,E,F) -> (D,F->E; D->F; E,F->D) # (D;E,F)";
+                "*R2: (C,D) -> (C->D) # (C) ; " +
+                "*R3: (D,E,F) -> (F,D->E; D->F; E,F->D) # (D;E,F)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(573, submission);
 
@@ -1483,8 +1508,8 @@ public class TestNFModule {
     void normalization573NotCanonicalDependency() { // Former decompose task
         String submission =
                 "*R1: (A,B,C,G,H) -> (A->H; H->A) # (A,B,C,G;B,C,G,H) ; " +
-                        "*R2: (C,D) -> (C->D) # (C) ; " +
-                        "*R3: (D,E,F) -> (D->E,F; E,F->D) # (D;E,F)";
+                "*R2: (C,D) -> (C->D) # (C) ; " +
+                "*R3: (D,E,F) -> (D->E,F; E,F->D) # (D;E,F)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(573, submission);
 
@@ -1527,8 +1552,8 @@ public class TestNFModule {
     void normalization573TrivialDependency() { // Former decompose task
         String submission =
                 "*R1: (A,B,C,G,H) -> (A->H; H->A; B->B) # (A,B,C,G;B,C,G,H) ; " +
-                        "*R2: (C,D) -> (C->D) # (C) ; " +
-                        "*R3: (D,E,F) -> (D->E; D->F; E,F->D) # (D;E,F)";
+                "*R2: (C,D) -> (C->D) # (C) ; " +
+                "*R3: (D,E,F) -> (D->E; D->F; E,F->D) # (D;E,F)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(573, submission);
 
@@ -1618,8 +1643,8 @@ public class TestNFModule {
     void normalization573LostDependency() { // Former decompose task
         String submission =
                 "*R1: (A,B,C,G,H) -> (A->H; H->A) # (A,B,C,G;B,C,G,H) ; " +
-                        "*R2: (C,D) -> (C->D) # (C) ; " +
-                        "*R3: (D,E,F) -> (D->E; D->F) # (D;E,F)";
+                "*R2: (C,D) -> (C->D) # (C) ; " +
+                "*R3: (D,E,F) -> (D->E; D->F) # (D;E,F)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(573, submission);
 
@@ -1668,8 +1693,8 @@ public class TestNFModule {
     void normalization573RBRMissing() { // Former decompose task
         String submission =
                 "*R1: (A,B,C,G,H) -> (A->H; H->A) # (A,B,C,G;B,C,G,H) ; " +
-                        "*R2: (C,D) -> (C->D) # (C) ; " +
-                        "*R3: (D,E,F) -> (D->E; E,F->D) # (D;E,F)";
+                "*R2: (C,D) -> (C->D) # (C) ; " +
+                "*R3: (D,E,F) -> (D->E; E,F->D) # (D;E,F)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(573, submission);
 
@@ -1724,8 +1749,8 @@ public class TestNFModule {
     void normalization573RBRIncorrect() { // Former decompose task
         String submission =
                 "*R1: (A,B,C,G,H) -> (A->H; H->A) # (A,B,C,G;B,C,G,H) ; " +
-                        "*R2: (C,D) -> (C->D; D->C) # (C) ; " +
-                        "*R3: (D,E,F) -> (D->E; D->F; E,F->D) # (D;E,F)";
+                "*R2: (C,D) -> (C->D; D->C) # (C) ; " +
+                "*R3: (D,E,F) -> (D->E; D->F; E,F->D) # (D;E,F)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(573, submission);
 
@@ -1759,6 +1784,7 @@ public class TestNFModule {
         assertEquals(1, analysis.getKeysAnalyses().values().stream()
                 .mapToInt(keysAnalysis -> keysAnalysis.getMissingKeys().size())
                 .sum());
+        assertTrue(analysis.getKeysAnalysis("R2").getMissingKeys().contains(new Key("D")));
         assertEquals(0, analysis.getKeysAnalyses().values().stream()
                 .mapToInt(keysAnalysis -> keysAnalysis.getAdditionalKeys().size())
                 .sum());
@@ -1771,8 +1797,8 @@ public class TestNFModule {
     void normalization573KeyMissing() { // Former decompose task
         String submission =
                 "*R1: (A,B,C,G,H) -> (A->H; H->A) # (A,B,C,G;B,C,G,H) ; " +
-                        "*R2: (C,D) -> (C->D) # (C) ; " +
-                        "*R3: (D,E,F) -> (D->E; D->F; E,F->D) # (E,F)";
+                "*R2: (C,D) -> (C->D) # (C) ; " +
+                "*R3: (D,E,F) -> (D->E; D->F; E,F->D) # (E,F)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(573, submission);
 
@@ -1815,8 +1841,8 @@ public class TestNFModule {
     void normalization573KeyIncorrect() { // Former decompose task
         String submission =
                 "*R1: (A,B,C,G,H) -> (A->H; H->A) # (A,B,C,G;B,C,G,H) ; " +
-                        "*R2: (C,D) -> (C->D) # (C;D) ; " +
-                        "*R3: (D,E,F) -> (D->E; D->F; E,F->D) # (D;E,F)";
+                "*R2: (C,D) -> (C->D) # (C;D) ; " +
+                "*R3: (D,E,F) -> (D->E; D->F; E,F->D) # (D;E,F)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(573, submission);
 
@@ -1850,6 +1876,7 @@ public class TestNFModule {
         assertEquals(1, analysis.getKeysAnalyses().values().stream()
                 .mapToInt(keysAnalysis -> keysAnalysis.getAdditionalKeys().size())
                 .sum());
+        assertTrue(analysis.getKeysAnalysis("R2").getAdditionalKeys().contains(new Key("D")));
         assertEquals(0, analysis.getNormalformAnalyses().values().stream()
                 .filter(normalformAnalysis -> !normalformAnalysis.submissionSuitsSolution())
                 .count());
@@ -1859,8 +1886,8 @@ public class TestNFModule {
     void normalization573WrongNF() { // Former decompose task
         String submission =
                 "*R1: (A,B,C,G,H) -> (A->H) # (A,B,C,G;B,C,G,H) ; " +
-                        "*R2: (C,D) -> (C->D) # (C) ; " +
-                        "*R3: (D,E,F) -> (D->E; D->F; E,F->D) # (D;E,F)";
+                "*R2: (C,D) -> (C->D) # (C) ; " +
+                "*R3: (D,E,F) -> (D->E; D->F; E,F->D) # (D;E,F)";
 
         NormalizationAnalysis analysis = (NormalizationAnalysis) submit(573, submission);
 
@@ -1906,6 +1933,7 @@ public class TestNFModule {
         assertEquals(1, analysis.getNormalformAnalyses().values().stream()
                 .filter(normalformAnalysis -> !normalformAnalysis.submissionSuitsSolution())
                 .count());
+        assertEquals(NormalformLevel.SECOND, analysis.getNormalformAnalysis("R1").getViolatedNormalformLevel(new FunctionalDependency(List.of("A"), List.of("H"))));
     }
 
     // Helper methods
