@@ -1,4 +1,4 @@
-package at.jku.dke.etutor.modules.nf.analysis.decompose;
+package at.jku.dke.etutor.modules.nf.analysis.normalization;
 
 import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 

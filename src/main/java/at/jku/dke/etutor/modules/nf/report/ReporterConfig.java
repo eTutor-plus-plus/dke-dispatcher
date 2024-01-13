@@ -1,13 +1,15 @@
 package at.jku.dke.etutor.modules.nf.report;
 
+import at.jku.dke.etutor.modules.nf.NFConstants;
+
 public class ReporterConfig {
 
-	private String action;
+	private NFConstants.EvalAction evalAction;
 	private int diagnoseLevel;
 
 	public ReporterConfig() {
 		super();
-		this.action = "DIAGNOSE";
+		this.evalAction = NFConstants.EvalAction.DIAGNOSE;
 		this.diagnoseLevel = 0;
 	}
 
@@ -20,12 +22,12 @@ public class ReporterConfig {
 	}
 	
 	
-	public String getAction() {
-		return this.action;
+	public NFConstants.EvalAction getEvalAction() {
+		return this.evalAction;
 	}
 
-	public void setAction(String action) {
-		this.action = action;
+	public void setEvalAction(NFConstants.EvalAction evalAction) {
+		this.evalAction = evalAction;
 	}
 
 }

@@ -65,8 +65,9 @@ public class NormalformAnalyzer {
 			}
 
 			// Note: config.getDesiredNormalformLevel() could be null. (Gerald Wimmer, 2023-12-02)
+			// Note: When would that NOT be an error? (Gerald Wimmer, 2024-01-12)
 			NormalformLevelComparator comparator = new NormalformLevelComparator();
-			if (comparator.compare(analysis.getOverallNormalformLevel(), config.getDesiredNormalformLevel()) >= 0) {
+			if (analysis.getOverallNormalformLevel().compareTo(config.getDesiredNormalformLevel()) >= 0) {
 				analysis.setSubmissionSuitsSolution(true);			
 			}
 		}
@@ -82,6 +83,13 @@ public class NormalformAnalyzer {
 		return false;
 	}
 
+	/**
+	 * Checks whether all attributes in the relation are atomic (i.e., contain only one value).
+	 * @param analysis ignored.
+	 * @param dependency FunctionalDependency which is to be examined for violating the first normal form
+	 * @param config Ignored
+	 * @return whether all attributes in the relation are atomic (i.e., contain only one value).
+	 */
 	public static boolean satisfiesFirstNormalform(NormalformAnalysis analysis, FunctionalDependency dependency, NormalformAnalyzerConfig config) {
 		FirstNormalformViolation violation = getFirstNormalformViolation(dependency, config);
 		boolean isViolated = violation != null;
@@ -89,6 +97,20 @@ public class NormalformAnalyzer {
 		return !isViolated;
 	}
 
+	/**
+	 * Checks if the right-hand-side of the supplied dependency is non-prime AND the left-hand-side is a partial key.
+	 * @param dependency FunctionalDependency which is to be examined for violating the second normal form
+	 * @param config
+	 * @return A <code>SecondNormalFormViolation</code> if dependency violates the second normal form, <code>null</code> otherwise.
+	 */
+
+	/**
+	 * Checks whether the right-hand-side of the supplied dependency is prime or the left-hand-side is not a partial key.
+	 * @param analysis The analysis to be modified according to the result of this check
+	 * @param dependency
+	 * @param config
+	 * @return
+	 */
 	public static boolean satisfiesSecondNormalform(NormalformAnalysis analysis, FunctionalDependency dependency, NormalformAnalyzerConfig config) {
 		SecondNormalformViolation violation = getSecondNormalformViolation(dependency, config);
 		boolean isViolated = violation != null;
@@ -128,7 +150,7 @@ public class NormalformAnalyzer {
 	/**
 	 * Checks whether any attribute in the relation is not atomic (i.e., contains more than one value).
 	 * @param dependency FunctionalDependency which is to be examined for violating the first normal form
-	 * @param config
+	 * @param config Ignored
 	 * @return null, always, because all exercises have atomic attributes
 	 */
 	public static FirstNormalformViolation getFirstNormalformViolation(FunctionalDependency dependency, NormalformAnalyzerConfig config) {
@@ -188,10 +210,11 @@ public class NormalformAnalyzer {
 	}
 
 	/**
-	 * Checks
-	 * @param dependency FunctionalDependency which is to be examined for violating the third normal form
+	 * Checks whether both sides of the supplied <code>FunctionalDependency</code> are non-prime
+	 * @param dependency <code>FunctionalDependency</code> which is to be examined for violating the third normal form
 	 * @param config
-	 * @return A <code>ThirdNormalFormViolation</code> if dependency violates the third normal form, <code>null</code> otherwise.
+	 * @return A <code>ThirdNormalFormViolation</code> if dependency violates the third normal form, <code>null</code>
+	 * otherwise.
 	 */
 	public static ThirdNormalformViolation getThirdNormalformViolation(FunctionalDependency dependency, NormalformAnalyzerConfig config) {
 
@@ -213,9 +236,9 @@ public class NormalformAnalyzer {
 		//Deciding whether LHS is a super key
 		//Violation, if LHS is not a super key (old comment, ca. 2005)
 		/*
-		 * I'm not sure if this is really what this does. What it does is: If the right side contains any non-prime
-		 * attribute, it checks if the left side matches any MINIMAL key completely. If the left-hand-side matches
-		 * no minimal key completely, that means either
+		 * Let's elaborate: If the right side contains any non-prime attribute, it checks if the left side contains any
+		 * MINIMAL key completely (i.e., the LHS is a super key, because it either CONTAINS a minimal key, or it IS
+		 * a minimal key, which automatically makes it a super key). If the left-hand-side is not a super key
 		 * 	a) The left-hand-side is a partial key, violating 2NF, or
 		 *  b) The left-hand-side is not even a partial key, i.e., non-prime, violating 3NF.
 		 *
@@ -247,7 +270,7 @@ public class NormalformAnalyzer {
 
 	/**
 	 * Checks
-	 * @param dependency FunctionalDependency which is to be examined for violating the Boyce-Codd normal form
+	 * @param dependency <code>FunctionalDependency</code> which is to be examined for violating the Boyce-Codd normal form
 	 * @param config
 	 * @return A <code>BoyceCoddNormalFormViolation</code> if dependency violates the third normal form, <code>null</code> otherwise.
 	 */

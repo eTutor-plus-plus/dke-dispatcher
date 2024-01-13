@@ -3,7 +3,7 @@ package at.jku.dke.etutor.modules.nf.report;
 import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.nf.NFConstants;
 import at.jku.dke.etutor.modules.nf.NFHelper;
-import at.jku.dke.etutor.modules.nf.analysis.decompose.DecompositionAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.normalization.DecompositionAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.DependenciesPreservationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.LosslessAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
@@ -20,7 +20,7 @@ public class NormalizationReporter extends ErrorReporter {
 		StringBuilder prologue = new StringBuilder();
 		
 		//SET PROLOGUE
-		if (config.getAction().equals(NFConstants.EVAL_ACTION_SUBMIT)){
+		if (config.getEvalAction() == NFConstants.EvalAction.SUBMIT){
 			if (analysis.submissionSuitsSolution()) {
 				prologue.append(messageSource.getMessage("normalizationreporter.correctsolution", null, locale));
 			} else {
@@ -46,7 +46,7 @@ public class NormalizationReporter extends ErrorReporter {
 		
 		//SET SUB REPORTS
 
-		if (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK)){
+		if (config.getEvalAction() != NFConstants.EvalAction.CHECK){
 			//REPORT DECOMPOSITION_ANALYSIS
 			if ((analysis.getDecompositionAnalysis() != null) && (!analysis.getDecompositionAnalysis().submissionSuitsSolution())){
 				report.addErrorReport(createDecompositionErrorReport(analysis.getDecompositionAnalysis(), config, messageSource, locale));		
@@ -130,7 +130,7 @@ public class NormalizationReporter extends ErrorReporter {
 		if (analysis.getNormalformAnalysis(relationID) != null){
 			if (!analysis.getNormalformAnalysis(relationID).submissionSuitsSolution()){
 				nfReporterConfig = new NormalformReporterConfig();
-				nfReporterConfig.setAction(config.getAction());
+				nfReporterConfig.setEvalAction(config.getEvalAction());
 				nfReporterConfig.setDiagnoseLevel(config.getDiagnoseLevel());
 				nfReporterConfig.setDesiredNormalformLevel(config.getDesiredNormalformLevel());
 

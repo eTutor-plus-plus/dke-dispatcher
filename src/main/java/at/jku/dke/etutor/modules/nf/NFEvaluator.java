@@ -20,7 +20,7 @@ import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzerConfig;
-import at.jku.dke.etutor.modules.nf.exercises.RDBDExercisesManager;
+import at.jku.dke.etutor.modules.nf.exercises.NFExercisesManager;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.Key;
@@ -53,12 +53,15 @@ import org.antlr.v4.runtime.TokenStream;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.TreeSet;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * Class for evaluating, grading, and reporting on normalization-related tasks
@@ -87,18 +90,18 @@ public class NFEvaluator implements Evaluator {
 		NFParserErrorCollector errorCollector = new NFParserErrorCollector();
 		submissionParser.addErrorListener(errorCollector);
 
-		int internalTypeId = RDBDExercisesManager.fetchInternalType(exerciseID);
+		int internalTypeId = NFExercisesManager.fetchInternalType(exerciseID);
 		NFConstants.Type type = NFConstants.Type.values()[internalTypeId];
-		String specificationString = RDBDExercisesManager.fetchSpecification(exerciseID);
+		String specificationString = NFExercisesManager.fetchSpecification(exerciseID);
 
 		NFAnalysis analysis;
 		switch (type) {
 			case KEYS_DETERMINATION -> {
-				KeysDeterminationSpecification specification = null;
+				KeysDeterminationSpecification specification;
 				try {    // Source: https://mkyong.com/java/how-to-convert-java-object-to-from-json-jackson/
 					specification = new ObjectMapper().readValue(specificationString, KeysDeterminationSpecification.class);
 				} catch (Exception e) {
-					e.printStackTrace();
+					throw new Exception("Could not deserialize KeysDeterminationSpecification because: " + e.getMessage());
 				}
 
 				KeysAnalyzerConfig keysAnalyzerConfig = new KeysAnalyzerConfig();
@@ -108,14 +111,31 @@ public class NFEvaluator implements Evaluator {
 				// Assemble relation from input string (Gerald Wimmer, 2023-11-27)
 				Relation submission = new Relation();
 				Set<Key> minimalKeys = submissionParser.keySetSubmission().keys;
+				analysis = new KeysAnalysis();
 				if (!errorCollector.getSyntaxErrors().isEmpty()) {
-					analysis = new KeysAnalysis();
-
 					analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
 				} else {
-					submission.setMinimalKeys(minimalKeys);
+					boolean hasIncorrectAttributes = false;
 
-					analysis = KeysAnalyzer.analyze(submission, keysAnalyzerConfig);
+					for(Key k : minimalKeys) {
+						Set<String> incorrectAttributes = new HashSet(k.getAttributes());
+						incorrectAttributes.removeAll(specification.getBaseRelation().getAttributes());
+
+						if(!incorrectAttributes.isEmpty()) {
+							StringJoiner attributesJoiner = new StringJoiner(", ");
+							incorrectAttributes.forEach(a -> attributesJoiner.add(a));
+
+							analysis.appendSyntaxError("Syntax error: Key \"" + k + "\" contains attributes \"" + attributesJoiner + "\" not found in the base relation");
+
+							hasIncorrectAttributes = true;
+						}
+					}
+
+					if(!hasIncorrectAttributes) {
+						submission.setMinimalKeys(minimalKeys);
+
+						analysis = KeysAnalyzer.analyze(submission, keysAnalyzerConfig);
+					}
 				}
 
 				//Set Submission
@@ -123,24 +143,43 @@ public class NFEvaluator implements Evaluator {
 
 			}
 			case MINIMAL_COVER -> {
-				MinimalCoverSpecification specification = null;
+				MinimalCoverSpecification specification;
 				try {
 					specification = new ObjectMapper().readValue(specificationString, MinimalCoverSpecification.class);
 				} catch (Exception e) {
-					e.printStackTrace();
+					throw new Exception("Could not deserialize MinimalCoverSpecification because: " + e.getMessage());
 				}
 
 				// Assemble relation from input String. (Gerald Wimmer, 2023-11-27)
 				Relation submission = new Relation();
 				Set<FunctionalDependency> functionalDependencies = submissionParser.functionalDependencySetSubmission().functionalDependencies;
+				analysis = new MinimalCoverAnalysis();
 				if (!errorCollector.getSyntaxErrors().isEmpty()) {
-					analysis = new MinimalCoverAnalysis();
-
 					analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
 				} else {
-					submission.setFunctionalDependencies(functionalDependencies);
+					boolean hasIncorrectAttributes = false;
 
-					analysis = MinimalCoverAnalyzer.analyze(submission, specification.getBaseRelation());
+					for(FunctionalDependency f : functionalDependencies) {
+						Set<String> incorrectAttributes = new HashSet<>(f.getLhsAttributes());
+						incorrectAttributes.addAll(f.getRhsAttributes());
+
+						incorrectAttributes.removeAll(specification.getBaseRelation().getAttributes());
+
+						if(!incorrectAttributes.isEmpty()) {
+							StringJoiner attributesJoiner = new StringJoiner(", ");
+							incorrectAttributes.forEach(a -> attributesJoiner.add(a));
+
+							analysis.appendSyntaxError("Syntax error: Functional Dependency \"" + f + "\" contains attributes \"" + attributesJoiner + "\" not found in the base relation");
+
+							hasIncorrectAttributes = true;
+						}
+					}
+
+					if(!hasIncorrectAttributes) {
+						submission.setFunctionalDependencies(functionalDependencies);
+
+						analysis = MinimalCoverAnalyzer.analyze(submission, specification.getBaseRelation());
+					}
 				}
 
 				//Set Submission
@@ -148,27 +187,42 @@ public class NFEvaluator implements Evaluator {
 
 			}
 			case ATTRIBUTE_CLOSURE -> {
-				AttributeClosureSpecification attributeClosureSpecification = null;
+				AttributeClosureSpecification specification;
 				try {
-					attributeClosureSpecification = new ObjectMapper().readValue(specificationString, AttributeClosureSpecification.class);
+					specification = new ObjectMapper().readValue(specificationString, AttributeClosureSpecification.class);
 				} catch (Exception e) {
-					e.printStackTrace();
+					throw new Exception("Could not deserialize AttributeClosureSpecification because: " + e.getMessage());
 				}
 
 				// Assemble relation from input String. (Gerald Wimmer, 2023-11-27)
 				Relation submission = new Relation();
 				Set<String> attributes = submissionParser.attributeSetSubmission().attributes;
+				analysis = new AttributeClosureAnalysis();
 				if (!errorCollector.getSyntaxErrors().isEmpty()) {
-					analysis = new AttributeClosureAnalysis();
-
 					analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
 				} else {
-					submission.setAttributes(attributes);
+					boolean hasIncorrectAttributes = false;
 
-					analysis = AttributeClosureAnalyzer.analyze(
-							attributeClosureSpecification.getBaseRelation().getFunctionalDependencies(),
-							attributeClosureSpecification.getBaseAttributes(),
-							submission.getAttributes());
+					Set<String> incorrectAttributes = new HashSet(attributes);
+					incorrectAttributes.removeAll(specification.getBaseRelation().getAttributes());
+
+					if(!incorrectAttributes.isEmpty()) {
+						StringJoiner attributesJoiner = new StringJoiner(", ");
+						incorrectAttributes.forEach(a -> attributesJoiner.add(a));
+
+						analysis.appendSyntaxError("Syntax error: Attribute closure contains attributes \"" + attributesJoiner + "\" not found in the base relation");
+
+						hasIncorrectAttributes = true;
+					}
+
+					if(!hasIncorrectAttributes) {
+						submission.setAttributes(attributes);
+
+						analysis = AttributeClosureAnalyzer.analyze(
+								specification.getBaseRelation().getFunctionalDependencies(),
+								specification.getBaseAttributes(),
+								submission.getAttributes());
+					}
 				}
 
 				//Set Submission
@@ -231,30 +285,64 @@ public class NFEvaluator implements Evaluator {
 				analysis.setSubmission(submissionTreeSet);
 
 			}*/
-			case NORMALIZATION -> { // Note: Could be identical to Decompose, now that you only have to specify the end result (Gerald Wimmer, 2023-11-27)
-				NormalizationSpecification normalizationSpecification = null;
+			case NORMALIZATION -> {
+				NormalizationSpecification specification;
 				try {
-					normalizationSpecification = new ObjectMapper().readValue(specificationString, NormalizationSpecification.class);
+					specification = new ObjectMapper().readValue(specificationString, NormalizationSpecification.class);
 				} catch (Exception e) {
-					e.printStackTrace();
+					throw new Exception("Could not deserialize NormalizationSpecification because: " + e.getMessage());
 				}
 
 				NormalizationAnalyzerConfig normalizationAnalyzerConfig = new NormalizationAnalyzerConfig();
 
-				normalizationAnalyzerConfig.setBaseRelation(normalizationSpecification.getBaseRelation());
-				normalizationAnalyzerConfig.setDesiredNormalformLevel(normalizationSpecification.getTargetLevel());
-				normalizationAnalyzerConfig.setMaxLostDependencies(normalizationSpecification.getMaxLostDependencies());
+				normalizationAnalyzerConfig.setBaseRelation(specification.getBaseRelation());
+				normalizationAnalyzerConfig.setDesiredNormalformLevel(specification.getTargetLevel());
+				normalizationAnalyzerConfig.setMaxLostDependencies(specification.getMaxLostDependencies());
 
 				// Get normalized relations from input String. (Gerald Wimmer, 2023-12-02)
 				Set<IdentifiedRelation> submissionSet = submissionParser.relationSetSubmission().relations;
+				analysis = new NormalizationAnalysis();
 				if (!errorCollector.getSyntaxErrors().isEmpty()) {
-					analysis = new NormalizationAnalysis();
-
 					analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
 				} else {
-					normalizationAnalyzerConfig.setNormalizedRelations(submissionSet);
+					boolean hasIncorrectSyntax = false;
 
-					analysis = NormalizationAnalyzer.analyze(normalizationAnalyzerConfig);
+					// Check if there are relations with identical IDs (Gerald Wimmer, 2024-01-12)
+					Set<String> relationIDs = new HashSet<>();
+					Set<String> registeredDuplicates = new HashSet<>();
+					for(IdentifiedRelation r : submissionSet) {
+						if(relationIDs.contains(r.getID()) && ! registeredDuplicates.contains(r.getID())) {
+							analysis.appendSyntaxError("Syntax error: Duplicate relation ID \"" + r.getID() + "\"");
+							registeredDuplicates.add(r.getID());
+							hasIncorrectSyntax = true;
+						}
+						relationIDs.add(r.getID());
+					}
+
+					// Check if the relations contain any attributes not found in the base relation (Gerald Wimmer, 2024-01-12)
+					for(IdentifiedRelation r : submissionSet) {
+						Set<String> incorrectAttributes = new HashSet<>(r.getAttributes());
+						incorrectAttributes.addAll(r.getFunctionalDependencies().stream().flatMap(f -> f.getLhsAttributes().stream()).collect(Collectors.toSet()));
+						incorrectAttributes.addAll(r.getFunctionalDependencies().stream().flatMap(f -> f.getRhsAttributes().stream()).collect(Collectors.toSet()));
+						incorrectAttributes.addAll(r.getMinimalKeys().stream().flatMap(k -> k.getAttributes().stream()).collect(Collectors.toSet()));
+
+						incorrectAttributes.removeAll(specification.getBaseRelation().getAttributes());
+
+						if(!incorrectAttributes.isEmpty()) {
+							StringJoiner attributesJoiner = new StringJoiner(", ");
+							incorrectAttributes.forEach(a -> attributesJoiner.add(a));
+
+							analysis.appendSyntaxError("Syntax error: Relation \"" + r.getID() + "\" contains attributes \"" + attributesJoiner + "\" not found in the base relation");
+
+							hasIncorrectSyntax = true;
+						}
+					}
+
+					if(!hasIncorrectSyntax) {
+						normalizationAnalyzerConfig.setNormalizedRelations(submissionSet);
+
+						analysis = NormalizationAnalyzer.analyze(normalizationAnalyzerConfig);
+					}
 				}
 
 				//Set Submission
@@ -270,22 +358,38 @@ public class NFEvaluator implements Evaluator {
 				try {
 					specification = new ObjectMapper().readValue(specificationString, NormalformDeterminationSpecification.class);
 				} catch (Exception e) {
-					e.printStackTrace();
+					throw new Exception("Could not deserialize NormalformDeterminationSpecification because: " + e.getMessage());
 				}
 
 				// Get submission from input String. (Gerald Wimmer, 2023-12-02)
 				NormalformDeterminationSubmission normalformDeterminationSubmission = submissionParser.normalFormSubmission().submission;
+				analysis = new NormalformDeterminationAnalysis();
 				if (!errorCollector.getSyntaxErrors().isEmpty()) {
-					analysis = new NormalformDeterminationAnalysis();
-
 					analysis.setSyntaxError(errorCollector.getSyntaxErrors().toArray(new String[0]));
 				} else {
-					NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();
+					boolean hasIncorrectAttributes = false;
 
-					normalformAnalyzerConfig.setCorrectMinimalKeys(KeysDeterminator.determineMinimalKeys(specification.getBaseRelation()));
-					normalformAnalyzerConfig.setRelation(specification.getBaseRelation());
+					Set<FunctionalDependency> incorrectFDs = normalformDeterminationSubmission.getNormalformViolations().keySet();
+					incorrectFDs.removeAll(specification.getBaseRelation().getFunctionalDependencies());
 
-					analysis = NormalformDeterminationAnalyzer.analyze(normalformDeterminationSubmission, normalformAnalyzerConfig);
+					if(!incorrectFDs.isEmpty()) {
+						StringJoiner depsJoiner = new StringJoiner(", ");
+						incorrectFDs.forEach(f -> depsJoiner.add(f.toString()));
+
+						analysis.appendSyntaxError("Syntax error: Submission contains functional dependencies \"" + depsJoiner + "\" not found in the base relation");
+
+						hasIncorrectAttributes = true;
+					}
+
+
+					if(!hasIncorrectAttributes) {
+						NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();
+
+						normalformAnalyzerConfig.setCorrectMinimalKeys(KeysDeterminator.determineMinimalKeys(specification.getBaseRelation()));
+						normalformAnalyzerConfig.setRelation(specification.getBaseRelation());
+
+						analysis = NormalformDeterminationAnalyzer.analyze(normalformDeterminationSubmission, normalformAnalyzerConfig);
+					}
 				}
 
 				//Set Submission
@@ -321,9 +425,9 @@ public class NFEvaluator implements Evaluator {
 
 		int actualPoints = maxPoints;
 
-		int internalType = RDBDExercisesManager.fetchInternalType(nfAnalysis.getExerciseId());
+		int internalType = NFExercisesManager.fetchInternalType(nfAnalysis.getExerciseId());
 		NFConstants.Type type = NFConstants.Type.values()[internalType];
-		String specificationString = RDBDExercisesManager.fetchSpecification(nfAnalysis.getExerciseId());
+		String specificationString = NFExercisesManager.fetchSpecification(nfAnalysis.getExerciseId());
 
 
 		switch (type) {
@@ -477,26 +581,6 @@ public class NFEvaluator implements Evaluator {
 			return nfAnalysis.getReport();
 		}
 
-		// int exerciseIdParam = Integer.parseInt(passedAttributes.get(NFConstants.ATT_EXERCISE_ID));
-		int exerciseIdParam = nfAnalysis.getExerciseId();
-		String diagnoseLevelParam = passedAttributes.get(NFConstants.PARAM_LEVEL);
-
-		int diagnoseLevel = 2;
-		int internalType = RDBDExercisesManager.fetchInternalType(exerciseIdParam);
-		NFConstants.Type type = NFConstants.Type.values()[internalType];
-
-		String actionParam = passedAttributes.get(NFConstants.PARAM_ACTION);
-
-		NFReport report;
-		ReporterConfig config;
-		if (!actionParam.equals(NFConstants.EVAL_ACTION_SUBMIT)) {
-			try{
-				diagnoseLevel = Integer.parseInt(diagnoseLevelParam);
-			} catch (Exception ignore){
-				NFHelper.getLogger().log(Level.WARNING, "Diagnose Level '" + diagnoseLevelParam + "' is not a number! Using default Diagnose Level '0'");
-			}
-		}
-
 		if(nfAnalysis.getSyntaxError() != null) {
 			ErrorReport errorReport = new ErrorReport();
 			errorReport.setError(nfAnalysis.getSyntaxError());
@@ -506,13 +590,30 @@ public class NFEvaluator implements Evaluator {
 			return errorReport;
 		}
 
+		String actionParam = passedAttributes.get(NFConstants.PARAM_ACTION);
+		NFConstants.EvalAction evalAction = NFConstants.EvalAction.valueOf(actionParam.toUpperCase());
+
+		int diagnoseLevel = 2;
+		String diagnoseLevelParam = passedAttributes.get(NFConstants.PARAM_LEVEL);
+		if (evalAction != NFConstants.EvalAction.SUBMIT) {
+			try{
+				diagnoseLevel = Integer.parseInt(diagnoseLevelParam);
+			} catch (Exception ignore){
+				NFHelper.getLogger().log(Level.WARNING, "Diagnose Level '" + diagnoseLevelParam + "' is not a number! Using default Diagnose Level '0'");
+			}
+		}
+
+		int internalType = NFExercisesManager.fetchInternalType(nfAnalysis.getExerciseId());
+		NFConstants.Type type = NFConstants.Type.values()[internalType];
+
+		NFReport report;
 		switch (type) {
 			case KEYS_DETERMINATION -> {
 				//KEYS DETERMINATION
 				NFHelper.getLogger().log(Level.INFO, "Printing report for internal type 'KEY_DETERMINATION'");
 
-				config = new ReporterConfig();
-				config.setAction(actionParam);
+				ReporterConfig config = new ReporterConfig();
+				config.setEvalAction(evalAction);
 				config.setDiagnoseLevel(diagnoseLevel);
 				report = KeysReporter.report((KeysAnalysis) analysis, (DefaultGrading) grading, config, locale);
 
@@ -521,8 +622,8 @@ public class NFEvaluator implements Evaluator {
 				//MINIMAL COVER
 				NFHelper.getLogger().log(Level.INFO, "Printing report for internal type 'MINIMAL_COVER'");
 
-				config = new ReporterConfig();
-				config.setAction(actionParam);
+				ReporterConfig config = new ReporterConfig();
+				config.setEvalAction(evalAction);
 				config.setDiagnoseLevel(diagnoseLevel);
 				report = MinimalCoverReporter.report((MinimalCoverAnalysis) analysis, grading, config, locale);
 
@@ -531,8 +632,8 @@ public class NFEvaluator implements Evaluator {
 				//ATTRIBUTE CLOSURE
 				NFHelper.getLogger().log(Level.INFO, "Printing report for internal type 'ATTRIBUTE_CLOSURE'");
 
-				config = new ReporterConfig();
-				config.setAction(actionParam);
+				ReporterConfig config = new ReporterConfig();
+				config.setEvalAction(evalAction);
 				config.setDiagnoseLevel(diagnoseLevel);
 				report = AttributeClosureReporter.report((AttributeClosureAnalysis) analysis, (DefaultGrading) grading, config, locale);
 
@@ -542,7 +643,7 @@ public class NFEvaluator implements Evaluator {
 			NFHelper.getLogger().log(Level.INFO, "Printing report for internal type 'DECOMPOSE'");
 			
 			DecomposeReporterConfig decomposeReporterConfig = new DecomposeReporterConfig();
-			decomposeReporterConfig.setAction(actionParam);
+			decomposeReporterConfig.setAction(evalAction);
 			decomposeReporterConfig.setDiagnoseLevel(diagnoseLevel);
 			decomposeReporterConfig.setGrading((DefaultGrading)grading);
 			decomposeReporterConfig.setDecomposeAnalysis((DecomposeAnalysis)analysis);
@@ -555,7 +656,7 @@ public class NFEvaluator implements Evaluator {
 				NFHelper.getLogger().log(Level.INFO, "Printing report for internal type 'NORMALIZATION'");
 
 				NormalizationReporterConfig normalizationReporterConfig = new NormalizationReporterConfig();
-				normalizationReporterConfig.setAction(actionParam);
+				normalizationReporterConfig.setEvalAction(evalAction);
 				normalizationReporterConfig.setDiagnoseLevel(diagnoseLevel);
 				normalizationReporterConfig.setDecomposedRelations((TreeSet<IdentifiedRelation>) analysis.getSubmission());
 				normalizationReporterConfig.setDesiredNormalformLevel(((NormalizationAnalysis) analysis).getDesiredNormalformLevel());
@@ -567,8 +668,8 @@ public class NFEvaluator implements Evaluator {
 				//NORMALFORM DETERMINATION
 				NFHelper.getLogger().log(Level.INFO, "Printing report for internal type 'NORMALFORM DETERMINATION'");
 
-				config = new ReporterConfig();
-				config.setAction(actionParam);
+				ReporterConfig config = new ReporterConfig();
+				config.setEvalAction(evalAction);
 				config.setDiagnoseLevel(diagnoseLevel);
 
 				report = NormalformReporter.report((NormalformDeterminationAnalysis) analysis, (DefaultGrading) grading, config, locale);

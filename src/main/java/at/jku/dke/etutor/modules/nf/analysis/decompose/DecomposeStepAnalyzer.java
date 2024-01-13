@@ -1,19 +1,16 @@
 package at.jku.dke.etutor.modules.nf.analysis.decompose;
 
 import at.jku.dke.etutor.modules.nf.NFHelper;
-import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzer;
-import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalyzerConfig;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.MinimalCoverAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalyzerConfig;
-import at.jku.dke.etutor.modules.nf.analysis.normalization.KeysDeterminator;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.NormalizationAnalyzer;
 import at.jku.dke.etutor.modules.nf.analysis.rbr.RBRAnalyzer;
-import at.jku.dke.etutor.modules.nf.model.KeysContainer;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
+import at.jku.dke.etutor.modules.nf.model.KeysContainer;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class DecomposeStepAnalyzer {
@@ -44,13 +41,6 @@ public class DecomposeStepAnalyzer {
 		if (!analysis.getLossLessAnalysis().submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);
 			return analysis;
-		}
-
-		//INITIALIZE CORRECT KEYS
-		HashMap<String, KeysContainer> correctKeysOfDecomposedRelations = new HashMap<>();
-
-		for(IdentifiedRelation currDecomposedRelation : config.getNormalizedRelations()) {
-			correctKeysOfDecomposedRelations.put(currDecomposedRelation.getID(), KeysDeterminator.determineAllKeys(currDecomposedRelation));
 		}
 		
 		//ANALYZE CANONICAL REPRESENTATION
@@ -105,16 +95,8 @@ public class DecomposeStepAnalyzer {
 			}
 		}
 
-		//ANALYZE KEYS
-		KeysAnalyzerConfig keysAnalyzerConfig = new KeysAnalyzerConfig();
-		for(IdentifiedRelation currDecomposedRelation : config.getNormalizedRelations()) {
-			keysAnalyzerConfig.setCorrectMinimalKeys(correctKeysOfDecomposedRelations.get(currDecomposedRelation.getID()).getMinimalKeys());
-
-			analysis.addKeysAnalysis(currDecomposedRelation.getID(), KeysAnalyzer.analyze(currDecomposedRelation, keysAnalyzerConfig));
-			if (!analysis.getKeysAnalysis(currDecomposedRelation.getID()).submissionSuitsSolution()){
-				analysis.setSubmissionSuitsSolution(false);
-			}
-		}
+		//ANALYZE KEYS and get correct keys
+		Map<String, KeysContainer> correctKeysOfDecomposedRelations = NormalizationAnalyzer.analyzeCorrectKeys(analysis, config.getNormalizedRelations());
 
 		//ANALYZE NORMALFORM LEVELS
 		NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();

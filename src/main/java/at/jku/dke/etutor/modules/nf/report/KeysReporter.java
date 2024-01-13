@@ -15,7 +15,7 @@ public class KeysReporter extends ErrorReporter {
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
-		if (config.getAction().equalsIgnoreCase(NFConstants.EVAL_ACTION_SUBMIT)) {
+		if (config.getEvalAction() == NFConstants.EvalAction.SUBMIT) {
 			if (analysis.submissionSuitsSolution()) {
 				prologue.append(messageSource.getMessage("keysreporter.correctsolution", null, locale));
 			} else {
@@ -24,7 +24,7 @@ public class KeysReporter extends ErrorReporter {
 
 			prologue.append(messageSource.getMessage("keysreporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
 
-			if (grading.getPoints() == 1){
+			if (grading.getPoints() == 1) {
 				prologue.append(" ").append(messageSource.getMessage("keysreporter.point", null, locale)).append(" ");
 			} else {
 				prologue.append(" ").append(messageSource.getMessage("keysreporter.points", null, locale)).append(" ");
@@ -41,7 +41,7 @@ public class KeysReporter extends ErrorReporter {
 		report.setPrologue(prologue.toString());
 		
 		//SET ERROR REPORT IF NECESSARY
-		if ((!analysis.submissionSuitsSolution()) && (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK))){
+		if ((!analysis.submissionSuitsSolution()) && config.getEvalAction() != NFConstants.EvalAction.CHECK){
 			report.addErrorReport(createKeysErrorReport(analysis, config, locale));
 		}
 		

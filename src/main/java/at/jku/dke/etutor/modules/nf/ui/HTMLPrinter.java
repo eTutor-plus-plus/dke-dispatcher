@@ -858,84 +858,8 @@ public class HTMLPrinter {
 		out.append(offset).append("</table>").append(LINE_SEP);
 		return out.toString();
 	}
-	
-	/*public static String printSpecificationSyntax(SpecificationParser parser, int indent, Locale locale) throws IOException {
-		String offset;
-		String qualBase;
-		String qualRel;
-		String qualDep;
-		StringBuilder out = new StringBuilder();
-		
-		qualBase = parser.getQualifier(SpecificationParser.QUALIFIER_ATTRIBUTES_BASE);
-		qualRel = parser.getQualifier(SpecificationParser.QUALIFIER_ATTRIBUTES_RELATION);
-		qualDep = parser.getQualifier(SpecificationParser.QUALIFIER_DEPENDENCIES);
-		
-		if (qualBase == null && qualRel == null && qualDep == null) {
-			return out.toString();
-		}
-		
-		offset = getOffset(indent);
-		out.append(offset).append("<table>").append(LINE_SEP);
-		out.append(offset).append("<tr>").append(LINE_SEP);
-		out.append(offset).append("	<td><span class='spec_def'>").append(messageSource.getMessage("printspecificationsyntax.specification", null, locale)).append("</span></td>").append(LINE_SEP);
-		out.append(offset).append("	<td>=</td>").append(LINE_SEP);
-		out.append(offset).append("	<td>").append(LINE_SEP);
-		out.append(offset).append("		").append(qualRel != null ? "<span class='spec_def_ref'>" + messageSource.getMessage("printspecificationsyntax.attributes", null, locale) + "</span> " : "").append(LINE_SEP);
-		out.append(offset).append("		").append(qualDep != null ? "<span class='spec_def_ref'>" + messageSource.getMessage("printspecificationsyntax.dependencies", null, locale) + "</span> " : "").append(LINE_SEP);
-		out.append(offset).append("		").append(qualBase != null ? "<span class='spec_def_ref'>" + messageSource.getMessage("printspecificationsyntax.baseattributes", null, locale) + "</span></td>" : "").append(LINE_SEP);
-		out.append(offset).append("	</td>").append(LINE_SEP);
-		out.append(offset).append("</tr>").append(LINE_SEP);
-		if (qualRel != null) {
-			out.append(offset).append("<tr>").append(LINE_SEP);
-			out.append(offset).append("	<td><span class='spec_def'>").append(messageSource.getMessage("printspecificationsyntax.attributes", null, locale)).append("</span></td>").append(LINE_SEP);
-			out.append(offset).append("	<td>=</td>").append(LINE_SEP);
-			out.append(offset).append("	<td>&quot;<span class='spec_atom'>").append(qualRel).append("</span>&quot; &quot;<span class='spec_atom'>{</span>&quot; [ <span class='spec_def_ref'>").append(messageSource.getMessage("printspecificationsyntax.attributelist", null, locale)).append("</span> ] &quot;<span class='spec_atom'>}</span>&quot;</td>").append(LINE_SEP);
-			out.append(offset).append("</tr>").append(LINE_SEP);
-		}
-		if (qualBase != null) {
-			out.append(offset).append("<tr>").append(LINE_SEP);
-			out.append(offset).append("	<td><span class='spec_def'>").append(messageSource.getMessage("printspecificationsyntax.baseattributes", null, locale)).append("</span></td>").append(LINE_SEP);
-			out.append(offset).append("	<td>=</td>").append(LINE_SEP);
-			out.append(offset).append("	<td>&quot;<span class='spec_atom'>").append(qualBase).append("</span>&quot; &quot;<span class='spec_atom'>{</span>&quot; [ <span class='spec_def_ref'>").append(messageSource.getMessage("printspecificationsyntax.attributelist", null, locale)).append("</span> ] &quot;<span class='spec_atom'>}</span>&quot;</td>").append(LINE_SEP);
-			out.append(offset).append("</tr>").append(LINE_SEP);
-		}
-		if (qualDep != null) {
-			out.append(offset).append("<tr>").append(LINE_SEP);
-			out.append(offset).append("	<td><span class='spec_def'>").append(messageSource.getMessage("printspecificationsyntax.dependencies", null, locale)).append("</span></td>").append(LINE_SEP);
-			out.append(offset).append("	<td>=</td>").append(LINE_SEP);
-			out.append(offset).append("	<td>&quot;<span class='spec_atom'>").append(qualDep).append("</span>&quot; &quot;<span class='spec_atom'>{</span>&quot; [ <span class='spec_def_ref'>").append(messageSource.getMessage("printspecificationsyntax.dependencylist", null, locale)).append("</span> ] &quot;<span class='spec_atom'>}</span>&quot;</td>").append(LINE_SEP);
-			out.append(offset).append("</tr>").append(LINE_SEP);
-			out.append(offset).append("<tr>").append(LINE_SEP);
-			out.append(offset).append("	<td><span class='spec_def'>").append(messageSource.getMessage("printspecificationsyntax.dependencylist", null, locale)).append("</span></td>").append(LINE_SEP);
-			out.append(offset).append("	<td>=</td>").append(LINE_SEP);
-			out.append(offset).append("	<td><span class='spec_def_ref'>").append(messageSource.getMessage("printspecificationsyntax.dependency", null, locale)).append("</span> { &quot;, &quot; <span class='spec_def_ref'>").append(messageSource.getMessage("printspecificationsyntax.dependency", null, locale)).append("</span> }</td>").append(LINE_SEP);
-			out.append(offset).append("</tr>").append(LINE_SEP);
-			out.append(offset).append("<tr>").append(LINE_SEP);
-			out.append(offset).append("	<td><span class='spec_def'>").append(messageSource.getMessage("printspecificationsyntax.dependency", null, locale)).append("</span></td>").append(LINE_SEP);
-			out.append(offset).append("	<td>=</td>").append(LINE_SEP);
-			out.append(offset).append("	<td><span class='spec_def_ref'>").append(messageSource.getMessage("printspecificationsyntax.attributelist", null, locale)).append("</span> &quot;<span class='spec_atom'><code>-&gt;</code></span>&quot; <span class='spec_def_ref'>").append(messageSource.getMessage("printspecificationsyntax.attributelist", null, locale)).append("</span></td>").append(LINE_SEP);
-			out.append(offset).append("</tr>").append(LINE_SEP);
-		}
-		out.append(offset).append("<tr>").append(LINE_SEP);
-		out.append(offset).append("	<td><span class='spec_def'>").append(messageSource.getMessage("printspecificationsyntax.attributelist", null, locale)).append("</span></td>").append(LINE_SEP);
-		out.append(offset).append("	<td>=</td>").append(LINE_SEP);
-		out.append(offset).append("	<td><span class='spec_def_ref'>").append(messageSource.getMessage("printspecificationsyntax.attribute", null, locale)).append("</span> { &quot;&nbsp;&quot; <span class='spec_def_ref'>").append(messageSource.getMessage("printspecificationsyntax.attribute", null, locale)).append("</span> }</td>").append(LINE_SEP);
-		out.append(offset).append("</tr>").append(LINE_SEP);
-		out.append(offset).append("<tr>").append(LINE_SEP);
-		out.append(offset).append("	<td><span class='spec_def'>").append(messageSource.getMessage("printspecificationsyntax.attribute", null, locale)).append("</span></td>").append(LINE_SEP);
-		out.append(offset).append("	<td>=</td>").append(LINE_SEP);
-		out.append(offset).append("	<td><span class='spec_def_ref'>").append(messageSource.getMessage("printspecificationsyntax.character", null, locale)).append("</span> { <span class='spec_def_ref'>").append(messageSource.getMessage("printspecificationsyntax.character", null, locale)).append("</span> }</td>").append(LINE_SEP);
-		out.append(offset).append("</tr>").append(LINE_SEP);
-		out.append(offset).append("<tr>").append(LINE_SEP);
-		out.append(offset).append("	<td><span class='spec_def'>").append(messageSource.getMessage("printspecificationsyntax.character", null, locale)).append("</span></td>").append(LINE_SEP);
-		out.append(offset).append("	<td>=</td>").append(LINE_SEP);
-		out.append(offset).append("	<td><span class='spec_def_ref'>").append(messageSource.getMessage("printspecificationsyntax.letter", null, locale)).append("</span> | <span class='spec_def_ref'>").append(messageSource.getMessage("printspecificationsyntax.digit", null, locale)).append("</span> | &quot;<span class='spec_atom'>_</span>&quot;</td>").append(LINE_SEP);
-		out.append(offset).append("</tr>").append(LINE_SEP);
-		out.append(offset).append("</table>").append(LINE_SEP);
-		return out.toString();
-	}*/
 
-	public static void createHTMLSiteForReport(NFReport report){
+    public static void createHTMLSiteForReport(NFReport report){
 
 		PrintWriter writer = null;
 		FileOutputStream out = null;

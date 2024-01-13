@@ -4,12 +4,14 @@ import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelationComparator;
 
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.Set;
 import java.util.TreeSet;
 
-public class NormalizationAnalyzerConfig {
+public class NormalizationAnalyzerConfig implements Serializable {
 	private int maxLostDependencies;
-	private final TreeSet<IdentifiedRelation> normalizedRelations;
+	private final Set<IdentifiedRelation> normalizedRelations;
 	private IdentifiedRelation baseRelation;
 	private NormalformLevel desiredNormalformLevel;
 	
@@ -37,8 +39,10 @@ public class NormalizationAnalyzerConfig {
 		this.normalizedRelations.add(normalizedRelation);
 	}
 
-	public TreeSet<IdentifiedRelation> getNormalizedRelations(){
-		return (TreeSet<IdentifiedRelation>)this.normalizedRelations.clone();
+	public Set<IdentifiedRelation> getNormalizedRelations(){
+		Set<IdentifiedRelation> ret = new TreeSet<>(new IdentifiedRelationComparator());
+		ret.addAll(this.normalizedRelations);
+		return ret;
 	}
 	
 	public void setBaseRelation(IdentifiedRelation baseRelation){

@@ -34,10 +34,6 @@ public class NormalformDeterminationAnalysis extends NormalformAnalysis implemen
 		return new LinkedList<>(this.wrongLeveledDependencies);
 	}
 
-	public int wrongLeveledDependenciesCount(){
-		return this.wrongLeveledDependencies.size();
-	}
-
 	public NormalformLevel getSubmittedLevel() {
 		return this.submittedLevel;
 	}

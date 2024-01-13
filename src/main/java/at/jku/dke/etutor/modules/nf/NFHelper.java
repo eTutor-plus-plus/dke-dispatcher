@@ -7,23 +7,16 @@ import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
 import at.jku.dke.etutor.modules.nf.specification.DecomposeSpecification;
-import at.jku.dke.etutor.modules.nf.specification.KeysDeterminationSpecification;
-import at.jku.dke.etutor.modules.nf.specification.MinimalCoverSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
-import at.jku.dke.etutor.modules.nf.specification.NormalformDeterminationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.RBRSpecification;
 import at.jku.dke.etutor.modules.nf.ui.HTMLPrinter;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -123,52 +116,16 @@ public class NFHelper {
 		
 		return null;
 	}
-	
+
+	/**
+	 * Tests whether there is a subrelation for the specified relationID
+	 * @param relationID The id of the relation which is to be tested for being an inner node
+	 * @param relations The <code>Collection</code> of relations within which the relationID is supposed to be located
+	 * @return Whether there is a subrelation for the specified relationID
+	 */
 	public static boolean isInnerNode(String relationID, Collection<IdentifiedRelation> relations){
-		String currID;
-		boolean isInnerNode = false;
-		IdentifiedRelation currRelation;
-		Iterator<IdentifiedRelation> it = relations.iterator();
-	
-		while ((it.hasNext()) && (!isInnerNode)){
-			
-			currRelation = it.next();
-			//NFHelper.getLogger().log(Level.INFO, "RELATION IS NULL: " + (currRelation == null));
-			
-			currID = currRelation.getID();
-			//NFHelper.getLogger().log(Level.INFO, "ID IS NULL: " + (currID == null));
-
-			if (currID.startsWith(relationID) && currID.length() > relationID.length()){
-				isInnerNode = true;
-			}
-		}
-	
-		return isInnerNode;
-	}
-
-	public static Relation createRelation(String name, String attributes) throws Exception{
-		Relation relation = new Relation();
-		relation.setName(name);
-		
-		String[] temp = attributes.split(" ");
-        for (String s : temp) {
-            relation.addAttribute(s);
-        }
-		
-		return relation; 
-	}
-
-	public static IdentifiedRelation createIdentifiedRelation(String id, String name, String attributes) throws Exception{
-		IdentifiedRelation relation = new IdentifiedRelation();
-		relation.setID(id);
-		relation.setName(name);
-		
-		String[] temp = attributes.split(" ");
-        for (String s : temp) {
-            relation.addAttribute(s);
-        }
-		
-		return relation; 
+		return relations.stream()
+				.anyMatch(identifiedRelation -> identifiedRelation.getID().startsWith(relationID) && identifiedRelation.getID().length() > relationID.length());
 	}
 
 	public static void addFunctionalDependency(String lhsAttributes, String rhsAttributes, Relation relation){
@@ -187,41 +144,7 @@ public class NFHelper {
 		
 		relation.addFunctionalDependency(dependency);
 	}
-	
-	public static void splitRelation(Collection<IdentifiedRelation> relations, String relationID, String[] subRelation1Attributes, String[] subRelation2Attributes) throws Exception{
-		IdentifiedRelation subRelation1 = new IdentifiedRelation();
-		IdentifiedRelation subRelation2 = new IdentifiedRelation();
 
-		subRelation1.setID(relationID + ".1");
-		subRelation1.setName("R" + relationID + ".1");
-        for (String subRelation1Attribute : subRelation1Attributes) {
-            subRelation1.addAttribute(subRelation1Attribute);
-        }
-
-		subRelation2.setID(relationID + ".2");
-		subRelation2.setName("R" + relationID + ".2");
-        for (String subRelation2Attribute : subRelation2Attributes) {
-            subRelation2.addAttribute(subRelation2Attribute);
-        }
-
-		relations.add(subRelation1);
-		relations.add(subRelation2);
-	}
-	
-	public static void delSubRelations(Collection<IdentifiedRelation> relations, String relationID) throws Exception{
-		String currRelationID;
-		
-		Iterator<IdentifiedRelation> relationsIterator = relations.iterator();
-
-		while (relationsIterator.hasNext()){
-			currRelationID = relationsIterator.next().getID();
-
-			if (currRelationID.startsWith(relationID) && (currRelationID.length() > relationID.length())){
-				relationsIterator.remove();
-			}
-		}
-	}
-	
 	public static void newRelation(Collection<IdentifiedRelation> relations) throws Exception{
 		int maxID;
 		StringBuilder increasedID;
@@ -505,100 +428,17 @@ public class NFHelper {
 			}
 		}
 	}
-	
-	public static void addBaseAttributes(Serializable spec, String[] attributes) {
-		if (attributes == null || attributes.length < 1) {
-			return;
-		}
-		if (spec instanceof AttributeClosureSpecification) {
-            for (String attribute : attributes) {
-                ((AttributeClosureSpecification) spec).addBaseAttribute(attribute);
-            }
-		} else if (spec instanceof RBRSpecification) {
-            for (String attribute : attributes) {
-                ((RBRSpecification) spec).addBaseAttribute(attribute);
-            }
-		}
-	}
-	
-	public static void setBaseAttributes(Serializable spec, Collection<String> attributes) {
-		if (attributes == null) {
-			return;
-		}
-		if (spec instanceof AttributeClosureSpecification) {
-			((AttributeClosureSpecification)spec).setBaseAttributes(attributes);
-		} else if (spec instanceof RBRSpecification) {
-			((RBRSpecification)spec).setBaseAttributes(attributes);
-		}
-	}
-	
-	public static void delBaseAttributes(Serializable spec, String[] attributesToDelete) {
-		List<String> attributes;
-		boolean remove;
-		if (attributesToDelete == null || attributesToDelete.length < 1) {
-			return;
-		}
-		if (spec instanceof AttributeClosureSpecification) {
-			attributes = ((AttributeClosureSpecification)spec).getBaseAttributes();
-			((AttributeClosureSpecification)spec).setBaseAttributes(new LinkedList<>());
-            for (String attribute : attributes) {
-                remove = false;
-                for (int j = 0; !remove && j < attributesToDelete.length; j++) {
-                    if (attributesToDelete[j].equals(attribute)) {
-                        remove = true;
-                        break;
-                    }
-                }
-                if (!remove) {
-                    ((AttributeClosureSpecification) spec).addBaseAttribute(attribute);
-                }
-            }
-		} else if (spec instanceof RBRSpecification) {
-			attributes = ((RBRSpecification)spec).getBaseAttributes();
-			((RBRSpecification)spec).setBaseAttributes(new LinkedList<>());
-            for (String attribute : attributes) {
-                remove = false;
-                for (int j = 0; !remove && j < attributesToDelete.length; j++) {
-                    if (attributesToDelete[j].equals(attribute)) {
-                        remove = true;
-                        break;
-                    }
-                }
-                if (!remove) {
-                    ((RBRSpecification) spec).addBaseAttribute(attribute);
-                }
-            }
-		}
-	}
 
-	public static boolean isOfRdbdType(NFSpecification spec, NFConstants.Type rdbdType) {
-		if (spec == null) {
-			return true;
-		}
-        return switch (rdbdType) {
-            case NORMALFORM_DETERMINATION -> spec instanceof NormalformDeterminationSpecification;
-            case KEYS_DETERMINATION -> spec instanceof KeysDeterminationSpecification;
-            case MINIMAL_COVER -> spec instanceof MinimalCoverSpecification;
-            case ATTRIBUTE_CLOSURE -> spec instanceof AttributeClosureSpecification;
-            case RBR -> spec instanceof RBRSpecification;
-            case NORMALIZATION -> spec instanceof NormalizationSpecification;
-            case DECOMPOSE -> spec instanceof DecomposeSpecification;
-            default -> throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
-        };
-	}
-	
 	public static String getAssignmentText(NFSpecification specTmp, int indent, Locale locale, NFConstants.Type rdbdType) throws IOException {
-		StringWriter writer = new StringWriter();
-		switch (rdbdType) {
-			case NORMALFORM_DETERMINATION -> writer.append(HTMLPrinter.printAssignmentForNormalformDetermination(specTmp.getBaseRelation(), indent, locale));
-			case KEYS_DETERMINATION -> writer.append(HTMLPrinter.printAssignmentForKeysDetermination(specTmp.getBaseRelation(), indent, locale));
-			case MINIMAL_COVER -> writer.append(HTMLPrinter.printAssignmentForMinimalCover(specTmp.getBaseRelation(), indent, locale));
-			case ATTRIBUTE_CLOSURE -> writer.append(HTMLPrinter.printAssignmentForAttributeClosure((AttributeClosureSpecification)specTmp, indent, locale));
-			case RBR -> writer.append(HTMLPrinter.printAssignmentForRBR((RBRSpecification)specTmp, indent, locale));
-			case NORMALIZATION -> writer.append(HTMLPrinter.printAssignmentForNormalization((NormalizationSpecification)specTmp, indent, locale));
-			case DECOMPOSE -> writer.append(HTMLPrinter.printAssignmentForDecompose((DecomposeSpecification)specTmp, indent, locale));
+		return switch (rdbdType) {
+			case NORMALFORM_DETERMINATION -> HTMLPrinter.printAssignmentForNormalformDetermination(specTmp.getBaseRelation(), indent, locale);
+			case KEYS_DETERMINATION -> HTMLPrinter.printAssignmentForKeysDetermination(specTmp.getBaseRelation(), indent, locale);
+			case MINIMAL_COVER -> HTMLPrinter.printAssignmentForMinimalCover(specTmp.getBaseRelation(), indent, locale);
+			case ATTRIBUTE_CLOSURE -> HTMLPrinter.printAssignmentForAttributeClosure((AttributeClosureSpecification)specTmp, indent, locale);
+			case RBR -> HTMLPrinter.printAssignmentForRBR((RBRSpecification)specTmp, indent, locale);
+			case NORMALIZATION -> HTMLPrinter.printAssignmentForNormalization((NormalizationSpecification)specTmp, indent, locale);
+			case DECOMPOSE -> HTMLPrinter.printAssignmentForDecompose((DecomposeSpecification)specTmp, indent, locale);
 			default -> throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
-		}
-		return writer.toString();
+		};
 	}
 }

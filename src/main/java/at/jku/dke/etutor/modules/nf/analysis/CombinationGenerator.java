@@ -4,36 +4,36 @@ import java.math.BigInteger;
 
 public class CombinationGenerator {
 
-	private final int n;
-	private final int r;
-	private final int[] a;
-	private final BigInteger total;
+	private final int numberOfElements;
+	private final int startingIndex;
+	private final int[] allIndices;
+	private final BigInteger totalNumberOfCombinations;
 	private BigInteger numLeft;
 
-	public CombinationGenerator(int n, int r) {
-		if (r > n) {
+	public CombinationGenerator(int numberOfElements, int startingIndex) {
+		if (startingIndex > numberOfElements) {
 			throw new IllegalArgumentException();
 		}
-		if (n < 1) {
+		if (numberOfElements < 1) {
 			throw new IllegalArgumentException();
 		}
 
-		this.n = n;
-		this.r = r;
+		this.numberOfElements = numberOfElements;
+		this.startingIndex = startingIndex;
 
-		a = new int[r];
-		BigInteger nFact = getFactorial(n);
-		BigInteger rFact = getFactorial(r);
-		BigInteger nminusrFact = getFactorial(n - r);
-		total = nFact.divide(rFact.multiply(nminusrFact));
+		allIndices = new int[startingIndex];
+		BigInteger nFact = getFactorial(numberOfElements);
+		BigInteger rFact = getFactorial(startingIndex);
+		BigInteger nminusrFact = getFactorial(numberOfElements - startingIndex);
+		totalNumberOfCombinations = nFact.divide(rFact.multiply(nminusrFact));
 		reset();
 	}
 
 	public void reset() {
-		for (int i = 0; i < a.length; i++) {
-			a[i] = i;
+		for (int i = 0; i < allIndices.length; i++) {
+			allIndices[i] = i;
 		}
-		numLeft = new BigInteger(total.toString());
+		numLeft = new BigInteger(totalNumberOfCombinations.toString());
 	}
 
 	public BigInteger getNumLeft() {
@@ -44,8 +44,8 @@ public class CombinationGenerator {
 		return numLeft.compareTo(BigInteger.ZERO) > 0;
 	}
 
-	public BigInteger getTotal() {
-		return total;
+	public BigInteger getTotalNumberOfCombinations() {
+		return totalNumberOfCombinations;
 	}
 
 	private static BigInteger getFactorial(int n) {
@@ -58,22 +58,22 @@ public class CombinationGenerator {
 
 	public int[] getNext() {
 
-		if (numLeft.equals(total)) {
+		if (numLeft.equals(totalNumberOfCombinations)) {
 			numLeft = numLeft.subtract(BigInteger.ONE);
-			return a;
+			return allIndices;
 		}
 
-		int i = r - 1;
-		while (a[i] == n - r + i) {
+		int i = startingIndex - 1;
+		while (allIndices[i] == numberOfElements - startingIndex + i) {
 			i--;
 		}
-		a[i] = a[i] + 1;
-		for (int j = i + 1; j < r; j++) {
-			a[j] = a[i] + j - i;
+		allIndices[i] = allIndices[i] + 1;
+		for (int j = i + 1; j < startingIndex; j++) {
+			allIndices[j] = allIndices[i] + j - i;
 		}
 
 		numLeft = numLeft.subtract(BigInteger.ONE);
-		return a;
+		return allIndices;
 	}
 	
 	public static void main(String[] args) {

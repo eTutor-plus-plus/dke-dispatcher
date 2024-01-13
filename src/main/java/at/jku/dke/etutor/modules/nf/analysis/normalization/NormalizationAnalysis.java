@@ -1,7 +1,6 @@
 package at.jku.dke.etutor.modules.nf.analysis.normalization;
 
 import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
-import at.jku.dke.etutor.modules.nf.analysis.decompose.DecompositionAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.keys.KeysAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.CanonicalRepresentationAnalysis;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.ExtraneousAttributesAnalysis;

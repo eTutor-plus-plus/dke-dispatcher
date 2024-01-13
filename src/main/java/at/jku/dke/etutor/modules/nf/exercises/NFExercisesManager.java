@@ -16,29 +16,19 @@ import java.util.logging.Logger;
  * @author Gerald Wimmer (06.01.2024) (conversion to JSON specifications, removal of no longer necessary methods)
  *
  */
-public class RDBDExercisesManager {
+public class NFExercisesManager {
 
 	protected Logger logger;
-	protected int rdbdType;
 
-	public RDBDExercisesManager(int rdbdType) {
-		try {
-			this.logger = Logger.getLogger("etutor.modules.rdbd");
-		} catch (Exception e){
-			e.printStackTrace();		
-		}
-		this.rdbdType = rdbdType;
-	}
-	
-	private RDBDExercisesManager() { 
+	private NFExercisesManager() {
+		// This class is not meant to be instantiated (Gerald Wimmer, 2024-01-11)
 	}
 
 	/**
 	 * This method directly returns the JSON string representation of an exercise's specification.
-	 *  
-	 * @param exerciseID
-	 * @return The specification object 
-	 * @throws Exception
+	 * @param exerciseID The id of the exercise whose specification is to be returned
+	 * @return The specification object of the exercise
+	 * @throws SQLException if there is a database error
 	 */
 	public static String fetchSpecification(int exerciseID) throws SQLException {
 		String specification = null;
@@ -70,7 +60,13 @@ public class RDBDExercisesManager {
 		return specification;
 	}
 
-	public static int fetchInternalType(int exerciseID) throws Exception {
+	/**
+	 * Returns the ordinal of the nf task subtype for the specified exercise
+	 * @param exerciseID The id of the exercise whose type is to be queried
+	 * @return The ordinal of the nf task subtype for the specified exercise
+	 * @throws SQLException if there is a database error
+	 */
+	public static int fetchInternalType(int exerciseID) throws SQLException {
 		int type = -1;
 		
 		try (
@@ -81,7 +77,7 @@ public class RDBDExercisesManager {
 			if (rset.next()) {
 				type = rset.getInt("rdbd_type");
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			NFHelper.getLogger().log(Level.SEVERE, "", e);
 			throw e;
 		}

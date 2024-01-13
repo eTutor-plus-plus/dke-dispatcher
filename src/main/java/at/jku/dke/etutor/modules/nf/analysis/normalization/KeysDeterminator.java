@@ -144,15 +144,20 @@ public class KeysDeterminator {
 		return partialKeys;
 	}
 
+	/**
+	 * Checks whether there are no attributes that could be removed from the supplied <code>Key</code>.
+	 * @param key The <code>Key</code> to be checked.
+	 * @param relation The <code>Relation</code> containing this <code>Key</code>
+	 * @return Whether there are no attributes that could be removed from the supplied <code>Key</code>
+	 */
 	private static boolean isMinimalKey(Key key, Relation relation) {
-		Key candidate = new Key();
-
 		for (int i = 1; i <= key.getAttributes().size(); i++) {
 			CombinationGenerator generator = new CombinationGenerator(key.getAttributes().size(), i);
 
 			while (generator.hasMore()) {
+				Key candidate = new Key();
+
 				int[] indices = generator.getNext();
-				candidate.removeAllAttributes();
 				if (indices.length != key.getAttributes().size()) {
                     for (int index : indices) {
                         candidate.addAttribute((String) key.getAttributes().toArray()[index]);
@@ -172,10 +177,6 @@ public class KeysDeterminator {
 	}
 
 	public static TreeSet<Key> determineSuperKeys(Relation relation) {
-		Key superKey;
-
-		TreeSet<Key> superKeys = new TreeSet<>(new KeyComparator());
-
 		//CALCULATING ATTRIBUTES THAT ARE PART OF EVERY KEY - RESTRICTING SET OF CANDIDATE ATTRIBUTES
         Set<String> constantAttributes = new HashSet<>(relation.getAttributes());
 		for (FunctionalDependency currDependency : relation.getFunctionalDependencies()){
@@ -183,38 +184,34 @@ public class KeysDeterminator {
 			constantAttributes.removeAll(currDependency.getRhsAttributes());
 		}
 
-        Set<String> candidateAttributes = new HashSet<>(relation.getAttributes());
+        List<String> candidateAttributes = new LinkedList<>(relation.getAttributes());
 		candidateAttributes.removeAll(constantAttributes);
-		
+
+		TreeSet<Key> superKeys = new TreeSet<>(new KeyComparator());
 		if (!candidateAttributes.isEmpty()){
 			//CALCULATING SUPER KEYS
-			Key candidate = new Key();
-
 			for (int i = 1; i <= candidateAttributes.size(); i++) {
 				CombinationGenerator generator = new CombinationGenerator(candidateAttributes.size(), i);
 
 				while (generator.hasMore()) {
-					candidate.removeAllAttributes();
+					Key candidate = new Key(constantAttributes);
+
 					int[] indices = generator.getNext();
                     for (int index : indices) {
-                        candidate.addAttribute((String) candidateAttributes.toArray()[index]);
+                        candidate.addAttribute(candidateAttributes.get(index));
                     }
-
-					candidate.addAllAttributes(constantAttributes);
 
 					List<String> attributes = new LinkedList<>(candidate.getAttributes());
 
 					Collection<String> closure = Closure.execute(attributes, relation.getFunctionalDependencies());
 					if (closure.containsAll(relation.getAttributes())) {
-						superKey = new Key();
-						superKey.addAllAttributes(attributes);
+						Key superKey = new Key(attributes);
 						superKeys.add(superKey);
 					}
 				}
 			}
 		} else {
-			superKey = new Key();
-			superKey.addAllAttributes(relation.getAttributes());
+			Key superKey = new Key(relation.getAttributes());
 			superKeys.add(superKey);
 		}
 

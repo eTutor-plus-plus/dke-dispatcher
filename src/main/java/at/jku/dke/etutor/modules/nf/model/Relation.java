@@ -18,12 +18,12 @@ public class Relation implements Serializable, Cloneable, HasSemanticEquality {
 	private static final long serialVersionUID = 7982386529581622533L;
 
 	protected String name;
-	private TreeSet<String> attributes;
-	private HashSet<FunctionalDependency> functionalDependencies;
+	private Set<String> attributes;
+	private Set<FunctionalDependency> functionalDependencies;
 
-	private HashSet<Key> subKeys;
-	private TreeSet<Key> superKeys;
-	private TreeSet<Key> minimalKeys;
+	private Set<Key> subKeys;
+	private Set<Key> superKeys;
+	private Set<Key> minimalKeys;
 	
 	public Relation() {
 		super();
@@ -38,11 +38,17 @@ public class Relation implements Serializable, Cloneable, HasSemanticEquality {
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		Relation clone = (Relation)super.clone();
-		clone.attributes = (TreeSet<String>)this.attributes.clone();
-		clone.functionalDependencies = (HashSet<FunctionalDependency>)this.functionalDependencies.clone();
-		clone.minimalKeys = (TreeSet<Key>)this.minimalKeys.clone();
-		clone.subKeys = (HashSet<Key>)this.subKeys.clone();
-		clone.superKeys = (TreeSet<Key>)this.superKeys.clone();
+		TreeSet<String> clonedAttributes = new TreeSet<>(new AttributeCollator());
+		clonedAttributes.addAll(this.attributes);
+		clone.attributes = clonedAttributes;
+		clone.functionalDependencies = new HashSet<>(this.functionalDependencies);
+		TreeSet<Key> clonedMinimalKeys = new TreeSet<>(new KeyComparator());
+		clonedMinimalKeys.addAll(this.minimalKeys);
+		clone.minimalKeys = clonedMinimalKeys;
+		clone.subKeys = new HashSet<>(this.subKeys);
+		TreeSet<Key> clonedSuperKeys = new TreeSet<>(new KeyComparator());
+		clonedSuperKeys.addAll(this.subKeys);
+		clone.superKeys = clonedSuperKeys;
 		return clone;
 	}
 
@@ -214,15 +220,19 @@ public class Relation implements Serializable, Cloneable, HasSemanticEquality {
 	}
 	
 	public Set<Key> getSubKeys(){
-		return (Set<Key>)this.subKeys.clone();
+		return new HashSet<>(this.subKeys);
 	}
 	
-	public TreeSet<Key> getSuperKeys(){
-		return (TreeSet<Key>)this.superKeys.clone();
+	public Set<Key> getSuperKeys() {
+		TreeSet<Key> ret = new TreeSet<>(new KeyComparator());
+		ret.addAll(this.superKeys);
+		return ret;
 	}
 	
 	public TreeSet<String> getAttributes(){
-		return (TreeSet<String>)this.attributes.clone();
+		TreeSet<String> ret = new TreeSet<>(new AttributeCollator());
+		ret.addAll(this.attributes);
+		return ret;
 	}
 
 	@JsonIgnore
@@ -239,11 +249,13 @@ public class Relation implements Serializable, Cloneable, HasSemanticEquality {
 	}
 	
 	public TreeSet<Key> getMinimalKeys(){
-		return (TreeSet<Key>)this.minimalKeys.clone();
+		TreeSet<Key> ret = new TreeSet<>(new KeyComparator());
+		ret.addAll(this.minimalKeys);
+		return ret;
 	}
 	
-	public Set<FunctionalDependency> getFunctionalDependencies(){
-		return (Set<FunctionalDependency>)this.functionalDependencies.clone();
+	public Set<FunctionalDependency> getFunctionalDependencies() {
+		return new HashSet<>(this.functionalDependencies);
 	}
 
 	/*

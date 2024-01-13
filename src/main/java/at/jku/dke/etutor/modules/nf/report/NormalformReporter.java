@@ -17,7 +17,7 @@ public class NormalformReporter extends ErrorReporter {
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
-		if (config.getAction().equals(NFConstants.EVAL_ACTION_SUBMIT)){
+		if (config.getEvalAction() == NFConstants.EvalAction.SUBMIT){
 			if (analysis.submissionSuitsSolution()) {
 				prologue.append(messageSource.getMessage("normalformreporter.correctsolution", null, locale));
 			} else {
@@ -41,7 +41,7 @@ public class NormalformReporter extends ErrorReporter {
 		}
 		report.setPrologue(prologue.toString());
 		
-		if (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK)){
+		if (config.getEvalAction() != NFConstants.EvalAction.CHECK){
 			//REPORT OVERALL_NF_LEVEL 
 			if (!analysis.getOverallNormalformLevel().equals(analysis.getSubmittedLevel())){
 				report.addErrorReport(createNormalformLevelDeterminationErrorReport(analysis, config, locale));
@@ -99,8 +99,8 @@ public class NormalformReporter extends ErrorReporter {
 		}
 		
 		if (config.getDiagnoseLevel() == 2) {
-			description.append(analysis.wrongLeveledDependenciesCount());
-			if (analysis.wrongLeveledDependenciesCount() == 1) {
+			description.append(analysis.getWrongLeveledDependencies().size());
+			if (analysis.getWrongLeveledDependencies().size() == 1) {
 				description.append(" ").append(messageSource.getMessage("normalformreporter.dependencydoes", null, locale)).append(" ");
 			} else {
 				description.append(" ").append(messageSource.getMessage("normalformreporter.dependenciesdo", null, locale)).append(" ");
@@ -153,7 +153,7 @@ public class NormalformReporter extends ErrorReporter {
 		//REPORTING FIRST NORMALFORM VIOLATIONS IF NECESSARY
 		// Note: config.getDesiredNormalformLevel() could be null. (Gerald Wimmer, 2023-12-02)
 		NormalformLevelComparator comparator = new NormalformLevelComparator();
-		if (comparator.compare(config.getDesiredNormalformLevel(), NormalformLevel.FIRST) >= 0){
+		if (config.getDesiredNormalformLevel().compareTo(NormalformLevel.FIRST) >= 0){
 			if (!analysis.getFirstNormalformViolations().isEmpty()){
 				appendLineBreak = true;
 			}
@@ -167,7 +167,7 @@ public class NormalformReporter extends ErrorReporter {
 		}
 
 		//REPORTING SECOND NORMALFORM VIOLATIONS IF NECESSARY
-		if (comparator.compare(config.getDesiredNormalformLevel(), NormalformLevel.SECOND) >= 0) {
+		if (config.getDesiredNormalformLevel().compareTo(NormalformLevel.SECOND) >= 0) {
 			if (!analysis.getSecondNormalformViolations().isEmpty()) {
 				if (appendLineBreak) {
 					description.append("<br><br>");
@@ -235,7 +235,7 @@ public class NormalformReporter extends ErrorReporter {
 		}
 
 		//REPORTING THIRD NORMALFORM VIOLATIONS IF NECESSARY
-		if (comparator.compare(config.getDesiredNormalformLevel(), NormalformLevel.THIRD) >= 0) {
+		if (config.getDesiredNormalformLevel().compareTo(NormalformLevel.THIRD) >= 0) {
 			if (!analysis.getThirdNormalformViolations().isEmpty()) {
 				if (appendLineBreak) {
 					description.append("<br><br>");
@@ -302,7 +302,7 @@ public class NormalformReporter extends ErrorReporter {
 		}
 
 		//REPORTING BOYCE CODD NORMALFORM VIOLATIONS IF NECESSARY
-		if (comparator.compare(config.getDesiredNormalformLevel(), NormalformLevel.BOYCE_CODD) >= 0){
+		if (config.getDesiredNormalformLevel().compareTo(NormalformLevel.BOYCE_CODD) >= 0){
 			if (!analysis.getBoyceCoddNormalformViolations().isEmpty()){
 				if (appendLineBreak){
 					description.append("<br><br>");

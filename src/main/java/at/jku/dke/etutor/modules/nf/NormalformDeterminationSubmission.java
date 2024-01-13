@@ -20,6 +20,10 @@ public class NormalformDeterminationSubmission implements Serializable {
 		this.normalformViolations.putAll(normalformViolations);
 	}
 
+	public Map<FunctionalDependency, NormalformLevel> getNormalformViolations() {
+		return new HashMap<>(normalformViolations);
+	}
+
 	public void setNormalformViolation(NormalformLevel violatedLevel, FunctionalDependency dependency) {
 		this.normalformViolations.put(dependency, violatedLevel);
 	}

@@ -20,7 +20,7 @@ public class DecomposeReporter extends ErrorReporter {
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
-		if (config.getAction().equalsIgnoreCase(NFConstants.EVAL_ACTION_SUBMIT)) {
+		if (config.getEvalAction() == NFConstants.EvalAction.SUBMIT) {
 			if (config.getDecomposeAnalysis().submissionSuitsSolution()) {
 				prologue.append(messageSource.getMessage("decomposereporter.correctsolution", null, locale));
 			} else {
@@ -46,14 +46,14 @@ public class DecomposeReporter extends ErrorReporter {
 		report.setPrologue(prologue.toString());
 		
 		//SET ERROR REPORT FOR LOST FUNCTIONAL DEPENDENCIES IF NECESSARY
-		if ((!config.getDecomposeAnalysis().getOverallDependenciesPreservationAnalysis().submissionSuitsSolution()) && (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK))){
+		if ((!config.getDecomposeAnalysis().getOverallDependenciesPreservationAnalysis().submissionSuitsSolution()) && config.getEvalAction() != NFConstants.EvalAction.CHECK){
 			reportAtom = NormalizationReporter.createDependenciesPreservationErrorReport(config.getDecomposeAnalysis().getOverallDependenciesPreservationAnalysis(), config, messageSource, locale); 
 			reportAtom.setError(messageSource.getMessage("decomposereporter.toomanylost", new Object[]{config.getDecomposeAnalysis().getMaxLostDependencies(), config.getDecomposeAnalysis().getOverallDependenciesPreservationAnalysis().lostFunctionalDependenciesCount()}, locale));
 			report.addErrorReport(reportAtom);
 		}
 
 		//ADD REPORT_ATOM_GROUP FOR EACH DECOMPOSE STEP
-		if (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK)){
+		if (config.getEvalAction() != NFConstants.EvalAction.CHECK){
 			String baseRelationID;
 			Iterator<String> decomposeStepAnalysesIterator = config.getDecomposeAnalysis().iterAnalysedDecomposeStepBaseRelations();
 			while (decomposeStepAnalysesIterator.hasNext()) {
@@ -156,7 +156,7 @@ public class DecomposeReporter extends ErrorReporter {
 		if (analysis.getNormalformAnalysis(relationID) != null){
 			if ((!analysis.getNormalformAnalysis(relationID).submissionSuitsSolution()) && (!NFHelper.isInnerNode(relationID, decomposedRelations))){
 				nfReporterConfig = new NormalformReporterConfig();
-				nfReporterConfig.setAction(config.getAction());
+				nfReporterConfig.setEvalAction(config.getEvalAction());
 				nfReporterConfig.setDiagnoseLevel(config.getDiagnoseLevel());
 				nfReporterConfig.setDesiredNormalformLevel(config.getDecomposeAnalysis().getTargetLevel());
 

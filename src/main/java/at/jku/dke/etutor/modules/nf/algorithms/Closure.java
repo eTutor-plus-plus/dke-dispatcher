@@ -4,6 +4,8 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.text.Collator;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -21,29 +23,25 @@ public class Closure {
 	 * @return The attribute closure for the passed attributes given the passed dependencies
 	 */
 	public static Set<String> execute(Collection<String> attributes, Collection<FunctionalDependency> dependencies) {
-		boolean again = true;
 		Set<String> closure = new TreeSet<>(Collator.getInstance());
 		closure.addAll(attributes);
-		
-		while (again) {
-			for (FunctionalDependency dependency : dependencies) {
-				boolean containsAllLHSAttributes = closure.containsAll(dependency.getLhsAttributes());
-				
-				if (containsAllLHSAttributes) {
-					closure.addAll(dependency.getRhsAttributes());
-				}
-			}
 
-			again = false;
-			for (FunctionalDependency dependency : dependencies) {
-				boolean containsAllLHSAttributes = closure.containsAll(dependency.getLhsAttributes());
-				boolean containsAllRHSAttributes = closure.containsAll(dependency.getRhsAttributes());
-				
-				if ((!containsAllRHSAttributes) && (containsAllLHSAttributes)){
-					again = true;
+		Set<FunctionalDependency> remainingDependencies = new HashSet<>(dependencies);
+
+		// While there are any functional dependencies suitable for extending the closure ... (Gerald Wimmer, 2024-01-11)
+		while (remainingDependencies.stream().anyMatch(fd -> closure.containsAll(fd.getLhsAttributes()))) {
+			// Extend the closure and remove the utilized functional dependency (Gerald Wimmer, 2024-01-11)
+			Iterator<FunctionalDependency> dependencyIterator = remainingDependencies.iterator();
+			while(dependencyIterator.hasNext()) {
+				FunctionalDependency dependency = dependencyIterator.next();
+
+				if(closure.containsAll(dependency.getLhsAttributes())) {
+					closure.addAll(dependency.getRhsAttributes());
+					dependencyIterator.remove();
 				}
 			}
 		}
+
 		return closure;
 	}
 }

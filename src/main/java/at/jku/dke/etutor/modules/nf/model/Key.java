@@ -3,23 +3,34 @@ package at.jku.dke.etutor.modules.nf.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.TreeSet;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Key implements Serializable {
 
-	private final TreeSet<String> attributes;
+	private final Set<String> attributes;
 
 	public Key() {
 		this.attributes = new TreeSet<>(new AttributeCollator());
 	}
 
+	public Key(String ... attributesArr) {
+		this.attributes = new TreeSet<>(new AttributeCollator());
+		this.attributes.addAll(Arrays.stream(attributesArr).toList());
+	}
+
+	public Key(Collection<String> attributes) {
+		this.attributes = new TreeSet<>(new AttributeCollator());
+		this.attributes.addAll(attributes);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
-		Key key;
-
 		if (obj == null) {
 			return false;
 		}
@@ -28,7 +39,7 @@ public class Key implements Serializable {
 			return false;
 		}
 		
-		key = (Key)obj;
+		Key key = (Key)obj;
 
 		if (!(key.getAttributes().containsAll(this.attributes))){
 			return false;
@@ -39,7 +50,7 @@ public class Key implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return -1;
+		return Objects.hash(attributes);
 	}
 
 	@Override
@@ -53,8 +64,10 @@ public class Key implements Serializable {
 		return toStringJoiner.toString();
 	}
 	
-	public TreeSet<String> getAttributes(){
-		return (TreeSet<String>)this.attributes.clone();
+	public Set<String> getAttributes() {
+		TreeSet<String> ret = new TreeSet<>(new AttributeCollator());
+		ret.addAll(this.attributes);
+		return ret;
 	}
 
 	public boolean addAttribute(String attribute) {
@@ -77,9 +90,5 @@ public class Key implements Serializable {
 		return this.attributes.remove(attribute);
 	}
 
-	public void removeAllAttributes() {
-		this.attributes.clear();
-	}
-	
-	
+
 }

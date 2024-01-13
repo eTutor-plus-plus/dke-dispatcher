@@ -35,7 +35,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 			prologue.append(messageSource.getMessage("minimalcoverreporter.notcorrectsolution", null, locale));
 		}
 
-		if (config.getAction().equalsIgnoreCase("SUBMIT")) {
+		if (config.getEvalAction() == NFConstants.EvalAction.SUBMIT) {
 			prologue.append(messageSource.getMessage("minimalcoverreporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
 
 			if (grading.getPoints() == 1) {
@@ -48,7 +48,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 		}
 		report.setPrologue(prologue.toString());
 
-		if (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK)) {
+		if (config.getEvalAction() != NFConstants.EvalAction.CHECK) {
 			//ADDING ERROR REPORT FOR CANONICAL REPRESENTATION ANALYSIS, IF NECESSARY
 			if (analysis.getCanonicalRepresentationAnalysis() != null) {
 				if (!analysis.getCanonicalRepresentationAnalysis().submissionSuitsSolution()) {

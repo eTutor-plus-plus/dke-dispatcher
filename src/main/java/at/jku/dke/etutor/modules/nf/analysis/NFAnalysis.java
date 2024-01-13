@@ -45,6 +45,14 @@ public class NFAnalysis extends DefaultAnalysis {
         this.syntaxError = sj.toString();
     }
 
+    public void appendSyntaxError(String syntaxError) {
+        if(this.syntaxError == null) {
+            setSyntaxError(syntaxError);
+        } else {
+            this.syntaxError += ";" + syntaxError;
+        }
+    }
+
     public Grading getGrading() {
         return grading;
     }

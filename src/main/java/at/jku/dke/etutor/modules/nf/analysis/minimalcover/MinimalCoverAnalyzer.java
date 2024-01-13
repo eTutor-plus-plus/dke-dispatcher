@@ -8,6 +8,7 @@ import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.Relation;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -54,8 +55,12 @@ public class MinimalCoverAnalyzer {
 		 * TODO: Check whether this won't cause any issues, given that we test for redundant FDs compared to the
 		 *  correct solution afterwards (Gerald Wimmer, 2023-12-31).
 		 */
+		// Note: To avoid deducting points for subsequent errors, trivial dependencies are ignored here.
 		//ANALYZE REDUNDANT FUNCTIONAL DEPENDENCIES
-		RedundantDependenciesAnalysis redundantDependenciesAnalysis = analyzeRedundantDependencies(submittedDependencies);
+		Set<FunctionalDependency> nonTrivialDeps = new HashSet<>(submittedDependencies);
+		nonTrivialDeps.removeAll(trivialDependenciesAnalysis.getTrivialDependencies());
+
+		RedundantDependenciesAnalysis redundantDependenciesAnalysis = analyzeRedundantDependencies(nonTrivialDeps);
 		analysis.setRedundantDependenciesAnalysis(redundantDependenciesAnalysis);
 		if (!redundantDependenciesAnalysis.submissionSuitsSolution()){
 			analysis.setSubmissionSuitsSolution(false);

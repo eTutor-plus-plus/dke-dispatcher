@@ -104,7 +104,7 @@ public class ETutorNFController {
     @GetMapping("/exercise/{id}/instruction")
     public ResponseEntity<String> getAssignmentText(@PathVariable int id) throws ApiException {
         try {
-            String language = "de";
+            String language = "en";
             String ret = resourceService.generateAssignmentText(id, mapLanguageToLocale(language));
 
             if(ret == null) {

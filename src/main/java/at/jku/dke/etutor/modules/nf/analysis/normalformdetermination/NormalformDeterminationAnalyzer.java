@@ -56,13 +56,11 @@ public class NormalformDeterminationAnalyzer {
 		}
 
 		//DETERMINE WRONG LEVELED DEPENDENCIES
-		NormalformLevel foundViolatedLevel;
-		NormalformLevel correctViolatedLevel;
 		for (FunctionalDependency currDependency : config.getRelation().getFunctionalDependencies()){
 			NFHelper.getLogger().log(Level.INFO, "Check NF-Level of dependency: " + currDependency);
-			
-			foundViolatedLevel = submission.getViolatedNormalformLevel(currDependency);
-			correctViolatedLevel = analysis.getViolatedNormalformLevel(currDependency);
+
+			NormalformLevel foundViolatedLevel = submission.getViolatedNormalformLevel(currDependency);
+			NormalformLevel correctViolatedLevel = analysis.getViolatedNormalformLevel(currDependency);
 			NFHelper.getLogger().log(Level.INFO, "Found: " + foundViolatedLevel + " Correct: " + correctViolatedLevel);
 			
 			if (foundViolatedLevel != correctViolatedLevel) { // Note: Simplified because NormalFormLevel is now an enum. (Gerald Wimmer, 2023-12-02)
@@ -76,7 +74,7 @@ public class NormalformDeterminationAnalyzer {
 		// Note: Neither of the two compared NormalFormLevels would be null under normal circumstances. (Gerald Wimmer, 2023-12-02)
 		NormalformLevelComparator comparator = new NormalformLevelComparator();
 		analysis.setSubmittedLevel(submission.getOverallLevel());
-		if (comparator.compare(analysis.getOverallNormalformLevel(), analysis.getSubmittedLevel()) != 0) {
+		if (analysis.getOverallNormalformLevel().compareTo(analysis.getSubmittedLevel()) != 0) {
 			analysis.setOverallLevelIsCorrect(false);
 			analysis.setSubmissionSuitsSolution(false);			
 		}

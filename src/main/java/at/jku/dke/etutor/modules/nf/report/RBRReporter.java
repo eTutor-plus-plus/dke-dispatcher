@@ -14,7 +14,7 @@ public class RBRReporter extends ErrorReporter {
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
-		if (config.getAction().equalsIgnoreCase(NFConstants.EVAL_ACTION_SUBMIT)) {
+		if (config.getEvalAction() == NFConstants.EvalAction.SUBMIT) {
 			if (analysis.submissionSuitsSolution()) {
 				prologue.append(messageSource.getMessage("rbrreporter.correctsolution", null, locale));
 			} else {
@@ -40,7 +40,7 @@ public class RBRReporter extends ErrorReporter {
 		report.setPrologue(prologue.toString());
 		
 		//SET ERROR REPORT IF NECESSARY
-		if (!config.getAction().equals(NFConstants.EVAL_ACTION_CHECK)){
+		if (config.getEvalAction() != NFConstants.EvalAction.CHECK){
 			if (!analysis.submissionSuitsSolution()){
 				report.addErrorReport(createRBRErrorReport(analysis, config, messageSource, locale));
 			}
