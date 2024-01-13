@@ -68,13 +68,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class NFEvaluator implements Evaluator {
-	/*
-	 * TODO: In the old eTutor, the Map parameters were effectively
-	 *  passedAttributes: Map<String, Serializable>
-	 *  passedParameters: Map<String, String[]> (according to documentation, actually seems to be single Strings that
-	 *   may contain multiple values)
-	 *  This must be adapted to match the interface's Map<String, String> in both cases (Gerald Wimmer, 2023-11-12).
-	 */
+	
 	@Override
 	public Analysis analyze(int exerciseID, int userID, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
 		NFHelper.getLogger().log(Level.INFO, "Start analyzing.");
@@ -556,31 +550,15 @@ public class NFEvaluator implements Evaluator {
 		return grading;
 	}
 
-	/*
-	 * TODO: In the old eTutor, the Map parameters were effectively
-	 *  passedAttributes: Map<String, Serializable>
-	 *  passedParameters: Map<String, String[]> (according to documentation, actually seems to be single Strings that
-	 *   may contain multiple values)
-	 *  This must be adapted to match the interface's Map<String, String> in both cases (Gerald Wimmer, 2023-11-12).
-	 *
-	 * NOTE: passedParameters was never actually used, so there was no conflict in converting it to Map<String, String>,
-	 *  and passedAttribute is only ever queried for String values (see explanation below, where there isn't a cast to
-	 *  String, anyway)
-	 *  (Gerald Wimmer, 2023-11-12)
-	 */
 	@Override
 	public Report report(Analysis analysis, Grading grading, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
-		/*
-		 * NOTE: Whenever the parameter with the key NFConstants.ATT_EXERCISE_ID was queried, its .toString() value
-		 *  was passed into Integer.parseInt(). I thus assume the values of this map to be Strings.
-		 *  (Gerald Wimmer, 2023-11-12).
-		 */
 		NFAnalysis nfAnalysis = (NFAnalysis) analysis;
 
 		if(nfAnalysis.getReport() != null) {
 			return nfAnalysis.getReport();
 		}
 
+		// ALWAYS report syntax errors, even during online exams
 		if(nfAnalysis.getSyntaxError() != null) {
 			ErrorReport errorReport = new ErrorReport();
 			errorReport.setError(nfAnalysis.getSyntaxError());
@@ -592,6 +570,19 @@ public class NFEvaluator implements Evaluator {
 
 		String actionParam = passedAttributes.get(NFConstants.PARAM_ACTION);
 		NFConstants.EvalAction evalAction = NFConstants.EvalAction.valueOf(actionParam.toUpperCase());
+
+		if(evalAction == NFConstants.EvalAction.CHECK) {
+			/*
+			 * Note: The way I understood it in my meetings with Martin Straßer, submissions coming from Moodle (which
+			 *  is where online exams would be held) use CHECK for submissions. As students are not supposed to know
+			 * 	their grading during the exam, we simply return an empty error report (Gerald Wimmer, 2024-01-13).
+			 */
+
+			ErrorReport errorReport = new ErrorReport();
+			errorReport.setShowError(false);
+			errorReport.setShowHint(false);
+			errorReport.setShowErrorDescription(false);
+		}
 
 		int diagnoseLevel = 2;
 		String diagnoseLevelParam = passedAttributes.get(NFConstants.PARAM_LEVEL);
@@ -688,8 +679,7 @@ public class NFEvaluator implements Evaluator {
 	@Override
 	public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
 		try {
-			NFAnalysis nfAnalysis = (NFAnalysis) analysis;
-			NFReport nfReport = (NFReport) report(nfAnalysis, null, passedAttributes, null, locale);
+			NFReport nfReport = (NFReport) report(analysis, ((NFAnalysis) analysis).getGrading(), passedAttributes, null, locale);
 			return HTMLPrinter.printReport(nfReport, 0, 0, locale);
 		} catch (Exception e) {
 			e.printStackTrace();
