@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.modules.nf.report;
 
-import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.nf.NFConstants;
 import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.normalization.DecompositionAnalysis;
@@ -15,32 +14,15 @@ import java.util.logging.Level;
 
 public class NormalizationReporter extends ErrorReporter {
 
-	public static NFReport report(NormalizationAnalysis analysis, DefaultGrading grading, NormalizationReporterConfig config, Locale locale){
+	public static NFReport report(NormalizationAnalysis analysis, NormalizationReporterConfig config, Locale locale){
 		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 		
 		//SET PROLOGUE
-		if (config.getEvalAction() == NFConstants.EvalAction.SUBMIT){
-			if (analysis.submissionSuitsSolution()) {
-				prologue.append(messageSource.getMessage("normalizationreporter.correctsolution", null, locale));
-			} else {
-				prologue.append(messageSource.getMessage("normalizationreporter.notcorrectsolution", null, locale));
-			}
-			prologue.append(messageSource.getMessage("normalizationreporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
-			if (grading != null){
-				if (grading.getPoints() == 1){
-					prologue.append(" ").append(messageSource.getMessage("normalizationreporter.point", null, locale)).append(" ");
-				} else {
-					prologue.append(" ").append(messageSource.getMessage("normalizationreporter.points", null, locale)).append(" ");
-				}
-				prologue.append(messageSource.getMessage("normalizationreporter.yoursolution", null, locale));
-			}
+		if (analysis.submissionSuitsSolution()) {
+			prologue.append(messageSource.getMessage("normalizationreporter.correctsolution", null, locale));
 		} else {
-			if (analysis.submissionSuitsSolution()) {
-				prologue.append(messageSource.getMessage("normalizationreporter.correct", null, locale));
-			} else {
-				prologue.append(messageSource.getMessage("normalizationreporter.notcorrect", null, locale));
-			}
+			prologue.append(messageSource.getMessage("normalizationreporter.notcorrectsolution", null, locale));
 		}
 		report.setPrologue(prologue.toString());
 		
@@ -72,7 +54,7 @@ public class NormalizationReporter extends ErrorReporter {
 	
 			//ADD RELATION SPECIFIC ERROR REPORT GROUPS
 			for (IdentifiedRelation ir : config.getDecomposedRelations()){
-				ErrorReportGroup reportGroup = createRelationSpecificErrorReportsGroup(ir.getID(), analysis, config, grading, messageSource, locale);
+				ErrorReportGroup reportGroup = createRelationSpecificErrorReportsGroup(ir.getID(), analysis, config, messageSource, locale);
 				if (!reportGroup.getErrorReports().isEmpty()){
 					report.addErrorReportGroup(reportGroup);
 				}
@@ -84,7 +66,7 @@ public class NormalizationReporter extends ErrorReporter {
 		return report;
 	}
 	
-	public static ErrorReportGroup createRelationSpecificErrorReportsGroup(String relationID, NormalizationAnalysis analysis, NormalizationReporterConfig config, DefaultGrading grading, MessageSource messageSource, Locale locale){
+	public static ErrorReportGroup createRelationSpecificErrorReportsGroup(String relationID, NormalizationAnalysis analysis, NormalizationReporterConfig config, MessageSource messageSource, Locale locale){
 		ErrorReportGroup group = new ErrorReportGroup();
 		NormalformReporterConfig nfReporterConfig;
 

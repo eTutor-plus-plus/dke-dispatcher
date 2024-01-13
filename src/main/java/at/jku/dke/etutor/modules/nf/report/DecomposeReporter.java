@@ -20,30 +20,12 @@ public class DecomposeReporter extends ErrorReporter {
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
-		if (config.getEvalAction() == NFConstants.EvalAction.SUBMIT) {
-			if (config.getDecomposeAnalysis().submissionSuitsSolution()) {
-				prologue.append(messageSource.getMessage("decomposereporter.correctsolution", null, locale));
-			} else {
-				prologue.append(messageSource.getMessage("decomposereporter.notcorrectsolution", null, locale));
-			}
-
-			prologue.append(messageSource.getMessage("decomposereporter.suggestingpoints", new Object[]{config.getGrading().getPoints()}, locale));
-
-			if (config.getGrading().getPoints() == 1){
-				prologue.append(" ").append(messageSource.getMessage("decomposereporter.point", null, locale)).append(" ");
-			} else {
-				prologue.append(" ").append(messageSource.getMessage("decomposereporter.points", null, locale)).append(" ");
-			}
-
-			prologue.append(messageSource.getMessage("decomposereporter.yoursubmission", null, locale));
-		} else {
-			if (config.getDecomposeAnalysis().submissionSuitsSolution()) {
-				prologue.append(messageSource.getMessage("decomposereporter.correctsolution", null, locale));
-			} else {
-				prologue.append(messageSource.getMessage("decomposereporter.notcorrectsolution", null, locale));
-			}
-		}
-		report.setPrologue(prologue.toString());
+        if (config.getDecomposeAnalysis().submissionSuitsSolution()) {
+            prologue.append(messageSource.getMessage("decomposereporter.correctsolution", null, locale));
+        } else {
+            prologue.append(messageSource.getMessage("decomposereporter.notcorrectsolution", null, locale));
+        }
+        report.setPrologue(prologue.toString());
 		
 		//SET ERROR REPORT FOR LOST FUNCTIONAL DEPENDENCIES IF NECESSARY
 		if ((!config.getDecomposeAnalysis().getOverallDependenciesPreservationAnalysis().submissionSuitsSolution()) && config.getEvalAction() != NFConstants.EvalAction.CHECK){

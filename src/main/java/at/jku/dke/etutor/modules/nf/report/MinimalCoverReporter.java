@@ -24,7 +24,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 		// This class is not meant to be instantiated
 	}
 
-	public static NFReport report(MinimalCoverAnalysis analysis, Grading grading, ReporterConfig config, Locale locale){
+	public static NFReport report(MinimalCoverAnalysis analysis, ReporterConfig config, Locale locale){
 		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
@@ -33,18 +33,6 @@ public class MinimalCoverReporter extends ErrorReporter {
 			prologue.append(messageSource.getMessage("minimalcoverreporter.correctsolution", null, locale));
 		} else {
 			prologue.append(messageSource.getMessage("minimalcoverreporter.notcorrectsolution", null, locale));
-		}
-
-		if (config.getEvalAction() == NFConstants.EvalAction.SUBMIT) {
-			prologue.append(messageSource.getMessage("minimalcoverreporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
-
-			if (grading.getPoints() == 1) {
-				prologue.append(" ").append(messageSource.getMessage("minimalcoverreporter.point", null, locale)).append(" ");
-			} else {
-				prologue.append(" ").append(messageSource.getMessage("minimalcoverreporter.points", null, locale)).append(" ");
-			}
-
-			prologue.append(messageSource.getMessage("minimalcoverreporter.yoursolution", null, locale));
 		}
 		report.setPrologue(prologue.toString());
 

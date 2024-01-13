@@ -10,35 +10,17 @@ import java.util.logging.Level;
 
 public class KeysReporter extends ErrorReporter {
 
-	public static NFReport report(KeysAnalysis analysis, DefaultGrading grading, ReporterConfig config, Locale locale){
+	public static NFReport report(KeysAnalysis analysis, ReporterConfig config, Locale locale){
 		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
-		if (config.getEvalAction() == NFConstants.EvalAction.SUBMIT) {
-			if (analysis.submissionSuitsSolution()) {
-				prologue.append(messageSource.getMessage("keysreporter.correctsolution", null, locale));
-			} else {
-				prologue.append(messageSource.getMessage("keysreporter.notcorrectsolution", null, locale));
-			}
-
-			prologue.append(messageSource.getMessage("keysreporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
-
-			if (grading.getPoints() == 1) {
-				prologue.append(" ").append(messageSource.getMessage("keysreporter.point", null, locale)).append(" ");
-			} else {
-				prologue.append(" ").append(messageSource.getMessage("keysreporter.points", null, locale)).append(" ");
-			}
-
-			prologue.append(messageSource.getMessage("keysreporter.yoursubmission", null, locale));
-		} else {
-			if (analysis.submissionSuitsSolution()) {
-				prologue.append(messageSource.getMessage("keysreporter.correctsolution", null, locale));
-			} else {
-				prologue.append(messageSource.getMessage("keysreporter.notcorrectsolution", null, locale));
-			}
-		}
-		report.setPrologue(prologue.toString());
+        if (analysis.submissionSuitsSolution()) {
+            prologue.append(messageSource.getMessage("keysreporter.correctsolution", null, locale));
+        } else {
+            prologue.append(messageSource.getMessage("keysreporter.notcorrectsolution", null, locale));
+        }
+        report.setPrologue(prologue.toString());
 		
 		//SET ERROR REPORT IF NECESSARY
 		if ((!analysis.submissionSuitsSolution()) && config.getEvalAction() != NFConstants.EvalAction.CHECK){

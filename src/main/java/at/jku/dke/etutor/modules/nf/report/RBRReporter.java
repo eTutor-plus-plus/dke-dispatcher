@@ -9,35 +9,17 @@ import java.util.Locale;
 
 public class RBRReporter extends ErrorReporter {
 	
-	public static NFReport report(RBRAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
+	public static NFReport report(RBRAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
 		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
-		if (config.getEvalAction() == NFConstants.EvalAction.SUBMIT) {
-			if (analysis.submissionSuitsSolution()) {
-				prologue.append(messageSource.getMessage("rbrreporter.correctsolution", null, locale));
-			} else {
-				prologue.append(messageSource.getMessage("rbrreporter.notcorrectsolution", null, locale));
-			}
-
-			prologue.append(messageSource.getMessage("rbrreporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
-
-			if (grading.getPoints() == 1){
-				prologue.append(" ").append(messageSource.getMessage("rbrreporter.point", null, locale)).append(" ");
-			} else {
-				prologue.append(" ").append(messageSource.getMessage("rbrreporter.points", null, locale)).append(" ");
-			}
-
-			prologue.append(messageSource.getMessage("rbrreporter.yoursubmission", null, locale));
-		} else {
-			if (analysis.submissionSuitsSolution()) {
-				prologue.append(messageSource.getMessage("rbrreporter.correctsolution", null, locale));
-			} else {
-				prologue.append(messageSource.getMessage("rbrreporter.notcorrectsolution", null, locale));
-			}
-		}
-		report.setPrologue(prologue.toString());
+        if (analysis.submissionSuitsSolution()) {
+            prologue.append(messageSource.getMessage("rbrreporter.correctsolution", null, locale));
+        } else {
+            prologue.append(messageSource.getMessage("rbrreporter.notcorrectsolution", null, locale));
+        }
+        report.setPrologue(prologue.toString());
 		
 		//SET ERROR REPORT IF NECESSARY
 		if (config.getEvalAction() != NFConstants.EvalAction.CHECK){

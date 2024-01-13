@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.modules.nf.report;
 
-import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.nf.NFConstants;
 import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.closure.AttributeClosureAnalysis;
@@ -11,39 +10,21 @@ import java.util.logging.Level;
 
 public class AttributeClosureReporter extends ErrorReporter {
 
-	public static NFReport report(AttributeClosureAnalysis analysis, DefaultGrading grading, ReporterConfig config, Locale locale){
+	public static NFReport report(AttributeClosureAnalysis analysis, ReporterConfig config, Locale locale){
 		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
-		if (config.getEvalAction() == NFConstants.EvalAction.SUBMIT) {
-			if (analysis.submissionSuitsSolution()) {
-				prologue.append(messageSource.getMessage("attributeclosurereporter.correctsolution", null, locale));
-			} else {
-				prologue.append(messageSource.getMessage("attributeclosurereporter.notcorrectsolution", null, locale));
-			}
-
-			prologue.append(messageSource.getMessage("attributeclosurereporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
-
-			if (grading.getPoints() == 1){
-				prologue.append(" ").append(messageSource.getMessage("attributeclosurereporter.point", null, locale)).append("</b> ");
-			} else {
-				prologue.append(" ").append(messageSource.getMessage("attributeclosurereporter.points", null, locale)).append("</b> ");
-			}
-
-			prologue.append(messageSource.getMessage("attributeclosurereporter.yoursubmission", null, locale));
-		} else {
-			if (analysis.submissionSuitsSolution()) {
-				prologue.append(messageSource.getMessage("attributeclosurereporter.correctsolution", null, locale));
-			} else {
-				prologue.append(messageSource.getMessage("attributeclosurereporter.notcorrectsolution", null, locale));
-			}
-		}
-		report.setPrologue(prologue.toString());
+        if (analysis.submissionSuitsSolution()) {
+            prologue.append(messageSource.getMessage("attributeclosurereporter.correctsolution", null, locale));
+        } else {
+            prologue.append(messageSource.getMessage("attributeclosurereporter.notcorrectsolution", null, locale));
+        }
+        report.setPrologue(prologue.toString());
 		
 		//SET ERROR REPORT IF NECESSARY
 		if (!analysis.submissionSuitsSolution() && config.getEvalAction() != NFConstants.EvalAction.CHECK){
-			report.addErrorReport(createAttributeClosureErrorReport(analysis, grading, config, messageSource, locale));
+			report.addErrorReport(createAttributeClosureErrorReport(analysis, config, messageSource, locale));
 		}
 		
 		//CONFIGURE REPORT
@@ -52,7 +33,7 @@ public class AttributeClosureReporter extends ErrorReporter {
 		return report;	
 	}
 
-	public static ErrorReport createAttributeClosureErrorReport(AttributeClosureAnalysis analysis, DefaultGrading grading, ReporterConfig config, MessageSource messageSource, Locale locale){
+	public static ErrorReport createAttributeClosureErrorReport(AttributeClosureAnalysis analysis, ReporterConfig config, MessageSource messageSource, Locale locale){
 		ErrorReport report = new ErrorReport();
 		StringBuilder description = new StringBuilder();
 

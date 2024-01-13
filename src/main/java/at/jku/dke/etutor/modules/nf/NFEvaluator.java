@@ -615,7 +615,7 @@ public class NFEvaluator implements Evaluator {
 				ReporterConfig config = new ReporterConfig();
 				config.setEvalAction(evalAction);
 				config.setDiagnoseLevel(diagnoseLevel);
-				report = KeysReporter.report((KeysAnalysis) analysis, (DefaultGrading) grading, config, locale);
+				report = KeysReporter.report((KeysAnalysis) analysis, config, locale);
 
 			}
 			case MINIMAL_COVER -> {
@@ -625,7 +625,7 @@ public class NFEvaluator implements Evaluator {
 				ReporterConfig config = new ReporterConfig();
 				config.setEvalAction(evalAction);
 				config.setDiagnoseLevel(diagnoseLevel);
-				report = MinimalCoverReporter.report((MinimalCoverAnalysis) analysis, grading, config, locale);
+				report = MinimalCoverReporter.report((MinimalCoverAnalysis) analysis, config, locale);
 
 			}
 			case ATTRIBUTE_CLOSURE -> {
@@ -635,7 +635,7 @@ public class NFEvaluator implements Evaluator {
 				ReporterConfig config = new ReporterConfig();
 				config.setEvalAction(evalAction);
 				config.setDiagnoseLevel(diagnoseLevel);
-				report = AttributeClosureReporter.report((AttributeClosureAnalysis) analysis, (DefaultGrading) grading, config, locale);
+				report = AttributeClosureReporter.report((AttributeClosureAnalysis) analysis, config, locale);
 
 			}
 			/*case DECOMPOSE) {
@@ -661,7 +661,7 @@ public class NFEvaluator implements Evaluator {
 				normalizationReporterConfig.setDecomposedRelations((TreeSet<IdentifiedRelation>) analysis.getSubmission());
 				normalizationReporterConfig.setDesiredNormalformLevel(((NormalizationAnalysis) analysis).getDesiredNormalformLevel());
 
-				report = NormalizationReporter.report((NormalizationAnalysis) analysis, (DefaultGrading) grading, normalizationReporterConfig, locale);
+				report = NormalizationReporter.report((NormalizationAnalysis) analysis, normalizationReporterConfig, locale);
 
 			}
 			case NORMALFORM_DETERMINATION -> {
@@ -672,7 +672,7 @@ public class NFEvaluator implements Evaluator {
 				config.setEvalAction(evalAction);
 				config.setDiagnoseLevel(diagnoseLevel);
 
-				report = NormalformReporter.report((NormalformDeterminationAnalysis) analysis, (DefaultGrading) grading, config, locale);
+				report = NormalformReporter.report((NormalformDeterminationAnalysis) analysis, config, locale);
 
 			}
 			default -> {
@@ -689,7 +689,7 @@ public class NFEvaluator implements Evaluator {
 	public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
 		try {
 			NFAnalysis nfAnalysis = (NFAnalysis) analysis;
-			NFReport nfReport = (NFReport) report(nfAnalysis, nfAnalysis.getGrading(), passedAttributes, null, locale);
+			NFReport nfReport = (NFReport) report(nfAnalysis, null, passedAttributes, null, locale);
 			return HTMLPrinter.printReport(nfReport, 0, 0, locale);
 		} catch (Exception e) {
 			e.printStackTrace();

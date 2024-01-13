@@ -15,32 +15,15 @@ import java.util.StringJoiner;
 
 public class NormalformReporter extends ErrorReporter {
 
-	public static NFReport report(NormalformDeterminationAnalysis analysis, DefaultGrading grading, ReporterConfig config, Locale locale){
+	public static NFReport report(NormalformDeterminationAnalysis analysis, ReporterConfig config, Locale locale){
 		NFReport report = new NFReport();
 		StringBuilder prologue = new StringBuilder();
 
 		//SET PROLOGUE
-		if (config.getEvalAction() == NFConstants.EvalAction.SUBMIT){
-			if (analysis.submissionSuitsSolution()) {
-				prologue.append(messageSource.getMessage("normalformreporter.correctsolution", null, locale));
-			} else {
-				prologue.append(messageSource.getMessage("normalformreporter.notcorrectsolution", null, locale));
-			}
-			prologue.append(messageSource.getMessage("normalformreporter.suggestingpoints", new Object[]{grading.getPoints()}, locale));
-			if (grading != null){
-				if (grading.getPoints() == 1){
-					prologue.append(" ").append(messageSource.getMessage("normalformreporter.point", null, locale)).append(" ");
-				} else {
-					prologue.append(" ").append(messageSource.getMessage("normalformreporter.points", null, locale)).append(" ");
-				}
-				prologue.append(messageSource.getMessage("normalformreporter.yoursolution", null, locale));
-			}
+		if (analysis.submissionSuitsSolution()) {
+			prologue.append(messageSource.getMessage("normalformreporter.correctsolution", null, locale));
 		} else {
-			if (analysis.submissionSuitsSolution()) {
-				prologue.append(messageSource.getMessage("normalformreporter.correct", null, locale));
-			} else {
-				prologue.append(messageSource.getMessage("normalformreporter.notcorrect", null, locale));
-			}
+			prologue.append(messageSource.getMessage("normalformreporter.notcorrectsolution", null, locale));
 		}
 		report.setPrologue(prologue.toString());
 		
