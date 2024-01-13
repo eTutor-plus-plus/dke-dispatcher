@@ -2,10 +2,13 @@ package at.jku.dke.etutor.modules.nf.report;
 
 import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.nf.NFConstants;
-import at.jku.dke.etutor.modules.nf.analysis.normalform.*;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.BoyceCoddNormalformViolation;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.FirstNormalformViolation;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.SecondNormalformViolation;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.ThirdNormalformViolation;
 import at.jku.dke.etutor.modules.nf.analysis.normalformdetermination.NormalformDeterminationAnalysis;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
-import at.jku.dke.etutor.modules.nf.model.NormalformLevelComparator;
 
 import java.util.Locale;
 import java.util.StringJoiner;
@@ -151,8 +154,6 @@ public class NormalformReporter extends ErrorReporter {
 		//SET DESCRIPTION
 
 		//REPORTING FIRST NORMALFORM VIOLATIONS IF NECESSARY
-		// Note: config.getDesiredNormalformLevel() could be null. (Gerald Wimmer, 2023-12-02)
-		NormalformLevelComparator comparator = new NormalformLevelComparator();
 		if (config.getDesiredNormalformLevel().compareTo(NormalformLevel.FIRST) >= 0){
 			if (!analysis.getFirstNormalformViolations().isEmpty()){
 				appendLineBreak = true;

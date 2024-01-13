@@ -4,7 +4,6 @@ import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
-import at.jku.dke.etutor.modules.nf.model.NormalformLevelComparator;
 
 import java.util.Collection;
 import java.util.logging.Level;
@@ -64,9 +63,6 @@ public class NormalformAnalyzer {
 				analysis.setOverallNormalformLevel(NormalformLevel.FIRST);
 			}
 
-			// Note: config.getDesiredNormalformLevel() could be null. (Gerald Wimmer, 2023-12-02)
-			// Note: When would that NOT be an error? (Gerald Wimmer, 2024-01-12)
-			NormalformLevelComparator comparator = new NormalformLevelComparator();
 			if (analysis.getOverallNormalformLevel().compareTo(config.getDesiredNormalformLevel()) >= 0) {
 				analysis.setSubmissionSuitsSolution(true);			
 			}
