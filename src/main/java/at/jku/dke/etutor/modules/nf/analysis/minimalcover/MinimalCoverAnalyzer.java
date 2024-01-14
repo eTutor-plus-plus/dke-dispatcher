@@ -51,10 +51,6 @@ public class MinimalCoverAnalyzer {
 			// return analysis; // Note: disabled for grading purposes (Gerald Wimmer, 2023-12-31).
 		}
 
-		/*
-		 * TODO: Check whether this won't cause any issues, given that we test for redundant FDs compared to the
-		 *  correct solution afterwards (Gerald Wimmer, 2023-12-31).
-		 */
 		// Note: To avoid deducting points for subsequent errors, trivial dependencies are ignored here.
 		//ANALYZE REDUNDANT FUNCTIONAL DEPENDENCIES
 		Set<FunctionalDependency> nonTrivialDeps = new HashSet<>(submittedDependencies);

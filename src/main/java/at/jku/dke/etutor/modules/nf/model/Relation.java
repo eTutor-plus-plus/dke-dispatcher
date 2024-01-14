@@ -51,16 +51,6 @@ public class Relation implements Serializable, Cloneable, HasSemanticEquality {
 		return clone;
 	}
 
-	public static void main(String[] args) {
-		Relation r = new Relation();
-	try {
-		Object clone = r.clone();
-		System.out.println(clone.getClass().getName() + " ... ");
-	} catch (CloneNotSupportedException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-}
 	public Relation(Collection<String> attributes, Collection<FunctionalDependency> functionalDependencies) {
 		this();
 		this.setAttributes(attributes);

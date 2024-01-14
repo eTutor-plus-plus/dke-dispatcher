@@ -110,16 +110,5 @@ public class AttributeClosureSpecification extends NFSpecification implements Cl
         return "BASE ATTRIBUTES: " + this.baseAttributes + "\n" +
 				"BASE RELATION:\n" + this.baseRelation + "\n";
 	}
-	
-	public static void main(String[] args) {
-		AttributeClosureSpecification spec1 = new AttributeClosureSpecification();
-		spec1.setBaseRelation(new IdentifiedRelation());
-		try {
-			AttributeClosureSpecification spec2 = (AttributeClosureSpecification)spec1.clone();
-			System.out.println(spec1.getBaseRelation().equals(spec2.getBaseRelation()));
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+
 }
