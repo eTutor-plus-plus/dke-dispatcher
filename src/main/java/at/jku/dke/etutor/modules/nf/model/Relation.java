@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-
 public class Relation implements Serializable, Cloneable, HasSemanticEquality {
 
 	private static final long serialVersionUID = 7982386529581622533L;
