@@ -26,7 +26,7 @@ public class Relation implements Serializable, Cloneable, HasSemanticEquality {
 	
 	public Relation() {
 		super();
-		this.name = "";
+		this.name = "R1";
 		this.subKeys = new HashSet<>();
 		this.functionalDependencies = new HashSet<>();
 		this.superKeys = new TreeSet<>(new KeyComparator());

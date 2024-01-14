@@ -59,7 +59,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -223,6 +222,15 @@ public class NFEvaluator implements Evaluator {
 				analysis.setSubmission(submission);
 
 			}
+			/*case RBR -> { // Note: No longer necessary as its own task type (Gerald Wimmer, 2023-11-27)
+			//RBR
+			RBRSpecification rbrSpecification = (RBRSpecification)specification;
+			Relation relation = (Relation)((Collection<IdentifiedRelation>)submission).toArray()[0];
+			analysis = RBRAnalyzer.analyze(rbrSpecification.getBaseRelation(), relation);
+
+			//Set Submission
+			analysis.setSubmission(relation);
+			}*/
 			/*case DECOMPOSE -> {	// Note: Replaced with Normalize, now that steps no longer need to be validated
 				// DecomposeSpecification decomposeSpecification = (DecomposeSpecification)specification;
 				DecomposeSpecification decomposeSpecification = null;
@@ -585,7 +593,7 @@ public class NFEvaluator implements Evaluator {
 			errorReport.setShowErrorDescription(false);
 		}
 
-		int diagnoseLevel = 2;
+		int diagnoseLevel = 0;
 		String diagnoseLevelParam = passedAttributes.get(NFConstants.PARAM_LEVEL);
 		if (evalAction != NFConstants.EvalAction.SUBMIT) {
 			try{
@@ -650,7 +658,7 @@ public class NFEvaluator implements Evaluator {
 				NormalizationReporterConfig normalizationReporterConfig = new NormalizationReporterConfig();
 				normalizationReporterConfig.setEvalAction(evalAction);
 				normalizationReporterConfig.setDiagnoseLevel(diagnoseLevel);
-				normalizationReporterConfig.setDecomposedRelations((TreeSet<IdentifiedRelation>) analysis.getSubmission());
+				normalizationReporterConfig.setDecomposedRelations((Set<IdentifiedRelation>) analysis.getSubmission());
 				normalizationReporterConfig.setDesiredNormalformLevel(((NormalizationAnalysis) analysis).getDesiredNormalformLevel());
 
 				report = NormalizationReporter.report((NormalizationAnalysis) analysis, normalizationReporterConfig, locale);

@@ -12,7 +12,7 @@ public class IdentifiedRelation extends Relation {
 
 	public IdentifiedRelation() {
 		super();
-		this.id = "";
+		this.id = "R1";
 	}
 
 	public IdentifiedRelation(Collection<String> attributes, Collection<FunctionalDependency> dependencies) {

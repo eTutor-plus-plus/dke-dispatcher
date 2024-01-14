@@ -553,7 +553,7 @@ public class HTMLPrinter {
 			out.append(offset).append("	f&uuml;r das Subschema <strong>S</strong> der Relation <strong>R</strong> ").append(LINE_SEP);
 			out.append(offset).append("	mit den Funktionalen Abh&auml;ngigkeiten <strong>F</strong>.").append(LINE_SEP);
 		} else {
-			out.append(offset).append("	Let be <strong>R</strong> a relation scheme with functional dependencies <strong>F</strong>. ").append(LINE_SEP);
+			out.append(offset).append("	Let <strong>R</strong> be a relation scheme with functional dependencies <strong>F</strong>. ").append(LINE_SEP);
 			out.append(offset).append("	Determine the set of functional dependencies <strong>F<sub><code>S</code></sub></strong> ").append(LINE_SEP);
 			out.append(offset).append("	for the sub-scheme <strong>S</strong>.").append(LINE_SEP);
 		}
@@ -652,7 +652,7 @@ public class HTMLPrinter {
 			}
 		} else {
 			out.append(offset).append("	Find a <b>lossless decomposition</b> of relation ").append(LINE_SEP);
-			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> with function dependencies <strong>F</strong>. ").append(LINE_SEP);
+			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> with functional dependencies <strong>F</strong>. ").append(LINE_SEP);
 			out.append(offset).append("	The decomposition must be in <strong>");
 			if (spec.getTargetLevel().equals(NormalformLevel.FIRST)){
 				out.append(offset).append("first ");
@@ -730,7 +730,7 @@ public class HTMLPrinter {
 				out.append(offset).append("	verlieren!").append(LINE_SEP);
 			}
 		} else {
-			out.append(offset).append("	Let be <strong>").append(spec.getBaseRelation().getName()).append("</strong> a relation scheme with a set of functional dependencies <strong>F</strong>. Determine a decomposition of <strong>").append(spec.getBaseRelation().getName()).append(" into ").append(LINE_SEP);
+			out.append(offset).append("	Let <strong>").append(spec.getBaseRelation().getName()).append("</strong> be a relation scheme with a set of functional dependencies <strong>F</strong>. Determine a decomposition of <strong>").append(spec.getBaseRelation().getName()).append(" into ").append(LINE_SEP);
 			if (spec.getTargetLevel().equals(NormalformLevel.FIRST)){
 				out.append(offset).append("first ");
 			} else if (spec.getTargetLevel().equals(NormalformLevel.SECOND)){
@@ -782,7 +782,7 @@ public class HTMLPrinter {
 			out.append(offset).append("	Berechnen Sie alle Schl&uuml;ssel der Relation <strong>R</strong> auf ").append(LINE_SEP);
 			out.append(offset).append("	Basis der Funktionalen Abh&auml;ngigkeiten <strong>F</strong>. ").append(LINE_SEP);
 		} else {
-			out.append(offset).append("	Let be <strong>R</strong> a relation scheme with a set of functional ").append(LINE_SEP);
+			out.append(offset).append("	Let <strong>R</strong> be a relation scheme with a set of functional ").append(LINE_SEP);
 			out.append(offset).append("	dependencies <strong>F</strong>. Determine all keys of <strong>R</strong>. ").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
