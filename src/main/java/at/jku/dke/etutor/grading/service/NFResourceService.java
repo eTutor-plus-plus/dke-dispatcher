@@ -386,7 +386,7 @@ public class NFResourceService {
                     specification.setPenaltyPerExcessiveLostDependency(dto.getNfNormalizationPenaltyPerExcessiveLostDependency());
                     specification.setPenaltyPerMissingNewDependency(dto.getNfNormalizationPenaltyPerMissingNewDependency());
                     specification.setPenaltyPerIncorrectNewDependency(dto.getNfNormalizationPenaltyPerIncorrectNewDependency());
-                    specification.setPenaltyPerMissingKey(dto.getNfKeysDeterminationPenaltyPerMissingKey());
+                    specification.setPenaltyPerMissingKey(dto.getNfNormalizationPenaltyPerMissingKey());
                     specification.setPenaltyPerIncorrectKey(dto.getNfNormalizationPenaltyPerIncorrectKey());
                     specification.setPenaltyPerIncorrectNFRelation(dto.getNfNormalizationPenaltyPerIncorrectNFRelation());
 
