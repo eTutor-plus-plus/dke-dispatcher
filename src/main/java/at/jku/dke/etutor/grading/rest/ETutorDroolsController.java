@@ -126,30 +126,6 @@ public class ETutorDroolsController {
         }
     }
 
-//    /**
-//     * Saves the output facts to the database
-//     * @param objectDTO
-//     * @return
-//     * @throws ApiException
-//     * @throws DatabaseException
-//     */
-//    @PostMapping("/task/createOutput")
-//    public ResponseEntity<String> createOutput(@RequestBody DroolsObjectDTO objectDTO) throws ApiException, DatabaseException {
-//        logger.info("Enter: createOutput()");
-//        try{
-//            int insertedRows = resourceService.createOutput(objectDTO);
-//            if(insertedRows == -1){
-//                logger.info("Exit: createOutput() with status 404");
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find task");
-//            }else{
-//                logger.info("Exit: createOutput() with status 200");
-//                return ResponseEntity.status(HttpStatus.OK).body("Created " + insertedRows + " new output-object.");
-//            }
-//        } catch (Exception e){
-//            logger.info("Exit: createOutput() - Internal Server Error - Code 500");
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     /**
      * Fetches the output facts for the selected task (submit/diagnose)
@@ -235,17 +211,17 @@ public class ETutorDroolsController {
     }
 
     /**
-     * Edit a task
+     * Edit/update a task
      * @param id
      * @param taskDTO
      * @return
      */
-    @PutMapping("/task/editTask/{id}")
-    public ResponseEntity<String> editTask(@PathVariable int id, @RequestBody DroolsTaskDTO taskDTO){
-        logger.info("Enter: editTask() task_id: {}", id);
+    @PutMapping("/task/updateTask/{id}")
+    public ResponseEntity<String> updateTask(@PathVariable int id, @RequestBody DroolsTaskDTO taskDTO){
+        logger.info("Enter: updateTask() task_id: {}", id);
         try{
             resourceService.editTask(id, taskDTO);
-            logger.info("Exit: editTask() with Status Code 200");
+            logger.info("Exit: updateTask() with Status Code 200");
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new RuntimeException(e);

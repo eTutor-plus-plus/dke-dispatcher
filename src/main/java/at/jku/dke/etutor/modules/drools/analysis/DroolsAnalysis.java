@@ -319,6 +319,8 @@ public class DroolsAnalysis extends DefaultAnalysis {
             } else {
                 dynamicObjectList = dynamicFactList;
             }
+
+
             // Fire all rules
             for (var object : dynamicObjectList) {
                 ks.insert(object);
@@ -336,11 +338,22 @@ public class DroolsAnalysis extends DefaultAnalysis {
                 ks.fireAllRules();
             }
 
+            Collection<Object> objectCollection = new ArrayList<>();
+
             if (taskValidationClassname.isEmpty()) {
                 return ks.getObjects();
             } else {
-                var validationClass = dyn.loadClass(taskValidationClassname);
-                return ks.getObjects(obj -> obj.getClass().equals(validationClass));
+                String[] validationClassnames = taskValidationClassname.split("(?<=;)");
+                for(String name : validationClassnames){
+                    name = name.trim();
+                    if (name.endsWith(";")) {
+                        name = name.substring(0, name.length() - 1);
+                    }
+                    var validationClass = dyn.loadClass(name);
+                    objectCollection.addAll(ks.getObjects(obj -> obj.getClass().equals(validationClass)));
+                }
+
+                return objectCollection;
             }
 
         } catch (ReflectiveOperationException | IOException e) {

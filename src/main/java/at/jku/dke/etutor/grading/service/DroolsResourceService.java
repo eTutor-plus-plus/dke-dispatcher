@@ -462,15 +462,10 @@ public class DroolsResourceService {
         try (Connection con = DriverManager.getConnection(URL, USER, PWD)) {
             con.setAutoCommit(false);
 
-            PreparedStatement statementObjects = con.prepareStatement("DELETE FROM objects WHERE task_id =" + id);
-            statementObjects.executeUpdate();
-
-            PreparedStatement statementClasses = con.prepareStatement("DELETE FROM classes WHERE task_id =" + id);
-            statementClasses.executeUpdate();
-
-            PreparedStatement statementTasks = con.prepareStatement("DELETE FROM tasks WHERE task_id =" + id);
+            PreparedStatement statementTasks = con.prepareStatement("DELETE FROM tasks WHERE task_id = ?");
+            statementTasks.setInt(1, id);
+            logger.debug("Statement for deleting task: {}",statementTasks);
             statementTasks.executeUpdate();
-            logger.debug("Statement for deleting task: {}; {}; {}", statementObjects, statementClasses, statementTasks);
             logger.debug("Task deleted");
             con.commit();
 
@@ -481,45 +476,17 @@ public class DroolsResourceService {
     }
 
     /**
-     * Edit a task in the database
+     * Edit a task in the database. First deleting it and then recreating it.
      * @param id
      * @param taskDTO
      * @throws SQLException
      */
     public void editTask(int id, DroolsTaskDTO taskDTO) throws SQLException {
         logger.debug("Enter: editTask()");
-        try (Connection con = DriverManager.getConnection(URL, USER, PWD)){
-            con.setAutoCommit(false);
-            String newSolution = taskDTO.getSolution();
-            int newMaxPoints = taskDTO.getMaxPoints();
-            //TODO: Fehleingabe crashed das Programm (z.B "lösung" statt 'lösung') LK
-            StringBuilder queryBuilder = new StringBuilder("UPDATE tasks SET ");
-            List<Object> parameters = new ArrayList<>();
-
-            if(newSolution != null && !newSolution.isEmpty()) {
-                queryBuilder.append("solution = ?, ");
-                parameters.add(taskDTO.getSolution());
-            }
-
-            if(newMaxPoints > 0 ) {
-                queryBuilder.append("max_points = ?, ");
-                parameters.add(taskDTO.getMaxPoints());
-            }
-
-            queryBuilder.delete(queryBuilder.length() - 2, queryBuilder.length());
-
-            queryBuilder.append(" WHERE id = ?");
-
-            PreparedStatement statement = con.prepareStatement(queryBuilder.toString());
-            for (int i = 0; i < parameters.size(); i++) {
-                statement.setObject(i + 1, parameters.get(i));
-            }
-
-            statement.setInt(parameters.size() + 1, id);
-            statement.executeUpdate();
-
-            con.commit();
-        }catch (SQLException throwable) {
+        try {
+            deleteTask(id);
+            addTask(taskDTO);
+        }catch (SQLException | DatabaseException throwable) {
             logger.error(throwable.getMessage(), throwable);
             throw new SQLException(throwable);
         }
