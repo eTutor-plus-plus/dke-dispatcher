@@ -363,17 +363,17 @@ public class DDLEvaluator implements Evaluator {
             SyntaxAnalysis correctSyntaxCriterion = (SyntaxAnalysis) ddlAnalysis.getCriterionAnalysis(DDLEvaluationCriterion.CORRECT_SYNTAX);
             if(!correctSyntaxCriterion.isCriterionSatisfied()) {
                 if(locale == Locale.GERMAN) {
-                    result.append("<strong>Query konnte nicht ausgeführt werden!</strong>");
+                    result.append("<strong>SQL-Statement konnte nicht ausgeführt werden!</strong>");
                 } else {
-                    result.append("<strong>Query could not be executed!</strong>");
+                    result.append("<strong>SQL-Statement could not be executed!</strong>");
                 }
                 return result.toString();
             }
 
             if(locale == Locale.GERMAN) {
-                result.append("<strong>Query erfolgreich ausgeführt!</strong>");
+                result.append("<strong>SQL-Statement erfolgreich ausgeführt!</strong>");
             } else {
-                result.append("<strong>Query successfully executed!</strong>");
+                result.append("<strong>SQL-Statement successfully executed!</strong>");
             }
 
             return result.toString();
