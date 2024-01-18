@@ -49,6 +49,49 @@ public class DroolsEvaluator implements Evaluator {
 
     @Override
     public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
+        // Check if analysis object is DDLAnalysis
+        if(analysis instanceof DroolsAnalysis) {
+            // Initialize variables
+            StringBuilder result = new StringBuilder();
+
+            // Add syntax exception if there is one
+            if(((DroolsAnalysis) analysis).isHasSyntaxError()) {
+                if(locale == Locale.GERMAN) {
+                    result.append("<strong>Regeln enthalten Syntax-Fehler!</strong>");
+                } else {
+                    result.append("<strong>Rules include syntax errors!</strong>");
+                }
+                return result.toString();
+            }
+
+            long additionalFacts = ((DroolsAnalysis) analysis).getAdditionalFacts();
+            int wrongFacts = ((DroolsAnalysis) analysis).getWrongFactList().size();
+
+            if(additionalFacts != 0){
+                if(locale == Locale.GERMAN) {
+                    result.append("<strong>Anzahl der Fakten ist nicht korrekt!</strong>");
+                } else {
+                    result.append("<strong>Number of facts is not correct!</strong>");
+                }
+            }else if(wrongFacts != 0){
+                if(locale == Locale.GERMAN) {
+                    result.append("<strong>Es sind falsche Fakten enthalten!</strong>");
+                } else {
+                    result.append("<strong>There are wrong facts included!</strong>");
+                }
+            }else {
+                if(locale == Locale.GERMAN) {
+                    result.append("<strong>Regeln wurden erfolgreich ausgeführt.</strong>");
+                } else {
+                    result.append("<strong>Rules successfully executed.</strong>");
+                }
+            }
+
+//            result.append(((DroolsAnalysis) analysis).getStudentOutput());
+
+            return result.toString();
+        }
+
         return null;
     }
 }

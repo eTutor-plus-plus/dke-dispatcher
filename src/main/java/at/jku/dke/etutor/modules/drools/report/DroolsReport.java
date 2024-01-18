@@ -35,8 +35,25 @@ public class DroolsReport extends DefaultReport implements Serializable {
             return;
         }
 
+        long additionalFacts = droolsAnalysis.getAdditionalFacts();
+        int wrongFacts = droolsAnalysis.getWrongFactList().size();
 
-        if ((this.droolsAnalysis.getAdditionalFacts() != 0 || this.droolsAnalysis.getWrongFactList().isEmpty())) {
+        if(wrongFacts != 0){
+            this.setShowHint(true);
+            if (isGermanLocale()) {
+                this.hintMessage.append("Es wurden falsche Fakten erzeugt. ");
+            } else {
+                this.hintMessage.append("Wrong facts generated. ");
+            }
+        }
+
+        if (additionalFacts != 0) {
+            if (isGermanLocale()) {
+                this.hintMessage.append("Die Lösung ist nicht vollständig korrekt. ");
+            } else {
+                this.hintMessage.append("The solution is not entirely correct. ");
+            }
+
             if (passedAttributes.get("diagnoseLevel").equals("0")) {
                 this.setShowHint(true);
                 if (isGermanLocale()) {
@@ -121,10 +138,8 @@ public class DroolsReport extends DefaultReport implements Serializable {
                 }
 
             }
-
-            this.setHint(hintMessage.toString());
         }
-
+        this.setHint(hintMessage.toString());
 
     }
 
