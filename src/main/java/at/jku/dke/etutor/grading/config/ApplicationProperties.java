@@ -10,6 +10,7 @@ public class ApplicationProperties {
     private Async async = new Async();
 
     private SQL sql = new SQL();
+    private DDL ddl = new DDL();
 
     private ProcessMining processMining = new ProcessMining();
 
@@ -35,6 +36,14 @@ public class ApplicationProperties {
 
     public void setSql(SQL sql) {
         this.sql = sql;
+    }
+
+    public DDL getDdl() {
+        return ddl;
+    }
+
+    public void setDdl(DDL ddl) {
+        this.ddl = ddl;
     }
 
     public ProcessMining getProcessMining(){
@@ -323,6 +332,44 @@ public class ApplicationProperties {
         public void setTableUrlForLink(String tableUrlForLink) {
             this.tableUrlForLink = tableUrlForLink;
         }
+    }
+
+    /**
+     * The properties for the DDL module
+     */
+    public static class DDL {
+        //region Fields
+        private String systemConnPwd;
+        private String systemConnUser;
+        private String connUrl;
+        //endregion
+
+        //region Getter/Setter
+
+        public String getSystemConnPwd() {
+            return systemConnPwd;
+        }
+
+        public void setSystemConnPwd(String systemConnPwd) {
+            this.systemConnPwd = systemConnPwd;
+        }
+
+        public String getSystemConnUser() {
+            return systemConnUser;
+        }
+
+        public void setSystemConnUser(String systemConnUser) {
+            this.systemConnUser = systemConnUser;
+        }
+
+        public String getConnUrl() {
+            return connUrl;
+        }
+
+        public void setConnUrl(String connUrl) {
+            this.connUrl = connUrl;
+        }
+        //endregion
     }
 
     /**
