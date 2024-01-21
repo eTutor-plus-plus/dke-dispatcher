@@ -627,7 +627,7 @@ public class HTMLPrinter {
 			}
 			out.append(offset).append("	normal form</strong>. Specify keys and functional dependencies derived from <strong>F</strong> for each relation fragment. ").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
-				out.append(offset).append("	You may not loose <strong>any </strong> functional dependency!").append(LINE_SEP);
+				out.append(offset).append("	You may not lose <strong>any </strong> functional dependency!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){
 				out.append(offset).append("	The decomposition does not have to be <strong>dependency preserving</strong>. ").append(LINE_SEP);
 			} else {
@@ -694,7 +694,7 @@ public class HTMLPrinter {
 			}
 			out.append(offset).append("	normal form</strong> by means of the DECOMPOSE algorithm. Specify for each sub-scheme attributes, keys, and functional dependencies. ").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
-				out.append(offset).append("	You may not loose <strong>any </strong> functional dependency!").append(LINE_SEP);
+				out.append(offset).append("	You may not lose <strong>any </strong> functional dependency!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){
 				out.append(offset).append("	Note that functional dependencies may be lost during decomposition. ").append(LINE_SEP);
 			} else {
@@ -745,7 +745,7 @@ public class HTMLPrinter {
 			out.append(offset).append("	Überdeckung an. Streichen Sie alle redundanten Funktionalen Abhängigkeiten ").append(LINE_SEP);
 			out.append(offset).append("	und alle redundanten Attribute in den linken Seiten der Funktionalen Abhängigkeiten. ").append(LINE_SEP);
 		} else {
-			out.append(offset).append("	Indicate a minimal cover for <strong>F</strong>. Eliminate all redundant functional ").append(LINE_SEP);
+			out.append(offset).append("	Determine a minimal cover for <strong>F</strong>. Eliminate all redundant functional ").append(LINE_SEP);
 			out.append(offset).append("	dependencies and redundant attributes at left hand sides of functional dependencies. ").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
