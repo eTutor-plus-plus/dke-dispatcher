@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.modules.nf.report;
 
-import at.jku.dke.etutor.core.evaluation.DefaultGrading;
 import at.jku.dke.etutor.modules.nf.NFConstants;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.BoyceCoddNormalformViolation;
 import at.jku.dke.etutor.modules.nf.analysis.normalform.FirstNormalformViolation;

@@ -1,6 +1,5 @@
 package at.jku.dke.etutor.modules.nf.report;
 
-import at.jku.dke.etutor.core.evaluation.Grading;
 import at.jku.dke.etutor.modules.nf.NFConstants;
 import at.jku.dke.etutor.modules.nf.NFHelper;
 import at.jku.dke.etutor.modules.nf.analysis.minimalcover.CanonicalRepresentationAnalysis;

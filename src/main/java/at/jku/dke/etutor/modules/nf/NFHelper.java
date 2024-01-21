@@ -12,7 +12,6 @@ import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.RBRSpecification;
 import at.jku.dke.etutor.modules.nf.ui.HTMLPrinter;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -145,7 +144,7 @@ public class NFHelper {
 		relation.addFunctionalDependency(dependency);
 	}
 
-	public static void newRelation(Collection<IdentifiedRelation> relations) throws Exception{
+	public static void newRelation(Collection<IdentifiedRelation> relations) {
 		int maxID;
 		StringBuilder increasedID;
 		IdentifiedRelation newRelation;
@@ -172,7 +171,7 @@ public class NFHelper {
 		relations.add(newRelation);
 	}
 
-	public static void delRelation(Collection<IdentifiedRelation> relations, String relationID) throws Exception{
+	public static void delRelation(Collection<IdentifiedRelation> relations, String relationID) {
 		int currID;
 		boolean found;
 		StringBuilder reducedID;
@@ -223,7 +222,7 @@ public class NFHelper {
 		}
 	}
 	
-	public static void addAttribute(Relation relation, String[] attributes) throws Exception{
+	public static void addAttribute(Relation relation, String[] attributes) {
         for (String attribute : attributes) {
             relation.addAttribute(attribute);
         }
@@ -248,7 +247,7 @@ public class NFHelper {
 		checkRelations(relations);
 	}
 
-	public static void delAttributes(Relation relation, String[] attributesToDelete) throws Exception{
+	public static void delAttributes(Relation relation, String[] attributesToDelete) {
 		String currAttribute;
         for (String s : attributesToDelete) {
             currAttribute = s;
@@ -276,7 +275,7 @@ public class NFHelper {
 		}
 	}
 	
-	public static void addDependency(Relation relation, String[] rhsAttributes, String[] lhsAttributes) throws Exception{
+	public static void addDependency(Relation relation, String[] rhsAttributes, String[] lhsAttributes) {
 		FunctionalDependency currDependency;
 
 		currDependency = new FunctionalDependency();
@@ -306,7 +305,7 @@ public class NFHelper {
 		}
 	}
 	
-	public static void delDependencies(Relation relation, String[] dependenciesToDelete) throws Exception {
+	public static void delDependencies(Relation relation, String[] dependenciesToDelete) {
 		String currDependency;
 		FunctionalDependency dependencyToDelete;
 
@@ -346,7 +345,7 @@ public class NFHelper {
 		}
 	}
 	
-	public static void addKey(Relation relation, String[] attributes) throws Exception{
+	public static void addKey(Relation relation, String[] attributes) {
 		Key currKey;
 
 		currKey = new Key();
@@ -376,7 +375,7 @@ public class NFHelper {
 		}
 	}
 	
-	public static void delKeys(Relation relation, String[] keysToDelete) throws Exception {
+	public static void delKeys(Relation relation, String[] keysToDelete) {
 		Key keyToDelete;
 
         for (String s : keysToDelete) {
@@ -429,7 +428,7 @@ public class NFHelper {
 		}
 	}
 
-	public static String getAssignmentText(NFSpecification specTmp, int indent, Locale locale, NFConstants.Type rdbdType) throws IOException {
+	public static String getAssignmentText(NFSpecification specTmp, int indent, Locale locale, NFConstants.Type rdbdType) {
 		return switch (rdbdType) {
 			case NORMALFORM_DETERMINATION -> HTMLPrinter.printAssignmentForNormalformDetermination(specTmp.getBaseRelation(), indent, locale);
 			case KEYS_DETERMINATION -> HTMLPrinter.printAssignmentForKeysDetermination(specTmp.getBaseRelation(), indent, locale);

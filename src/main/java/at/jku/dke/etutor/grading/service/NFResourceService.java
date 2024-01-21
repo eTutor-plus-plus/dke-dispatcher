@@ -25,7 +25,6 @@ import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -234,12 +233,7 @@ public class NFResourceService {
                     default -> throw new DatabaseException("Cannot handle rdbd_type " + rdbdType + " for exercise id " + exerciseId);
                 };
 
-                try {
-                    return NFHelper.getAssignmentText(specification, 0, locale, rdbdType);
-                } catch (IOException i) {
-                    i.printStackTrace();
-                    return null;
-                }
+                return NFHelper.getAssignmentText(specification, 0, locale, rdbdType);
             } else {
                 throw new DatabaseException("Exercise id " + exerciseId + " not present.");
             }
@@ -307,15 +301,12 @@ public class NFResourceService {
     private String convertToJSONString(NFExerciseDTO dto) throws ExerciseNotValidException {
         IdentifiedRelation baseRelation = new IdentifiedRelation();
 
+        baseRelation.setName(dto.getNfBaseRelationName());
+        baseRelation.setID(dto.getNfBaseRelationName());
+
         NFParserErrorCollector errorCollector = new NFParserErrorCollector();
 
-        // Source: https://datacadamia.com/antlr/getting_started (Gerald Wimmer, 2023-11-27)
-        CharStream baseAttributesLexerInput = CharStreams.fromString(dto.getNfBaseAttributes());
-        Lexer baseAttributesLexer = new NFLexer(baseAttributesLexerInput);
-        TokenStream baseAttributesParserInput = new CommonTokenStream(baseAttributesLexer);
-        NFParser baseAttributesParser = new NFParser(baseAttributesParserInput);
-
-        baseAttributesParser.addErrorListener(errorCollector);
+        NFParser baseAttributesParser = getParser(dto.getNfBaseAttributes(), errorCollector);
 
         Set<String> baseAttributes = baseAttributesParser.attributeSetSubmission().attributes;
 
@@ -326,13 +317,7 @@ public class NFResourceService {
         baseRelation.setAttributes(baseAttributes);
 
         if(!dto.getNfBaseDependencies().isBlank()) {
-
-            CharStream baseDependenciesLexerInput = CharStreams.fromString(dto.getNfBaseDependencies());
-            Lexer baseDependenciesLexer = new NFLexer(baseDependenciesLexerInput);
-            TokenStream baseDependenciesParserInput = new CommonTokenStream(baseDependenciesLexer);
-            NFParser baseDependenciesParser = new NFParser(baseDependenciesParserInput);
-
-            baseDependenciesParser.addErrorListener(errorCollector);
+            NFParser baseDependenciesParser = getParser(dto.getNfBaseDependencies(), errorCollector);
 
             Set<FunctionalDependency> baseDependencies = baseDependenciesParser.functionalDependencySetSubmission().functionalDependencies;
 
@@ -358,12 +343,7 @@ public class NFResourceService {
                     return objectWriter.writeValueAsString(specification);
                 }
                 case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#NFTask#NormalizationTask" -> {
-                    CharStream targetLevelLexerInput = CharStreams.fromString(dto.getNfNormalizationTargetLevel());
-                    Lexer targetLevelLexer = new NFLexer(targetLevelLexerInput);
-                    TokenStream targetLevelParserInput = new CommonTokenStream(targetLevelLexer);
-                    NFParser targetLevelParser = new NFParser(targetLevelParserInput);
-
-                    targetLevelParser.addErrorListener(errorCollector);
+                    NFParser targetLevelParser = getParser(dto.getNfNormalizationTargetLevel(), errorCollector);
 
                     NormalformLevel targetLevel = targetLevelParser.normalFormSpecification().level;
 
@@ -406,12 +386,7 @@ public class NFResourceService {
                     return objectWriter.writeValueAsString(specification);
                 }
                 case "http://www.dke.uni-linz.ac.at/etutorpp/TaskAssignmentType#NFTask#AttributeClosureTask" -> {
-                    CharStream acBaseAttributesLexerInput = CharStreams.fromString(dto.getNfAttributeClosureBaseAttributes());
-                    Lexer acBaseAttributesLexer = new NFLexer(acBaseAttributesLexerInput);
-                    TokenStream acBaseAttributesParserInput = new CommonTokenStream(acBaseAttributesLexer);
-                    NFParser acBaseAttributesParser = new NFParser(acBaseAttributesParserInput);
-
-                    acBaseAttributesParser.addErrorListener(errorCollector);
+                    NFParser acBaseAttributesParser = getParser(dto.getNfAttributeClosureBaseAttributes(), errorCollector);
 
                     Set<String> acBaseAttributes = acBaseAttributesParser.attributeSetSubmission().attributes;
 
@@ -444,5 +419,24 @@ public class NFResourceService {
             jp.printStackTrace();
             throw new ExerciseNotValidException("Could not generate JSON for exercise specification because: " + jp.getMessage());
         }
+    }
+
+    /**
+     * Creates a new <code>NFParser</code> instance from the supplied input <code>String</code> and with the
+     * supplied <code>NFParserErrorCollector</code>
+     * @param input The <code>String</code> to serve as the parser input
+     * @param errorCollector The <code>NFParserErrorCollector</code> to collect any syntax errors
+     * @return A new <code>NFParser</code> object
+     */
+    private NFParser getParser(String input, NFParserErrorCollector errorCollector) {
+        // Source: https://datacadamia.com/antlr/getting_started (Gerald Wimmer, 2023-11-27)
+        CharStream lexerInput = CharStreams.fromString(input);
+        Lexer lexer = new NFLexer(lexerInput);
+        TokenStream parserInput = new CommonTokenStream(lexer);
+        NFParser parser = new NFParser(parserInput);
+
+        parser.addErrorListener(errorCollector);
+
+        return parser;
     }
 }

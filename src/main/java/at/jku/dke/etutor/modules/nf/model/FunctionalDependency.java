@@ -93,12 +93,12 @@ public class FunctionalDependency implements Serializable{
 
 	@Override
 	public String toString() {
-		StringJoiner leftSide = new StringJoiner(" ");
+		StringJoiner leftSide = new StringJoiner(",");
 		for (String a : lhsAttributes){
 			leftSide.add(a);
 		}
 
-		StringJoiner rightSide = new StringJoiner(" ");
+		StringJoiner rightSide = new StringJoiner(",");
 		for (String a : rhsAttributes){
 			rightSide.add(a);
 		}

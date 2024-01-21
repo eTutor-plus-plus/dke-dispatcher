@@ -22,11 +22,10 @@ import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.RBRSpecification;
 import org.springframework.context.MessageSource;
-import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.List;
@@ -60,7 +59,7 @@ public class HTMLPrinter {
 		MESSAGE_SOURCE = msgSrc;
 	}
 
-	public static String printDecomposeStep(IdentifiedRelation relation, boolean showSplitButton, boolean showRemoveButton, boolean editable, Locale locale) throws IOException{
+	public static String printDecomposeStep(IdentifiedRelation relation, boolean showSplitButton, boolean showRemoveButton, boolean editable, Locale locale) {
 		StringJoiner attributesJoiner = new StringJoiner(" ");
 
 		for (String s : relation.getAttributesArray()) {
@@ -80,7 +79,7 @@ public class HTMLPrinter {
 		out.append("		<td>").append(LINE_SEP);
 		out.append("			<table class='relation_table' cellpadding='2px' cellspacing='2px'>").append(LINE_SEP);
 		out.append("				<tr>").append(LINE_SEP);
-		out.append("					<td class='label_td'><b>R").append(relation.getID()).append("</b>:</td>").append(LINE_SEP);
+		out.append("					<td class='label_td'><b>").append(relation.getID()).append("</b>:</td>").append(LINE_SEP);
 		out.append("					<td class='attributes_td'>").append(attributesString).append("</td>").append(LINE_SEP);
 
 		if (showSplitButton || showRemoveButton){
@@ -120,7 +119,7 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 
-	public static String printReport(NFReport report, int displayIndent, int codeIndent, Locale locale) throws IOException{
+	public static String printReport(NFReport report, int displayIndent, int codeIndent, Locale locale) {
 		StringBuilder out = new StringBuilder();
 
 		out.append("<div style='margin-left:").append(displayIndent * OFFSET).append("px;'>").append(LINE_SEP);
@@ -179,7 +178,7 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 	
-	public static String printErrorReport(ErrorReport errorReport, int displayIndent, int codeIndent) throws IOException{
+	public static String printErrorReport(ErrorReport errorReport, int displayIndent, int codeIndent) {
 		StringBuilder out = new StringBuilder();
 		out.append("<div class='error_report' style='margin-left:").append(displayIndent * OFFSET).append("px;'>").append(LINE_SEP);
 		out.append("	<table class='error_report_table' cellspacing='0px' cellpadding='0px'>").append(LINE_SEP);
@@ -221,7 +220,7 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 	
-	public static String printErrorReportGroup(ErrorReportGroup group, int displayIndent, int codeIndent) throws IOException{
+	public static String printErrorReportGroup(ErrorReportGroup group, int displayIndent, int codeIndent) {
 		List<ErrorReport> errorReports = group.getErrorReports();
 		List<ErrorReportGroup> subGroups = group.getSubErrorReportGroups();
 		StringBuilder out = new StringBuilder();
@@ -255,7 +254,7 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 
-	public static String printParameters(Collection<IdentifiedRelation> relations, int indent) throws IOException {
+	public static String printParameters(Collection<IdentifiedRelation> relations, int indent) {
 		StringBuilder out = new StringBuilder();
 
 		for (IdentifiedRelation relation : relations) {
@@ -265,7 +264,7 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 	
-	public static String printParameters(Relation relation, int indent) throws IOException {
+	public static String printParameters(Relation relation, int indent) {
 		String relationID = "";
 
 		if (relation instanceof IdentifiedRelation) {
@@ -317,11 +316,11 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 
-	public static String printKeysRow(Collection<Key> keys, String relationID, int indent, boolean editable, Locale locale) throws IOException  {
+	public static String printKeysRow(Collection<Key> keys, String relationID, int indent, boolean editable, Locale locale) {
 		return printKeysRow(keys, relationID, MESSAGE_SOURCE.getMessage("printkeysrow.title", null, locale), indent, editable, locale);
 	}
 	
-	public static String printKeysRow(Collection<Key> keys, String relationID, String title, int indent, boolean editable, Locale locale) throws IOException  {
+	public static String printKeysRow(Collection<Key> keys, String relationID, String title, int indent, boolean editable, Locale locale) {
 		String offset = getOffset(indent);
 
 		StringJoiner contentJoiner = new StringJoiner("<br>");
@@ -346,11 +345,11 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 
-	public static String printDependenciesRow(Collection<FunctionalDependency> dependencies, String relationID, int indent, boolean editable, Locale locale) throws IOException {
+	public static String printDependenciesRow(Collection<FunctionalDependency> dependencies, String relationID, int indent, boolean editable, Locale locale) {
 		return printDependenciesRow(dependencies, relationID, MESSAGE_SOURCE.getMessage("printdependenciesrow.title", null, locale), indent, editable, locale);
 	}
 
-	public static String printDependenciesRow(Collection<FunctionalDependency> dependencies, String relationID, String title, int indent, boolean editable, Locale locale) throws IOException {
+	public static String printDependenciesRow(Collection<FunctionalDependency> dependencies, String relationID, String title, int indent, boolean editable, Locale locale) {
 		String offset = getOffset(indent);
 
 		StringJoiner contentJoiner = new StringJoiner("<br>");
@@ -374,7 +373,7 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 	
-	public static String printDependenciesWithNormalformRow(Relation relation, String title, int indent, Locale locale) throws IOException {
+	public static String printDependenciesWithNormalformRow(Relation relation, String title, int indent, Locale locale) {
 		StringBuilder out = new StringBuilder();
 		
 		NormalformAnalyzerConfig normalformAnalyzerConfig = new NormalformAnalyzerConfig();
@@ -440,11 +439,11 @@ public class HTMLPrinter {
 		return MESSAGE_SOURCE.getMessage("getnormalform.boycecodd", null, locale);
 	}
 	
-	public static String printAttributesRow(Collection<String> attributes, String baseRelationID, String currRelationID, int indent, boolean editable, Locale locale) throws IOException {
+	public static String printAttributesRow(Collection<String> attributes, String baseRelationID, String currRelationID, int indent, boolean editable, Locale locale) {
 		return printAttributesRow(attributes, baseRelationID, currRelationID, "Attributes", indent, editable, locale);
 	}
 	
-	public static String printAttributesRow(Collection<String> attributes, String baseRelationID, String currRelationID, String title, int indent, boolean editable, Locale locale) throws IOException {
+	public static String printAttributesRow(Collection<String> attributes, String baseRelationID, String currRelationID, String title, int indent, boolean editable, Locale locale) {
 		String offset = getOffset(indent);
 
 		StringJoiner contentJoiner = new StringJoiner("<br>");
@@ -469,7 +468,7 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 
-	public static String printMaxLostRow(NFSpecification spec, int indent, Locale locale) throws IOException {
+	public static String printMaxLostRow(NFSpecification spec, int indent, Locale locale) {
 		String offset;
 		String content;
 		int maxLost;
@@ -505,7 +504,7 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 	
-	public static String printTargetLevelRow(NFSpecification spec, int indent, Locale locale) throws IOException {
+	public static String printTargetLevelRow(NFSpecification spec, int indent, Locale locale) {
 		String offset;
 		StringBuilder out = new StringBuilder();
 
@@ -537,94 +536,60 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 	
-	public static String printAssignmentForRBR(RBRSpecification spec, int indent, Locale locale) throws IOException {
+	public static String printAssignmentForRBR(RBRSpecification spec, int indent, Locale locale) {
 		String offset = getOffset(indent);
-
-		String relationAttributes = generateAttributeSetHTML(spec.getBaseRelation().getAttributes());
-
-		String dependencies = generateFunctionalDependencySetHTML(spec.getBaseRelation().getFunctionalDependencies());
-
-		String baseAttributes = generateAttributeSetHTML(spec.getBaseAttributes());
 
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
-			out.append(offset).append("	Berechnen Sie die funktionalen Abh&auml;ngigkeiten <strong>F<sub><code>S</code></sub></strong> ").append(LINE_SEP);
-			out.append(offset).append("	f&uuml;r das Subschema <strong>S</strong> der Relation <strong>R</strong> ").append(LINE_SEP);
-			out.append(offset).append("	mit den Funktionalen Abh&auml;ngigkeiten <strong>F</strong>.").append(LINE_SEP);
+			out.append(offset).append("	Berechnen Sie die funktionalen Abhängigkeiten <strong>F<sub><code>S</code></sub></strong> ").append(LINE_SEP);
+			out.append(offset).append("	für das Subschema <strong>S</strong> der Relation <strong>").append(spec.getBaseRelation().getName()).append("</strong> ").append(LINE_SEP);
+			out.append(offset).append("	mit den Funktionalen Abhängigkeiten <strong>F</strong>.").append(LINE_SEP);
 		} else {
-			out.append(offset).append("	Let <strong>R</strong> be a relation scheme with functional dependencies <strong>F</strong>. ").append(LINE_SEP);
+			out.append(offset).append("	Let <strong>").append(spec.getBaseRelation().getName()).append("</strong> be a relation scheme with functional dependencies <strong>F</strong>. ").append(LINE_SEP);
 			out.append(offset).append("	Determine the set of functional dependencies <strong>F<sub><code>S</code></sub></strong> ").append(LINE_SEP);
 			out.append(offset).append("	for the sub-scheme <strong>S</strong>.").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
 		out.append(offset).append("<table rules=\"none\" frame=\"void\">").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>R</strong></td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(relationAttributes).append("}</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>F</strong> = </td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(dependencies).append("}</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>S</strong></td>").append(LINE_SEP);
-		out.append(offset).append("		<td>(").append(baseAttributes).append(")</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
+		out.append(generateAttributeSetTableRowHTML(offset, spec.getBaseRelation().getName(), spec.getBaseRelation().getAttributes()));
+		out.append(generateFunctionalDependencySetTableRowHTML(offset, spec.getBaseRelation().getFunctionalDependencies()));
+		out.append(generateAttributeSetTableRowHTML(offset, "S", spec.getBaseAttributes()));
 		out.append(offset).append("</table>").append(LINE_SEP);
 		return out.toString();
 	}
 
-	public static String printAssignmentForAttributeClosure(AttributeClosureSpecification spec, int indent, Locale locale) throws IOException {
+	public static String printAssignmentForAttributeClosure(AttributeClosureSpecification spec, int indent, Locale locale) {
 		String offset = getOffset(indent);
-
-		String relationAttributes = generateAttributeSetHTML(spec.getBaseRelation().getAttributes());
-
-		String dependencies = generateFunctionalDependencySetHTML(spec.getBaseRelation().getFunctionalDependencies());
-
-		String baseAttributes = generateAttributeSetHTML(spec.getBaseAttributes());
 
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
-			out.append(offset).append("	Berechnen Sie die H&uuml;lle der Attribut Kombination <strong>A</strong> ").append(LINE_SEP);
-			out.append(offset).append("	bez&uuml;glich der Menge an Funktionalen Abh&auml;ngigkeiten <strong>F</strong> ").append(LINE_SEP);
-			out.append(offset).append("	der Relation <strong>R</strong>.").append(LINE_SEP);
+			out.append(offset).append("	Berechnen Sie die Hülle der Attribut-Kombination <strong>A</strong> ").append(LINE_SEP);
+			out.append(offset).append("	bezüglich der Menge an Funktionalen Abhängigkeiten <strong>F</strong> ").append(LINE_SEP);
+			out.append(offset).append("	der Relation <strong>").append(spec.getBaseRelation().getName()).append("</strong>.").append(LINE_SEP);
 		} else {
 			out.append(offset).append("	Determine the attribute closure of the set of attributes <strong>A</strong> ").append(LINE_SEP);
-			out.append(offset).append("	with respect to relation scheme <strong>R</strong> and the set of ").append(LINE_SEP);
+			out.append(offset).append("	with respect to relation scheme <strong>").append(spec.getBaseRelation().getName()).append("</strong> and the set of ").append(LINE_SEP);
 			out.append(offset).append("	functional dependencies <strong>F</strong>.").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
 		out.append(offset).append("<table rules=\"none\" frame=\"void\">").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>R</strong></td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(relationAttributes).append("}</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>F</strong> = </td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(dependencies).append("}</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>A</strong></td>").append(LINE_SEP);
-		out.append(offset).append("		<td>(").append(baseAttributes).append(")</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
+		out.append(generateAttributeSetTableRowHTML(offset, spec.getBaseRelation().getName(), spec.getBaseRelation().getAttributes()));
+		out.append(generateFunctionalDependencySetTableRowHTML(offset, spec.getBaseRelation().getFunctionalDependencies()));
+		out.append(generateAttributeSetTableRowHTML(offset, "A", spec.getBaseAttributes()));
 		out.append(offset).append("</table>").append(LINE_SEP);
 		return out.toString();
 	}
 
-	public static String printAssignmentForNormalization(NormalizationSpecification spec, int indent, Locale locale) throws IOException {
+	public static String printAssignmentForNormalization(NormalizationSpecification spec, int indent, Locale locale) {
 		String offset = getOffset(indent);
-
-		String relationAttributes = generateAttributeSetHTML(spec.getBaseRelation().getAttributes());
-
-		String dependencies = generateFunctionalDependencySetHTML(spec.getBaseRelation().getFunctionalDependencies());
 
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Finden Sie eine <b>verlustfreie Zerlegung</b> der Relation ").append(LINE_SEP);
-			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> mit den Funktionalen Abh&auml;ngigkeiten <strong>F</strong> in ").append(LINE_SEP);
+			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> mit den Funktionalen Abhängigkeiten <strong>F</strong> in ").append(LINE_SEP);
 			out.append(offset).append("	<strong>");
 			if (spec.getTargetLevel().equals(NormalformLevel.FIRST)){
 				out.append(offset).append("erster ");
@@ -635,18 +600,18 @@ public class HTMLPrinter {
 			} else if (spec.getTargetLevel().equals(NormalformLevel.BOYCE_CODD)){
 				out.append(offset).append("Boyce-Codd ");
 			}
-			out.append(offset).append("	Normalform</strong>. Geben Sie f&uuml;r jede Teilrelation die Schl&uuml;ssel ").append(LINE_SEP);
-			out.append(offset).append("	und die von <strong>F</strong> ableitbaren Funktionalen Abh&auml;ngigkeiten an.  ").append(LINE_SEP);
+			out.append(offset).append("	Normalform</strong>. Geben Sie für jede Teilrelation die Schlüssel ").append(LINE_SEP);
+			out.append(offset).append("	und die von <strong>F</strong> ableitbaren Funktionalen Abhängigkeiten an.  ").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
-				out.append(offset).append("	Sie d&uuml;rfen bei der Zerlegung <b>keine</b> Funktionale Abh&auml;ngigkeit verlieren!").append(LINE_SEP);
+				out.append(offset).append("	Sie dürfen bei der Zerlegung <b>keine</b> Funktionale Abhängigkeit verlieren!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){
-				out.append(offset).append("	Die Zerlegung muss <b>nicht ab&auml;ngigkeitstreu</b> sein. ").append(LINE_SEP);
+				out.append(offset).append("	Die Zerlegung muss <b>nicht abhängigkeitstreu</b> sein. ").append(LINE_SEP);
 			} else {
-				out.append(offset).append("	Sie d&uuml;rfen bei der Zerlegung maximal <b>").append(spec.getMaxLostDependencies()).append("</b> Funktionale ").append(LINE_SEP);
+				out.append(offset).append("	Sie dürfen bei der Zerlegung maximal <b>").append(spec.getMaxLostDependencies()).append("</b> Funktionale ").append(LINE_SEP);
 				if (spec.getMaxLostDependencies() == 1){
-					out.append(offset).append("	Abh&auml;ngigkeit ").append(LINE_SEP);
+					out.append(offset).append("	Abhängigkeit ").append(LINE_SEP);
 				} else {
-					out.append(offset).append("	Abh&auml;ngigkeiten ").append(LINE_SEP);
+					out.append(offset).append("	Abhängigkeiten ").append(LINE_SEP);
 				}
 				out.append(offset).append("	verlieren!").append(LINE_SEP);
 			}
@@ -671,7 +636,7 @@ public class HTMLPrinter {
 			} else {
 				out.append(offset).append("	At most <b>").append(spec.getMaxLostDependencies()).append("</b> ").append(LINE_SEP);
 				if (spec.getMaxLostDependencies() == 1){
-					out.append(offset).append("	functinal dependency ").append(LINE_SEP);
+					out.append(offset).append("	functional dependency ").append(LINE_SEP);
 				} else {
 					out.append(offset).append("	functional dependencies ").append(LINE_SEP);
 				}
@@ -680,30 +645,20 @@ public class HTMLPrinter {
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
 		out.append(offset).append("<table rules=\"none\" frame=\"void\">").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>R</strong></td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(relationAttributes).append("}</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>F</strong> = </td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(dependencies).append("}</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
+		out.append(generateAttributeSetTableRowHTML(offset, spec.getBaseRelation().getName(), spec.getBaseRelation().getAttributes()));
+		out.append(generateFunctionalDependencySetTableRowHTML(offset, spec.getBaseRelation().getFunctionalDependencies()));
 		out.append(offset).append("</table>").append(LINE_SEP);
 		return out.toString();
 	}
 
-	public static String printAssignmentForDecompose(DecomposeSpecification spec, int indent, Locale locale) throws IOException {
+	public static String printAssignmentForDecompose(DecomposeSpecification spec, int indent, Locale locale) {
 		String offset = getOffset(indent);
-
-		String relationAttributes = generateAttributeSetHTML(spec.getBaseRelation().getAttributes());
-
-		String dependencies = generateFunctionalDependencySetHTML(spec.getBaseRelation().getFunctionalDependencies());
 
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Wenden Sie den Decompose Algorithmus an, um eine <b>verlustfreie Zerlegung</b> der Relation ").append(LINE_SEP);
-			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> mit den Funktionalen Abh&auml;ngigkeiten <strong>F</strong> in ").append(LINE_SEP);
+			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> mit den Funktionalen Abhängigkeiten <strong>F</strong> in ").append(LINE_SEP);
 			out.append(offset).append("	<strong>");
 			if (spec.getTargetLevel().equals(NormalformLevel.FIRST)){
 				out.append(offset).append("erster ");
@@ -714,18 +669,18 @@ public class HTMLPrinter {
 			} else if (spec.getTargetLevel().equals(NormalformLevel.BOYCE_CODD)){
 				out.append(offset).append("Boyce-Codd ");
 			}
-			out.append(offset).append("	Normalform</strong> zu finden. Geben Sie f&uuml;r jede Teilrelation die Schl&uuml;ssel ").append(LINE_SEP);
-			out.append(offset).append("	und die von <strong>F</strong> ableitbaren Funktionalen Abh&auml;ngigkeiten an.  ").append(LINE_SEP);
+			out.append(offset).append("	Normalform</strong> zu finden. Geben Sie für jede Teilrelation die Schlüssel ").append(LINE_SEP);
+			out.append(offset).append("	und die von <strong>F</strong> ableitbaren Funktionalen Abhängigkeiten an.  ").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
-				out.append(offset).append("	Sie d&uuml;rfen bei der Zerlegung <b>keine</b> Funktionale Abh&auml;ngigkeit verlieren!").append(LINE_SEP);
+				out.append(offset).append("	Sie dürfen bei der Zerlegung <b>keine</b> Funktionale Abhängigkeit verlieren!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){
-				out.append(offset).append("	Die Zerlegung muss <b>nicht ab&auml;ngigkeitstreu</b> sein. ").append(LINE_SEP);
+				out.append(offset).append("	Die Zerlegung muss <b>nicht abhängigkeitstreu</b> sein. ").append(LINE_SEP);
 			} else {
-				out.append(offset).append("	Sie d&uuml;rfen bei der Zerlegung maximal <b>").append(spec.getMaxLostDependencies()).append("</b> Funktionale ").append(LINE_SEP);
+				out.append(offset).append("	Sie dürfen bei der Zerlegung maximal <b>").append(spec.getMaxLostDependencies()).append("</b> Funktionale ").append(LINE_SEP);
 				if (spec.getMaxLostDependencies() == 1){
-					out.append(offset).append("	Abh&auml;ngigkeit ").append(LINE_SEP);
+					out.append(offset).append("	Abhängigkeit ").append(LINE_SEP);
 				} else {
-					out.append(offset).append("	Abh&auml;ngigkeiten ").append(LINE_SEP);
+					out.append(offset).append("	Abhängigkeiten ").append(LINE_SEP);
 				}
 				out.append(offset).append("	verlieren!").append(LINE_SEP);
 			}
@@ -748,7 +703,7 @@ public class HTMLPrinter {
 			} else {
 				out.append(offset).append("	At most <b>").append(spec.getMaxLostDependencies()).append("</b> ").append(LINE_SEP);
 				if (spec.getMaxLostDependencies() == 1){
-					out.append(offset).append("	functinal dependency ").append(LINE_SEP);
+					out.append(offset).append("	functional dependency ").append(LINE_SEP);
 				} else {
 					out.append(offset).append("	functional dependencies ").append(LINE_SEP);
 				}
@@ -757,116 +712,82 @@ public class HTMLPrinter {
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
 		out.append(offset).append("<table rules=\"none\" frame=\"void\">").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>R</strong></td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(relationAttributes).append("}</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>F</strong> = </td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(dependencies).append("}</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
+		out.append(generateAttributeSetTableRowHTML(offset, spec.getBaseRelation().getName(), spec.getBaseRelation().getAttributes()));
+		generateFunctionalDependencySetTableRowHTML(offset, spec.getBaseRelation().getFunctionalDependencies());
 		out.append(offset).append("</table>").append(LINE_SEP);
 		return out.toString();
 	}
 
-	public static String printAssignmentForKeysDetermination(IdentifiedRelation spec, int indent, Locale locale) throws IOException {
+	public static String printAssignmentForKeysDetermination(IdentifiedRelation spec, int indent, Locale locale) {
 		String offset = getOffset(indent);
-
-		String relationAttributes = generateAttributeSetHTML(spec.getAttributes());
-
-		String dependencies = generateFunctionalDependencySetHTML(spec.getFunctionalDependencies());
 
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
-			out.append(offset).append("	Berechnen Sie alle Schl&uuml;ssel der Relation <strong>R</strong> auf ").append(LINE_SEP);
-			out.append(offset).append("	Basis der Funktionalen Abh&auml;ngigkeiten <strong>F</strong>. ").append(LINE_SEP);
+			out.append(offset).append("	Berechnen Sie alle Schlüssel der Relation <strong>").append(spec.getName()).append("</strong> auf ").append(LINE_SEP);
+			out.append(offset).append("	Basis der Funktionalen Abhängigkeiten <strong>F</strong>. ").append(LINE_SEP);
 		} else {
-			out.append(offset).append("	Let <strong>R</strong> be a relation scheme with a set of functional ").append(LINE_SEP);
-			out.append(offset).append("	dependencies <strong>F</strong>. Determine all keys of <strong>R</strong>. ").append(LINE_SEP);
+			out.append(offset).append("	Let <strong>").append(spec.getName()).append("</strong> be a relation scheme with a set of functional ").append(LINE_SEP);
+			out.append(offset).append("	dependencies <strong>F</strong>. Determine all keys of <strong>").append(spec.getName()).append("</strong>. ").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
 		out.append(offset).append("<table rules=\"none\" frame=\"void\">").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>R</strong></td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(relationAttributes).append("}</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>F</strong> = </td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(dependencies).append("}</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
+		out.append(generateAttributeSetTableRowHTML(offset, spec.getName(), spec.getAttributes()));
+		out.append(generateFunctionalDependencySetTableRowHTML(offset, spec.getFunctionalDependencies()));
 		out.append(offset).append("</table>").append(LINE_SEP);
 		return out.toString();
 	}
 
-	public static String printAssignmentForMinimalCover(IdentifiedRelation spec, int indent, Locale locale) throws IOException {
+	public static String printAssignmentForMinimalCover(IdentifiedRelation spec, int indent, Locale locale) {
 		String offset = getOffset(indent);
-
-		String dependencies = generateFunctionalDependencySetHTML(spec.getFunctionalDependencies());
 
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
-			out.append(offset).append("	Geben Sie f&uuml;r die Menge <b>F</b> an Funktionalen Abh&auml;ngigkeiten eine minimale  ").append(LINE_SEP);
-			out.append(offset).append("	Überdeckung an. Streichen Sie alle redundanten Funktionalen Abh&auml;ngigkeiten ").append(LINE_SEP);
-			out.append(offset).append("	und alle redundanten Attribute in den linken Seiten der Funktionalen Abh&auml;ngigkeiten. ").append(LINE_SEP);
+			out.append(offset).append("	Geben Sie für die Menge <b>F</b> an Funktionalen Abhängigkeiten eine minimale  ").append(LINE_SEP);
+			out.append(offset).append("	Überdeckung an. Streichen Sie alle redundanten Funktionalen Abhängigkeiten ").append(LINE_SEP);
+			out.append(offset).append("	und alle redundanten Attribute in den linken Seiten der Funktionalen Abhängigkeiten. ").append(LINE_SEP);
 		} else {
 			out.append(offset).append("	Indicate a minimal cover for <b>F</b>. Eliminate all redundant functional ").append(LINE_SEP);
 			out.append(offset).append("	dependencies and redundant attributes at left hand sides of functional dependencies. ").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
 		out.append(offset).append("<table rules=\"none\" frame=\"void\">").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>F</strong> = </td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(dependencies).append("}</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
+		out.append(generateFunctionalDependencySetTableRowHTML(offset, spec.getFunctionalDependencies()));
 		out.append(offset).append("</table>").append(LINE_SEP);
 		out.append(offset).append("<p>").append(LINE_SEP);
 		return out.toString();
 	}
 
-	public static String printAssignmentForNormalformDetermination(Relation spec, int indent, Locale locale) throws IOException {
+	public static String printAssignmentForNormalformDetermination(Relation spec, int indent, Locale locale) {
 		String offset = getOffset(indent);
-
-		String relationAttributes = generateAttributeSetHTML(spec.getAttributes());
-
-		String dependencies = generateFunctionalDependencySetHTML(spec.getFunctionalDependencies());
 
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
-			out.append(offset).append("	Geben Sie an, in welcher Normalform sich die Relation <strong>R</strong> ").append(LINE_SEP);
-			out.append(offset).append("	mit den Funktionalen Abh&auml;ngigkeiten <strong>F</strong> befindet. ").append(LINE_SEP);
-			out.append(offset).append("	Geben Sie weiters f&uuml;r jede Funktionale Abh&auml;ngigkeit <strong>F<sub>i</sub></strong> ").append(LINE_SEP);
+			out.append(offset).append("	Geben Sie an, in welcher Normalform sich die Relation <strong>").append(spec.getName()).append("</strong> ").append(LINE_SEP);
+			out.append(offset).append("	mit den Funktionalen Abhängigkeiten <strong>F</strong> befindet. ").append(LINE_SEP);
+			out.append(offset).append("	Geben Sie weiters für jede Funktionale Abhängigkeit <strong>F<sub>i</sub></strong> ").append(LINE_SEP);
 			out.append(offset).append("	an, welche Normalform durch <strong>F<sub>i</sub></strong> verletzt wird. ").append(LINE_SEP);
 		} else {
 			out.append(offset).append("	Determine the highest normal form that is fulfilled in relation scheme ").append(LINE_SEP);
-			out.append(offset).append("	<strong>R</strong> with the set of functional dependencies <strong>F</strong>. ").append(LINE_SEP);
+			out.append(offset).append("	<strong>").append(spec.getName()).append("</strong> with the set of functional dependencies <strong>F</strong>. ").append(LINE_SEP);
 			out.append(offset).append("	Further, determine for each functional dependency <strong>F<sub>i</sub></strong> ").append(LINE_SEP);
 			out.append(offset).append("	the normal form that is violated by <strong>F<sub>i</sub></strong>. ").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
 		out.append(offset).append("<table rules=\"none\" frame=\"void\">").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>R</strong></td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(relationAttributes).append("}</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
-		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>F</strong> = </td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(dependencies).append("}</td>").append(LINE_SEP);
-		out.append(offset).append("	</tr>").append(LINE_SEP);
+		out.append(generateAttributeSetTableRowHTML(offset, spec.getName(), spec.getAttributes())).append(LINE_SEP);
+		out.append(generateFunctionalDependencySetTableRowHTML(offset, spec.getFunctionalDependencies()));
 		out.append(offset).append("</table>").append(LINE_SEP);
 		return out.toString();
 	}
 
     public static void createHTMLSiteForReport(NFReport report){
-
-		PrintWriter writer = null;
-		FileOutputStream out = null;
-		try{
-			out = new FileOutputStream("D:/report.html");
-			writer = new PrintWriter(out);	
-			
+		try (
+			OutputStream out = new FileOutputStream("D:/report.html");
+			PrintWriter writer = new PrintWriter(out)
+		) {
 			writer.println("<html>");
 
 			writer.println("<head>");
@@ -882,28 +803,14 @@ public class HTMLPrinter {
 
 		} catch (Exception e){
 			e.printStackTrace();
-		} finally {
-			try{
-				if (writer != null){
-					writer.close();
-				}
-				if (out != null){
-					out.close();
-				}
-			} catch (Exception e){
-				e.printStackTrace();
-			}
 		}
 	}
 	
-	public static void createHTMLSiteForDecompose(Collection<IdentifiedRelation> relations, Locale locale){
-
-		PrintWriter writer = null;
-		FileOutputStream out = null;
-		try{
-			out = new FileOutputStream("D:/DecomposeTest/decompose.html");
-			writer = new PrintWriter(out);	
-			
+	public static void createHTMLSiteForDecompose(Collection<IdentifiedRelation> relations, Locale locale) {
+		try (
+			OutputStream out = new FileOutputStream("D:/DecomposeTest/decompose.html");
+			PrintWriter writer = new PrintWriter(out)
+		) {
 			writer.println("<html>");
 
 			writer.println("<head>");
@@ -939,22 +846,22 @@ public class HTMLPrinter {
 
 		} catch (Exception e){
 			e.printStackTrace();
-		} finally {
-			try{
-				if (writer != null){
-					writer.close();
-				}
-				if (out != null){
-					out.close();
-				}
-			} catch (Exception e){
-				e.printStackTrace();
-			}
 		}
 	}
 
+	private static String generateAttributeSetTableRowHTML(String offset, String relationName, Collection<String> attributes) {
+		StringBuilder out = new StringBuilder();
+
+		out.append(offset).append("	<tr>").append(LINE_SEP);
+		out.append(offset).append("		<td><strong>").append(relationName).append("</strong></td>").append(LINE_SEP);
+		out.append(offset).append("		<td>{").append(generateAttributeSetHTML(attributes)).append("}</td>").append(LINE_SEP);
+		out.append(offset).append("	</tr>").append(LINE_SEP);
+
+		return out.toString();
+	}
+
 	private static String generateAttributeSetHTML(Collection<String> attributes) {
-		StringJoiner attributesJoiner = new StringJoiner("&nbsp;");
+		StringJoiner attributesJoiner = new StringJoiner(",&nbsp;");
 
 		for (String a : attributes) {
 			attributesJoiner.add(a);
@@ -963,11 +870,22 @@ public class HTMLPrinter {
 		return attributesJoiner.toString();
 	}
 
+	private static String generateFunctionalDependencySetTableRowHTML(String offset, Collection<FunctionalDependency> dependencies) {
+		StringBuilder out = new StringBuilder();
+
+		out.append(offset).append("	<tr>").append(LINE_SEP);
+		out.append(offset).append("		<td><strong>F</strong> = </td>").append(LINE_SEP);
+		out.append(offset).append("		<td>{").append(generateFunctionalDependencySetHTML(dependencies)).append("}</td>").append(LINE_SEP);
+		out.append(offset).append("	</tr>").append(LINE_SEP);
+
+		return out.toString();
+	}
+
 	private static String generateFunctionalDependencySetHTML(Collection<FunctionalDependency> dependencies) {
-		StringJoiner dependenciesJoiner = new StringJoiner(", ");
+		StringJoiner dependenciesJoiner = new StringJoiner("; ");
 
 		for (FunctionalDependency functionalDependency : dependencies) {
-			dependenciesJoiner.add(functionalDependency.toString().replaceAll("->", "&rarr;"));
+			dependenciesJoiner.add(functionalDependency.toString());
 		}
 
 		return dependenciesJoiner.toString();
