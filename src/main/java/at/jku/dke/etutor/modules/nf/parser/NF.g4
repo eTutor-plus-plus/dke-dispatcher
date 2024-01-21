@@ -48,7 +48,7 @@ relation returns [IdentifiedRelation parsedRelation]
     } :
         relationId {try {$parsedRelation.setID($relationId.idString);} catch(Exception e) { e.printStackTrace();}} ':' '(' attributeSet {$parsedRelation.setAttributes($attributeSet.attributes);} ')' '->' '(' functionalDependencySet {$parsedRelation.setFunctionalDependencies($functionalDependencySet.functionalDependencies);} ')' '#' '(' keySet {$parsedRelation.setMinimalKeys($keySet.keys);} ')' ;
 relationId returns [String idString]:
-        '*' AlphaNumericChain {$idString = $AlphaNumericChain.text;} ;
+        AlphaNumericChain {$idString = $AlphaNumericChain.text;} ;
 
 keySetSubmission returns [Set<Key> keys]
     @init {

@@ -81,6 +81,7 @@ public class NFEvaluator implements Evaluator {
 		NFParser submissionParser = new NFParser(submissionParserInput);
 
 		NFParserErrorCollector errorCollector = new NFParserErrorCollector();
+		submissionLexer.addErrorListener(errorCollector);
 		submissionParser.addErrorListener(errorCollector);
 
 		int internalTypeId = NFExercisesManager.fetchInternalType(exerciseID);
