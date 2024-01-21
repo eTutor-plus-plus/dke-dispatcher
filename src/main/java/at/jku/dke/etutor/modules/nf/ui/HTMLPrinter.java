@@ -15,7 +15,6 @@ import at.jku.dke.etutor.modules.nf.model.Relation;
 import at.jku.dke.etutor.modules.nf.report.ErrorReport;
 import at.jku.dke.etutor.modules.nf.report.ErrorReportGroup;
 import at.jku.dke.etutor.modules.nf.report.NFReport;
-import at.jku.dke.etutor.modules.nf.report.ReportAtomType;
 import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
 import at.jku.dke.etutor.modules.nf.specification.DecomposeSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
@@ -183,16 +182,11 @@ public class HTMLPrinter {
 		out.append("<div class='error_report' style='margin-left:").append(displayIndent * OFFSET).append("px;'>").append(LINE_SEP);
 		out.append("	<table class='error_report_table' cellspacing='0px' cellpadding='0px'>").append(LINE_SEP);
 
-		String textClass = "";
-		if (errorReport.getType().equals(ReportAtomType.INFO)){
-			textClass = "info_text";
-		
-		} else if (errorReport.getType().equals(ReportAtomType.WARNING)){
-			textClass = "warning_text";
-
-		} else if (errorReport.getType().equals(ReportAtomType.ERROR)){
-			textClass = "error_text";
-		}
+		String textClass = switch (errorReport.getType()) {
+			case INFO -> "info_text";
+			case WARNING -> "warning_text";
+			case ERROR -> "error_text";
+		};
 
 		if (errorReport.showError()){
 			out.append("		<tr>").append(LINE_SEP);
