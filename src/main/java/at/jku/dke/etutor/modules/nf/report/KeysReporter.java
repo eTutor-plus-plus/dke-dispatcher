@@ -62,26 +62,7 @@ public class KeysReporter extends ErrorReporter {
 			
 			if (config.getDiagnoseLevel() == 3) {
 				description.append(generateLevel3Div(analysis.getMissingKeys(), "keysreporter.keyisa", "keysreporter.keysarea", "keysreporter.missing", locale));
-
-				/*currElemID = NFHelper.getNextElementID();
-				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html>").append(HTML_HEADER).append("<body>");
-				description.append("<p>").append(messageSource.getMessage("keysreporter.keysmissing", null, locale)).append(":</p>");
-
-				description.append(generateTable(analysis.getMissingKeys()));
-
-				description.append("</body></html>");
-				description.append("\"></input>");
-
-				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(missingKeysCount);
-
-				if (missingKeysCount == 1){
-					description.append(" ").append(messageSource.getMessage("keysreporter.keyisa", null, locale)).append(" ");
-				} else {
-					description.append(" ").append(messageSource.getMessage("keysreporter.keysarea", null, locale)).append(" ");
-				}
-				description.append(messageSource.getMessage("keysreporter.missing", null, locale)).append(".");*/
-			}
+            }
 		}
 		
 		if ((missingKeysCount > 0) && (additionalKeysCount > 0)){
@@ -105,30 +86,6 @@ public class KeysReporter extends ErrorReporter {
 			
 			if (config.getDiagnoseLevel() == 3) {
 				description.append(generateLevel3Div(analysis.getAdditionalKeys(), "keysreporter.keyisa", "keysreporter.keysarea", "keysreporter.toomuch", locale));
-
-				/*description.append("<div>").append(additionalKeysCount);
-				if (additionalKeysCount == 1){
-					description.append(" ").append(messageSource.getMessage("keysreporter.keyisa", null, locale)).append(" ");
-				} else {
-					description.append(" ").append(messageSource.getMessage("keysreporter.keysarea", null, locale)).append(" ");
-				}
-				description.append(messageSource.getMessage("keysreporter.toomuch", null, locale)).append(".");
-				description.append("<p/>");*/
-
-				/*currElemID = NFHelper.getNextElementID();*description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html>").append(HTML_HEADER).append("<body>");*/
-				// description.append("<p>").append(messageSource.getMessage("keysreporter.keystoomuch", null, locale)).append(":</p>");
-
-				// description.append(generateTable(analysis.getAdditionalKeys()));
-
-				/*description.append("</body></html>");
-				description.append("\"></input>");*/
-
-				// description.append("</div>");
-
-				// description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">");
-
-
 			}
 		}
 		report.setDescription(description.toString());

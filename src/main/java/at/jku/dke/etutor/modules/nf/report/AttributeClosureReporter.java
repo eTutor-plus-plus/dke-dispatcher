@@ -63,26 +63,7 @@ public class AttributeClosureReporter extends ErrorReporter {
 			
 			if (config.getDiagnoseLevel() == 3) {
 				description.append(generateLevel3Div(analysis.getMissingAttributes(), "attributeclosurereporter.attributeisa", "attributeclosurereporter.attributesarea", "attributeclosurereporter.attributesmissing", locale));
-
-				/*currElemID = NFHelper.getNextElementID();
-				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html>").append(HTML_HEADER).append("<body>");
-				description.append("<p>").append(messageSource.getMessage("attributeclosurereporter.attributesmissing", null, locale)).append("</b>:</p>");
-
-				description.append(generateTable(analysis.getMissingAttributes()));
-
-				description.append("</body></html>");
-				description.append("\"></input>");
-
-				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(missingAttributesCount);
-
-				if (missingAttributesCount == 1){
-					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeisa", null, locale)).append(" ");
-				} else {
-					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributesarea", null, locale)).append(" ");
-				}
-				description.append(messageSource.getMessage("attributeclosurereporter.missing", null, locale)).append("</b>.");*/
-			}
+            }
 		}
 		
 		if ((missingAttributesCount > 0) && (additionalAttributesCount > 0)) {
@@ -106,25 +87,7 @@ public class AttributeClosureReporter extends ErrorReporter {
 			
 			if (config.getDiagnoseLevel() == 3) {
 				description.append(generateLevel3Div(analysis.getAdditionalAttributes(), "attributeclosurereporter.attributeisa", "attributeclosurereporter.attributesarea", "attributeclosurereporter.attributestoomuch", locale));
-
-				/*currElemID = NFHelper.getNextElementID();
-				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html>").append(HTML_HEADER).append("<body>");
-				description.append("<p>").append(messageSource.getMessage("attributeclosurereporter.attributestoomuch", null, locale)).append("</b>:</p>");
-
-				description.append(generateTable(analysis.getAdditionalAttributes()));
-
-				description.append("</body></html>");
-				description.append("\"></input>");
-				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(additionalAttributesCount);
-
-				if (additionalAttributesCount == 1){
-					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributeisa", null, locale)).append(" ");
-				} else {
-					description.append(" ").append(messageSource.getMessage("attributeclosurereporter.attributesarea", null, locale)).append(" ");
-				}
-				description.append(messageSource.getMessage("attributeclosurereporter.toomuch", null, locale)).append(".");*/
-			}
+            }
 		}
 		report.setDescription(description.toString());
 		

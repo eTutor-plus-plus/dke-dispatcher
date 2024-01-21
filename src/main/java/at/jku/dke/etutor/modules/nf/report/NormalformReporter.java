@@ -192,26 +192,7 @@ public class NormalformReporter extends ErrorReporter {
 				if (config.getDiagnoseLevel() == 2 || config.getDiagnoseLevel() == 3) {
 					description.append("<p>").append(messageSource.getMessage("normalformreporter.nonprimrightside", null, locale)).append("</p>");
 					description.append(generateLevel3Div(secondNFViolation.getNonPrimRHSAttributes(), "normalformreporter.attributenotprim", "normalformreporter.attributesnotprim", "normalformreporter.rightsidecomprises", locale));
-
-					/*String currElemID = NFHelper.getNextElementID();
-					description.append("<br>");
-					description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-					description.append("<html>").append(HTML_HEADER).append("<body>");
-
-					description.append(generateTable(secondNFViolation.getNonPrimRHSAttributes()));
-
-					description.append("</body></html>");
-					description.append("\"></input>");
-
-					description.append(messageSource.getMessage("normalformreporter.rightsidecomprises", new Object[]{" <a href=\"javascript:openWindow('" + currElemID + "')\">" + secondNFViolation.nonPrimRHSAttributesCount()}, locale));
-
-					if (secondNFViolation.nonPrimRHSAttributesCount() == 1){
-						description.append(" ").append(messageSource.getMessage("normalformreporter.attributenotprim", null, locale)).append("</a>.");
-					} else {
-						description.append(" ").append(messageSource.getMessage("normalformreporter.attributesnotprim", null, locale)).append("</a>.");
-					}*/
-
-					description.append("<br>");
+                    description.append("<br>");
 					description.append(messageSource.getMessage("normalformreporter.leftsidepartialkey", null, locale));
 				}
 			}
@@ -259,26 +240,7 @@ public class NormalformReporter extends ErrorReporter {
 				if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)) {
 					description.append("<p>").append(messageSource.getMessage("normalformreporter.nonprimrightside", null, locale)).append("</p>");
 					description.append(generateLevel3Div(thirdNFViolation.getNonPrimRHSAttributes(), "normalformreporter.attributenotprim", "normalformreporter.attributesnotprim", "normalformreporter.rightsidecomprises", locale));
-
-					/*String currElemID = NFHelper.getNextElementID();
-					description.append("<br>");
-					description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-					description.append("<html>").append(HTML_HEADER).append("<body>");
-
-					description.append(generateTable(thirdNFViolation.getNonPrimRHSAttributes()));
-
-					description.append("</body></html>");
-					description.append("\"></input>");
-
-					description.append(messageSource.getMessage("normalformreporter.rightsidecomprises", new Object[]{"<a href=\"javascript:openWindow('" + currElemID + "')\">" + thirdNFViolation.nonPrimRHSAttributesCount()}, locale));
-
-					if (thirdNFViolation.nonPrimRHSAttributesCount() == 1){
-						description.append(" ").append(messageSource.getMessage("normalformreporter.attributenotprim", null, locale)).append("</a>.");
-					} else {
-						description.append(" ").append(messageSource.getMessage("normalformreporter.attributesnotprim", null, locale)).append("</a>.");
-					}*/
-
-					description.append("<br>");
+                    description.append("<br>");
 					description.append(messageSource.getMessage("normalformreporter.leftsidenotsuperkey", null, locale));
 				}
 			}

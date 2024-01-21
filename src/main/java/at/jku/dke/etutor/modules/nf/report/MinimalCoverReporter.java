@@ -110,26 +110,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 		
 		if (config.getDiagnoseLevel() == 3) {
 			description.append(generateLevel3Div(analysis.getNotCanonicalDependencies(), "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.notcanonicalrepresentation", locale));
-
-			/*String currElemID = NFHelper.getNextElementID();
-			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-			description.append("<html>").append(HTML_HEADER).append("<body>");
-			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.dependenciesnotcanonical", null, locale)).append(":</p>");
-
-			description.append(generateTable(analysis.getNotCanonicalDependencies()));
-
-			description.append("</body></html>");
-			description.append("\"></input>");
-
-			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(count);
-
-			if (count == 1){
-				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale)).append(" ");
-			} else {
-				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
-			}
-			description.append(messageSource.getMessage("minimalcoverreporter.notcanonicalrepresentation", null, locale));*/
-		}
+        }
 		report.setDescription(description.toString());
 
 		//CONFIGURE REPORT
@@ -181,26 +162,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 		
 		if (config.getDiagnoseLevel() == 3) {
 			description.append(generateLevel3Div(analysis.getTrivialDependencies(), "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.trivial", locale));
-
-			/*String currElemID = NFHelper.getNextElementID();
-			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-			description.append("<html>").append(HTML_HEADER).append("<body>");
-			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.trivialdependencies", null, locale)).append(":</p>");
-
-			description.append(generateTable(analysis.getTrivialDependencies()));
-
-			description.append("</body></html>");
-			description.append("\"></input>");
-
-			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(count);
-
-			if (count == 1){
-				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale)).append(" ");
-			} else {
-				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
-			}
-			description.append(messageSource.getMessage("minimalcoverreporter.trivial", null, locale)).append(".");*/
-		}
+        }
 		report.setDescription(description.toString());
 
 		//CONFIGURE REPORT
@@ -282,18 +244,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 			description.append("</tbody></table>");
 
 			description.append("</div>");
-
-			/*String currElemID = NFHelper.getNextElementID();
-			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-			description.append("<html>").append(HTML_HEADER).append("<body>");
-
-			// table generation
-
-			description.append("</body></html>");
-			description.append("\"></input>");
-
-			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(count);*/
-		}
+        }
 		report.setDescription(description.toString());
 
 		//CONFIGURE REPORT
@@ -342,26 +293,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 		
 		if (config.getDiagnoseLevel() == 3) {
 			description.append(generateLevel3Div(analysis.getRedundantDependencies(), "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.redundand", locale));
-
-			/*String currElemID = NFHelper.getNextElementID();
-			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-			description.append("<html>").append(HTML_HEADER).append("<body>");
-			description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.redundanddependencies", null, locale)).append(":</p>");
-
-			description.append(generateTable(analysis.getRedundantDependencies()));
-
-			description.append("</body></html>");
-			description.append("\"></input>");
-
-			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(count);
-
-			if (count == 1){
-				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale)).append(" ");
-			} else {
-				description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
-			}
-			description.append(messageSource.getMessage("minimalcoverreporter.redundand", null, locale)).append(".");*/
-		}
+        }
 		report.setDescription(description.toString());
 
 		//CONFIGURE REPORT
@@ -437,26 +369,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 		if (config.getDiagnoseLevel() == 3){
 			if (missingDependenciesCount > 0) {
 				description.append(generateLevel3Div(analysis.getMissingDependencies(), "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.missing", locale));
-
-				/*currElemID = NFHelper.getNextElementID();
-				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html>").append(HTML_HEADER).append("<body>");
-				description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.missingdependencies", null, locale)).append(":</p>");
-
-				description.append(generateTable(analysis.getMissingDependencies()));
-
-				description.append("</body></html>");
-				description.append("\"></input>");
-
-				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(missingDependenciesCount);
-
-				if (missingDependenciesCount == 1){
-					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale)).append(" ");
-				} else {
-					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
-				}
-				description.append(messageSource.getMessage("minimalcoverreporter.missing", null, locale)).append(".");*/
-			}
+            }
 			
 			if ((missingDependenciesCount > 0) && (additionalDependenciesCount > 0)){
 				description.append("<br>");
@@ -464,26 +377,7 @@ public class MinimalCoverReporter extends ErrorReporter {
 			
 			if (additionalDependenciesCount > 0) {
 				description.append(generateLevel3Div(analysis.getAdditionalDependencies(), "minimalcoverreporter.dependencyisa", "minimalcoverreporter.dependenciesarea", "minimalcoverreporter.determinedcannotbederived", locale));
-
-				/*currElemID = NFHelper.getNextElementID();
-				description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-				description.append("<html>").append(HTML_HEADER).append("<body>");
-				description.append("<p>").append(messageSource.getMessage("minimalcoverreporter.dependenciesnotderived", null, locale)).append(":</p>");
-
-				description.append(generateTable(analysis.getAdditionalDependencies()));
-
-				description.append("</body></html>");
-				description.append("\"></input>");
-
-				description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(additionalDependenciesCount);
-
-				if (additionalDependenciesCount == 1){
-					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependencyisa", null, locale)).append(" ");
-				} else {
-					description.append(" ").append(messageSource.getMessage("minimalcoverreporter.dependenciesarea", null, locale)).append(" ");
-				}
-				description.append(messageSource.getMessage("minimalcoverreporter.determinedcannotbederived", null, locale));*/
-			}
+            }
 		}
 		report.setDescription(description.toString());
 		

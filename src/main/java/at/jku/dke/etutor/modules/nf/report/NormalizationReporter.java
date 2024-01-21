@@ -157,26 +157,7 @@ public class NormalizationReporter extends ErrorReporter {
 		
 		if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)) {
 			description.append(generateLevel3Div(analysis.getLostFunctionalDependencies(), "normalizationreporter.dependencybaserelationa", "normalizationreporter.dependenciesbaserelationa", "normalizationreporter.lost", locale));
-
-			/*currElemID = NFHelper.getNextElementID();
-			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-			description.append("<html>").append(HTML_HEADER).append("<body>");
-			description.append("<p>").append(messageSource.getMessage("normalizationreporter.dependencieslost", null, locale)).append(":</p>");
-
-			description.append(generateTable(analysis.getLostFunctionalDependencies()));
-
-			description.append("</body></html>");
-			description.append("\"></input>");
-
-			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(numberOfLostDependencies);
-
-			if (numberOfLostDependencies == 1){
-				description.append(" ").append(messageSource.getMessage("normalizationreporter.dependencybaserelationa", null, locale)).append(" ");
-			} else {
-				description.append(" ").append(messageSource.getMessage("normalizationreporter.dependenciesbaserelationa", null, locale)).append(" ");
-			}
-			description.append(messageSource.getMessage("normalizationreporter.lost", null, locale)).append(".");*/
-		}
+        }
 		report.setDescription(description.toString());
 
 		//CONFIGURE REPORT
@@ -233,26 +214,7 @@ public class NormalizationReporter extends ErrorReporter {
 		
 		if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)) {
 			description.append(generateLevel3Div(analysis.getMissingAttributes(), "normalizationreporter.attributeisa", "normalizationreporter.attributesarea", "normalizationreporter.missing", locale));
-
-			/*currElemID = NFHelper.getNextElementID();
-			description.append("<input type='hidden' id='").append(currElemID).append("' value=\"");
-			description.append("<html>").append(HTML_HEADER).append("<body>");
-			description.append("<p>").append(messageSource.getMessage("normalizationreporter.attributenotcomprised", null, locale)).append(":</p>");
-
-			description.append(generateTable(analysis.getMissingAttributes()));
-
-			description.append("</body></html>");
-			description.append("\"></input>");
-
-			description.append("<a href=\"javascript:openWindow('").append(currElemID).append("')\">").append(numberOfMissingAttributes);
-
-			if (numberOfMissingAttributes == 1){
-				description.append(" ").append(messageSource.getMessage("normalizationreporter.attributeisa", null, locale)).append(" ");
-			} else {
-				description.append(" ").append(messageSource.getMessage("normalizationreporter.attributesarea", null, locale)).append(" ");
-			}
-			description.append(messageSource.getMessage("normalizationreporter.missing", null, locale)).append(".");*/
-		}
+        }
 		report.setDescription(description.toString());
 
 		//CONFIGURE REPORT
