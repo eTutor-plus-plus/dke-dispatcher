@@ -205,7 +205,7 @@ public class NFHelper {
 		}
 	}
 	
-	public static void addAttribute(Collection<IdentifiedRelation> relations, String relationID, String[] attributes) throws Exception{
+	public static void addAttribute(Collection<IdentifiedRelation> relations, String relationID, String[] attributes) {
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && 
@@ -228,7 +228,7 @@ public class NFHelper {
         }
 	}
 	
-	public static void delAttributes(Collection<IdentifiedRelation> relations, String relationID, String[] attributesToDelete) throws Exception{
+	public static void delAttributes(Collection<IdentifiedRelation> relations, String relationID, String[] attributesToDelete) {
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && 
@@ -256,7 +256,7 @@ public class NFHelper {
 		checkRelation(relation);
 	}
 	
-	public static void addDependency(Collection<IdentifiedRelation> relations, String relationID, String[] rhsAttributes, String[] lhsAttributes) throws Exception{
+	public static void addDependency(Collection<IdentifiedRelation> relations, String relationID, String[] rhsAttributes, String[] lhsAttributes) {
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && 
@@ -291,7 +291,7 @@ public class NFHelper {
 		relation.addFunctionalDependency(currDependency);
 	}
 	
-	public static void delDependencies(Collection<IdentifiedRelation> relations, String relationID, String[] rhsAttributes, String[] lhsAttributes, String[] dependenciesToDelete) throws Exception{
+	public static void delDependencies(Collection<IdentifiedRelation> relations, String relationID, String[] rhsAttributes, String[] lhsAttributes, String[] dependenciesToDelete) {
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && (!relationID.isEmpty())){
@@ -328,7 +328,7 @@ public class NFHelper {
         }
 	}
 
-	public static void addKey(Collection<IdentifiedRelation> relations, String relationID, String[] attributes) throws Exception{
+	public static void addKey(Collection<IdentifiedRelation> relations, String relationID, String[] attributes) {
 		IdentifiedRelation currRelation;
 
 		if ((relationID != null) && 
@@ -357,7 +357,7 @@ public class NFHelper {
 		relation.addMinimalKey(currKey);
 	}
 
-	public static void delKeys(Collection<IdentifiedRelation> relations, String relationID, String[] attributes, String[] keysToDelete) throws Exception{
+	public static void delKeys(Collection<IdentifiedRelation> relations, String relationID, String[] attributes, String[] keysToDelete) {
 		IdentifiedRelation currRelation;
 
 		NFHelper.getLogger().log(Level.INFO, "DELETING KEYS");

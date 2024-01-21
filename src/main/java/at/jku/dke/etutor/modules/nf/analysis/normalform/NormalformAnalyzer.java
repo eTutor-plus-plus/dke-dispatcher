@@ -82,7 +82,7 @@ public class NormalformAnalyzer {
 	/**
 	 * Checks whether all attributes in the relation are atomic (i.e., contain only one value).
 	 * @param analysis ignored.
-	 * @param dependency FunctionalDependency which is to be examined for violating the first normal form
+	 * @param dependency FunctionalDependency which is to be examined for satisfying the first normal form
 	 * @param config Ignored
 	 * @return whether all attributes in the relation are atomic (i.e., contain only one value).
 	 */
@@ -94,18 +94,11 @@ public class NormalformAnalyzer {
 	}
 
 	/**
-	 * Checks if the right-hand-side of the supplied dependency is non-prime AND the left-hand-side is a partial key.
-	 * @param dependency FunctionalDependency which is to be examined for violating the second normal form
-	 * @param config
-	 * @return A <code>SecondNormalFormViolation</code> if dependency violates the second normal form, <code>null</code> otherwise.
-	 */
-
-	/**
 	 * Checks whether the right-hand-side of the supplied dependency is prime or the left-hand-side is not a partial key.
 	 * @param analysis The analysis to be modified according to the result of this check
-	 * @param dependency
-	 * @param config
-	 * @return
+	 * @param dependency <code>FunctionalDependency</code> which is to be examined for satisfying the first normal form
+	 * @param config <code>NormalformAnalyzerConfig</code> containing the correct minimal keys
+	 * @return Whether the right-hand-side of the supplied dependency is prime or the left-hand-side is not a partial key.
 	 */
 	public static boolean satisfiesSecondNormalform(NormalformAnalysis analysis, FunctionalDependency dependency, NormalformAnalyzerConfig config) {
 		SecondNormalformViolation violation = getSecondNormalformViolation(dependency, config);
@@ -155,8 +148,8 @@ public class NormalformAnalyzer {
 
 	/**
 	 * Checks if the right-hand-side of the supplied dependency is non-prime AND the left-hand-side is a partial key.
-	 * @param dependency FunctionalDependency which is to be examined for violating the second normal form
-	 * @param config
+	 * @param dependency <code>FunctionalDependency</code> which is to be examined for violating the second normal form
+	 * @param config <code>NormalformAnalyzerConfig</code> containing the correct minimal keys
 	 * @return A <code>SecondNormalFormViolation</code> if dependency violates the second normal form, <code>null</code> otherwise.
 	 */
 	public static SecondNormalformViolation getSecondNormalformViolation(FunctionalDependency dependency, NormalformAnalyzerConfig config) {
@@ -208,7 +201,7 @@ public class NormalformAnalyzer {
 	/**
 	 * Checks whether both sides of the supplied <code>FunctionalDependency</code> are non-prime
 	 * @param dependency <code>FunctionalDependency</code> which is to be examined for violating the third normal form
-	 * @param config
+	 * @param config <code>NormalformAnalyzerConfig</code> containing the correct minimal keys
 	 * @return A <code>ThirdNormalFormViolation</code> if dependency violates the third normal form, <code>null</code>
 	 * otherwise.
 	 */
@@ -267,7 +260,7 @@ public class NormalformAnalyzer {
 	/**
 	 * Checks
 	 * @param dependency <code>FunctionalDependency</code> which is to be examined for violating the Boyce-Codd normal form
-	 * @param config
+	 * @param config <code>NormalformAnalyzerConfig</code> containing the correct minimal keys
 	 * @return A <code>BoyceCoddNormalFormViolation</code> if dependency violates the third normal form, <code>null</code> otherwise.
 	 */
 	public static BoyceCoddNormalformViolation getBoyceCoddNormalformViolation(FunctionalDependency dependency, NormalformAnalyzerConfig config) {

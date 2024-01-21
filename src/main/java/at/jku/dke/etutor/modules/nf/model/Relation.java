@@ -1,9 +1,9 @@
 package at.jku.dke.etutor.modules.nf.model;
 
 import at.jku.dke.etutor.modules.nf.specification.HasSemanticEquality;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -14,6 +14,7 @@ import java.util.TreeSet;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Relation implements Serializable, Cloneable, HasSemanticEquality {
 
+	@Serial
 	private static final long serialVersionUID = 7982386529581622533L;
 
 	protected String name;

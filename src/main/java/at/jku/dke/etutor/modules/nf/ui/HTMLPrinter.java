@@ -17,7 +17,6 @@ import at.jku.dke.etutor.modules.nf.report.ErrorReportGroup;
 import at.jku.dke.etutor.modules.nf.report.NFReport;
 import at.jku.dke.etutor.modules.nf.specification.AttributeClosureSpecification;
 import at.jku.dke.etutor.modules.nf.specification.DecomposeSpecification;
-import at.jku.dke.etutor.modules.nf.specification.NFSpecification;
 import at.jku.dke.etutor.modules.nf.specification.NormalizationSpecification;
 import at.jku.dke.etutor.modules.nf.specification.RBRSpecification;
 import org.springframework.context.MessageSource;
@@ -462,25 +461,17 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 
-	public static String printMaxLostRow(NFSpecification spec, int indent, Locale locale) {
-		String offset;
-		String content;
-		int maxLost;
-		int nrDependencies;
-		StringBuilder out = new StringBuilder();
-
-		if (spec instanceof NormalizationSpecification) {
-			maxLost = ((NormalizationSpecification)spec).getMaxLostDependencies();
-			nrDependencies = spec.getBaseRelation().getFunctionalDependencies().size();
-		} else if (spec instanceof DecomposeSpecification) {
-			maxLost = ((DecomposeSpecification)spec).getMaxLostDependencies();
-			nrDependencies = spec.getBaseRelation().getFunctionalDependencies().size();
-		} else {
-			return out.toString();
+	public static String printMaxLostRow(NormalizationSpecification spec, int indent, Locale locale) {
+		if (spec == null) {
+			return "";
 		}
+
+		int maxLost = spec.getMaxLostDependencies();
+		int nrDependencies = spec.getBaseRelation().getFunctionalDependencies().size();
 		
-		offset = getOffset(indent);
-		
+		String offset = getOffset(indent);
+
+		String content;
 		if (maxLost > nrDependencies) {
 			content = MESSAGE_SOURCE.getMessage("printmaxlostrow.unlimited", null, locale)+" (" + maxLost + " " + MESSAGE_SOURCE.getMessage("printmaxlostrow.exceedsdependencies", null, locale) + ", " + nrDependencies + ")";
 		} else if (maxLost == nrDependencies) {
@@ -488,7 +479,8 @@ public class HTMLPrinter {
 		} else {
 			content = Integer.toString(maxLost);
 		}
-		
+
+		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<tr>").append(LINE_SEP);
 		out.append(offset).append("	<td class='label_td'>").append(MESSAGE_SOURCE.getMessage("printmaxlostrow.maxlostdependencies", null, locale)).append(":</td>").append(LINE_SEP);
 		out.append(offset).append("	<td class='content_td' nowrap>").append(content).append("</td>").append(LINE_SEP);
@@ -513,8 +505,7 @@ public class HTMLPrinter {
 			case SECOND -> MESSAGE_SOURCE.getMessage("printtargetlevelrow.second", null, locale);
 			case THIRD -> MESSAGE_SOURCE.getMessage("printtargetlevelrow.third", null, locale);
 			case BOYCE_CODD -> MESSAGE_SOURCE.getMessage("printtargetlevelrow.boycecodd", null, locale);
-			default -> "";
-		};
+        };
 
 		StringBuilder out = new StringBuilder();
 

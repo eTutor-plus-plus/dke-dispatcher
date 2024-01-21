@@ -53,6 +53,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -113,14 +114,11 @@ public class NFEvaluator implements Evaluator {
 					boolean hasIncorrectAttributes = false;
 
 					for(Key k : minimalKeys) {
-						Set<String> incorrectAttributes = new HashSet(k.getAttributes());
+						Set<String> incorrectAttributes = new HashSet<>(k.getAttributes());
 						incorrectAttributes.removeAll(specification.getBaseRelation().getAttributes());
 
 						if(!incorrectAttributes.isEmpty()) {
-							StringJoiner attributesJoiner = new StringJoiner(", ");
-							incorrectAttributes.forEach(a -> attributesJoiner.add(a));
-
-							analysis.appendSyntaxError("Syntax error: Key \"" + k + "\" contains attributes \"" + attributesJoiner + "\" not found in the base relation");
+							analysis.appendSyntaxError(getAttributesNotInBaseRelationErrorMessage(incorrectAttributes, "Key \"" + k + "\""));
 
 							hasIncorrectAttributes = true;
 						}
@@ -161,10 +159,7 @@ public class NFEvaluator implements Evaluator {
 						incorrectAttributes.removeAll(specification.getBaseRelation().getAttributes());
 
 						if(!incorrectAttributes.isEmpty()) {
-							StringJoiner attributesJoiner = new StringJoiner(", ");
-							incorrectAttributes.forEach(a -> attributesJoiner.add(a));
-
-							analysis.appendSyntaxError("Syntax error: Functional Dependency \"" + f + "\" contains attributes \"" + attributesJoiner + "\" not found in the base relation");
+							analysis.appendSyntaxError(getAttributesNotInBaseRelationErrorMessage(incorrectAttributes, "Functional Dependency \"" + f + "\""));
 
 							hasIncorrectAttributes = true;
 						}
@@ -198,14 +193,11 @@ public class NFEvaluator implements Evaluator {
 				} else {
 					boolean hasIncorrectAttributes = false;
 
-					Set<String> incorrectAttributes = new HashSet(attributes);
+					Set<String> incorrectAttributes = new HashSet<>(attributes);
 					incorrectAttributes.removeAll(specification.getBaseRelation().getAttributes());
 
 					if(!incorrectAttributes.isEmpty()) {
-						StringJoiner attributesJoiner = new StringJoiner(", ");
-						incorrectAttributes.forEach(a -> attributesJoiner.add(a));
-
-						analysis.appendSyntaxError("Syntax error: Attribute closure contains attributes \"" + attributesJoiner + "\" not found in the base relation");
+						analysis.appendSyntaxError(getAttributesNotInBaseRelationErrorMessage(incorrectAttributes, "Attribute closure"));
 
 						hasIncorrectAttributes = true;
 					}
@@ -333,10 +325,7 @@ public class NFEvaluator implements Evaluator {
 						incorrectAttributes.removeAll(specification.getBaseRelation().getAttributes());
 
 						if(!incorrectAttributes.isEmpty()) {
-							StringJoiner attributesJoiner = new StringJoiner(", ");
-							incorrectAttributes.forEach(a -> attributesJoiner.add(a));
-
-							analysis.appendSyntaxError("Syntax error: Relation \"" + r.getID() + "\" contains attributes \"" + attributesJoiner + "\" not found in the base relation");
+							analysis.appendSyntaxError(getAttributesNotInBaseRelationErrorMessage(incorrectAttributes, "Relation \"" + r.getID() + "\""));
 
 							hasIncorrectSyntax = true;
 						}
@@ -697,5 +686,12 @@ public class NFEvaluator implements Evaluator {
 		}
 
 		return null;
+	}
+
+	private static String getAttributesNotInBaseRelationErrorMessage(Collection<String> incorrectAttributes, String culprit) {
+		StringJoiner attributesJoiner = new StringJoiner(", ");
+		incorrectAttributes.forEach(attributesJoiner::add);
+
+		return "Syntax error: " + culprit + " contains attributes \"" + attributesJoiner + "\" not found in the base relation";
 	}
 }

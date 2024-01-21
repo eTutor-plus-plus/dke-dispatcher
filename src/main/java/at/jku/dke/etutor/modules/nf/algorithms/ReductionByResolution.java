@@ -112,20 +112,20 @@ public class ReductionByResolution {
 	}
 
 	/**
-	 * Determines the functional dependencies of the subScheme of a base relation.
+	 * Determines the functional dependencies of the subscheme of a base relation.
 	 * @param rel The base relation
-	 * @param subScheme The subScheme
-	 * @return The functional dependencies of the subScheme
+	 * @param subscheme The subscheme
+	 * @return The functional dependencies of the subscheme
 	 */
-	public static Set<FunctionalDependency> execute(Relation rel, Collection<String> subScheme) {
+	public static Set<FunctionalDependency> execute(Relation rel, Collection<String> subscheme) {
 		List<String> attributes = new LinkedList<>();
 
 		/*
-		 * Add only those attributes of the base relation that are absent from the subScheme
+		 * Add only those attributes of the base relation that are absent from the subscheme
 		 * (Gerald Wimmer, 2024-01-01).
 		 */
 		for (String currAttribute : rel.getAttributes()) {
-			if (!subScheme.contains(currAttribute)) {
+			if (!subscheme.contains(currAttribute)) {
 				attributes.add(currAttribute);
 			}
 		}
@@ -138,7 +138,7 @@ public class ReductionByResolution {
 
 			/*
 			 * Remove all those functional dependencies which contain currAttribute on their left-hand side
-			 * (i.e., cannot be resolved) or right-hand side (because currAttribute is NOT present in the subScheme).
+			 * (i.e., cannot be resolved) or right-hand side (because currAttribute is NOT present in the subscheme).
 			 */
             result.removeIf(currFD -> (currFD.getLhsAttributes().contains(currAttribute)) || (currFD.getRhsAttributes().contains(currAttribute)));
 		}
