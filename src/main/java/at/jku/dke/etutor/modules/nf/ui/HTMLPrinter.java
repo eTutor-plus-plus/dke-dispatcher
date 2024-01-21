@@ -783,29 +783,6 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 
-    public static void createHTMLSiteForReport(NFReport report){
-		try (
-			OutputStream out = new FileOutputStream("D:/report.html");
-			PrintWriter writer = new PrintWriter(out)
-		) {
-			writer.println("<html>");
-
-			writer.println("<head>");
-			writer.println("	<link rel='stylesheet' type='text/css' href='etutor.css'>");
-			writer.println("	<link rel='stylesheet' type='text/css' href='report.css'>");
-			writer.println("</head>");
-			writer.println("<body>");
-				
-			//printReport(writer, report, 0, 0);
-			
-			writer.println("</body>");
-			writer.println("</html>");
-
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-	}
-	
 	public static void createHTMLSiteForDecompose(Collection<IdentifiedRelation> relations, Locale locale) {
 		try (
 			OutputStream out = new FileOutputStream("D:/DecomposeTest/decompose.html");
