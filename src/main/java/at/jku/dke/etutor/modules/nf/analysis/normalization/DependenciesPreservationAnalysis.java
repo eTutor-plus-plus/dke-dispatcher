@@ -4,6 +4,7 @@ import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 import at.jku.dke.etutor.modules.nf.model.FunctionalDependency;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class DependenciesPreservationAnalysis extends NFAnalysis {
 
@@ -22,7 +23,7 @@ public class DependenciesPreservationAnalysis extends NFAnalysis {
 		return this.lostDependencies.size();
 	}
 	
-	public HashSet<FunctionalDependency> getLostFunctionalDependencies(){
-		return (HashSet<FunctionalDependency>)this.lostDependencies.clone();
+	public Set<FunctionalDependency> getLostFunctionalDependencies(){
+		return new HashSet<>(this.lostDependencies);
 	}
 }

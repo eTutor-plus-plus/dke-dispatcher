@@ -5,12 +5,13 @@ import at.jku.dke.etutor.modules.nf.model.Key;
 import at.jku.dke.etutor.modules.nf.model.KeyComparator;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class KeysAnalysis extends NFAnalysis {
 
-	private final TreeSet<Key> missingKeys;
-	private final TreeSet<Key> additionalKeys;
+	private final Set<Key> missingKeys;
+	private final Set<Key> additionalKeys;
 
 	public KeysAnalysis() {
 		super();
@@ -23,8 +24,11 @@ public class KeysAnalysis extends NFAnalysis {
 		this.missingKeys.add(key);
 	}
 
-	public TreeSet<Key> getMissingKeys(){
-		return (TreeSet<Key>)this.missingKeys.clone();
+	public Set<Key> getMissingKeys() {
+		TreeSet<Key> ret = new TreeSet<>(new KeyComparator());
+		ret.addAll(this.missingKeys);
+
+		return ret;
 	}
 	
 	public void setMissingKeys(Collection<Key> missingKeys){
@@ -40,8 +44,11 @@ public class KeysAnalysis extends NFAnalysis {
 		this.additionalKeys.add(key);
 	}
 
-	public TreeSet<Key> getAdditionalKeys(){
-		return (TreeSet<Key>)this.additionalKeys.clone();
+	public Set<Key> getAdditionalKeys() {
+		TreeSet<Key> ret = new TreeSet<>(new KeyComparator());
+		ret.addAll(this.additionalKeys);
+
+		return ret;
 	}
 
 	public void setAdditionalKeys(Collection<Key> additionalKeys){

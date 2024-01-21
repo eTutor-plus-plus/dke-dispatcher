@@ -25,9 +25,7 @@ public class TupleComparator implements Comparator<int[]>, Serializable {
 			return -1;
 		}
 
-        maxComparisons = Math.min(tuple1.length, tuple2.length);
-	
-		for (int i=0; i<maxComparisons; i++){
+		for (int i = 0; i < tuple1.length; i++){
 			if (tuple1[i] > tuple2[i]){
 				return 1;
 			}

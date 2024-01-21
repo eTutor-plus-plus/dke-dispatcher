@@ -4,12 +4,13 @@ import at.jku.dke.etutor.modules.nf.analysis.NFAnalysis;
 
 import java.text.Collator;
 import java.util.Collection;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class AttributeClosureAnalysis extends NFAnalysis {
 
-	private final TreeSet<String> missingAttributes;
-	private final TreeSet<String> additionalAttributes;
+	private final Set<String> missingAttributes;
+	private final Set<String> additionalAttributes;
 
 	public AttributeClosureAnalysis() {
 		super();
@@ -26,8 +27,11 @@ public class AttributeClosureAnalysis extends NFAnalysis {
 		this.missingAttributes.addAll(attributes);
 	}
 
-	public TreeSet<String> getMissingAttributes(){
-		return (TreeSet<String>)this.missingAttributes.clone();
+	public Set<String> getMissingAttributes() {
+		TreeSet<String> ret = new TreeSet<>(Collator.getInstance());
+		ret.addAll(this.missingAttributes);
+
+		return ret;
 	}
 	
 	public void removeAllMissingAttributes(Collection<String> attributes){
@@ -43,8 +47,11 @@ public class AttributeClosureAnalysis extends NFAnalysis {
 		this.additionalAttributes.addAll(attributes);
 	}
 
-	public TreeSet<String> getAdditionalAttributes(){
-		return (TreeSet<String>)this.additionalAttributes.clone();
+	public Set<String> getAdditionalAttributes() {
+		TreeSet<String> ret = new TreeSet<>(Collator.getInstance());
+		ret.addAll(this.additionalAttributes);
+
+		return ret;
 	}
 	
 	public void removeAllAdditionalAttributes(Collection<String> attributes){

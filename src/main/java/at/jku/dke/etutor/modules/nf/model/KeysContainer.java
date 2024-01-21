@@ -37,7 +37,7 @@ public class KeysContainer implements Serializable {
 		return ret;
 	}
 	
-	public void setPartialKeys(TreeSet<Key> keys) {
+	public void setPartialKeys(Set<Key> keys) {
 		this.partialKeys = keys;	
 	}
 	

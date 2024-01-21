@@ -425,116 +425,106 @@ public class NFEvaluator implements Evaluator {
 
 		switch (type) {
 			case KEYS_DETERMINATION -> {
-				KeysDeterminationSpecification specification = null;
 				try {    // Source: https://mkyong.com/java/how-to-convert-java-object-to-from-json-jackson/
-					specification = new ObjectMapper().readValue(specificationString, KeysDeterminationSpecification.class);
+					KeysDeterminationSpecification specification = new ObjectMapper().readValue(specificationString, KeysDeterminationSpecification.class);
+
+					KeysAnalysis keysAnalysis = (KeysAnalysis) nfAnalysis;
+
+					actualPoints -= keysAnalysis.getMissingKeys().size() * specification.getPenaltyPerMissingKey();
+					actualPoints -= keysAnalysis.getAdditionalKeys().size() * specification.getPenaltyPerIncorrectKey();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
-				KeysAnalysis keysAnalysis = (KeysAnalysis) nfAnalysis;
-
-				actualPoints -= keysAnalysis.getMissingKeys().size() * specification.getPenaltyPerMissingKey();
-				actualPoints -= keysAnalysis.getAdditionalKeys().size() * specification.getPenaltyPerIncorrectKey();
-
 			}
 			case MINIMAL_COVER -> {
-				MinimalCoverSpecification specification = null;
 				try {
-					specification = new ObjectMapper().readValue(specificationString, MinimalCoverSpecification.class);
+					MinimalCoverSpecification specification = new ObjectMapper().readValue(specificationString, MinimalCoverSpecification.class);
+
+					MinimalCoverAnalysis minimalCoverAnalysis = (MinimalCoverAnalysis) nfAnalysis;
+
+					actualPoints -= minimalCoverAnalysis.getCanonicalRepresentationAnalysis().getNotCanonicalDependencies().size() * specification.getPenaltyPerNonCanonicalDependency();
+					actualPoints -= minimalCoverAnalysis.getTrivialDependenciesAnalysis().getTrivialDependencies().size() * specification.getPenaltyPerTrivialDependency();
+					actualPoints -= minimalCoverAnalysis.getExtraneousAttributesAnalysis().getExtraneousAttributes().values().stream()
+							.mapToInt(List::size)
+							.sum() * specification.getPenaltyPerExtraneousAttribute();
+					actualPoints -= minimalCoverAnalysis.getRedundantDependenciesAnalysis().getRedundantDependencies().size() * specification.getPenaltyPerRedundantDependency();
+					actualPoints -= minimalCoverAnalysis.getDependenciesCoverAnalysis().getMissingDependencies().size() * specification.getPenaltyPerMissingDependencyVsSolution();
+					actualPoints -= minimalCoverAnalysis.getDependenciesCoverAnalysis().getAdditionalDependencies().size() * specification.getPenaltyPerIncorrectDependencyVsSolution();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
-				MinimalCoverAnalysis minimalCoverAnalysis = (MinimalCoverAnalysis) nfAnalysis;
-
-				actualPoints -= minimalCoverAnalysis.getCanonicalRepresentationAnalysis().getNotCanonicalDependencies().size() * specification.getPenaltyPerNonCanonicalDependency();
-				actualPoints -= minimalCoverAnalysis.getTrivialDependenciesAnalysis().getTrivialDependencies().size() * specification.getPenaltyPerTrivialDependency();
-				actualPoints -= minimalCoverAnalysis.getExtraneousAttributesAnalysis().getExtraneousAttributes().values().stream()
-						.mapToInt(List::size)
-						.sum() * specification.getPenaltyPerExtraneousAttribute();
-				actualPoints -= minimalCoverAnalysis.getRedundantDependenciesAnalysis().getRedundantDependencies().size() * specification.getPenaltyPerRedundantDependency();
-				actualPoints -= minimalCoverAnalysis.getDependenciesCoverAnalysis().getMissingDependencies().size() * specification.getPenaltyPerMissingDependencyVsSolution();
-				actualPoints -= minimalCoverAnalysis.getDependenciesCoverAnalysis().getAdditionalDependencies().size() * specification.getPenaltyPerIncorrectDependencyVsSolution();
-
 			}
 			case ATTRIBUTE_CLOSURE -> {
-				AttributeClosureSpecification specification = null;
 				try {
-					specification = new ObjectMapper().readValue(specificationString, AttributeClosureSpecification.class);
+					AttributeClosureSpecification specification = new ObjectMapper().readValue(specificationString, AttributeClosureSpecification.class);
+
+					AttributeClosureAnalysis attributeClosureAnalysis = (AttributeClosureAnalysis) nfAnalysis;
+
+					actualPoints -= attributeClosureAnalysis.getMissingAttributes().size() * specification.getPenaltyPerMissingAttribute();
+					actualPoints -= attributeClosureAnalysis.getAdditionalAttributes().size() * specification.getPenaltyPerIncorrectAttribute();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
-				AttributeClosureAnalysis attributeClosureAnalysis = (AttributeClosureAnalysis) nfAnalysis;
-
-				actualPoints -= attributeClosureAnalysis.getMissingAttributes().size() * specification.getPenaltyPerMissingAttribute();
-				actualPoints -= attributeClosureAnalysis.getAdditionalAttributes().size() * specification.getPenaltyPerIncorrectAttribute();
-
 			}
 			case NORMALIZATION -> {
-				NormalizationSpecification specification = null;
 				try {
-					specification = new ObjectMapper().readValue(specificationString, NormalizationSpecification.class);
+					NormalizationSpecification specification = new ObjectMapper().readValue(specificationString, NormalizationSpecification.class);
+
+					NormalizationAnalysis normalizationAnalysis = (NormalizationAnalysis) nfAnalysis;
+
+					actualPoints -= normalizationAnalysis.getDecompositionAnalysis().getMissingAttributes().size() * specification.getPenaltyPerLostAttribute();
+					if (!normalizationAnalysis.getLossLessAnalysis().submissionSuitsSolution()) {
+						actualPoints -= specification.getPenaltyForLossyDecomposition();
+					}
+					actualPoints -= normalizationAnalysis.getCanonicalRepresentationAnalyses().values().stream()
+							.mapToInt(canonicalRepresentationAnalysis -> canonicalRepresentationAnalysis.getNotCanonicalDependencies().size())
+							.sum() * specification.getPenaltyPerNonCanonicalDependency();
+					actualPoints -= normalizationAnalysis.getTrivialDependenciesAnalyses().values().stream()
+							.mapToInt(trivialDependenciesAnalysis -> trivialDependenciesAnalysis.getTrivialDependencies().size())
+							.sum() * specification.getPenaltyPerTrivialDependency();
+					actualPoints -= normalizationAnalysis.getExtraneousAttributesAnalyses().values().stream()
+							.mapToInt(extraneousAttributeAnalysis -> extraneousAttributeAnalysis.getExtraneousAttributes().values().stream()
+									.mapToInt(List::size)
+									.sum())
+							.sum() * specification.getPenaltyPerExtraneousAttributeInDependencies();
+					actualPoints -= normalizationAnalysis.getRedundantDependenciesAnalyses().values().stream()
+							.mapToInt(redudantDependenciesAnalysis -> redudantDependenciesAnalysis.getRedundantDependencies().size())
+							.sum() * specification.getPenaltyPerRedundantDependency();
+					if (normalizationAnalysis.getDepPresAnalysis().lostFunctionalDependenciesCount() > normalizationAnalysis.getMaxLostDependencies()) { // So that if we're below the threshold, we don't accidentally ADD points (Gerald Wimmer, 2024-01-01).
+						actualPoints -= (normalizationAnalysis.getDepPresAnalysis().lostFunctionalDependenciesCount() - normalizationAnalysis.getMaxLostDependencies()) * specification.getPenaltyPerExcessiveLostDependency();
+					}
+					actualPoints -= normalizationAnalysis.getRbrAnalyses().values().stream()
+							.mapToInt(rbrAnalysis -> rbrAnalysis.getMissingFunctionalDependencies().size())
+							.sum() * specification.getPenaltyPerMissingNewDependency();
+					actualPoints -= normalizationAnalysis.getRbrAnalyses().values().stream()
+							.mapToInt(rbrAnalysis -> rbrAnalysis.getAdditionalFunctionalDependencies().size())
+							.sum() * specification.getPenaltyPerIncorrectNewDependency();
+					actualPoints -= normalizationAnalysis.getKeysAnalyses().values().stream()
+							.mapToInt(keysAnalysis -> keysAnalysis.getMissingKeys().size())
+							.sum() * specification.getPenaltyPerMissingKey();
+					actualPoints -= normalizationAnalysis.getKeysAnalyses().values().stream()
+							.mapToInt(keysAnalysis -> keysAnalysis.getAdditionalKeys().size())
+							.sum() * specification.getPenaltyPerIncorrectKey();
+					actualPoints -= normalizationAnalysis.getNormalformAnalyses().values().stream()
+							.filter(normalformAnalysis -> !normalformAnalysis.submissionSuitsSolution())
+							.count() * specification.getPenaltyPerIncorrectNFRelation();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
-				NormalizationAnalysis normalizationAnalysis = (NormalizationAnalysis) nfAnalysis;
-
-				actualPoints -= normalizationAnalysis.getDecompositionAnalysis().getMissingAttributes().size() * specification.getPenaltyPerLostAttribute();
-				if (!normalizationAnalysis.getLossLessAnalysis().submissionSuitsSolution()) {
-					actualPoints -= specification.getPenaltyForLossyDecomposition();
-				}
-				actualPoints -= normalizationAnalysis.getCanonicalRepresentationAnalyses().values().stream()
-						.mapToInt(canonicalRepresentationAnalysis -> canonicalRepresentationAnalysis.getNotCanonicalDependencies().size())
-						.sum() * specification.getPenaltyPerNonCanonicalDependency();
-				actualPoints -= normalizationAnalysis.getTrivialDependenciesAnalyses().values().stream()
-						.mapToInt(trivialDependenciesAnalysis -> trivialDependenciesAnalysis.getTrivialDependencies().size())
-						.sum() * specification.getPenaltyPerTrivialDependency();
-				actualPoints -= normalizationAnalysis.getExtraneousAttributesAnalyses().values().stream()
-						.mapToInt(extraneousAttributeAnalysis -> extraneousAttributeAnalysis.getExtraneousAttributes().values().stream()
-								.mapToInt(List::size)
-								.sum())
-						.sum() * specification.getPenaltyPerExtraneousAttributeInDependencies();
-				actualPoints -= normalizationAnalysis.getRedundantDependenciesAnalyses().values().stream()
-						.mapToInt(redudantDependenciesAnalysis -> redudantDependenciesAnalysis.getRedundantDependencies().size())
-						.sum() * specification.getPenaltyPerRedundantDependency();
-				if (normalizationAnalysis.getDepPresAnalysis().lostFunctionalDependenciesCount() > normalizationAnalysis.getMaxLostDependencies()) { // So that if we're below the threshold, we don't accidentally ADD points (Gerald Wimmer, 2024-01-01).
-					actualPoints -= (normalizationAnalysis.getDepPresAnalysis().lostFunctionalDependenciesCount() - normalizationAnalysis.getMaxLostDependencies()) * specification.getPenaltyPerExcessiveLostDependency();
-				}
-				actualPoints -= normalizationAnalysis.getRbrAnalyses().values().stream()
-						.mapToInt(rbrAnalysis -> rbrAnalysis.getMissingFunctionalDependencies().size())
-						.sum() * specification.getPenaltyPerMissingNewDependency();
-				actualPoints -= normalizationAnalysis.getRbrAnalyses().values().stream()
-						.mapToInt(rbrAnalysis -> rbrAnalysis.getAdditionalFunctionalDependencies().size())
-						.sum() * specification.getPenaltyPerIncorrectNewDependency();
-				actualPoints -= normalizationAnalysis.getKeysAnalyses().values().stream()
-						.mapToInt(keysAnalysis -> keysAnalysis.getMissingKeys().size())
-						.sum() * specification.getPenaltyPerMissingKey();
-				actualPoints -= normalizationAnalysis.getKeysAnalyses().values().stream()
-						.mapToInt(keysAnalysis -> keysAnalysis.getAdditionalKeys().size())
-						.sum() * specification.getPenaltyPerIncorrectKey();
-				actualPoints -= normalizationAnalysis.getNormalformAnalyses().values().stream()
-						.filter(normalformAnalysis -> !normalformAnalysis.submissionSuitsSolution())
-						.count() * specification.getPenaltyPerIncorrectNFRelation();
-
 			}
 			case NORMALFORM_DETERMINATION -> {
-				NormalformDeterminationSpecification specification = null;
 				try {
-					specification = new ObjectMapper().readValue(specificationString, NormalformDeterminationSpecification.class);
+					NormalformDeterminationSpecification specification = new ObjectMapper().readValue(specificationString, NormalformDeterminationSpecification.class);
+
+					NormalformDeterminationAnalysis normalformDeterminationAnalysis = (NormalformDeterminationAnalysis) nfAnalysis;
+
+					if (!normalformDeterminationAnalysis.getOverallLevelIsCorrect()) {
+						actualPoints -= specification.getPenaltyForIncorrectNFOverall();
+					}
+					actualPoints -= normalformDeterminationAnalysis.getWrongLeveledDependencies().size() * specification.getPenaltyPerIncorrectNFDependency();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
-				NormalformDeterminationAnalysis normalformDeterminationAnalysis = (NormalformDeterminationAnalysis) nfAnalysis;
-
-				if (!normalformDeterminationAnalysis.getOverallLevelIsCorrect()) {
-					actualPoints -= specification.getPenaltyForIncorrectNFOverall();
-				}
-				actualPoints -= normalformDeterminationAnalysis.getWrongLeveledDependencies().size() * specification.getPenaltyPerIncorrectNFDependency();
-
 			}
 			default ->  {
 				NFHelper.getLogger().log(Level.SEVERE, "RDBD internal type '" + internalType + "' is not supported.");

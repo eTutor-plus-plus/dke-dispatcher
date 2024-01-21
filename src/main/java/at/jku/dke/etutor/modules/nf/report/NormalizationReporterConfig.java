@@ -5,11 +5,12 @@ import at.jku.dke.etutor.modules.nf.model.IdentifiedRelation;
 import at.jku.dke.etutor.modules.nf.model.IdentifiedRelationComparator;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class NormalizationReporterConfig extends ReporterConfig {
 
-	private final TreeSet<IdentifiedRelation> decomposedRelations;
+	private final Set<IdentifiedRelation> decomposedRelations;
 	private NormalformLevel desiredNormalformLevel;
 
 	public NormalizationReporterConfig() {
@@ -26,8 +27,11 @@ public class NormalizationReporterConfig extends ReporterConfig {
 		return this.desiredNormalformLevel;
 	}
 
-	public TreeSet<IdentifiedRelation> getDecomposedRelations() {
-		return (TreeSet<IdentifiedRelation>)this.decomposedRelations.clone();
+	public Set<IdentifiedRelation> getDecomposedRelations() {
+		TreeSet<IdentifiedRelation> ret = new TreeSet<>(new IdentifiedRelationComparator());
+		ret.addAll(this.decomposedRelations);
+
+		return ret;
 	}
 
 	public void setDecomposedRelations(Collection<IdentifiedRelation> decomposedRelations) {
