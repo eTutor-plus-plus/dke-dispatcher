@@ -3,9 +3,9 @@ package at.jku.dke.etutor.modules.nf.exercises;
 import at.jku.dke.etutor.modules.nf.NFHelper;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,25 +34,17 @@ public class NFExercisesManager {
 		String specification = null;
 
 		try (
-                Connection conn = NFHelper.getPooledConnection();
-                Statement stmt = conn.createStatement();
-                ResultSet rset = stmt.executeQuery("SELECT specification FROM exercises WHERE id = " + exerciseID)
+				Connection conn = NFHelper.getPooledConnection();
+				PreparedStatement stmt = conn.prepareStatement("SELECT specification FROM exercises WHERE id = ?")
         ) {
-			// conn.setAutoCommit(false);
+			stmt.setInt(1, exerciseID);
+
+			ResultSet rset = stmt.executeQuery();
 
 			if (rset.next()) {
                 specification = rset.getString("specification");
 			}
-
-			// conn.commit(); // Note: Why would we commit a SELECT query that changed nothing? (Gerald Wimmer, 2023-12-01)
 		} catch (SQLException e) {
-			/*if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException ex){
-					NFHelper.getLogger().log(Level.SEVERE, "", ex);
-				}
-			}*/ // Note: Again, why would we have to rollback() a SELECT query? (Gerald Wimmer, 2023-12-01)
 			NFHelper.getLogger().log(Level.SEVERE, "", e);
 			throw e;
 		}
@@ -70,10 +62,13 @@ public class NFExercisesManager {
 		int type = -1;
 		
 		try (
-                Connection conn = NFHelper.getPooledConnection();
-                Statement stmt = conn.createStatement();
-                ResultSet rset = stmt.executeQuery("SELECT rdbd_type FROM exercises WHERE id = " + exerciseID)
+				Connection conn = NFHelper.getPooledConnection();
+				PreparedStatement stmt = conn.prepareStatement("SELECT rdbd_type FROM exercises WHERE id = ?")
 		) {
+			stmt.setInt(1, exerciseID);
+
+			ResultSet rset = stmt.executeQuery();
+
 			if (rset.next()) {
 				type = rset.getInt("rdbd_type");
 			}

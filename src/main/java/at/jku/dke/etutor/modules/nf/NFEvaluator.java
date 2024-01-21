@@ -358,7 +358,7 @@ public class NFEvaluator implements Evaluator {
 
 			}
 			case NORMALFORM_DETERMINATION -> {
-				NormalformDeterminationSpecification specification = null;
+				NormalformDeterminationSpecification specification;
 				try {
 					specification = new ObjectMapper().readValue(specificationString, NormalformDeterminationSpecification.class);
 				} catch (Exception e) {
