@@ -763,7 +763,7 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 
-	public static String printAssignmentForNormalformDetermination(Relation spec, int indent, Locale locale) {
+	public static String printAssignmentForNormalFormDetermination(Relation spec, int indent, Locale locale) {
 		String offset = getOffset(indent);
 
 		StringBuilder out = new StringBuilder();

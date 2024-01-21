@@ -430,7 +430,7 @@ public class NFHelper {
 
 	public static String getAssignmentText(NFSpecification specTmp, int indent, Locale locale, NFConstants.Type rdbdType) {
 		return switch (rdbdType) {
-			case NORMALFORM_DETERMINATION -> HTMLPrinter.printAssignmentForNormalformDetermination(specTmp.getBaseRelation(), indent, locale);
+			case NORMALFORM_DETERMINATION -> HTMLPrinter.printAssignmentForNormalFormDetermination(specTmp.getBaseRelation(), indent, locale);
 			case KEYS_DETERMINATION -> HTMLPrinter.printAssignmentForKeysDetermination(specTmp.getBaseRelation(), indent, locale);
 			case MINIMAL_COVER -> HTMLPrinter.printAssignmentForMinimalCover(specTmp.getBaseRelation(), indent, locale);
 			case ATTRIBUTE_CLOSURE -> HTMLPrinter.printAssignmentForAttributeClosure((AttributeClosureSpecification)specTmp, indent, locale);
