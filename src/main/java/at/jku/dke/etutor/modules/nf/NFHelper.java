@@ -437,7 +437,6 @@ public class NFHelper {
 			case RBR -> HTMLPrinter.printAssignmentForRBR((RBRSpecification)specTmp, indent, locale);
 			case NORMALIZATION -> HTMLPrinter.printAssignmentForNormalization((NormalizationSpecification)specTmp, indent, locale);
 			case DECOMPOSE -> HTMLPrinter.printAssignmentForDecompose((DecomposeSpecification)specTmp, indent, locale);
-			default -> throw new RuntimeException("Unexpected RDBD type: " + rdbdType);
-		};
+        };
 	}
 }

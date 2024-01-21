@@ -224,19 +224,6 @@ public class Relation implements Serializable, Cloneable, HasSemanticEquality {
 		return ret;
 	}
 
-	@JsonIgnore
-	public String[] getAttributesArray() {
-		String[] attributesArray = new String[this.attributes.size()];
-
-		int pos = 0;
-        for (String attribute : this.attributes) {
-            attributesArray[pos] = attribute;
-            pos++;
-        }
-		
-		return attributesArray;
-	}
-	
 	public TreeSet<Key> getMinimalKeys(){
 		TreeSet<Key> ret = new TreeSet<>(new KeyComparator());
 		ret.addAll(this.minimalKeys);

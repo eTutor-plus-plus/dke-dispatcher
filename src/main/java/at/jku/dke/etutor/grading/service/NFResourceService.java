@@ -86,7 +86,7 @@ public class NFResourceService {
         } catch (SQLException s) {
             if(s.getMessage().contains("type_and_spec_combo_unique")) {
                 int existingId = getIdOfExistingCombo(numericSubtypeId, specificationJSON.toString());
-                throw new DatabaseException("Tried to save exercise " + exerciseId + " as duplicate of exercise " + existingId + ".");
+                throw new DatabaseException("Tried to save new exercise " + exerciseId + " as duplicate of existing exercise " + existingId + ".");
             }
             throw new DatabaseException(s);
         }
@@ -131,7 +131,7 @@ public class NFResourceService {
         } catch (SQLException s) {
             if(s.getMessage().contains("type_and_spec_combo_unique")) {
                 int existingId = getIdOfExistingCombo(numericSubtypeId, specificationJSON.toString());
-                throw new DatabaseException("Tried to save exercise " + exerciseId + " as duplicate of exercise " + existingId + ".");
+                throw new DatabaseException("Tried to save modified exercise " + exerciseId + " as duplicate of existing exercise " + existingId + ".");
             }
             throw new DatabaseException(s);
         }

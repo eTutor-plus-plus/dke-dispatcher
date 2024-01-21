@@ -107,10 +107,6 @@ public class ETutorNFController {
             String language = "en";
             String ret = resourceService.generateAssignmentText(id, mapLanguageToLocale(language));
 
-            if(ret == null) {
-                throw new ApiException(500, "IO Error in assignment text generator", null);
-            }
-
             return ResponseEntity.ok(ret);
         } catch (DatabaseException e) {
             throw new ApiException(500, e.toString(), null);

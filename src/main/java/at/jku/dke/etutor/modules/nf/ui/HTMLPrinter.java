@@ -62,7 +62,7 @@ public class HTMLPrinter {
 	public static String printDecomposeStep(IdentifiedRelation relation, boolean showSplitButton, boolean showRemoveButton, boolean editable, Locale locale) {
 		StringJoiner attributesJoiner = new StringJoiner(" ");
 
-		for (String s : relation.getAttributesArray()) {
+		for (String s : relation.getAttributes()) {
 			attributesJoiner.add(s);
 		}
 
@@ -509,7 +509,7 @@ public class HTMLPrinter {
 			return "";
 
 		}
-		
+
 		NormalformLevel level = spec.getTargetLevel();
 
 		String offset = getOffset(indent);
@@ -585,7 +585,7 @@ public class HTMLPrinter {
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
-			out.append(offset).append("	Finden Sie eine <b>verlustfreie Zerlegung</b> der Relation ").append(LINE_SEP);
+			out.append(offset).append("	Finden Sie eine <strong>verlustfreie Zerlegung</strong> der Relation ").append(LINE_SEP);
 			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> mit den Funktionalen Abhängigkeiten <strong>F</strong> in ").append(LINE_SEP);
 			out.append(offset).append("	<strong>");
 			if (spec.getTargetLevel().equals(NormalformLevel.FIRST)){
@@ -600,11 +600,11 @@ public class HTMLPrinter {
 			out.append(offset).append("	Normalform</strong>. Geben Sie für jede Teilrelation die Schlüssel ").append(LINE_SEP);
 			out.append(offset).append("	und die von <strong>F</strong> ableitbaren Funktionalen Abhängigkeiten an.  ").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
-				out.append(offset).append("	Sie dürfen bei der Zerlegung <b>keine</b> Funktionale Abhängigkeit verlieren!").append(LINE_SEP);
+				out.append(offset).append("	Sie dürfen bei der Zerlegung <strong>keine</strong> Funktionale Abhängigkeit verlieren!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){
-				out.append(offset).append("	Die Zerlegung muss <b>nicht abhängigkeitstreu</b> sein. ").append(LINE_SEP);
+				out.append(offset).append("	Die Zerlegung muss <strong>nicht abhängigkeitstreu</strong> sein. ").append(LINE_SEP);
 			} else {
-				out.append(offset).append("	Sie dürfen bei der Zerlegung maximal <b>").append(spec.getMaxLostDependencies()).append("</b> Funktionale ").append(LINE_SEP);
+				out.append(offset).append("	Sie dürfen bei der Zerlegung maximal <strong>").append(spec.getMaxLostDependencies()).append("</strong> Funktionale ").append(LINE_SEP);
 				if (spec.getMaxLostDependencies() == 1){
 					out.append(offset).append("	Abhängigkeit ").append(LINE_SEP);
 				} else {
@@ -613,7 +613,7 @@ public class HTMLPrinter {
 				out.append(offset).append("	verlieren!").append(LINE_SEP);
 			}
 		} else {
-			out.append(offset).append("	Find a <b>lossless decomposition</b> of relation ").append(LINE_SEP);
+			out.append(offset).append("	Find a <strong>lossless decomposition</strong> of relation ").append(LINE_SEP);
 			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> with functional dependencies <strong>F</strong>. ").append(LINE_SEP);
 			out.append(offset).append("	The decomposition must be in <strong>");
 			if (spec.getTargetLevel().equals(NormalformLevel.FIRST)){
@@ -627,11 +627,11 @@ public class HTMLPrinter {
 			}
 			out.append(offset).append("	normal form</strong>. Specify keys and functional dependencies derived from <strong>F</strong> for each relation fragment. ").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
-				out.append(offset).append("	You may not loose <b>any </b> functional dependency!").append(LINE_SEP);
+				out.append(offset).append("	You may not loose <strong>any </strong> functional dependency!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){
-				out.append(offset).append("	The decomposition does not have to be <b>dependency preserving</b>. ").append(LINE_SEP);
+				out.append(offset).append("	The decomposition does not have to be <strong>dependency preserving</strong>. ").append(LINE_SEP);
 			} else {
-				out.append(offset).append("	At most <b>").append(spec.getMaxLostDependencies()).append("</b> ").append(LINE_SEP);
+				out.append(offset).append("	At most <strong>").append(spec.getMaxLostDependencies()).append("</strong> ").append(LINE_SEP);
 				if (spec.getMaxLostDependencies() == 1){
 					out.append(offset).append("	functional dependency ").append(LINE_SEP);
 				} else {
@@ -654,7 +654,7 @@ public class HTMLPrinter {
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
-			out.append(offset).append("	Wenden Sie den Decompose Algorithmus an, um eine <b>verlustfreie Zerlegung</b> der Relation ").append(LINE_SEP);
+			out.append(offset).append("	Wenden Sie den Decompose Algorithmus an, um eine <strong>verlustfreie Zerlegung</strong> der Relation ").append(LINE_SEP);
 			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> mit den Funktionalen Abhängigkeiten <strong>F</strong> in ").append(LINE_SEP);
 			out.append(offset).append("	<strong>");
 			if (spec.getTargetLevel().equals(NormalformLevel.FIRST)){
@@ -669,11 +669,11 @@ public class HTMLPrinter {
 			out.append(offset).append("	Normalform</strong> zu finden. Geben Sie für jede Teilrelation die Schlüssel ").append(LINE_SEP);
 			out.append(offset).append("	und die von <strong>F</strong> ableitbaren Funktionalen Abhängigkeiten an.  ").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
-				out.append(offset).append("	Sie dürfen bei der Zerlegung <b>keine</b> Funktionale Abhängigkeit verlieren!").append(LINE_SEP);
+				out.append(offset).append("	Sie dürfen bei der Zerlegung <strong>keine</strong> Funktionale Abhängigkeit verlieren!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){
-				out.append(offset).append("	Die Zerlegung muss <b>nicht abhängigkeitstreu</b> sein. ").append(LINE_SEP);
+				out.append(offset).append("	Die Zerlegung muss <strong>nicht abhängigkeitstreu</strong> sein. ").append(LINE_SEP);
 			} else {
-				out.append(offset).append("	Sie dürfen bei der Zerlegung maximal <b>").append(spec.getMaxLostDependencies()).append("</b> Funktionale ").append(LINE_SEP);
+				out.append(offset).append("	Sie dürfen bei der Zerlegung maximal <strong>").append(spec.getMaxLostDependencies()).append("</strong> Funktionale ").append(LINE_SEP);
 				if (spec.getMaxLostDependencies() == 1){
 					out.append(offset).append("	Abhängigkeit ").append(LINE_SEP);
 				} else {
@@ -694,11 +694,11 @@ public class HTMLPrinter {
 			}
 			out.append(offset).append("	normal form</strong> by means of the DECOMPOSE algorithm. Specify for each sub-scheme attributes, keys, and functional dependencies. ").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
-				out.append(offset).append("	You may not loose <b>any </b> functional dependency!").append(LINE_SEP);
+				out.append(offset).append("	You may not loose <strong>any </strong> functional dependency!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){
 				out.append(offset).append("	Note that functional dependencies may be lost during decomposition. ").append(LINE_SEP);
 			} else {
-				out.append(offset).append("	At most <b>").append(spec.getMaxLostDependencies()).append("</b> ").append(LINE_SEP);
+				out.append(offset).append("	At most <strong>").append(spec.getMaxLostDependencies()).append("</strong> ").append(LINE_SEP);
 				if (spec.getMaxLostDependencies() == 1){
 					out.append(offset).append("	functional dependency ").append(LINE_SEP);
 				} else {
@@ -741,11 +741,11 @@ public class HTMLPrinter {
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
-			out.append(offset).append("	Geben Sie für die Menge <b>F</b> an Funktionalen Abhängigkeiten eine minimale  ").append(LINE_SEP);
+			out.append(offset).append("	Geben Sie für die Menge <strong>F</strong> an Funktionalen Abhängigkeiten eine minimale  ").append(LINE_SEP);
 			out.append(offset).append("	Überdeckung an. Streichen Sie alle redundanten Funktionalen Abhängigkeiten ").append(LINE_SEP);
 			out.append(offset).append("	und alle redundanten Attribute in den linken Seiten der Funktionalen Abhängigkeiten. ").append(LINE_SEP);
 		} else {
-			out.append(offset).append("	Indicate a minimal cover for <b>F</b>. Eliminate all redundant functional ").append(LINE_SEP);
+			out.append(offset).append("	Indicate a minimal cover for <strong>F</strong>. Eliminate all redundant functional ").append(LINE_SEP);
 			out.append(offset).append("	dependencies and redundant attributes at left hand sides of functional dependencies. ").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
@@ -827,8 +827,8 @@ public class HTMLPrinter {
 		StringBuilder out = new StringBuilder();
 
 		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>").append(setName).append("</strong></td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(generateSetHTML(attributes, ",&nbsp;")).append("}</td>").append(LINE_SEP);
+		out.append(offset).append("		<td><strong>").append(setName).append("</strong> = </td>").append(LINE_SEP);
+		out.append(offset).append("		<td>").append(generateSetHTML(attributes, ",&nbsp;")).append("</td>").append(LINE_SEP);
 		out.append(offset).append("	</tr>").append(LINE_SEP);
 
 		return out.toString();
@@ -839,7 +839,7 @@ public class HTMLPrinter {
 
 		out.append(offset).append("	<tr>").append(LINE_SEP);
 		out.append(offset).append("		<td><strong>F</strong> = </td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(generateSetHTML(dependencies, "; ")).append("}</td>").append(LINE_SEP);
+		out.append(offset).append("		<td>").append(generateSetHTML(dependencies, "; ")).append("</td>").append(LINE_SEP);
 		out.append(offset).append("	</tr>").append(LINE_SEP);
 
 		return out.toString();
