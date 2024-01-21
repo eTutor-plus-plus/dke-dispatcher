@@ -539,12 +539,12 @@ public class HTMLPrinter {
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
-			out.append(offset).append("	Berechnen Sie die funktionalen Abhängigkeiten <strong>F<sub><code>S</code></sub></strong> ").append(LINE_SEP);
+			out.append(offset).append("	Berechnen Sie die funktionalen Abhängigkeiten ").append(LINE_SEP);
 			out.append(offset).append("	für das Subschema <strong>S</strong> der Relation <strong>").append(spec.getBaseRelation().getName()).append("</strong> ").append(LINE_SEP);
-			out.append(offset).append("	mit den Funktionalen Abhängigkeiten <strong>F</strong>.").append(LINE_SEP);
+			out.append(offset).append("	mit den Funktionalen Abhängigkeiten gekennzeichnet durch das Präfix <strong>-></strong>.").append(LINE_SEP);
 		} else {
-			out.append(offset).append("	Let <strong>").append(spec.getBaseRelation().getName()).append("</strong> be a relation scheme with functional dependencies <strong>F</strong>. ").append(LINE_SEP);
-			out.append(offset).append("	Determine the set of functional dependencies <strong>F<sub><code>S</code></sub></strong> ").append(LINE_SEP);
+			out.append(offset).append("	Let <strong>").append(spec.getBaseRelation().getName()).append("</strong> be a relation scheme with functional dependencies prefixed with <strong>-></strong>. ").append(LINE_SEP);
+			out.append(offset).append("	Determine the set of functional dependencies ").append(LINE_SEP);
 			out.append(offset).append("	for the sub-scheme <strong>S</strong>.").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
@@ -563,12 +563,12 @@ public class HTMLPrinter {
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Berechnen Sie die Hülle der Attribut-Kombination <strong>A</strong> ").append(LINE_SEP);
-			out.append(offset).append("	bezüglich der Menge an Funktionalen Abhängigkeiten <strong>F</strong> ").append(LINE_SEP);
+			out.append(offset).append("	bezüglich der Menge an Funktionalen Abhängigkeiten gekennzeichnet durch das Präfix <strong>-></strong> ").append(LINE_SEP);
 			out.append(offset).append("	der Relation <strong>").append(spec.getBaseRelation().getName()).append("</strong>.").append(LINE_SEP);
 		} else {
 			out.append(offset).append("	Determine the attribute closure of the set of attributes <strong>A</strong> ").append(LINE_SEP);
 			out.append(offset).append("	with respect to relation scheme <strong>").append(spec.getBaseRelation().getName()).append("</strong> and the set of ").append(LINE_SEP);
-			out.append(offset).append("	functional dependencies <strong>F</strong>.").append(LINE_SEP);
+			out.append(offset).append("	functional dependencies prefixed with <strong>-></strong>.").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
 		out.append(offset).append("<table rules=\"none\" frame=\"void\">").append(LINE_SEP);
@@ -586,7 +586,7 @@ public class HTMLPrinter {
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Finden Sie eine <strong>verlustfreie Zerlegung</strong> der Relation ").append(LINE_SEP);
-			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> mit den Funktionalen Abhängigkeiten <strong>F</strong> in ").append(LINE_SEP);
+			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> mit den Funktionalen Abhängigkeiten gekennzeichnet durch das Präfix <strong>-></strong> in ").append(LINE_SEP);
 			out.append(offset).append("	<strong>");
 			if (spec.getTargetLevel().equals(NormalformLevel.FIRST)){
 				out.append(offset).append("erster ");
@@ -597,8 +597,8 @@ public class HTMLPrinter {
 			} else if (spec.getTargetLevel().equals(NormalformLevel.BOYCE_CODD)){
 				out.append(offset).append("Boyce-Codd ");
 			}
-			out.append(offset).append("	Normalform</strong>. Geben Sie für jede Teilrelation die Schlüssel ").append(LINE_SEP);
-			out.append(offset).append("	und die von <strong>F</strong> ableitbaren Funktionalen Abhängigkeiten an.  ").append(LINE_SEP);
+			out.append(offset).append("	Normalform</strong>. Geben Sie für jede Teilrelation in dieser Reihenfolge an: Einen einzigartigen Relationsnamen (Suffix <strong>:</strong>), die Attribute in runden Klammern (kein Präfix vor der öffnenden Klammer), die  ").append(LINE_SEP);
+			out.append(offset).append("	ableitbaren Funktionalen Abhängigkeiten in runden Klammern (Präfix vor der öffnenden Klammer <strong>-></strong>) und die Schlüssel in runden Klammern (Präfix vor der öffnenden Klammer <strong>#</strong>). ").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
 				out.append(offset).append("	Sie dürfen bei der Zerlegung <strong>keine</strong> Funktionale Abhängigkeit verlieren!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){
@@ -614,7 +614,7 @@ public class HTMLPrinter {
 			}
 		} else {
 			out.append(offset).append("	Find a <strong>lossless decomposition</strong> of relation ").append(LINE_SEP);
-			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> with functional dependencies <strong>F</strong>. ").append(LINE_SEP);
+			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> with functional dependencies prefixed with <strong>-></strong>. ").append(LINE_SEP);
 			out.append(offset).append("	The decomposition must be in <strong>");
 			if (spec.getTargetLevel().equals(NormalformLevel.FIRST)){
 				out.append(offset).append("first ");
@@ -625,7 +625,7 @@ public class HTMLPrinter {
 			} else if (spec.getTargetLevel().equals(NormalformLevel.BOYCE_CODD)){
 				out.append(offset).append("Boyce-Codd ");
 			}
-			out.append(offset).append("	normal form</strong>. Specify keys and functional dependencies derived from <strong>F</strong> for each relation fragment. ").append(LINE_SEP);
+			out.append(offset).append("	normal form</strong>. For each relation fragment, specify (in this order) a unique relation name (suffixed with <strong>:</strong>), its attributes in parentheses (no prefix before the opening parenthesis), its functional dependencies in parentheses (opening parenthesis prefixed with ->) and its keys in parentheses (opening parenthesis prefixed with #). ").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
 				out.append(offset).append("	You may not lose <strong>any </strong> functional dependency!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){
@@ -655,7 +655,7 @@ public class HTMLPrinter {
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Wenden Sie den Decompose Algorithmus an, um eine <strong>verlustfreie Zerlegung</strong> der Relation ").append(LINE_SEP);
-			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> mit den Funktionalen Abhängigkeiten <strong>F</strong> in ").append(LINE_SEP);
+			out.append(offset).append("	<strong>").append(spec.getBaseRelation().getName()).append("</strong> mit den Funktionalen Abhängigkeiten gekennzeichnet durch das Präfix <strong>-></strong> in ").append(LINE_SEP);
 			out.append(offset).append("	<strong>");
 			if (spec.getTargetLevel().equals(NormalformLevel.FIRST)){
 				out.append(offset).append("erster ");
@@ -666,8 +666,8 @@ public class HTMLPrinter {
 			} else if (spec.getTargetLevel().equals(NormalformLevel.BOYCE_CODD)){
 				out.append(offset).append("Boyce-Codd ");
 			}
-			out.append(offset).append("	Normalform</strong> zu finden. Geben Sie für jede Teilrelation die Schlüssel ").append(LINE_SEP);
-			out.append(offset).append("	und die von <strong>F</strong> ableitbaren Funktionalen Abhängigkeiten an.  ").append(LINE_SEP);
+			out.append(offset).append("	Normalform</strong> zu finden. Geben Sie für jede Teilrelation die Schlüssel (Präfix <strong>#</strong>) ").append(LINE_SEP);
+			out.append(offset).append("	und die ableitbaren Funktionalen Abhängigkeiten (Präfix <strong>-></strong>) an. ").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
 				out.append(offset).append("	Sie dürfen bei der Zerlegung <strong>keine</strong> Funktionale Abhängigkeit verlieren!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){
@@ -682,7 +682,7 @@ public class HTMLPrinter {
 				out.append(offset).append("	verlieren!").append(LINE_SEP);
 			}
 		} else {
-			out.append(offset).append("	Let <strong>").append(spec.getBaseRelation().getName()).append("</strong> be a relation scheme with a set of functional dependencies <strong>F</strong>. Determine a decomposition of <strong>").append(spec.getBaseRelation().getName()).append(" into ").append(LINE_SEP);
+			out.append(offset).append("	Let <strong>").append(spec.getBaseRelation().getName()).append("</strong> be a relation scheme with a set of functional dependencies prefixed with <strong>-></strong>. Determine a decomposition of <strong>").append(spec.getBaseRelation().getName()).append(" into ").append(LINE_SEP);
 			if (spec.getTargetLevel().equals(NormalformLevel.FIRST)){
 				out.append(offset).append("first ");
 			} else if (spec.getTargetLevel().equals(NormalformLevel.SECOND)){
@@ -722,10 +722,10 @@ public class HTMLPrinter {
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Berechnen Sie alle Schlüssel der Relation <strong>").append(spec.getName()).append("</strong> auf ").append(LINE_SEP);
-			out.append(offset).append("	Basis der Funktionalen Abhängigkeiten <strong>F</strong>. ").append(LINE_SEP);
+			out.append(offset).append("	Basis der Funktionalen Abhängigkeiten gekennzeichnet durch das Präfix <strong>-></strong>. ").append(LINE_SEP);
 		} else {
 			out.append(offset).append("	Let <strong>").append(spec.getName()).append("</strong> be a relation scheme with a set of functional ").append(LINE_SEP);
-			out.append(offset).append("	dependencies <strong>F</strong>. Determine all keys of <strong>").append(spec.getName()).append("</strong>. ").append(LINE_SEP);
+			out.append(offset).append("	dependencies prefixed with <strong>-></strong>. Determine all keys of <strong>").append(spec.getName()).append("</strong>. ").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
 		out.append(offset).append("<table rules=\"none\" frame=\"void\">").append(LINE_SEP);
@@ -741,11 +741,11 @@ public class HTMLPrinter {
 		StringBuilder out = new StringBuilder();
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
-			out.append(offset).append("	Geben Sie für die Menge <strong>F</strong> an Funktionalen Abhängigkeiten eine minimale  ").append(LINE_SEP);
+			out.append(offset).append("	Geben Sie für die Menge an Funktionalen Abhängigkeiten gekennzeichnet durch das Präfix <strong>-></strong> eine minimale  ").append(LINE_SEP);
 			out.append(offset).append("	Überdeckung an. Streichen Sie alle redundanten Funktionalen Abhängigkeiten ").append(LINE_SEP);
 			out.append(offset).append("	und alle redundanten Attribute in den linken Seiten der Funktionalen Abhängigkeiten. ").append(LINE_SEP);
 		} else {
-			out.append(offset).append("	Determine a minimal cover for <strong>F</strong>. Eliminate all redundant functional ").append(LINE_SEP);
+			out.append(offset).append("	Determine a minimal cover for the set of functional dependencies prefixed with <strong>-></strong>. Eliminate all redundant functional ").append(LINE_SEP);
 			out.append(offset).append("	dependencies and redundant attributes at left hand sides of functional dependencies. ").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
@@ -763,14 +763,14 @@ public class HTMLPrinter {
 		out.append(offset).append("<p>").append(LINE_SEP);
 		if (locale.equals(Locale.GERMAN) || locale.equals(Locale.GERMANY)) {
 			out.append(offset).append("	Geben Sie an, in welcher Normalform sich die Relation <strong>").append(spec.getName()).append("</strong> ").append(LINE_SEP);
-			out.append(offset).append("	mit den Funktionalen Abhängigkeiten <strong>F</strong> befindet. ").append(LINE_SEP);
-			out.append(offset).append("	Geben Sie weiters für jede Funktionale Abhängigkeit <strong>F<sub>i</sub></strong> ").append(LINE_SEP);
-			out.append(offset).append("	an, welche Normalform durch <strong>F<sub>i</sub></strong> verletzt wird. ").append(LINE_SEP);
+			out.append(offset).append("	mit den Funktionalen Abhängigkeiten gekennzeichnet durch das Präfix <strong>-></strong> befindet. ").append(LINE_SEP);
+			out.append(offset).append("	Geben Sie weiters für jede Funktionale Abhängigkeit ").append(LINE_SEP);
+			out.append(offset).append("	an, welche Normalform durch diese verletzt wird. ").append(LINE_SEP);
 		} else {
 			out.append(offset).append("	Determine the highest normal form that is fulfilled in relation scheme ").append(LINE_SEP);
-			out.append(offset).append("	<strong>").append(spec.getName()).append("</strong> with the set of functional dependencies <strong>F</strong>. ").append(LINE_SEP);
-			out.append(offset).append("	Further, determine for each functional dependency <strong>F<sub>i</sub></strong> ").append(LINE_SEP);
-			out.append(offset).append("	the normal form that is violated by <strong>F<sub>i</sub></strong>. ").append(LINE_SEP);
+			out.append(offset).append("	<strong>").append(spec.getName()).append("</strong> with the set of functional dependencies prefixed with <strong>-></strong>. ").append(LINE_SEP);
+			out.append(offset).append("	Further, determine for each functional dependency ").append(LINE_SEP);
+			out.append(offset).append("	the normal form that is violated by it. ").append(LINE_SEP);
 		}
 		out.append(offset).append("</p>").append(LINE_SEP);
 		out.append(offset).append("<table rules=\"none\" frame=\"void\">").append(LINE_SEP);
@@ -827,8 +827,8 @@ public class HTMLPrinter {
 		StringBuilder out = new StringBuilder();
 
 		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>").append(setName).append("</strong> = </td>").append(LINE_SEP);
-		out.append(offset).append("		<td>").append(generateSetHTML(attributes, ",&nbsp;")).append("</td>").append(LINE_SEP);
+		out.append(offset).append("		<td><strong>").append(setName).append("</strong>: </td>").append(LINE_SEP);
+		out.append(offset).append("		<td>(").append(generateSetHTML(attributes, ",&nbsp;")).append(")</td>").append(LINE_SEP);
 		out.append(offset).append("	</tr>").append(LINE_SEP);
 
 		return out.toString();
@@ -838,8 +838,8 @@ public class HTMLPrinter {
 		StringBuilder out = new StringBuilder();
 
 		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>F</strong> = </td>").append(LINE_SEP);
-		out.append(offset).append("		<td>").append(generateSetHTML(dependencies, "; ")).append("</td>").append(LINE_SEP);
+		out.append(offset).append("		<td><strong>-></strong> </td>").append(LINE_SEP);
+		out.append(offset).append("		<td>(").append(generateSetHTML(dependencies, "; ")).append(")</td>").append(LINE_SEP);
 		out.append(offset).append("	</tr>").append(LINE_SEP);
 
 		return out.toString();
