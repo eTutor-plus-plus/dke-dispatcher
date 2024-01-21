@@ -504,20 +504,15 @@ public class HTMLPrinter {
 		return out.toString();
 	}
 	
-	public static String printTargetLevelRow(NFSpecification spec, int indent, Locale locale) {
-		String offset;
-		StringBuilder out = new StringBuilder();
+	public static String printTargetLevelRow(NormalizationSpecification spec, int indent, Locale locale) {
+		if (spec == null) {
+			return "";
 
-		NormalformLevel level;
-		if (spec instanceof NormalizationSpecification) {
-			level = ((NormalizationSpecification)spec).getTargetLevel();
-		} else if (spec instanceof DecomposeSpecification) {
-			level = ((DecomposeSpecification)spec).getTargetLevel();
-		} else {
-			return out.toString();
 		}
 		
-		offset = getOffset(indent);
+		NormalformLevel level = spec.getTargetLevel();
+
+		String offset = getOffset(indent);
 
 		String content = switch (level) {
 			case FIRST -> MESSAGE_SOURCE.getMessage("printtargetlevelrow.first", null, locale);
@@ -526,7 +521,9 @@ public class HTMLPrinter {
 			case BOYCE_CODD -> MESSAGE_SOURCE.getMessage("printtargetlevelrow.boycecodd", null, locale);
 			default -> "";
 		};
-		
+
+		StringBuilder out = new StringBuilder();
+
 		out.append(offset).append("<tr>").append(LINE_SEP);
 		out.append(offset).append("	<td class='label_td'>").append(MESSAGE_SOURCE.getMessage("printtargetlevelrow.normalform", null, locale)).append(":</td>").append(LINE_SEP);
 		out.append(offset).append("	<td class='content_td' nowrap>").append(content).append("</td>").append(LINE_SEP);
