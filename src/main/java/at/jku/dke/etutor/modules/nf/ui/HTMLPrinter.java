@@ -849,25 +849,15 @@ public class HTMLPrinter {
 		}
 	}
 
-	private static String generateAttributeSetTableRowHTML(String offset, String relationName, Collection<String> attributes) {
+	private static String generateAttributeSetTableRowHTML(String offset, String setName, Collection<String> attributes) {
 		StringBuilder out = new StringBuilder();
 
 		out.append(offset).append("	<tr>").append(LINE_SEP);
-		out.append(offset).append("		<td><strong>").append(relationName).append("</strong></td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(generateAttributeSetHTML(attributes)).append("}</td>").append(LINE_SEP);
+		out.append(offset).append("		<td><strong>").append(setName).append("</strong></td>").append(LINE_SEP);
+		out.append(offset).append("		<td>{").append(generateSetHTML(attributes, ",&nbsp;")).append("}</td>").append(LINE_SEP);
 		out.append(offset).append("	</tr>").append(LINE_SEP);
 
 		return out.toString();
-	}
-
-	private static String generateAttributeSetHTML(Collection<String> attributes) {
-		StringJoiner attributesJoiner = new StringJoiner(",&nbsp;");
-
-		for (String a : attributes) {
-			attributesJoiner.add(a);
-		}
-
-		return attributesJoiner.toString();
 	}
 
 	private static String generateFunctionalDependencySetTableRowHTML(String offset, Collection<FunctionalDependency> dependencies) {
@@ -875,20 +865,20 @@ public class HTMLPrinter {
 
 		out.append(offset).append("	<tr>").append(LINE_SEP);
 		out.append(offset).append("		<td><strong>F</strong> = </td>").append(LINE_SEP);
-		out.append(offset).append("		<td>{").append(generateFunctionalDependencySetHTML(dependencies)).append("}</td>").append(LINE_SEP);
+		out.append(offset).append("		<td>{").append(generateSetHTML(dependencies, "; ")).append("}</td>").append(LINE_SEP);
 		out.append(offset).append("	</tr>").append(LINE_SEP);
 
 		return out.toString();
 	}
 
-	private static String generateFunctionalDependencySetHTML(Collection<FunctionalDependency> dependencies) {
-		StringJoiner dependenciesJoiner = new StringJoiner("; ");
+	private static String generateSetHTML(Collection<?> elements, String delimiter) {
+		StringJoiner joiner = new StringJoiner(delimiter);
 
-		for (FunctionalDependency functionalDependency : dependencies) {
-			dependenciesJoiner.add(functionalDependency.toString());
+		for (Object element : elements) {
+			joiner.add(element.toString());
 		}
 
-		return dependenciesJoiner.toString();
+		return joiner.toString();
 	}
 
 	private static String generateButtons(String offset, String title, String content, String addFunction, String delFunction, boolean editable) {
