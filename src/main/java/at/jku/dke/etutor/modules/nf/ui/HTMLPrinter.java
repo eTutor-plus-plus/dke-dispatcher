@@ -597,8 +597,11 @@ public class HTMLPrinter {
 			} else if (spec.getTargetLevel().equals(NormalformLevel.BOYCE_CODD)){
 				out.append(offset).append("Boyce-Codd ");
 			}
-			out.append(offset).append("	Normalform</strong>. Geben Sie für jede Teilrelation in dieser Reihenfolge an: Einen einzigartigen Relationsnamen (Suffix <strong>:</strong>), die Attribute in runden Klammern (kein Präfix vor der öffnenden Klammer), die  ").append(LINE_SEP);
-			out.append(offset).append("	ableitbaren Funktionalen Abhängigkeiten in runden Klammern (Präfix vor der öffnenden Klammer <strong>-></strong>) und die Schlüssel in runden Klammern (Präfix vor der öffnenden Klammer <strong>#</strong>). ").append(LINE_SEP);
+			out.append(offset).append("	Normalform</strong>. Geben Sie für jede Teilrelation in dieser Reihenfolge an:<br>").append(LINE_SEP);
+			out.append(offset).append("&nbsp".repeat(4)).append(" -Einen einzigartigen Relations-Namen (Suffix <strong>:</strong>),<br>").append(LINE_SEP);
+			out.append(offset).append("&nbsp".repeat(4)).append(" -Die Attribute in runden Klammern (kein Präfix vor der öffnenden Klammer),<br>").append(LINE_SEP);
+			out.append(offset).append("&nbsp".repeat(4)).append(" -Die ableitbaren Funktionalen Abhängigkeiten in runden Klammern (Präfix vor der öffnenden Klammer <strong>-></strong>) und<br>").append(LINE_SEP);
+			out.append(offset).append("&nbsp".repeat(4)).append(" -Die Schlüssel in runden Klammern (Präfix vor der öffnenden Klammer <strong>#</strong>).<br><br>").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
 				out.append(offset).append("	Sie dürfen bei der Zerlegung <strong>keine</strong> Funktionale Abhängigkeit verlieren!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){
@@ -625,7 +628,11 @@ public class HTMLPrinter {
 			} else if (spec.getTargetLevel().equals(NormalformLevel.BOYCE_CODD)){
 				out.append(offset).append("Boyce-Codd ");
 			}
-			out.append(offset).append("	normal form</strong>. For each relation fragment, specify (in this order) a unique relation name (suffixed with <strong>:</strong>), its attributes in parentheses (no prefix before the opening parenthesis), its functional dependencies in parentheses (opening parenthesis prefixed with ->) and its keys in parentheses (opening parenthesis prefixed with #). ").append(LINE_SEP);
+			out.append(offset).append("	normal form</strong>. For each relation fragment, specify (in this order):<br>").append(LINE_SEP);
+			out.append(offset).append("&nbsp".repeat(4)).append(" -A unique relation name (suffixed with <strong>:</strong>),<br>").append(LINE_SEP);
+			out.append(offset).append("&nbsp".repeat(4)).append(" -Its attributes in parentheses (no prefix before the opening parenthesis),<br>").append(LINE_SEP);
+			out.append(offset).append("&nbsp".repeat(4)).append(" -Its functional dependencies in parentheses (opening parenthesis prefixed with ->) and<br>").append(LINE_SEP);
+			out.append(offset).append("&nbsp".repeat(4)).append(" -Its keys in parentheses (opening parenthesis prefixed with #).<br><br>").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
 				out.append(offset).append("	You may not lose <strong>any </strong> functional dependency!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){

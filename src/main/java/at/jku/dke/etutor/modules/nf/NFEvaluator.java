@@ -81,6 +81,7 @@ public class NFEvaluator implements Evaluator {
 		NFParser submissionParser = new NFParser(submissionParserInput);
 
 		NFParserErrorCollector errorCollector = new NFParserErrorCollector();
+		// Source for adding to lexer: https://groups.google.com/g/antlr-discussion/c/FfiwtHCrgc0/m/_5wwPD3tK04J (Gerald Wimmer, 2024-01-21).
 		submissionLexer.addErrorListener(errorCollector);
 		submissionParser.addErrorListener(errorCollector);
 

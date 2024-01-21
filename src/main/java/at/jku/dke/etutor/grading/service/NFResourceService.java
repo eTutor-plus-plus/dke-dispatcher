@@ -435,6 +435,7 @@ public class NFResourceService {
         TokenStream parserInput = new CommonTokenStream(lexer);
         NFParser parser = new NFParser(parserInput);
 
+        // Source for adding to lexer: https://groups.google.com/g/antlr-discussion/c/FfiwtHCrgc0/m/_5wwPD3tK04J (Gerald Wimmer, 2024-01-21).
         lexer.addErrorListener(errorCollector);
         parser.addErrorListener(errorCollector);
 
