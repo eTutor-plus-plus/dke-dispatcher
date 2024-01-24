@@ -1,0 +1,22 @@
+[
+  {
+    "full_classname": "at.jku.dke.etutor.modules.drools.jit.Invoice",
+    "class_content": "package at.jku.dke.etutor.modules.drools.jit;\n\nimport org.kie.api.definition.type.Role;\n\nimport java.util.Date;\n\n@Role(Role.Type.FACT)\npublic record Invoice(Date invoiceDate, Vehicle vehicle, int price) {\n}"
+  },
+  {
+    "full_classname": "at.jku.dke.etutor.modules.drools.jit.Event",
+    "class_content": "package at.jku.dke.etutor.modules.drools.jit;\n\nimport java.util.Date;\n\npublic interface Event {\n    Date timestamp();\n\n    default long diffInMinutes(Event other) {\n        long diff = timestamp().getTime() - other.timestamp().getTime();\n        return diff / 60000;\n    }\n}"
+  },
+  {
+    "full_classname": "at.jku.dke.etutor.modules.drools.jit.EnterParkingLotEvent",
+    "class_content": "package at.jku.dke.etutor.modules.drools.jit;\n\nimport org.kie.api.definition.type.Role;\nimport org.kie.api.definition.type.Timestamp;\n\nimport java.util.Date;\n\n@Role(Role.Type.EVENT)\n@Timestamp(\"timestamp\")\npublic record EnterParkingLotEvent(Vehicle vehicle, Date timestamp) implements Event {\n}"
+  },
+  {
+    "full_classname": "at.jku.dke.etutor.modules.drools.jit.ExitParkingLotEvent",
+    "class_content": "package at.jku.dke.etutor.modules.drools.jit;\n\nimport org.kie.api.definition.type.Role;\nimport org.kie.api.definition.type.Timestamp;\n\nimport java.util.Date;\n\n@Role(Role.Type.EVENT)\n@Timestamp(\"timestamp\")\npublic record ExitParkingLotEvent(Vehicle vehicle, Date timestamp) implements Event {\n}"
+  },
+  {
+    "full_classname": "at.jku.dke.etutor.modules.drools.jit.Vehicle",
+    "class_content": "package at.jku.dke.etutor.modules.drools.jit;\n\nimport org.kie.api.definition.type.Role;\n\n@Role(Role.Type.FACT)\npublic record Vehicle(String licensePlate) {\n}"
+  }
+]

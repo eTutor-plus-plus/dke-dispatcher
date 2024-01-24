@@ -1,0 +1,137 @@
+++++++++++++++++++++++++++++++++++++++
++++++++++++KORREKTE FAKTEN++++++++++++
+++++++++++++++++++++++++++++++++++++++
+
+package at.jku.dke.etutor.modules.drools.jit;
+
+            rule "Combine parking intervals if reentry within 15 min"
+            when
+                $enter1 : EnterParkingLotEvent()
+                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
+                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[0s, 15m] $exit)
+            then
+                delete($exit);
+                delete($enter2);
+            end
+
+            rule "Do not combine parking intervals if reentry after 15 min"
+            when
+                $enter1 : EnterParkingLotEvent()
+                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
+                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[15m1s] $exit)
+            then
+                delete($enter1);
+                delete($exit);
+            end
+
+            rule "Issue invoice"
+            when
+                $enter : EnterParkingLotEvent()
+                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter.vehicle().licensePlate(), this after[2h1m] $enter)
+            then
+                insert(new Invoice($exit.timestamp(), $enter.vehicle(), (int)Math.ceil(($exit.diffInMinutes($enter) - 120) / 60.0) * 3));
+            end
+
++++++++++++++++++++++++++++++++++++
+++++++++++FALSCHE FAKTEN+++++++++++
++++++++++++++++++++++++++++++++++++
+
+package at.jku.dke.etutor.modules.drools.jit;
+
+            rule "Combine parking intervals if reentry within 15 min"
+            when
+                $enter1 : EnterParkingLotEvent()
+                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
+                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[0s, 15m] $exit)
+            then
+                delete($exit);
+                delete($enter2);
+            end
+
+            rule "Do not combine parking intervals if reentry after 15 min"
+            when
+                $enter1 : EnterParkingLotEvent()
+                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
+                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[15m1s] $exit)
+            then
+                delete($enter1);
+                delete($exit);
+            end
+
+            rule "Issue invoice"
+            when
+                $enter : EnterParkingLotEvent()
+                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter.vehicle().licensePlate(), this after[2h1m] $enter)
+            then
+                insert(new Invoice($exit.timestamp(), $enter.vehicle(), (int)Math.ceil(($exit.diffInMinutes($enter) - 120) / 60.0) * 3));
+            end
+
+++++++++++++++++++++++++++++++++++++
++++++++++ZU VIELE FAKTEN++++++++++++
+++++++++++++++++++++++++++++++++++++
+
+package at.jku.dke.etutor.modules.drools.jit;
+
+            rule "Combine parking intervals if reentry within 15 min"
+            when
+                $enter1 : EnterParkingLotEvent()
+                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
+                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[0s, 5m] $exit)
+            then
+                delete($exit);
+                delete($enter2);
+            end
+
+            rule "Do not combine parking intervals if reentry after 15 min"
+            when
+                $enter1 : EnterParkingLotEvent()
+                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
+                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[15m1s] $exit)
+            then
+                delete($enter1);
+                delete($exit);
+            end
+
+            rule "Issue invoice"
+            when
+                $enter : EnterParkingLotEvent()
+                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter.vehicle().licensePlate(), this after[2h1m] $enter)
+            then
+                insert(new Invoice($exit.timestamp(), $enter.vehicle(), (int)Math.ceil(($exit.diffInMinutes($enter) - 120) / 60.0) * 3));
+            end
+
+++++++++++++++++++++++++++++++++++++
++++++++++ZU WENIG FAKTEN++++++++++++
+++++++++++++++++++++++++++++++++++++
+
+package at.jku.dke.etutor.modules.drools.jit;
+
+            rule "Combine parking intervals if reentry within 15 min"
+            when
+                $enter1 : EnterParkingLotEvent()
+                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
+                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[0s, 15m] $exit)
+            then
+                delete($exit);
+                delete($enter2);
+            end
+
+            rule "Do not combine parking intervals if reentry after 15 min"
+            when
+                $enter1 : EnterParkingLotEvent()
+                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
+                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[15m1s] $exit)
+            then
+                delete($enter1);
+                delete($exit);
+            end
+
+            rule "Issue invoice"
+            when
+                $enter : EnterParkingLotEvent()
+                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter.vehicle().licensePlate(), this after[3h1m] $enter)
+            then
+                insert(new Invoice($exit.timestamp(), $enter.vehicle(), (int)Math.ceil(($exit.diffInMinutes($enter) - 120) / 60.0) * 3));
+            end
+
+
