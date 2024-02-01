@@ -585,7 +585,7 @@ public class HTMLPrinter {
 			out.append(offset).append("	Normalform</strong>. Geben Sie für jede Teilrelation in dieser Reihenfolge an:<br>").append(LINE_SEP);
 			out.append(offset).append("&nbsp".repeat(4)).append(" -Einen einzigartigen Relations-Namen (Suffix <strong>:</strong>),<br>").append(LINE_SEP);
 			out.append(offset).append("&nbsp".repeat(4)).append(" -Die Attribute in runden Klammern (kein Präfix vor der öffnenden Klammer),<br>").append(LINE_SEP);
-			out.append(offset).append("&nbsp".repeat(4)).append(" -Die ableitbaren Funktionalen Abhängigkeiten in runden Klammern (Präfix vor der öffnenden Klammer <strong>-></strong>) und<br>").append(LINE_SEP);
+			out.append(offset).append("&nbsp".repeat(4)).append(" -Die ableitbaren Funktionalen Abhängigkeiten in runden Klammern (Präfix vor der öffnenden Klammer <strong>-></strong>; Klammern leer lassen, wenn es keine Abhängigkeiten gibt) und<br>").append(LINE_SEP);
 			out.append(offset).append("&nbsp".repeat(4)).append(" -Die Schlüssel in runden Klammern (Präfix vor der öffnenden Klammer <strong>#</strong>).<br><br>").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
 				out.append(offset).append("	Sie dürfen bei der Zerlegung <strong>keine</strong> Funktionale Abhängigkeit verlieren!").append(LINE_SEP);
@@ -616,8 +616,8 @@ public class HTMLPrinter {
 			out.append(offset).append("	normal form</strong>. For each relation fragment, specify (in this order):<br>").append(LINE_SEP);
 			out.append(offset).append("&nbsp".repeat(4)).append(" -A unique relation name (suffixed with <strong>:</strong>),<br>").append(LINE_SEP);
 			out.append(offset).append("&nbsp".repeat(4)).append(" -Its attributes in parentheses (no prefix before the opening parenthesis),<br>").append(LINE_SEP);
-			out.append(offset).append("&nbsp".repeat(4)).append(" -Its functional dependencies in parentheses (opening parenthesis prefixed with ->) and<br>").append(LINE_SEP);
-			out.append(offset).append("&nbsp".repeat(4)).append(" -Its keys in parentheses (opening parenthesis prefixed with #).<br><br>").append(LINE_SEP);
+			out.append(offset).append("&nbsp".repeat(4)).append(" -Its functional dependencies in parentheses (opening parenthesis prefixed with <strong>-></strong>; leave parentheses empty if there are no dependencies) and<br>").append(LINE_SEP);
+			out.append(offset).append("&nbsp".repeat(4)).append(" -Its keys in parentheses (opening parenthesis prefixed with <strong>#</strong>).<br><br>").append(LINE_SEP);
 			if (spec.getMaxLostDependencies() == 0){
 				out.append(offset).append("	You may not lose <strong>any </strong> functional dependency!").append(LINE_SEP);
 			} else if (spec.getMaxLostDependencies() >= spec.getBaseRelation().getFunctionalDependencies().size()){

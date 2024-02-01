@@ -549,7 +549,8 @@ public class NFEvaluator implements Evaluator {
 
 		// ALWAYS report syntax errors, even during online exams
 		if(nfAnalysis.getSyntaxError() != null) {
-			ErrorReport errorReport = new ErrorReport();
+			NFReport errorReport = new NFReport();
+			errorReport.setShowPrologue(false);
 			errorReport.setError(nfAnalysis.getSyntaxError());
 			errorReport.setDescription("A syntax error occurred");
 			errorReport.setShowErrorDescription(true);
@@ -568,7 +569,8 @@ public class NFEvaluator implements Evaluator {
 			 *  returned (Gerald Wimmer, 2024-01-13).
 			 */
 
-			ErrorReport errorReport = new ErrorReport();
+			NFReport errorReport = new NFReport();
+			errorReport.setShowPrologue(false);
 			errorReport.setShowError(false);
 			errorReport.setShowHint(false);
 			errorReport.setShowErrorDescription(false);

@@ -5,7 +5,7 @@ import at.jku.dke.etutor.core.evaluation.DefaultReport;
 import java.util.LinkedList;
 import java.util.List;
 
-public class NFReport extends DefaultReport {
+public class NFReport extends ErrorReport {
 
 	private String prologue;
 

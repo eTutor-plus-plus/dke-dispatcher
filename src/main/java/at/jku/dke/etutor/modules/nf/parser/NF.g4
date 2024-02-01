@@ -46,7 +46,7 @@ relation returns [IdentifiedRelation parsedRelation]
     @init {
         $parsedRelation = new IdentifiedRelation();
     } :
-        relationId {try {$parsedRelation.setID($relationId.idString);} catch(Exception e) { e.printStackTrace();}} ':' '(' attributeSet {$parsedRelation.setAttributes($attributeSet.attributes);} ')' '->' '(' functionalDependencySet {$parsedRelation.setFunctionalDependencies($functionalDependencySet.functionalDependencies);} ')' '#' '(' keySet {$parsedRelation.setMinimalKeys($keySet.keys);} ')' ;
+        relationId {try {$parsedRelation.setID($relationId.idString);} catch(Exception e) { e.printStackTrace();}} ':' '(' attributeSet {$parsedRelation.setAttributes($attributeSet.attributes);} ')' '->' '(' ( functionalDependencySet {$parsedRelation.setFunctionalDependencies($functionalDependencySet.functionalDependencies);} )? ')' '#' '(' keySet {$parsedRelation.setMinimalKeys($keySet.keys);} ')' ;
 relationId returns [String idString]:
         AlphaNumericChain {$idString = $AlphaNumericChain.text;} ;
 
