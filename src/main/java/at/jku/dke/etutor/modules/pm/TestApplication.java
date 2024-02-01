@@ -58,7 +58,7 @@ public class TestApplication {
         int exerciseID = 100;
         int userID = 101;
 
-        // note: back-end => Analysis, Grading, Report
+        // note: back-end => Analysis, Grading, NFReport
         PmEvaluator testEval = new PmEvaluator();
         //testEval.setResultMap(resultMap);
         try{

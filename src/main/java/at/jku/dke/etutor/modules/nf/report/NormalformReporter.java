@@ -1,0 +1,296 @@
+package at.jku.dke.etutor.modules.nf.report;
+
+import at.jku.dke.etutor.modules.nf.NFConstants;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.BoyceCoddNormalformViolation;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.FirstNormalformViolation;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.NormalformAnalysis;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.SecondNormalformViolation;
+import at.jku.dke.etutor.modules.nf.analysis.normalform.ThirdNormalformViolation;
+import at.jku.dke.etutor.modules.nf.analysis.normalformdetermination.NormalformDeterminationAnalysis;
+import at.jku.dke.etutor.modules.nf.model.NormalformLevel;
+
+import java.util.Locale;
+import java.util.StringJoiner;
+
+public class NormalformReporter extends ErrorReporter {
+
+	public static NFReport report(NormalformDeterminationAnalysis analysis, ReporterConfig config, Locale locale){
+		NFReport report = new NFReport();
+		StringBuilder prologue = new StringBuilder();
+
+		//SET PROLOGUE
+		if (analysis.submissionSuitsSolution()) {
+			prologue.append(messageSource.getMessage("normalformreporter.correctsolution", null, locale));
+		} else {
+			prologue.append(messageSource.getMessage("normalformreporter.notcorrectsolution", null, locale));
+		}
+		report.setPrologue(prologue.toString());
+		
+		if (config.getEvalAction() != NFConstants.EvalAction.CHECK){
+			//REPORT OVERALL_NF_LEVEL 
+			if (!analysis.getOverallNormalformLevel().equals(analysis.getSubmittedLevel())){
+				report.addErrorReport(createNormalformLevelDeterminationErrorReport(analysis, config, locale));
+			}
+
+			//REPORT NF_LEVEL_VIOLATIONS
+			if (!analysis.getWrongLeveledDependencies().isEmpty()){
+				report.addErrorReport(createNormalformLevelViolationErrorReport(analysis, config, locale));
+			}
+		}
+		
+		//CONFIGURE REPORT
+		report.setShowPrologue(true);
+
+		return report;	
+	}
+
+	public static ErrorReport createNormalformLevelDeterminationErrorReport(NormalformDeterminationAnalysis analysis, ReporterConfig config, Locale locale){
+		ErrorReport report = new ErrorReport();
+
+		//SET ERROR
+		report.setError(messageSource.getMessage("normalformreporter.incorrectnormalform", null, locale));
+		
+		//SET HINT
+		
+		//SET DESCRIPTION
+		if ((config.getDiagnoseLevel() == 1) || (config.getDiagnoseLevel() == 2)) {
+			report.setDescription(messageSource.getMessage("normalformreporter.normalformnotcorrect", new Object[]{analysis.getSubmittedLevel()}, locale));
+		}
+		
+		if (config.getDiagnoseLevel() == 3) {
+			report.setDescription(messageSource.getMessage("normalformreporter.normalformdoesnotmatch", new Object[]{normalformLevelToString(analysis.getSubmittedLevel(), locale), normalformLevelToString(analysis.getOverallNormalformLevel(), locale)}, locale));
+		}
+
+		//CONFIGURE REPORT
+		report.setShowError(true);
+		report.setShowHint(false);
+		report.setShowErrorDescription(config.getDiagnoseLevel() > 0);
+
+		return report;
+	}
+
+	public static ErrorReport createNormalformLevelViolationErrorReport(NormalformDeterminationAnalysis analysis, ReporterConfig config, Locale locale){
+		ErrorReport report = new ErrorReport();
+		StringBuilder description = new StringBuilder();
+		
+		//SET ERROR
+		report.setError(messageSource.getMessage("normalformreporter.incorrectnormalformviolations", null, locale));
+		
+		//SET HINT
+
+		//SET DESCRIPTION
+		if (config.getDiagnoseLevel() == 1) {
+			description.append(messageSource.getMessage("normalformreporter.dependencynotviolatesnormalform", null, locale));
+		}
+		
+		if (config.getDiagnoseLevel() == 2) {
+			description.append(analysis.getWrongLeveledDependencies().size());
+			if (analysis.getWrongLeveledDependencies().size() == 1) {
+				description.append(" ").append(messageSource.getMessage("normalformreporter.dependencydoes", null, locale)).append(" ");
+			} else {
+				description.append(" ").append(messageSource.getMessage("normalformreporter.dependenciesdo", null, locale)).append(" ");
+			}
+			description.append(messageSource.getMessage("normalformreporter.notviolatenormalform", null, locale));
+		}
+
+		if (config.getDiagnoseLevel() == 3) {
+			description.append(messageSource.getMessage("normalformreporter.violatenotspecifiednormalform", null, locale));
+			description.append("<table rules='cols' border='1' style='margin-top:5px;'>");
+			description.append("	<tr>");
+			description.append("		<td style='border-bottom:solid;border-bottom-width:thin;padding-left:10px;padding-right:10px'><i>").append(messageSource.getMessage("normalformreporter.functionaldependency", null, locale)).append("</i></td>");
+			description.append("		<td style='border-bottom:solid;border-bottom-width:thin;padding-left:10px;padding-right:10px'><i>").append(messageSource.getMessage("normalformreporter.violatednormalform", null, locale)).append("</i></td>");
+			description.append("		<td style='border-bottom:solid;border-bottom-width:thin;padding-left:10px;padding-right:10px'><i>").append(messageSource.getMessage("normalformreporter.yoursolution", null, locale)).append("</i></td>");
+			description.append("	</tr>");
+
+			for (Object[] entry : analysis.getWrongLeveledDependencies()){
+				description.append("	<tr>");
+				description.append("		<td align='center'>").append(entry[0].toString().replaceAll("->", "&rarr;")).append("</td>");
+				description.append("		<td align='center'>").append(normalformLevelToString((NormalformLevel) entry[1], locale)).append("</td>");
+				description.append("		<td align='center'>").append(normalformLevelToString((NormalformLevel) entry[2], locale)).append("</td>");
+				description.append("	</tr>");
+			}
+			description.append("</table>");
+		}
+
+		report.setDescription(description.toString());
+
+		//CONFIGURE REPORT
+		report.setShowHint(false);
+		report.setShowError(true);
+		report.setShowErrorDescription(config.getDiagnoseLevel() > 0);
+
+		return report;
+	}
+
+	public static ErrorReport createNormalformErrorReport(NormalformAnalysis analysis, NormalformReporterConfig config, Locale locale){
+		boolean appendLineBreak = false;
+
+		ErrorReport report = new ErrorReport();
+		StringBuilder description = new StringBuilder();
+
+        //SET ERROR
+		report.setError(messageSource.getMessage("normalformreporter.insufficientnormalformlevel", new Object[]{normalformLevelToString(config.getDesiredNormalformLevel(), locale),  normalformLevelToString(analysis.getOverallNormalformLevel(), locale)}, locale));
+		
+		//SET HINT
+
+		//SET DESCRIPTION
+
+		//REPORTING FIRST NORMALFORM VIOLATIONS IF NECESSARY
+		if (config.getDesiredNormalformLevel().compareTo(NormalformLevel.FIRST) >= 0){
+			if (!analysis.getFirstNormalformViolations().isEmpty()){
+				appendLineBreak = true;
+			}
+
+			StringJoiner violationsJoiner = new StringJoiner("<br><br>");
+			for (FirstNormalformViolation firstNFViolation : analysis.getFirstNormalformViolations()) {
+				violationsJoiner.add(messageSource.getMessage("normalformreporter.dependencyviolatesnormalform", new Object[]{firstNFViolation.getFunctionalDependency()}, locale));
+			}
+
+			description.append(violationsJoiner);
+		}
+
+		//REPORTING SECOND NORMALFORM VIOLATIONS IF NECESSARY
+		if (config.getDesiredNormalformLevel().compareTo(NormalformLevel.SECOND) >= 0) {
+			if (!analysis.getSecondNormalformViolations().isEmpty()) {
+				if (appendLineBreak) {
+					description.append("<br><br>");
+				}
+				appendLineBreak = true;
+			}
+
+			boolean first = true;
+			for (SecondNormalformViolation secondNFViolation : analysis.getSecondNormalformViolations()){
+				if (first){
+					first = false;
+				} else {
+					description.append("<br><br>");
+				}
+
+				description.append(messageSource.getMessage("normalformreporter.violatesnormalform", new Object[]{secondNFViolation.getFunctionalDependency(), "second"}, locale));
+
+				if (config.getDiagnoseLevel() == 0) {
+					description.append("<br>");
+					description.append(messageSource.getMessage("normalformreporter.rightsidenotprim", null, locale));
+					description.append("<br>");
+					description.append(messageSource.getMessage("normalformreporter.leftsidecompriseskey", null, locale));
+				}
+
+				if (config.getDiagnoseLevel() == 1) {
+					description.append("<br>");
+					description.append(messageSource.getMessage("normalformreporter.rightsidecomprises", new Object[]{secondNFViolation.nonPrimRHSAttributesCount()}, locale));
+					if (secondNFViolation.nonPrimRHSAttributesCount() == 1){
+						description.append(" ").append(messageSource.getMessage("normalformreporter.attributenotprim", null, locale));
+					} else {
+						description.append(" ").append(messageSource.getMessage("normalformreporter.attributesnotprim", null, locale));
+					}
+
+					description.append("<br>");
+
+					description.append(messageSource.getMessage("normalformreporter.leftsidepartialkey", null, locale));
+				}
+
+				if (config.getDiagnoseLevel() == 2 || config.getDiagnoseLevel() == 3) {
+					description.append("<p>").append(messageSource.getMessage("normalformreporter.nonprimrightside", null, locale)).append("</p>");
+					description.append(generateLevel3Div(secondNFViolation.getNonPrimRHSAttributes(), "normalformreporter.attributenotprim", "normalformreporter.attributesnotprim", "normalformreporter.rightsidecomprises", locale));
+                    description.append("<br>");
+					description.append(messageSource.getMessage("normalformreporter.leftsidepartialkey", null, locale));
+				}
+			}
+		}
+
+		//REPORTING THIRD NORMALFORM VIOLATIONS IF NECESSARY
+		if (config.getDesiredNormalformLevel().compareTo(NormalformLevel.THIRD) >= 0) {
+			if (!analysis.getThirdNormalformViolations().isEmpty()) {
+				if (appendLineBreak) {
+					description.append("<br><br>");
+				}
+				appendLineBreak = true;
+			}
+
+			boolean first = true;
+			for (ThirdNormalformViolation thirdNFViolation : analysis.getThirdNormalformViolations()) {
+				if (first) {
+					first = false;
+				} else {
+					description.append("<br><br>");
+				}
+
+				description.append(messageSource.getMessage("normalformreporter.violatesnormalform", new Object[]{thirdNFViolation.getFunctionalDependency(), "third"}, locale));
+
+				if (config.getDiagnoseLevel() == 0) {
+					description.append("<br>");
+					description.append(messageSource.getMessage("normalformreporter.rightsidenotprim", null, locale));
+					description.append("<br>");
+					description.append(messageSource.getMessage("normalformreporter.leftsidenotsuperkey", null, locale));
+				}
+
+				if (config.getDiagnoseLevel() == 1) {
+					description.append("<br>");
+					description.append(messageSource.getMessage("normalformreporter.rightsidecomprises", new Object[]{thirdNFViolation.nonPrimRHSAttributesCount()}, locale));
+					if (thirdNFViolation.nonPrimRHSAttributesCount() == 1) {
+						description.append(" ").append(messageSource.getMessage("normalformreporter.attributenotprim", null, locale));
+					} else {
+						description.append(" ").append(messageSource.getMessage("normalformreporter.attributesnotprim", null, locale));
+					}
+
+					description.append("<br>");
+					description.append(messageSource.getMessage("normalformreporter.leftsidenotsuperkey", null, locale));
+				}
+
+				if ((config.getDiagnoseLevel() == 2) || (config.getDiagnoseLevel() == 3)) {
+					description.append("<p>").append(messageSource.getMessage("normalformreporter.nonprimrightside", null, locale)).append("</p>");
+					description.append(generateLevel3Div(thirdNFViolation.getNonPrimRHSAttributes(), "normalformreporter.attributenotprim", "normalformreporter.attributesnotprim", "normalformreporter.rightsidecomprises", locale));
+                    description.append("<br>");
+					description.append(messageSource.getMessage("normalformreporter.leftsidenotsuperkey", null, locale));
+				}
+			}
+		}
+
+		//REPORTING BOYCE CODD NORMALFORM VIOLATIONS IF NECESSARY
+		if (config.getDesiredNormalformLevel().compareTo(NormalformLevel.BOYCE_CODD) >= 0){
+			if (!analysis.getBoyceCoddNormalformViolations().isEmpty()){
+				if (appendLineBreak){
+					description.append("<br><br>");
+				}
+			}
+
+			boolean first = true;
+			for (BoyceCoddNormalformViolation boyceCoddNFViolation : analysis.getBoyceCoddNormalformViolations()){
+				if (first){
+					first = false;
+				} else {
+					description.append("<br><br>");
+				}
+
+				description.append(messageSource.getMessage("normalformreporter.violatesnormalform", new Object[]{boyceCoddNFViolation.getFunctionalDependency(), "boyce codd"}, locale));
+				description.append("<br>");
+				description.append(messageSource.getMessage("normalformreporter.leftsidenotsuperkey", null, locale));
+			}
+		}
+
+		report.setDescription(description.toString());
+
+		//CONFIGURE REPORT
+		report.setShowHint(false);
+		report.setShowError(true);
+		report.setShowErrorDescription(!report.getDescription().isEmpty());
+
+		return report;
+	}
+
+	public static String normalformLevelToString(NormalformLevel level, Locale locale){
+		if (level == null){
+			return messageSource.getMessage("normalformreporter.none", null, locale);
+		} else if (level.equals(NormalformLevel.FIRST)){
+			return messageSource.getMessage("normalformreporter.first", null, locale);
+		} else if (level.equals(NormalformLevel.SECOND)){
+			return messageSource.getMessage("normalformreporter.second", null, locale);
+		} else if (level.equals(NormalformLevel.THIRD)){
+			return messageSource.getMessage("normalformreporter.third", null, locale);
+		} else if (level.equals(NormalformLevel.BOYCE_CODD)){
+			return messageSource.getMessage("normalformreporter.boycecodd", null, locale);
+		} else {
+			return "";
+		}
+	}
+}

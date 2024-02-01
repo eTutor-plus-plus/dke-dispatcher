@@ -424,7 +424,7 @@ public class XQEvaluatorImpl implements XQEvaluator {
             }
         } else {
         	msg = new String();
-            msg += "Report processing was stopped. ";
+            msg += "NFReport processing was stopped. ";
             msg += "Passed '" + XQConstants.ATTR_ACTION + "' attribute '";
             msg += action + "' is not applicable.";
             LOGGER.error(msg);
@@ -490,7 +490,7 @@ public class XQEvaluatorImpl implements XQEvaluator {
         diagnoseLevelObj = passedAttributes.get(XQConstants.ATTR_DIAGNOSE_LEVEL);
         if (diagnoseLevelObj == null || !(diagnoseLevelObj instanceof String)) {
         	msg = new String();
-            msg += "Report processing was stopped. ";
+            msg += "NFReport processing was stopped. ";
             msg += "Passed attribute " + XQConstants.ATTR_DIAGNOSE_LEVEL;
             msg += " is null or no String.";
             LOGGER.error(msg);
@@ -500,7 +500,7 @@ public class XQEvaluatorImpl implements XQEvaluator {
             diagnoseLevel = Integer.parseInt((String)diagnoseLevelObj);
         } catch (NumberFormatException e) {
         	msg = new String();
-            msg += "Report processing was stopped. ";
+            msg += "NFReport processing was stopped. ";
             msg += "No valid diagnose level: " + diagnoseLevelObj.toString() + ".";
             LOGGER.error(msg);
             throw new ReportException(msg);
@@ -518,11 +518,11 @@ public class XQEvaluatorImpl implements XQEvaluator {
             }
             return xqReport;
         } catch (ParameterException e) {
-            msg = "Report processing was stopped. ";
+            msg = "NFReport processing was stopped. ";
             LOGGER.error(msg, e);
             throw new ReportException(msg, e);
         } catch (Exception e) {
-            msg = "Report processing was stopped. ";
+            msg = "NFReport processing was stopped. ";
             LOGGER.error(msg, e);
             throw new ReportException(msg, e);
         }

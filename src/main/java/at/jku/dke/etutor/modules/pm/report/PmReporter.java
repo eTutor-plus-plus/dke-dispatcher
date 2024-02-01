@@ -44,7 +44,7 @@ public class PmReporter {
 
         pmReport = new PmReport();
 
-        // Create Error Report:
+        // Create Error NFReport:
         // check each partial submission
         // for every partial submission:
         // check each used criterion
