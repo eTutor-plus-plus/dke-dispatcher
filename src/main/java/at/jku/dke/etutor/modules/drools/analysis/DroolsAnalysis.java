@@ -211,7 +211,11 @@ public class DroolsAnalysis extends DefaultAnalysis {
             JSONArray jsonArray = new JSONArray(response.body());
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
-                validationClassname = obj.getString("validation_classname");
+                if (obj.has("validation_classname") && !obj.isNull("validation_classname")) {
+                    validationClassname = obj.getString("validation_classname");
+                } else {
+                    validationClassname = "";
+                }
                 errorWeighting = obj.getInt("error_weighting");
             }
         } catch (Exception e) {
