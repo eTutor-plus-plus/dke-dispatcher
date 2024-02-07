@@ -289,7 +289,9 @@ public class DroolsAnalysis extends DefaultAnalysis {
                         parameterList.add(paramNode.asInt());
                     } else if (parameterType == String.class) {
                         parameterList.add(paramNode.asText());
-                    } else if (parameterType == Date.class) {
+                    } else if (parameterType == double.class || parameterType == Double.class) {
+                        parameterList.add(paramNode.asDouble());
+                    }else if (parameterType == Date.class) {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
                         Date timestamp = dateFormat.parse(paramNode.asText());
                         parameterList.add(timestamp);
@@ -297,9 +299,6 @@ public class DroolsAnalysis extends DefaultAnalysis {
 
                     // Weitere Typen können entsprechend verarbeitet werden
                 }
-
-                Object event = targetConstructor.newInstance(parameters);
-                System.out.println(event);
 
                 Object obj = dyn.instantiate(fact.getFullClassname(), parameterList.toArray());
 
