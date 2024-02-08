@@ -1,137 +1,150 @@
-++++++++++++++++++++++++++++++++++++++
-+++++++++++KORREKTE FAKTEN++++++++++++
-++++++++++++++++++++++++++++++++++++++
+package at.jku.dke.data;
 
-package at.jku.dke.etutor.modules.drools.jit;
+rule "annualSalaryGross"
+	salience 9
+when
+	$c : Clerk(	getMonthlySalaryGross() * 12 != getAnnualSalaryGross() )
+then
+	System.out.println("# Clerk \"" + $c.getName()
+						+ "\" fires rule \"annualSalaryGross\": gross annual salary of "
+						+ ($c.getMonthlySalaryGross() * 12) + " EUR is calculated.");
 
-            rule "Combine parking intervals if reentry within 15 min"
-            when
-                $enter1 : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
-                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[0s, 15m] $exit)
-            then
-                delete($exit);
-                delete($enter2);
-            end
+	$c.setAnnualSalaryGross($c.getMonthlySalaryGross() * 12);
 
-            rule "Do not combine parking intervals if reentry after 15 min"
-            when
-                $enter1 : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
-                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[15m1s] $exit)
-            then
-                delete($enter1);
-                delete($exit);
-            end
+	update($c);
+end
 
-            rule "Issue invoice"
-            when
-                $enter : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter.vehicle().licensePlate(), this after[2h1m] $enter)
-            then
-                insert(new Invoice($exit.timestamp(), $enter.vehicle(), (int)Math.ceil(($exit.diffInMinutes($enter) - 120) / 60.0) * 3));
-            end
+rule "socialSecurityContribution1"
+	salience 8
+when
+	$c : Clerk(	getMonthlySalaryGross() <= 366.33 &&
+				getMonthlySocialSecurityContribution() == -1 )
+then
+	System.out.println("# Clerk \""
+						+ $c.getName()
+						+ "\" fires rule \"socialSecurityContribution1\": monthly social security contribution of 0 EUR is calculated.");
 
-+++++++++++++++++++++++++++++++++++
-++++++++++FALSCHE FAKTEN+++++++++++
-+++++++++++++++++++++++++++++++++++
+	$c.setMonthlySocialSecurityContribution(0);
 
-package at.jku.dke.etutor.modules.drools.jit;
+	update($c);
+end
 
-            rule "Combine parking intervals if reentry within 15 min"
-            when
-                $enter1 : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
-                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[0s, 15m] $exit)
-            then
-                delete($exit);
-                delete($enter2);
-            end
+rule "socialSecurityContribution2"
+	salience 8
+when
+	$c : Clerk(	getMonthlySalaryGross() > 366.33 &&
+				(getMonthlySalaryGross() * 0.18) < 537.76 &&
+				getMonthlySocialSecurityContribution() == -1 )
+then
+	System.out.println("# Clerk \""
+						+ $c.getName()
+						+ "\" fires rule \"socialSecurityContribution2\": monthly social security contribution of "
+						+ ($c.getMonthlySalaryGross() * 0.18)
+						+ " EUR is calculated.");
 
-            rule "Do not combine parking intervals if reentry after 15 min"
-            when
-                $enter1 : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
-                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[15m1s] $exit)
-            then
-                delete($enter1);
-                delete($exit);
-            end
+	$c.setMonthlySocialSecurityContribution($c.getMonthlySalaryGross() * 0.18);
 
-            rule "Issue invoice"
-            when
-                $enter : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter.vehicle().licensePlate(), this after[2h1m] $enter)
-            then
-                insert(new Invoice($exit.timestamp(), $enter.vehicle(), (int)Math.ceil(($exit.diffInMinutes($enter) - 120) / 60.0) * 3));
-            end
-
-++++++++++++++++++++++++++++++++++++
-+++++++++ZU VIELE FAKTEN++++++++++++
-++++++++++++++++++++++++++++++++++++
-
-package at.jku.dke.etutor.modules.drools.jit;
-
-            rule "Combine parking intervals if reentry within 15 min"
-            when
-                $enter1 : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
-                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[0s, 5m] $exit)
-            then
-                delete($exit);
-                delete($enter2);
-            end
-
-            rule "Do not combine parking intervals if reentry after 15 min"
-            when
-                $enter1 : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
-                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[15m1s] $exit)
-            then
-                delete($enter1);
-                delete($exit);
-            end
-
-            rule "Issue invoice"
-            when
-                $enter : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter.vehicle().licensePlate(), this after[2h1m] $enter)
-            then
-                insert(new Invoice($exit.timestamp(), $enter.vehicle(), (int)Math.ceil(($exit.diffInMinutes($enter) - 120) / 60.0) * 3));
-            end
-
-++++++++++++++++++++++++++++++++++++
-+++++++++ZU WENIG FAKTEN++++++++++++
-++++++++++++++++++++++++++++++++++++
-
-package at.jku.dke.etutor.modules.drools.jit;
-
-            rule "Combine parking intervals if reentry within 15 min"
-            when
-                $enter1 : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
-                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[0s, 15m] $exit)
-            then
-                delete($exit);
-                delete($enter2);
-            end
-
-            rule "Do not combine parking intervals if reentry after 15 min"
-            when
-                $enter1 : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after $enter1)
-                $enter2 : EnterParkingLotEvent(vehicle.licensePlate() == $enter1.vehicle().licensePlate(), this after[15m1s] $exit)
-            then
-                delete($enter1);
-                delete($exit);
-            end
-
-            rule "Issue invoice"
-            when
-                $enter : EnterParkingLotEvent()
-                $exit : ExitParkingLotEvent(vehicle.licensePlate() == $enter.vehicle().licensePlate(), this after[3h1m] $enter)
-            then
-                insert(new Invoice($exit.timestamp(), $enter.vehicle(), (int)Math.ceil(($exit.diffInMinutes($enter) - 120) / 60.0) * 3));
-            end
+	update($c);
+end
 
 
+rule "socialSecurityContribution3"
+	salience 8
+when
+	$c : Clerk(	(getMonthlySalaryGross() * 0.18) >= 537.76 &&
+				getMonthlySocialSecurityContribution() == -1 )
+then
+	System.out.println("# Clerk \""
+						+ $c.getName()
+						+ "\" fires rule \"socialSecurityContribution3\": monthly social security contribution of 537.76 EUR is calculated.");
+
+	$c.setMonthlySocialSecurityContribution(537.76);
+
+	update($c);
+end
+
+rule "incomeTaxTariffZone1"
+	salience 7
+when
+	$c : Clerk(	(getAnnualSalaryGross() - getMonthlySocialSecurityContribution()*12) <= 11000 )
+then
+	System.out.println("# Clerk \""
+						+ $c.getName()
+						+ "\" fires rule \"incomeTaxTariffZone1\": annual income tax of 0 EUR is calculated.");
+
+	$c.setIncomeTax(0);
+end
+
+rule "incomeTaxTariffZone2"
+	salience 7
+when
+	$c : Clerk(	(getAnnualSalaryGross() - getMonthlySocialSecurityContribution()*12) > 11000 &&
+				(getAnnualSalaryGross() - getMonthlySocialSecurityContribution()*12) <= 25000 )
+then
+	System.out.println("# Clerk \""
+						+ $c.getName() + "\" fires rule \"incomeTaxTariffZone2\": annual income tax of "
+						+ (($c.getAnnualSalaryGross() - $c.getMonthlySocialSecurityContribution()*12)/14000)*5110
+						+ " EUR is calculated.");
+
+	$c.setIncomeTax((($c.getAnnualSalaryGross() - $c.getMonthlySocialSecurityContribution()*12)/14000)*5110);
+end
+
+
+rule "incomeTaxTariffZone3"
+	salience 7
+when
+	$c : Clerk(	(getAnnualSalaryGross() - getMonthlySocialSecurityContribution()*12) > 25000 &&
+				(getAnnualSalaryGross() - $c.getMonthlySocialSecurityContribution()*12) <= 60000 )
+then
+	System.out.println("# Clerk \""
+						+ $c.getName()
+						+ "\" fires rule \"incomeTaxTariffZone3\": annual income tax of "
+						+ ((((($c.getAnnualSalaryGross() - $c.getMonthlySocialSecurityContribution()*12)-25000)/35000)*15125)+5110)
+						+ " EUR is calculated.");
+
+	$c.setIncomeTax((((($c.getAnnualSalaryGross() - $c.getMonthlySocialSecurityContribution()*12)-25000)/35000)*15125)+5110);
+end
+
+
+rule "incomeTaxTariffZone4"
+	salience 7
+when
+	$c : Clerk(	(getAnnualSalaryGross() - getMonthlySocialSecurityContribution()*12) > 60000 )
+then
+	System.out.println("# Clerk \""
+						+ $c.getName()
+						+ "\" fires rule \"incomeTaxTariffZone4\": annual income tax of "
+						+ (((($c.getAnnualSalaryGross() - ($c.getMonthlySocialSecurityContribution()*12))-60000)*0.5)+20235)
+						+ " EUR is calculated.");
+
+	$c.setIncomeTax(((($c.getAnnualSalaryGross() - ($c.getMonthlySocialSecurityContribution()*12))-60000)*0.5)+20235);
+end
+
+
+rule "monthlySalaryNet"
+	salience 6
+when
+	$c : Clerk( getMonthlySalaryNet() == -1 )
+then
+	System.out.println("# Clerk \""
+						+ $c.getName()
+						+ "\" fires rule \"monthlySalaryNet\": net monthly salary of "
+						+ ($c.getMonthlySalaryGross() - $c.getMonthlySocialSecurityContribution() - $c.getIncomeTax()/12)
+						+ " EUR is calculated.");
+
+	$c.setMonthlySalaryNet($c.getMonthlySalaryGross() - $c.getMonthlySocialSecurityContribution() - $c.getIncomeTax()/12);
+end
+
+rule "annualSalaryNet"
+	salience 5
+when
+	$c : Clerk(	getAnnualSalaryNet() == -1 )
+then
+	System.out.println("# Clerk \""
+						+ $c.getName()
+						+ "\" fires rule \"annualSalaryNet\": gross annual salary of "
+						+ ($c.getMonthlySalaryNet() * 12)
+						+ " EUR is calculated.");
+
+	$c.setAnnualSalaryNet($c.getMonthlySalaryNet() * 12);
+end

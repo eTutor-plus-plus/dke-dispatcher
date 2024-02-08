@@ -1,22 +1,9 @@
 [
+
   {
-    "full_classname": "at.jku.dke.etutor.modules.drools.jit.Invoice",
-    "class_content": "package at.jku.dke.etutor.modules.drools.jit;\n\nimport org.kie.api.definition.type.Role;\n\nimport java.util.Date;\n\n@Role(Role.Type.FACT)\npublic record Invoice(Date invoiceDate, Vehicle vehicle, int price) {\n}"
-  },
-  {
-    "full_classname": "at.jku.dke.etutor.modules.drools.jit.Event",
-    "class_content": "package at.jku.dke.etutor.modules.drools.jit;\n\nimport java.util.Date;\n\npublic interface Event {\n    Date timestamp();\n\n    default long diffInMinutes(Event other) {\n        long diff = timestamp().getTime() - other.timestamp().getTime();\n        return diff / 60000;\n    }\n}"
-  },
-  {
-    "full_classname": "at.jku.dke.etutor.modules.drools.jit.EnterParkingLotEvent",
-    "class_content": "package at.jku.dke.etutor.modules.drools.jit;\n\nimport org.kie.api.definition.type.Role;\nimport org.kie.api.definition.type.Timestamp;\n\nimport java.util.Date;\n\n@Role(Role.Type.EVENT)\n@Timestamp(\"timestamp\")\npublic record EnterParkingLotEvent(Vehicle vehicle, Date timestamp) implements Event {\n}"
-  },
-  {
-    "full_classname": "at.jku.dke.etutor.modules.drools.jit.ExitParkingLotEvent",
-    "class_content": "package at.jku.dke.etutor.modules.drools.jit;\n\nimport org.kie.api.definition.type.Role;\nimport org.kie.api.definition.type.Timestamp;\n\nimport java.util.Date;\n\n@Role(Role.Type.EVENT)\n@Timestamp(\"timestamp\")\npublic record ExitParkingLotEvent(Vehicle vehicle, Date timestamp) implements Event {\n}"
-  },
-  {
-    "full_classname": "at.jku.dke.etutor.modules.drools.jit.Vehicle",
-    "class_content": "package at.jku.dke.etutor.modules.drools.jit;\n\nimport org.kie.api.definition.type.Role;\n\n@Role(Role.Type.FACT)\npublic record Vehicle(String licensePlate) {\n}"
+
+    "full_classname": "at.jku.dke.data.Clerk",
+
+    "class_content": "package at.jku.dke.data;\n\npublic class Clerk {\n\nprivate String name;\nprivate double monthlySalaryGross;\nprivate double annualSalaryGross;\nprivate double monthlySocialSecurityContribution;\nprivate double incomeTax;\nprivate double monthlySalaryNet;\nprivate double annualSalaryNet;\n\npublic Clerk(String name, double monthlySalaryGross) {\nthis.name = name;\nthis.monthlySalaryGross = monthlySalaryGross;\nthis.annualSalaryGross = -1;\nthis.monthlySocialSecurityContribution = -1;\nthis.incomeTax = -1;\nthis.monthlySalaryNet = -1;\nthis.annualSalaryNet = -1;\n}\n\npublic String getName() {\nreturn name;\n}\n\npublic void setName(String name) {\nthis.name = name;\n}\n\npublic double getMonthlySalaryGross() {\nreturn monthlySalaryGross;\n}\n\npublic void setMonthlySalaryGross(double monthlySalaryGross) {\nthis.monthlySalaryGross = monthlySalaryGross;\n}\n\npublic double getAnnualSalaryGross() {\nreturn annualSalaryGross;\n}\n\npublic void setAnnualSalaryGross(double annualSalaryGross) {\nthis.annualSalaryGross = annualSalaryGross;\n}\n\npublic double getMonthlySocialSecurityContribution() {\nreturn monthlySocialSecurityContribution;\n}\n\npublic void setMonthlySocialSecurityContribution(double monthlySocialSecurityContribution) {\nthis.monthlySocialSecurityContribution = monthlySocialSecurityContribution;\n}\n\npublic double getIncomeTax() {\nreturn incomeTax;\n}\n\npublic void setIncomeTax(double incomeTax) {\nthis.incomeTax = incomeTax;\n}\n\npublic double getMonthlySalaryNet() {\nreturn monthlySalaryNet;\n}\n\npublic void setMonthlySalaryNet(double monthlySalaryNet) {\nthis.monthlySalaryNet = monthlySalaryNet;\n}\n\npublic double getAnnualSalaryNet() {\nreturn annualSalaryNet;\n}\n\npublic void setAnnualSalaryNet(double annualSalaryNet) {\nthis.annualSalaryNet = annualSalaryNet;\n}\n\n}"
   }
 ]
