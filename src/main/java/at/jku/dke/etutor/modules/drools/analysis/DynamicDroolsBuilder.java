@@ -147,8 +147,8 @@ public class DynamicDroolsBuilder implements AutoCloseable {
             throw new RuntimeException("Rule compilation errors: " + res);
 
         // Set kie base event processing option
-        KieBaseConfiguration config = KieServices.Factory.get().newKieBaseConfiguration();
-        config.setOption(processingOption);
+        //KieBaseConfiguration config = KieServices.Factory.get().newKieBaseConfiguration();
+        //config.setOption(processingOption);
         return new Pair<>(ks, ks.newKieContainer(ks.getRepository().getDefaultReleaseId()));
     }
 

@@ -67,6 +67,15 @@ public class DroolsAnalysis extends DefaultAnalysis {
 
         loadSampleSolutionOutput();
         this.studentOutput = createOutputFactList();
+
+
+        //modify student answer to format from database
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonOutput = null;
+        jsonOutput = objectMapper.writeValueAsString(studentOutput);
+        this.studentOutput = convertOutputJsonToListUtil(jsonOutput);
+
+
         this.additionalFactInformation = buildComparisonReport();
         this.wrongFactList = compareOutputs();
         this.setSubmissionSuitsSolution(!hasSyntaxError && wrongFactList.isEmpty() && additionalFactInformation.isEmpty());
@@ -259,13 +268,13 @@ public class DroolsAnalysis extends DefaultAnalysis {
      * @throws ReflectiveOperationException
      */
     private Collection<?> fireRules() throws IOException, ReflectiveOperationException {
-        boolean isCep = true; //könnte man in die Angabe beim Erstellen aufnehmen für "normale" Drools Beispiele
+        boolean isCep = false; //könnte man in die Angabe beim Erstellen aufnehmen für "normale" Drools Beispiele
         try (var dyn = new DynamicDroolsBuilder(this.javaClasses)) {
             var ks = dyn.newKieSession(this.inputRules, isCep);
 
             SessionClock clock = ks.getSessionClock();
-            if (!(clock instanceof SessionPseudoClock spc))
-                return null;
+            //if (!(clock instanceof SessionPseudoClock spc))
+              //  return null;
 
             Map<Integer, Object> dynamicObjectMap = new HashMap<>();
             ArrayList<Object> dynamicEventList = new ArrayList<>();
@@ -333,8 +342,8 @@ public class DroolsAnalysis extends DefaultAnalysis {
                     Date ts = (Date) object.getClass().getMethod("timestamp").invoke(object);
 
                     var diff = ts.getTime() - clock.getCurrentTime();
-                    if (diff > 0)
-                        spc.advanceTime(diff, TimeUnit.MILLISECONDS);
+                    //if (diff > 0)
+                        //spc.advanceTime(diff, TimeUnit.MILLISECONDS);
                 }
 
 
