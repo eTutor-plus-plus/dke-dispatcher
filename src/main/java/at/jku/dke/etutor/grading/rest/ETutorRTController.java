@@ -28,10 +28,6 @@ public class ETutorRTController {
         this.resourceService = resourceService;
     }
 
-    @PostMapping("/task/getEntry")
-    public boolean getEntry(@RequestBody String name, int id) throws SQLException {
-        return true;
-    }
 
     @PostMapping("/task/addTask")
     public Long addTask(@RequestBody String elem) throws SQLException, ParseException, JsonProcessingException {

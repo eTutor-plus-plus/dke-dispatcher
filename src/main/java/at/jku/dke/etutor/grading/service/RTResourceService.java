@@ -1,8 +1,6 @@
 package at.jku.dke.etutor.grading.service;
 
 import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.grading.rest.model.entities.Grading;
-import at.jku.dke.etutor.grading.rest.model.entities.Submission;
 import at.jku.dke.etutor.grading.rest.model.repositories.GradingDTORepository;
 import at.jku.dke.etutor.modules.rt.RTDataSource;
 import at.jku.dke.etutor.modules.rt.RTObject;
@@ -10,12 +8,10 @@ import at.jku.dke.etutor.modules.rt.RTSolution;
 import at.jku.dke.etutor.modules.rt.analysis.errorListener;
 import at.jku.dke.etutor.modules.rt.analysis.rtSyntaxLexer;
 import at.jku.dke.etutor.modules.rt.analysis.rtSyntaxParser;
-import at.jku.dke.etutor.modules.xquery.exercise.XQExerciseBean;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.parser.ParseException;
-import net.sourceforge.plantuml.json.JsonString;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;

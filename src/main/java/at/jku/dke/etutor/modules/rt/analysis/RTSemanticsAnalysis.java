@@ -7,10 +7,10 @@ public class RTSemanticsAnalysis {
     List<String> solution;
     List<String> relationsStudent = new ArrayList();
     List<String> relations = new ArrayList<>();
-    Map<String,String> pkStudent = new HashMap<String,String>();
-    Map<String,String> pk = new HashMap<String,String>();
-    Map<String,String> attributes = new HashMap<String,String>();
-    Map<String,String>attributesStudent = new HashMap<String,String>();
+    Map<String,List<String>> pkStudent = new HashMap<String,List<String>>();
+    Map<String,List<String>> pk = new HashMap<String,List<String>>();
+    Map<String,List<String>> attributes = new HashMap<String,List<String>>();
+    Map<String,List<String>>attributesStudent = new HashMap<String,List<String>>();
     Map<String,String> dependencies = new HashMap<String,String>();
     Map<String,String> dependenciesStudent = new HashMap<String,String>();
     String errorLogSemantik = "";
@@ -71,7 +71,7 @@ public class RTSemanticsAnalysis {
     public boolean checkRelation(){
         for(String str : this.relations){
             if(!this.relationsStudent.contains(str)){
-                this.errorLogSyntax = this.errorLogSyntax.concat("<br>Falsche Relation! (Tipp: Rechtschreibung prüfen!)");
+                this.errorLogSyntax = this.errorLogSyntax.concat("<br>Wrong relation! (Tip: check spelling!)");
                 return false;
             }
         }
@@ -80,15 +80,17 @@ public class RTSemanticsAnalysis {
 
     public boolean checkPrimaryKey(){
         boolean check = true;
-        for (Map.Entry<String,String> entry : this.pk.entrySet()){
-            String solution = entry.getValue();
-            String student = this.pkStudent.get(entry.getKey());
-            if (!solution.equals(student)) {
-                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falscher Primärschlüssel!");
-                check = false;
-            }
-            else {
-                pointsPK = pointsPK + (weighting[0] / countRelations);
+        for (Map.Entry<String,List<String>> entry : this.pk.entrySet()) {
+            List<String> solution = entry.getValue();
+            List<String> student = this.pkStudent.get(entry.getKey());
+            try {
+                if (!student.containsAll(solution) || student.size() != solution.size()) {
+                    this.errorLogSemantik = this.errorLogSemantik.concat("<br>Error in the relation " + entry.getKey() + ": Incorrect primary key!");
+                    check = false;
+                } else {
+                    pointsPK = pointsPK + (weighting[0] / countRelations);
+                }
+            } catch (Exception e) {
             }
         }
         return check;
@@ -96,15 +98,22 @@ public class RTSemanticsAnalysis {
 
     public boolean checkAttributes(){
         boolean check = true;
-        for (Map.Entry<String,String> entry : this.attributes.entrySet()){
-            String solution = entry.getValue();
-            String student = this.attributesStudent.get(entry.getKey());
-            if (!solution.equals(student)) {
-                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falsche/s, redundante/s oder fehlende/s Attributt/e!");
-                check = false;
-            }
-            else {
+        for (Map.Entry<String,List<String>> entry : this.attributes.entrySet()) {
+            List<String> solution = entry.getValue();
+            List<String> student = this.attributesStudent.get(entry.getKey());
+            try {
+            if (solution == null && student == null){
                 pointsAtt = pointsAtt + (weighting[1] / countRelations);
+            }
+            else if (!student.containsAll(solution) || solution.size() != student.size()) {
+                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Error in the relation " + entry.getKey() + ": Incorrect, redundant or missing attribute(s)!");
+                check = false;
+            } else {
+                pointsAtt = pointsAtt + (weighting[1] / countRelations);
+            }
+        } catch (Exception e){
+                this.errorLogSemantik = this.errorLogSemantik.concat("<br>Error in the relation " + entry.getKey() + ": Incorrect, redundant or missing attribute(s)!");
+                check = false;
             }
         }
         return check;
@@ -127,7 +136,7 @@ public class RTSemanticsAnalysis {
             if (!solutionList.equals(studentList)) {
                 if(studentList != null && solutionList != null) {
                     int pointsForRightAnswer = weighting[2] / countRelations / solutionList.size();
-                    this.errorLogSemantik = this.errorLogSemantik.concat("<br>Fehler in der Relation " + entry.getKey() + ": Falsche, redundante oder fehlende Inklusions-Abhängigkeit/en!");
+                    this.errorLogSemantik = this.errorLogSemantik.concat("<br>Error in the relation " + entry.getKey() + ": Incorrect, redundant or missing inclusion dependency/dependencies!");
                     for (String elem : studentList) {
                         if (solutionList.contains(elem)) {
                             pointsDep += pointsForRightAnswer;
@@ -149,44 +158,68 @@ public class RTSemanticsAnalysis {
 
     public void clacPrimaryKey(){
         for(String str : this.solution) {
-            int indexOfFirstPipe = str.indexOf('|');
-            int indexOfLastPipe = str.lastIndexOf('|');
+            int indexOfFirstPipe = str.indexOf('#');
+            int indexOfLastPipe = str.lastIndexOf('#');
             if (indexOfFirstPipe != -1 && indexOfLastPipe != -1 && indexOfFirstPipe < indexOfLastPipe) {
-                String extractedText = str.substring(indexOfFirstPipe + 1, indexOfLastPipe);
                 String key = this.getRelation(str);
-                this.pk.put(key,extractedText);
+                try{
+                    String extractedText = str.substring(indexOfFirstPipe + 1, indexOfLastPipe);
+                    String[] words = extractedText.split(",");
+                    this.pk.put(key, Arrays.stream(words).toList());
+                }catch (Exception e){
+                    this.pk.put(key,null);
+                }
             }
         }
 
         for(String str : this.studentSolution) {
-            int indexOfFirstPipe = str.indexOf('|');
-            int indexOfLastPipe = str.lastIndexOf('|');
+            int indexOfFirstPipe = str.indexOf('#');
+            int indexOfLastPipe = str.lastIndexOf('#');
             if (indexOfFirstPipe != -1 && indexOfLastPipe != -1 && indexOfFirstPipe < indexOfLastPipe) {
-                String extractedText = str.substring(indexOfFirstPipe + 1, indexOfLastPipe);
                 String key = this.getRelation(str);
-                this.pkStudent.put(key,extractedText);
+                try{
+                    String extractedText = str.substring(indexOfFirstPipe + 1, indexOfLastPipe);
+                    String[] words = extractedText.split(",");
+                    this.pkStudent.put(key, Arrays.stream(words).toList());
+                }catch (Exception e){
+                    this.pkStudent.put(key,null);
+                }
             }
         }
+        System.err.println(pk);
+        System.out.println(pkStudent);
     }
 
     public void clacAttributes(){
         for(String str : this.solution) {
-            int indexOfFirstPipe = str.lastIndexOf('|');
+            int indexOfFirstPipe = str.lastIndexOf('#');
             int indexOfLastPipe = str.indexOf(')');
             if (indexOfFirstPipe != -1 && indexOfLastPipe != -1 && indexOfFirstPipe < indexOfLastPipe) {
-                String extractedText = str.substring(indexOfFirstPipe + 1, indexOfLastPipe);
                 String key = this.getRelation(str);
-                this.attributes.put(key,extractedText);
+                try {
+                    String extractedText = str.substring(indexOfFirstPipe + 2, indexOfLastPipe);
+                    String[] words = extractedText.split(",");
+                    this.attributes.put(key, Arrays.stream(words).toList());
+                }
+                catch (Exception e){
+                    this.attributes.put(key, null);
+                }
             }
         }
 
         for(String str : this.studentSolution) {
-            int indexOfFirstPipe = str.lastIndexOf('|');
+            int indexOfFirstPipe = str.lastIndexOf('#');
             int indexOfLastPipe = str.indexOf(')');
             if (indexOfFirstPipe != -1 && indexOfLastPipe != -1 && indexOfFirstPipe < indexOfLastPipe) {
-                String extractedText = str.substring(indexOfFirstPipe + 1, indexOfLastPipe);
                 String key = this.getRelation(str);
-                this.attributesStudent.put(key,extractedText);
+                try {
+                    String extractedText = str.substring(indexOfFirstPipe + 2, indexOfLastPipe);
+                    String[] words = extractedText.split(",");
+                    this.attributesStudent.put(key, Arrays.stream(words).toList());
+                }
+                catch (Exception e){
+                    this.attributesStudent.put(key, null);
+                }
             }
         }
     }
@@ -229,19 +262,19 @@ public class RTSemanticsAnalysis {
         return relations;
     }
 
-    public Map<String,String> getPk() {
+    public Map<String,List<String>> getPk() {
         return pk;
     }
 
-    public Map<String, String> getPkStudent() {
+    public Map<String, List<String>> getPkStudent() {
         return pkStudent;
     }
 
-    public Map<String,String> getAttributes() {
+    public Map<String,List<String>> getAttributes() {
         return attributes;
     }
 
-    public Map<String,String> getAttributesStudent() {
+    public Map<String,List<String>> getAttributesStudent() {
         return attributesStudent;
     }
 
@@ -274,15 +307,5 @@ public class RTSemanticsAnalysis {
     }
     public int getTotalPoints(){
         return this.pointsAtt + this.pointsPK + this.pointsDep;
-    }
-
-    @Override
-    public String toString() {
-        return "RTSemanticsAnalysis{" +
-                "studentSolution=" + studentSolution +
-                ", solution=" + solution +
-                ", relationsStudent=" + relationsStudent +
-                ", relations=" + relations +
-                '}';
     }
 }

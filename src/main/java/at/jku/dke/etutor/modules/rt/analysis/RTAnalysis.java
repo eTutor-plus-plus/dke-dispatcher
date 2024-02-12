@@ -1,10 +1,6 @@
 package at.jku.dke.etutor.modules.rt.analysis;
 
-import at.jku.dke.etutor.core.evaluation.Analysis;
 import at.jku.dke.etutor.core.evaluation.DefaultAnalysis;
-import at.jku.dke.etutor.grading.config.ApplicationProperties;
-import at.jku.dke.etutor.grading.rest.ETutorRTController;
-import at.jku.dke.etutor.grading.service.RTResourceService;
 import at.jku.dke.etutor.modules.rt.RTObject;
 import at.jku.dke.etutor.modules.rt.RTSolution;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,18 +9,13 @@ import net.minidev.json.parser.ParseException;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import javax.xml.transform.ErrorListener;
-import java.io.Serializable;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 public class RTAnalysis extends DefaultAnalysis {
@@ -60,6 +51,7 @@ public class RTAnalysis extends DefaultAnalysis {
         for (RTSolution rtSolution : this.solution){
             rtSolution.initAnalyse(this.solutionStudent);
             countRalations = countRalations + rtSolution.getRtSemanticsAnalysis().getRelations().size();
+
             this.errorLogSemantik = errorLogSemantik.concat(rtSolution.getRtSemanticsAnalysis().getErrorLogSemantik());
         }
         checkRelations();
@@ -105,7 +97,7 @@ public class RTAnalysis extends DefaultAnalysis {
             }
         }
         if(solution != solutionStudent){
-            this.errorLogSyntax = errorLogSyntax.concat("<br>Redundante oder fehlende Relation!");
+            this.errorLogSyntax = errorLogSyntax.concat("<br>Redundant or missing relation!");
             this.hasSyntaxError = true;
         }
     }

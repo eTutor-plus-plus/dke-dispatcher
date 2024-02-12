@@ -14,7 +14,7 @@ public class rtSyntaxParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, STRING=4, ATT_BLOCK=5, INK=6, INK_BLOCK=7;
+		T__0=1, T__1=2, T__2=3, T__3=4, STRING=5, ATT_BLOCK=6, INK=7, INK_BLOCK=8;
 	public static final int
 		RULE_start = 0;
 	private static String[] makeRuleNames() {
@@ -26,13 +26,13 @@ public class rtSyntaxParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'('", "'|'", "')'"
+			null, "'('", "'#'", "','", "')'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, "STRING", "ATT_BLOCK", "INK", "INK_BLOCK"
+			null, null, null, null, null, "STRING", "ATT_BLOCK", "INK", "INK_BLOCK"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -143,32 +143,34 @@ public class rtSyntaxParser extends Parser {
 			}
 			setState(6);
 			match(T__1);
-			setState(8);
+			setState(11);
 			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==STRING || _la==ATT_BLOCK) {
+			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
+			case 1:
 				{
 				setState(7);
-				_la = _input.LA(1);
-				if ( !(_la==STRING || _la==ATT_BLOCK) ) {
-				_errHandler.recoverInline(this);
+				match(T__2);
+				setState(8);
+				match(STRING);
 				}
-				else {
-					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-					_errHandler.reportMatch(this);
-					consume();
+				break;
+			case 2:
+				{
+				setState(9);
+				match(T__2);
+				setState(10);
+				match(ATT_BLOCK);
 				}
-				}
+				break;
 			}
-
-			setState(10);
-			match(T__2);
-			setState(12);
+			setState(13);
+			match(T__3);
+			setState(15);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==INK || _la==INK_BLOCK) {
 				{
-				setState(11);
+				setState(14);
 				_la = _input.LA(1);
 				if ( !(_la==INK || _la==INK_BLOCK) ) {
 				_errHandler.recoverInline(this);
@@ -181,7 +183,7 @@ public class rtSyntaxParser extends Parser {
 				}
 			}
 
-			setState(14);
+			setState(17);
 			match(EOF);
 			}
 		}
@@ -197,19 +199,21 @@ public class rtSyntaxParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0007\u0011\u0002\u0000\u0007\u0000\u0001\u0000\u0001\u0000"+
-		"\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0003\u0000\t\b\u0000"+
-		"\u0001\u0000\u0001\u0000\u0003\u0000\r\b\u0000\u0001\u0000\u0001\u0000"+
-		"\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0002\u0001\u0000\u0004\u0005"+
-		"\u0001\u0000\u0006\u0007\u0011\u0000\u0002\u0001\u0000\u0000\u0000\u0002"+
-		"\u0003\u0005\u0004\u0000\u0000\u0003\u0004\u0005\u0001\u0000\u0000\u0004"+
-		"\u0005\u0005\u0002\u0000\u0000\u0005\u0006\u0007\u0000\u0000\u0000\u0006"+
-		"\b\u0005\u0002\u0000\u0000\u0007\t\u0007\u0000\u0000\u0000\b\u0007\u0001"+
-		"\u0000\u0000\u0000\b\t\u0001\u0000\u0000\u0000\t\n\u0001\u0000\u0000\u0000"+
-		"\n\f\u0005\u0003\u0000\u0000\u000b\r\u0007\u0001\u0000\u0000\f\u000b\u0001"+
-		"\u0000\u0000\u0000\f\r\u0001\u0000\u0000\u0000\r\u000e\u0001\u0000\u0000"+
-		"\u0000\u000e\u000f\u0005\u0000\u0000\u0001\u000f\u0001\u0001\u0000\u0000"+
-		"\u0000\u0002\b\f";
+		"\u0004\u0001\b\u0014\u0002\u0000\u0007\u0000\u0001\u0000\u0001\u0000\u0001"+
+		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"+
+		"\u0000\u0003\u0000\f\b\u0000\u0001\u0000\u0001\u0000\u0003\u0000\u0010"+
+		"\b\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0000\u0000\u0001\u0000\u0000"+
+		"\u0002\u0001\u0000\u0005\u0006\u0001\u0000\u0007\b\u0015\u0000\u0002\u0001"+
+		"\u0000\u0000\u0000\u0002\u0003\u0005\u0005\u0000\u0000\u0003\u0004\u0005"+
+		"\u0001\u0000\u0000\u0004\u0005\u0005\u0002\u0000\u0000\u0005\u0006\u0007"+
+		"\u0000\u0000\u0000\u0006\u000b\u0005\u0002\u0000\u0000\u0007\b\u0005\u0003"+
+		"\u0000\u0000\b\f\u0005\u0005\u0000\u0000\t\n\u0005\u0003\u0000\u0000\n"+
+		"\f\u0005\u0006\u0000\u0000\u000b\u0007\u0001\u0000\u0000\u0000\u000b\t"+
+		"\u0001\u0000\u0000\u0000\u000b\f\u0001\u0000\u0000\u0000\f\r\u0001\u0000"+
+		"\u0000\u0000\r\u000f\u0005\u0004\u0000\u0000\u000e\u0010\u0007\u0001\u0000"+
+		"\u0000\u000f\u000e\u0001\u0000\u0000\u0000\u000f\u0010\u0001\u0000\u0000"+
+		"\u0000\u0010\u0011\u0001\u0000\u0000\u0000\u0011\u0012\u0005\u0000\u0000"+
+		"\u0001\u0012\u0001\u0001\u0000\u0000\u0000\u0002\u000b\u000f";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
