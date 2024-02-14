@@ -31,34 +31,10 @@ public class ETutorRTController {
 
     @PostMapping("/task/addTask")
     public Long addTask(@RequestBody String elem) throws SQLException, ParseException, JsonProcessingException {
-        boolean parseError = false;
-        RTObject rtObject = null;
-        String solution = "";
-        long error = 1;
-        int checkSolution = 1;
-        try {
-            rtObject = resourceService.getRTObject(elem);
-            if (rtObject.getSolution() != null){
-                solution = rtObject.getSolution().toString();
-                solution = solution = solution.substring(1, solution.length() - 1);
-                List<RTSolution> rtSolutions = resourceService.getRTSolutions(solution);
-                checkSolution = resourceService.checkRTSolution(rtSolutions, rtObject.getMaxPoints());
-            }
-        } catch (RuntimeException e){
-            parseError = true;
-        }
-        if(checkSolution != 1){
-            error = checkSolution;
-            return error;
-        }
-        if(!parseError) {
-            this.resourceService.insertTask(solution, rtObject.getMaxPoints());
-            return error;
-        }
-        else{
-            error = -1;
-            return error;
-        }
+        RTObject rtObject = resourceService.getRTObject(elem);
+        String solution = rtObject.getSolution().toString();
+        solution = solution = solution.substring(1, solution.length() - 1);
+        return this.resourceService.insertTask(solution, rtObject.getMaxPoints());
     }
 
     @PutMapping("/task/editTask")

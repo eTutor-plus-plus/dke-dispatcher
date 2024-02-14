@@ -15,6 +15,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class RTAnalysis extends DefaultAnalysis {
     public RTAnalysis(int id, String inputSolution) throws SQLException {
         super();
         this.id = id;
-        this.inputSolution = inputSolution;
+        this.inputSolution = inputSolution.toUpperCase();
         setDataBaseProperties();
         setSolutionStudent();
         initAnalyse();
@@ -51,7 +52,6 @@ public class RTAnalysis extends DefaultAnalysis {
         for (RTSolution rtSolution : this.solution){
             rtSolution.initAnalyse(this.solutionStudent);
             countRalations = countRalations + rtSolution.getRtSemanticsAnalysis().getRelations().size();
-
             this.errorLogSemantik = errorLogSemantik.concat(rtSolution.getRtSemanticsAnalysis().getErrorLogSemantik());
         }
         checkRelations();
@@ -81,6 +81,8 @@ public class RTAnalysis extends DefaultAnalysis {
     }
 
     public void checkRelations(){
+        List<String> allowedAttributes = new ArrayList<>();
+        List<String> allowedAttributesStudent = new ArrayList<>();
         int blank = 0;
         for (String elem : solutionStudent){
             if (elem.isEmpty() || elem.isBlank()){
@@ -95,10 +97,18 @@ public class RTAnalysis extends DefaultAnalysis {
                 this.hasSyntaxError = true;
                 this.errorLogSyntax = errorLogSyntax.concat(rtSolution.getRtSemanticsAnalysis().getErrorLogSyntax());
             }
+            allowedAttributes.addAll(rtSolution.getRtSemanticsAnalysis().getAllowedAttributes());
+            allowedAttributesStudent = rtSolution.getRtSemanticsAnalysis().getAllowedAttributesStudent();
         }
         if(solution != solutionStudent){
             this.errorLogSyntax = errorLogSyntax.concat("<br>Redundant or missing relation!");
             this.hasSyntaxError = true;
+        }
+        for (String str : allowedAttributesStudent){
+            if(!allowedAttributes.contains(str)){
+                this.errorLogSyntax = errorLogSyntax.concat("<br>The following attribute is not valid! " + str);
+                this.hasSyntaxError = true;
+            }
         }
     }
 
