@@ -1505,6 +1505,7 @@ public class XQAnalysis implements Analysis, Serializable {
      * @see etutor.core.evaluation.Analysis#setSubmissionSuitsSolution(boolean)
      */
     public void setSubmissionSuitsSolution(boolean b) {
+        this.submissionSuitsSolution = b;
     }
 
     /* (non-Javadoc)
