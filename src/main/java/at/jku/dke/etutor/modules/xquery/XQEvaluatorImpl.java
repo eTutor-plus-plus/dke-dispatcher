@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * This class serves as entry point for evaluating XQuery queries. There are some basic methods for
  * analyzing the differences between two query solutions, grading the analysis and reporting it.
- * 
+ *
  * @author Georg Nitsche
  * @version 1.0
  * @since 1.0
@@ -38,14 +38,13 @@ import java.util.Map;
 public class XQEvaluatorImpl implements XQEvaluator {
 
     private final static Logger LOGGER = (Logger) LoggerFactory.getLogger(XQEvaluatorImpl.class);
-	private static final String LINE_SEP = System.getProperty("line.separator", "\n");
-	private final ApplicationProperties applicationProperties;
-	
+    private static final String LINE_SEP = System.getProperty("line.separator", "\n");
+    private final ApplicationProperties applicationProperties;
+
     /**
      * Constructs a new <code>XQEvaluatorImpl</code>.
-     * 
      */
-    public XQEvaluatorImpl(ApplicationProperties applicationProperties)  {
+    public XQEvaluatorImpl(ApplicationProperties applicationProperties) {
         super();
         //evaluator implementation is bound to RMI registry at startup process; 
         //requesting core manager instance causes creation of singleton
@@ -57,51 +56,52 @@ public class XQEvaluatorImpl implements XQEvaluator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see etutor.core.evaluation.Evaluator#analyze(int, int, java.util.Map, java.util.Map)
      */
     public Analysis analyze(int exerciseId, int userId, Map<String, String> passedAttributes, Map<String, String> passedParameters, Locale locale) throws Exception {
-    	String msg;
-    	String action;
-    	String command;
+        String msg;
+        String action;
+        String command;
         boolean isSpec;
 
         action = passedAttributes.get(XQConstants.ATTR_ACTION);
         command = passedAttributes.get(XQConstants.ATTR_COMMAND);
         isSpec = XQConstants.COMMAND_EVALUATE_SPEC.equals(command);
-        
+
         msg = new String();
         msg += "Start analyzing with exercise ID " + exerciseId;
-    	msg += ", user ID " + userId + ", action '" + action + "'; " + LINE_SEP;
-    	msg += "Command is '" + command + "' -> ";
-    	msg += "evaluating query as assistant's exercise specification? ";
-    	msg += isSpec ? "Yes " : "No ";
-    	msg += "evaluating query as student's exercise submission? ";
-    	msg += isSpec ? "No " : "Yes ";
+        msg += ", user ID " + userId + ", action '" + action + "'; " + LINE_SEP;
+        msg += "Command is '" + command + "' -> ";
+        msg += "evaluating query as assistant's exercise specification? ";
+        msg += isSpec ? "Yes " : "No ";
+        msg += "evaluating query as student's exercise submission? ";
+        msg += isSpec ? "No " : "Yes ";
         LOGGER.info(msg);
-        
+
         if (isSpec) {
-        	return analyzeSpecification(exerciseId, userId, passedAttributes, passedParameters);
-        } else  {
-        	return analyzeSubmission(exerciseId, userId, passedAttributes, passedParameters);
+            return analyzeSpecification(exerciseId, userId, passedAttributes, passedParameters);
+        } else {
+            return analyzeSubmission(exerciseId, userId, passedAttributes, passedParameters);
         }
     }
 
     /**
      * Returns an HTML-representation of the result of the student's submitted xQuery
-     * @param analysis the Analysis
+     *
+     * @param analysis         the Analysis
      * @param passedAttributes the passed attributes
-     * @param locale the locale
+     * @param locale           the locale
      * @return an HTML-String
      */
     @Override
     public String generateHTMLResult(Analysis analysis, Map<String, String> passedAttributes, Locale locale) {
-        if(analysis instanceof XQAnalysis xqAnalysis){
-            if(passedAttributes.get("action").equals(XQConstants.ACTION_SUBMIT)) {
+        if (analysis instanceof XQAnalysis xqAnalysis) {
+            if (passedAttributes.get("action").equals(XQConstants.ACTION_SUBMIT)) {
                 return xqAnalysis.isCorrect() ? "<div> Your solution is correct </div>" : "<Your solution seems not to be correct </div>";
             }
             try {
-                return ((XQReport)this.report
+                return ((XQReport) this.report
                         (analysis, null, passedAttributes, new HashMap<String, String>(), locale))
                         .getRenderedResult();
             } catch (Exception e) {
@@ -112,11 +112,11 @@ public class XQEvaluatorImpl implements XQEvaluator {
     }
 
     public Analysis analyzeSubmission(int exerciseId, int userId, Map passedAttributes, Map passedParameters) throws Exception {
-    	String msg;
-    	String action;
-    	String command;
-    	XQAnalysis analysis;
-    	XQAnalysisConfig config;
+        String msg;
+        String action;
+        String command;
+        XQAnalysis analysis;
+        XQAnalysisConfig config;
         XQCoreManager coreManager;
         XQProcessor processor;
         XQExerciseBean exercise;
@@ -130,38 +130,38 @@ public class XQEvaluatorImpl implements XQEvaluator {
         UrlContentMap urlContents;
         String url;
         String hiddenUrl;
-        
-        action = (String)passedAttributes.get(XQConstants.ATTR_ACTION);
-        command = (String)passedAttributes.get(XQConstants.ATTR_COMMAND);
-        
+
+        action = (String) passedAttributes.get(XQConstants.ATTR_ACTION);
+        command = (String) passedAttributes.get(XQConstants.ATTR_COMMAND);
+
         msg = new String();
         msg += "Start analyzing with exercise ID " + exerciseId;
-    	msg += ", user ID " + userId + ", action '" + action + "'";
-    	msg += ", command " + command;
+        msg += ", user ID " + userId + ", action '" + action + "'";
+        msg += ", command " + command;
         LOGGER.info(msg);
 
         try {
-			querySubmitted = (String)passedAttributes.get(XQConstants.ATTR_SUBMISSION);
-		} catch (ClassCastException e) {
-			msg += "Passed attribute " + XQConstants.ATTR_SUBMISSION;
+            querySubmitted = (String) passedAttributes.get(XQConstants.ATTR_SUBMISSION);
+        } catch (ClassCastException e) {
+            msg += "Passed attribute " + XQConstants.ATTR_SUBMISSION;
             msg += " is not of type " + String.class.getName() + ". ";
             LOGGER.error(msg, e);
             throw new AnalysisException(msg, e);
-		}
-        
-		if (querySubmitted == null) {
+        }
+
+        if (querySubmitted == null) {
             msg = "Passed attribute " + XQConstants.ATTR_SUBMISSION + " is null.";
             LOGGER.error(msg);
             throw new AnalysisException(msg);
         }
-		
-		//fetch execution properties
+
+        //fetch execution properties
         try {
             coreManager = XQCoreManager.getInstance();
             properties = coreManager.getPropertyFile();
             debugMode = properties.parseBooleanProperty(XQCoreManager.MODUS_DEBUG);
         } catch (Exception e) {
-        	msg = new String();
+            msg = new String();
             msg += "Analysis was stopped (Exercise id: " + exerciseId + "). ";
             msg += "An exception was thrown when trying to read properties. ";
             LOGGER.error(msg, e);
@@ -169,46 +169,46 @@ public class XQEvaluatorImpl implements XQEvaluator {
         }
 
         exerciseMgr = new XQExerciseManagerImpl(applicationProperties);
-        exercise = (XQExerciseBean)exerciseMgr.fetchExercise(exerciseId);
+        exercise = (XQExerciseBean) exerciseMgr.fetchExercise(exerciseId);
 
         if (exercise == null) {
-        	msg = new String();
-        	msg += "No exercise definition found based on id " + exerciseId + ".";
+            msg = new String();
+            msg += "No exercise definition found based on id " + exerciseId + ".";
             LOGGER.error(msg);
             throw new AnalysisException(msg);
         }
 
         queryCorrect = exercise.getQuery();
-        sortedNodes = (String[])exercise.getSortedNodes().toArray(new String[]{});
+        sortedNodes = (String[]) exercise.getSortedNodes().toArray(new String[]{});
         urlContents = new UrlContentMap();
         it = exercise.getUrls().aliasSet().iterator();
         while (it.hasNext()) {
-        	hiddenUrl = (String)it.next();
-        	url = exercise.getUrls().getUrl(hiddenUrl);
-            msg = new String();            
+            hiddenUrl = (String) it.next();
+            url = exercise.getUrls().getUrl(hiddenUrl);
+            msg = new String();
             msg += "Url specification: real url = '" + url + "', ";
             msg += "hidden url = '" + hiddenUrl + "'. " + LINE_SEP;
-        	//null values for hidden url are permitted, implying that only the real url
+            //null values for hidden url are permitted, implying that only the real url
             //is used, which means that in 'submission' mode faking of XQuery statements
             //can not be avoided.
-        	if (XQConstants.ACTION_SUBMIT.equalsIgnoreCase(action)) {
+            if (XQConstants.ACTION_SUBMIT.equalsIgnoreCase(action)) {
                 if (hiddenUrl == null) {
-                	msg += "No hidden url specified in database, but needed for '";
-                	msg += XQConstants.ACTION_SUBMIT + "' mode. ";
-                	msg += "Submitted queries could be faked.";
-                	msg += "Setting real url as hidden url. ";
+                    msg += "No hidden url specified in database, but needed for '";
+                    msg += XQConstants.ACTION_SUBMIT + "' mode. ";
+                    msg += "Submitted queries could be faked.";
+                    msg += "Setting real url as hidden url. ";
                     LOGGER.warn(msg);
                     hiddenUrl = url;
                 }
-        	} else {
-        		if (hiddenUrl == null) {
-                	msg += "No hidden url specified. ";
-                	msg += "Setting real url as hidden url. ";
+            } else {
+                if (hiddenUrl == null) {
+                    msg += "No hidden url specified. ";
+                    msg += "Setting real url as hidden url. ";
                     LOGGER.debug(msg);
                     hiddenUrl = url;
                 } else {
-                	msg += "Evaluation not in '" + XQConstants.ACTION_SUBMIT + "' mode. ";
-            		msg += "Setting real url as hidden url. ";
+                    msg += "Evaluation not in '" + XQConstants.ACTION_SUBMIT + "' mode. ";
+                    msg += "Setting real url as hidden url. ";
                     LOGGER.debug(msg);
                     hiddenUrl = url;
                 }
@@ -216,12 +216,12 @@ public class XQEvaluatorImpl implements XQEvaluator {
 
             urlContents.addUrlAlias(hiddenUrl, url);
         }
-        
+
         try {
             processor = new XQProcessor(applicationProperties);
-        	config = new XQAnalysisConfig();
-            
-        	config.setProcessor(processor);
+            config = new XQAnalysisConfig();
+
+            config.setProcessor(processor);
             config.setQuery1(queryCorrect);
             //LOGGER.debug("CORRECT QUERY: " + queryCorrect);
             config.setQuery2(querySubmitted);
@@ -230,26 +230,30 @@ public class XQEvaluatorImpl implements XQEvaluator {
             config.setDebugMode(debugMode);
             config.setUserID(userId);
             config.setExerciseID(exerciseId);
-            
+
             analysis = new XQAnalysis(config);
 
             if (!debugMode) {
-            	analysis.deleteTempFiles();
+                analysis.deleteTempFiles();
+            }
+            if (action.equalsIgnoreCase(XQConstants.ACTION_RUN)) {
+                analysis.setSubmissionSuitsSolution(analysis.getResult2().getSyntaxException() == null);
+                LOGGER.info("Run-mode: submission suits solution = {}", analysis.submissionSuitsSolution());
             }
             return analysis;
         } catch (Exception e) {
-        	msg = "Analysis was stopped (Exercise id: " + exerciseId + ").";
+            msg = "Analysis was stopped (Exercise id: " + exerciseId + ").";
             LOGGER.error(msg, e);
             throw new AnalysisException(msg, e);
         }
     }
 
     public Analysis analyzeSpecification(int exerciseId, int userId, Map passedAttributes, Map passedParameters) throws Exception {
-    	String msg;
-    	String action;
-    	String command;
-    	XQAnalysis analysis;
-    	XQAnalysisConfig config;
+        String msg;
+        String action;
+        String command;
+        XQAnalysis analysis;
+        XQAnalysisConfig config;
         XQCoreManager coreManager;
         XQProcessor processor;
         XQExerciseBean exercise;
@@ -261,40 +265,40 @@ public class XQEvaluatorImpl implements XQEvaluator {
         UrlContentMap urlContents;
         String url;
         String hiddenUrl;
-        
-        action = (String)passedAttributes.get(XQConstants.ATTR_ACTION);
-        command = (String)passedAttributes.get(XQConstants.ATTR_COMMAND);
-        
+
+        action = (String) passedAttributes.get(XQConstants.ATTR_ACTION);
+        command = (String) passedAttributes.get(XQConstants.ATTR_COMMAND);
+
         msg = new String();
         msg += "Start analyzing with exercise ID " + exerciseId;
-    	msg += ", user ID " + userId + ", action '" + action + "'";
-    	msg += ", command " + command;
+        msg += ", user ID " + userId + ", action '" + action + "'";
+        msg += ", command " + command;
         LOGGER.info(msg);
 
         try {
-			exercise = (XQExerciseBean)passedAttributes.get(XQConstants.ATTR_EXERCISE_SPECIFICATION);
-		} catch (ClassCastException e) {
-			msg = new String();
+            exercise = (XQExerciseBean) passedAttributes.get(XQConstants.ATTR_EXERCISE_SPECIFICATION);
+        } catch (ClassCastException e) {
+            msg = new String();
             msg += "Passed attribute " + XQConstants.ATTR_EXERCISE_SPECIFICATION;
             msg += " is not of type " + XQExerciseBean.class.getName() + " but ";
             msg += passedAttributes.get(XQConstants.ATTR_EXERCISE_SPECIFICATION).getClass().getName();
             LOGGER.error(msg, e);
             throw new AnalysisException(msg, e);
-		}
-        
-		if (exercise == null) {
+        }
+
+        if (exercise == null) {
             msg = "Passed attribute " + XQConstants.ATTR_EXERCISE_SPECIFICATION + " is null.";
             LOGGER.error(msg);
             throw new AnalysisException(msg);
         }
-		
-		//fetch execution properties
+
+        //fetch execution properties
         try {
             coreManager = XQCoreManager.getInstance();
             properties = coreManager.getPropertyFile();
             debugMode = properties.parseBooleanProperty(XQCoreManager.MODUS_DEBUG);
         } catch (Exception e) {
-        	msg = new String();
+            msg = new String();
             msg += "Analysis was stopped (Exercise id: " + exerciseId + "). ";
             msg += "An exception was thrown when trying to read properties. ";
             LOGGER.error(msg, e);
@@ -302,36 +306,36 @@ public class XQEvaluatorImpl implements XQEvaluator {
         }
 
         queryCorrect = exercise.getQuery();
-        sortedNodes = (String[])exercise.getSortedNodes().toArray(new String[]{});
+        sortedNodes = (String[]) exercise.getSortedNodes().toArray(new String[]{});
         urlContents = new UrlContentMap();
         it = exercise.getUrls().aliasSet().iterator();
         while (it.hasNext()) {
-        	hiddenUrl = (String)it.next();
-        	url = exercise.getUrls().getUrl(hiddenUrl);
-            msg = new String();            
+            hiddenUrl = (String) it.next();
+            url = exercise.getUrls().getUrl(hiddenUrl);
+            msg = new String();
             msg += "Url specification: real url = '" + url + "', ";
             msg += "hidden url = '" + hiddenUrl + "'. " + LINE_SEP;
-        	//null values for hidden url are permitted, implying that only the real url
+            //null values for hidden url are permitted, implying that only the real url
             //is used, which means that in 'submission' mode faking of XQuery statements
             //can not be avoided.
-        	if (XQConstants.ACTION_SUBMIT.equalsIgnoreCase(action)) {
+            if (XQConstants.ACTION_SUBMIT.equalsIgnoreCase(action)) {
                 if (hiddenUrl == null) {
-                	msg += "No hidden url specified in database, but needed for '";
-                	msg += XQConstants.ACTION_SUBMIT + "' mode. ";
-                	msg += "Submitted queries could be faked.";
-                	msg += "Setting real url as hidden url. ";
+                    msg += "No hidden url specified in database, but needed for '";
+                    msg += XQConstants.ACTION_SUBMIT + "' mode. ";
+                    msg += "Submitted queries could be faked.";
+                    msg += "Setting real url as hidden url. ";
                     LOGGER.warn(msg);
                     hiddenUrl = url;
                 }
-        	} else {
-        		if (hiddenUrl == null) {
-                	msg += "No hidden url specified. ";
-                	msg += "Setting real url as hidden url. ";
+            } else {
+                if (hiddenUrl == null) {
+                    msg += "No hidden url specified. ";
+                    msg += "Setting real url as hidden url. ";
                     LOGGER.debug(msg);
                     hiddenUrl = url;
                 } else {
-                	msg += "Evaluation not in '" + XQConstants.ACTION_SUBMIT + "' mode. ";
-            		msg += "Setting real url as hidden url. ";
+                    msg += "Evaluation not in '" + XQConstants.ACTION_SUBMIT + "' mode. ";
+                    msg += "Setting real url as hidden url. ";
                     LOGGER.debug(msg);
                     hiddenUrl = url;
                 }
@@ -339,11 +343,11 @@ public class XQEvaluatorImpl implements XQEvaluator {
 
             urlContents.addUrlAlias(hiddenUrl, url);
         }
-        
+
         try {
             processor = new XQProcessor(applicationProperties);
-        	config = new XQAnalysisConfig();
-        	config.setProcessor(processor);
+            config = new XQAnalysisConfig();
+            config.setProcessor(processor);
             config.setQuery1(queryCorrect);
             config.setQuery2(queryCorrect);
             config.setSortedNodes(sortedNodes);
@@ -351,14 +355,14 @@ public class XQEvaluatorImpl implements XQEvaluator {
             config.setDebugMode(debugMode);
             config.setUserID(userId);
             config.setExerciseID(exerciseId);
-            
+
             analysis = new XQAnalysis(config);
             if (!debugMode) {
-            	analysis.deleteTempFiles();
+                analysis.deleteTempFiles();
             }
             return analysis;
         } catch (Exception e) {
-        	msg = "Analysis was stopped (Exercise id: " + exerciseId + ").";
+            msg = "Analysis was stopped (Exercise id: " + exerciseId + ").";
             LOGGER.error(msg, e);
             throw new AnalysisException(msg, e);
         }
@@ -366,64 +370,70 @@ public class XQEvaluatorImpl implements XQEvaluator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see etutor.core.evaluation.Evaluator#grade(etutor.core.evaluation.Analysis, int,
      *      java.util.Map, java.util.Map)
      */
     public Grading grade(Analysis analysis, int taskId, Map passedAttributes, Map passedParameters)
             throws Exception {
-    	String msg;
-    	String action;
-    	int exerciseId;
-    	XQAnalysis xqAnalysis;
-    	XQGradingConfig config;
+        String msg;
+        String action;
+        int exerciseId;
+        XQAnalysis xqAnalysis;
+        XQGradingConfig config;
         XQGrading grading;
         XQExerciseManagerImpl exerciseMgr;
 
         try {
-        	xqAnalysis = (XQAnalysis)analysis;
-		} catch (ClassCastException e) {
-			msg = new String();
+            xqAnalysis = (XQAnalysis) analysis;
+        } catch (ClassCastException e) {
+            msg = new String();
             msg += "Passed analysis object is not of type ";
             msg += XQAnalysis.class.getName() + " but ";
             msg += analysis.getClass().getName();
             LOGGER.error(msg, e);
             throw new GradingException(msg, e);
-		}
-        
-		if (xqAnalysis == null) {
+        }
+
+        if (xqAnalysis == null) {
             msg = "Passed analysis object is null.";
             LOGGER.error(msg);
             throw new GradingException(msg);
         }
-		
+
         exerciseId = (xqAnalysis).getExerciseID();
         msg = new String();
-    	msg += "Start grading. taskID = " + taskId;
+        msg += "Start grading. taskID = " + taskId;
         msg += "; exerciseID = " + exerciseId;
         LOGGER.info(msg);
 
-        action = (String)passedAttributes.get(XQConstants.ATTR_ACTION);
-        if (XQConstants.ACTION_SUBMIT.equalsIgnoreCase(action)
-        || XQConstants.ACTION_DIAGNOSE.equalsIgnoreCase(action)
-                || XQConstants.ACTION_RUN.equalsIgnoreCase(action)
-                || XQConstants.ACTION_CHECK.equalsIgnoreCase(action)) {
-        	msg = new String();
-        	msg += "Modus is '" + action;
-        	msg += "', grading will be processed and reported.";
+        action = (String) passedAttributes.get(XQConstants.ATTR_ACTION);
+        if (action.equalsIgnoreCase(XQConstants.ACTION_RUN)) {
+            var g = new XQGrading();
+            g.setSolutionIsCorrect(xqAnalysis.getResult2().getSyntaxException() == null);
+            g.setMaxPoints(1);
+            g.setPoints(g.solutionIsCorrect() ? 1 : 0);
+            LOGGER.info("Running run-mode grading. Correct: {}, Points: {}", g.solutionIsCorrect(), g.getPoints());
+            return g;
+        } else if (XQConstants.ACTION_SUBMIT.equalsIgnoreCase(action)
+                   || XQConstants.ACTION_DIAGNOSE.equalsIgnoreCase(action)
+                   || XQConstants.ACTION_CHECK.equalsIgnoreCase(action)) {
+            msg = new String();
+            msg += "Modus is '" + action;
+            msg += "', grading will be processed and reported.";
             LOGGER.debug(msg);
             try {
-            	exerciseMgr = new XQExerciseManagerImpl(applicationProperties);
+                exerciseMgr = new XQExerciseManagerImpl(applicationProperties);
                 config = exerciseMgr.fetchGradingConfig(exerciseId);
                 grading = new XQGrading(xqAnalysis, config);
                 return grading;
             } catch (Exception e) {
-            	msg = "Grading was stopped (Exercise id: " + exerciseId + ").";
+                msg = "Grading was stopped (Exercise id: " + exerciseId + ").";
                 LOGGER.error(msg, e);
                 throw new GradingException(msg, e);
             }
         } else {
-        	msg = new String();
+            msg = new String();
             msg += "Report processing was stopped. ";
             msg += "Passed '" + XQConstants.ATTR_ACTION + "' attribute '";
             msg += action + "' is not applicable.";
@@ -434,62 +444,62 @@ public class XQEvaluatorImpl implements XQEvaluator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see etutor.core.evaluation.Evaluator#report(etutor.core.evaluation.Analysis,
      *      etutor.core.evaluation.Grading, java.util.Map, java.util.Map)
      */
     public Report report(Analysis analysis, Grading grading, Map passedAttributes,
                          Map passedParameters, Locale locale) throws Exception {
-    	String msg;
-    	String action;
-    	XQAnalysis xqAnalysis;
-    	XQGrading xqGrading;
-    	XQReportConfig config;
-    	XQReport xqReport;
-    	Object diagnoseLevelObj;
+        String msg;
+        String action;
+        XQAnalysis xqAnalysis;
+        XQGrading xqGrading;
+        XQReportConfig config;
+        XQReport xqReport;
+        Object diagnoseLevelObj;
         int diagnoseLevel;
-    	int exerciseId;
+        int exerciseId;
 
         try {
-        	xqAnalysis = (XQAnalysis)analysis;
-		} catch (ClassCastException e) {
-			msg = new String();
+            xqAnalysis = (XQAnalysis) analysis;
+        } catch (ClassCastException e) {
+            msg = new String();
             msg += "Passed analysis object is not of type ";
             msg += XQAnalysis.class.getName() + " but ";
             msg += analysis.getClass().getName();
             LOGGER.error(msg, e);
             throw new GradingException(msg, e);
-		}
-        
-		try {
-        	xqGrading = (XQGrading)grading;
-		} catch (ClassCastException e) {
-			msg = new String();
+        }
+
+        try {
+            xqGrading = (XQGrading) grading;
+        } catch (ClassCastException e) {
+            msg = new String();
             msg += "Passed grading object is not of type ";
             msg += XQGrading.class.getName() + " but ";
             msg += grading.getClass().getName();
             LOGGER.error(msg, e);
             throw new GradingException(msg, e);
-		}
-		
-		if (xqAnalysis == null) {
+        }
+
+        if (xqAnalysis == null) {
             msg = "Passed analysis object is null.";
             LOGGER.error(msg);
             throw new GradingException(msg);
         }
-		
-		//grading may be null
-		
-        action = (String)passedAttributes.get(XQConstants.ATTR_ACTION);
-		exerciseId = xqAnalysis.getExerciseID();
 
-		msg = new String();
+        //grading may be null
+
+        action = (String) passedAttributes.get(XQConstants.ATTR_ACTION);
+        exerciseId = xqAnalysis.getExerciseID();
+
+        msg = new String();
         msg += "Start reporting with exerciseID " + exerciseId;
         LOGGER.info(msg);
 
         diagnoseLevelObj = passedAttributes.get(XQConstants.ATTR_DIAGNOSE_LEVEL);
         if (diagnoseLevelObj == null || !(diagnoseLevelObj instanceof String)) {
-        	msg = new String();
+            msg = new String();
             msg += "Report processing was stopped. ";
             msg += "Passed attribute " + XQConstants.ATTR_DIAGNOSE_LEVEL;
             msg += " is null or no String.";
@@ -497,24 +507,24 @@ public class XQEvaluatorImpl implements XQEvaluator {
             throw new ReportException(msg);
         }
         try {
-            diagnoseLevel = Integer.parseInt((String)diagnoseLevelObj);
+            diagnoseLevel = Integer.parseInt((String) diagnoseLevelObj);
         } catch (NumberFormatException e) {
-        	msg = new String();
+            msg = new String();
             msg += "Report processing was stopped. ";
             msg += "No valid diagnose level: " + diagnoseLevelObj.toString() + ".";
             LOGGER.error(msg);
             throw new ReportException(msg);
         }
-        
-    	config = new XQReportConfig();
-    	config.setMode(action);
-    	config.setIncludesGrading(XQConstants.ACTION_SUBMIT.equalsIgnoreCase(action));
-    	config.setDiagnoseLevel(diagnoseLevel);
+
+        config = new XQReportConfig();
+        config.setMode(action);
+        config.setIncludesGrading(XQConstants.ACTION_SUBMIT.equalsIgnoreCase(action));
+        config.setDiagnoseLevel(diagnoseLevel);
 
         try {
             xqReport = new XQReport(xqAnalysis, xqGrading, config);
             if (!xqAnalysis.isDebugMode()) {
-            	xqAnalysis.deleteTempFiles();
+                xqAnalysis.deleteTempFiles();
             }
             return xqReport;
         } catch (ParameterException e) {
@@ -530,15 +540,15 @@ public class XQEvaluatorImpl implements XQEvaluator {
 
     /**
      * Gets the content of a file identified by a filepath.
-     * 
+     *
      * @param filepath The filepath of the file to read the content from.
      * @return The content of the file as String.
      * @throws InvalidResourceException if the file does not exist or an <code>IOException</code>
-     *             occured.
+     *                                  occured.
      */
     public String getFileContent(String filepath) throws IOException {
         String msg;
-    	BufferedReader input = null;
+        BufferedReader input = null;
         try {
             input = new BufferedReader(new FileReader(new File(filepath)));
             String line;
@@ -552,7 +562,7 @@ public class XQEvaluatorImpl implements XQEvaluator {
                 try {
                     input.close();
                 } catch (IOException e) {
-                	msg = "Exception when closing file input stream.";
+                    msg = "Exception when closing file input stream.";
                     LOGGER.error(msg, e);
                 }
             }

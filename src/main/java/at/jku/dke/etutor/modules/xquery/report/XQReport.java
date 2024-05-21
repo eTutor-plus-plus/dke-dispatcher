@@ -1,34 +1,33 @@
 package at.jku.dke.etutor.modules.xquery.report;
 
-import java.io.Serializable;
-import java.text.Format;
-import java.text.MessageFormat;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-
 import at.jku.dke.etutor.core.evaluation.DefaultReport;
-import at.jku.dke.etutor.core.evaluation.Report;
 import at.jku.dke.etutor.modules.xquery.*;
 import at.jku.dke.etutor.modules.xquery.analysis.*;
 import at.jku.dke.etutor.modules.xquery.grading.XQGrading;
 import at.jku.dke.etutor.modules.xquery.util.HTMLConverter;
 import at.jku.dke.etutor.modules.xquery.util.XQResources;
 
+import java.io.Serializable;
+import java.text.Format;
+import java.text.MessageFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+
 /**
  * This class is used for presenting the results of an analysis that was carried out on two XQuery
  * results, the first considered as the correct query result and the second one as the submitted
  * one.
- * 
+ *
  * @author Georg Nitsche
  * @version 1.0
  * @since 1.0
  */
 public class XQReport extends DefaultReport implements XQFeedback, Serializable {
 
-	private String summary;
+    private String summary;
 
     private ErrorCategory syntaxError;
-    
+
     private ErrorCategory[] errors;
 
     private String rawResult;
@@ -38,11 +37,11 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
     private String xmlReport;
 
     private String grading;
-    
+
     private String mode;
 
     private int diagnoseLevel;
-    
+
     private boolean includesGrading;
 
     /**
@@ -58,7 +57,7 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
         this.xmlReport = "";
         this.grading = "";
         this.mode = "";
-        this.errors = new ErrorCategory[] {};
+        this.errors = new ErrorCategory[]{};
         this.syntaxError = new ErrorCategory();
         this.includesGrading = false;
         this.setDescription(summary);
@@ -66,19 +65,19 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
 
     /**
      * Constructs a new instance of <code>XQReport</code> with the specified parameters.
-     * 
+     *
      * @param analysis The analysis which provides error information that is transformed into
-     *            messages, and the query results that are rendered.
-     * @param grading A grading object which contains information about points which have been
-     *            assigned to the submitted query of the analysis. The grading information will not
-     *            be used for this <code>XQReport</code>, if the object is <code>null</code> or
-     *            if of the specified object returns false.
-     * @param config Configuration parameters for reporting.
+     *                 messages, and the query results that are rendered.
+     * @param grading  A grading object which contains information about points which have been
+     *                 assigned to the submitted query of the analysis. The grading information will not
+     *                 be used for this <code>XQReport</code>, if the object is <code>null</code> or
+     *                 if of the specified object returns false.
+     * @param config   Configuration parameters for reporting.
      * @throws NullPointerException if any of the parameters is null or if one of the results
-     *             contained in the analysis is null.
-     * @throws ParameterException if the diagnose level in config is not one of the predefined diagnose
-     *             levels.
-     * @throws ReportException if any unexpected Exception occured when generating the report.
+     *                              contained in the analysis is null.
+     * @throws ParameterException   if the diagnose level in config is not one of the predefined diagnose
+     *                              levels.
+     * @throws ReportException      if any unexpected Exception occured when generating the report.
      */
     public XQReport(
             XQAnalysis analysis, XQGrading grading, XQReportConfig config) throws NullPointerException,
@@ -90,8 +89,8 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
 
         this.mode = config.getMode();
         this.includesGrading = config.includesGrading();
-        this.diagnoseLevel = checkDiagnoseLevel(config.getDiagnoseLevel());
-        
+        this.diagnoseLevel = this.mode.equalsIgnoreCase(XQConstants.ACTION_RUN) ? DIAGNOSE_LOW : checkDiagnoseLevel(config.getDiagnoseLevel());
+
         this.syntaxError = getSyntaxError(analysis);
         this.summary = getGeneralAnalysis(analysis, config.getDiagnoseLevel());
         this.errors = getSemanticErrors(analysis, config.getDiagnoseLevel());
@@ -108,11 +107,11 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
 
     /**
      * Tests if a given level is one of the predefined diagnose levels.
-     * 
+     *
      * @param level The level to test.
      * @return The level that was passed, if it is a valid diagnose level.
      * @throws ParameterException if the specified level is not one of the predefined diagnose
-     *             levels.
+     *                            levels.
      */
     private int checkDiagnoseLevel(int level) throws ParameterException {
         switch (level) {
@@ -124,11 +123,10 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                 return level;
             case (DIAGNOSE_HIGH):
                 return level;
-            default:
-                {
-                    String message = "No valid diagnose level: " + level + ".";
-                    throw new ParameterException(message);
-                }
+            default: {
+                String message = "No valid diagnose level: " + level + ".";
+                throw new ParameterException(message);
+            }
         }
     }
 
@@ -136,7 +134,7 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
      * Returns the detailed message about syntax errors in the submitted query, as it was returned
      * by the query processor. If urls have been detected in the submitted query, which are not
      * permitted to be accessed for this exercise, this is treated as syntax error as well.
-     * 
+     *
      * @param analysis The analysis object which holds all information about the submitted query.
      * @return The syntax errors, if any were detected, otherwise otherwise a category object with
      * an empty String as description.
@@ -148,19 +146,19 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
             syntaxException = result.getSyntaxException();
         }
         if (syntaxException != null) {
-        	String title = XQResources.getString(XQResources.ERROR_RESULT_SYNTAX);
-        	String message = syntaxException.getDescription();
-        	
+            String title = XQResources.getString(XQResources.ERROR_RESULT_SYNTAX);
+            String message = syntaxException.getDescription();
+
             ErrorCategory error = new ErrorCategory(title);
             error.setDescription(message);
-        	return error;
+            return error;
         }
         return this.getUrlContentError(analysis);
     }
 
     /**
      * Returns the detailed message about wellformedness errors of the submitted query.
-     * 
+     *
      * @param analysis The analysis object which holds all information about the submitted query.
      * @return The wellformedness errors, if any were detected, otherwise a category object with
      * an empty String as description.new ErrorCategory().
@@ -172,26 +170,26 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
             wellformednessException = result.getWellformednessException();
         }
         if (wellformednessException != null) {
-        	String title = XQResources.getString(XQResources.ERROR_RESULT_WELLFORMEDNESS);
-        	String message = wellformednessException.getDescription();
-        	
+            String title = XQResources.getString(XQResources.ERROR_RESULT_WELLFORMEDNESS);
+            String message = wellformednessException.getDescription();
+
             ErrorCategory error = new ErrorCategory(title);
             error.setDescription(message);
-        	return error;
+            return error;
         }
         return new ErrorCategory();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see etutor.modules.xquery.XQFeedback#getSyntaxError(boolean)
      */
     public ErrorCategory getSyntaxError(boolean rendered) {
         if (!rendered) {
             return this.syntaxError;
-        } 
-        ErrorCategory clone = (ErrorCategory)this.syntaxError;
+        }
+        ErrorCategory clone = (ErrorCategory) this.syntaxError;
         String description = clone.getDescription();
         String title = clone.getTitle();
         description = this.renderText(description, true);
@@ -205,7 +203,7 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
      * Returns the errors of the query result with regard to document urls and their alias names. Such an error describes
      * an alias name, specified in a document statement within the query, where the corresponding url was not specified
      * in the exercise settings. This error is treated like a syntax error for the report.
-     * 
+     *
      * @return The url content errors, if any were detected, otherwise a category object with
      * an empty String as description.
      */
@@ -227,9 +225,9 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                 MessageFormat messageForm = new MessageFormat("");
                 messageForm.applyPattern(XQResources
                         .getString(XQResources.ERROR_RESULT_ALIAS_UNDECLARED));
-                Format[] formats = new Format[] {null, null, null};
+                Format[] formats = new Format[]{null, null, null};
                 messageForm.setFormats(formats);
-                Object[] messageArguments = new Object[] {alias, Integer.valueOf(line),
+                Object[] messageArguments = new Object[]{alias, Integer.valueOf(line),
                         Integer.valueOf(index)};
                 String msg = messageForm.format(messageArguments);
                 if (message.length() > 0) {
@@ -239,21 +237,23 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
             }
             ErrorCategory error = new ErrorCategory(title);
             error.setDescription(message);
-        	return error;
+            return error;
         }
         return new ErrorCategory();
     }
 
     /**
      * Gets the general analysis text summarizing the results of the analysis.
-     * 
-     * @param analysis The analysis object which holds all information about the submitted query.
+     *
+     * @param analysis      The analysis object which holds all information about the submitted query.
      * @param diagnoseLevel Specifies the diagnose level, which affects how detailed the generated
-     *            message is going to be.
+     *                      message is going to be.
      * @return The general analysis text. If the diagnose is on the lowest level this returns an
-     *         empty String.
+     * empty String.
      */
     private String getGeneralAnalysis(XQAnalysis analysis, int diagnoseLevel) {
+        if (this.mode.equalsIgnoreCase(XQConstants.ACTION_RUN))
+            return "";
         XQResult result = analysis.getResult2();
         if (diagnoseLevel > DIAGNOSE_NONE) {
             if (analysis.isCorrect()) {
@@ -263,10 +263,10 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                 if (diagnoseLevel > DIAGNOSE_LOW) {
                     if (analysis.isValidSolution()) {
                         text += XQResources.getString(XQResources.SOLUTION_VALID) + "\n";
-                    } else if (result != null 
-                    		&& result.getSyntaxException() == null 
-                    		&& result.getWellformednessException() == null
-							&& result.getUrlContentException() == null){
+                    } else if (result != null
+                               && result.getSyntaxException() == null
+                               && result.getWellformednessException() == null
+                               && result.getUrlContentException() == null) {
                         text += XQResources.getString(XQResources.SOLUTION_NOT_VALID) + "\n";
                     }
                 }
@@ -274,12 +274,11 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
             }
         }
         return "";
-
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see etutor.modules.xquery.XQFeedback#getGeneralAnalysis(boolean)
      */
     public String getGeneralAnalysis(boolean rendered) {
@@ -288,38 +287,40 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
 
     /**
      * Returns a list of mistakes analyzed in the submitted query result.
-     * 
-     * @param analysis The analysis object which holds all information about the submitted query.
+     *
+     * @param analysis      The analysis object which holds all information about the submitted query.
      * @param diagnoseLevel Specifies the diagnose level, which affects how detailed the generated
-     *            message is going to be.
+     *                      message is going to be.
      * @return An array of error descriptions. If the diagnose is on the lowest level or on low
-     *         level this returns an empty array.
+     * level this returns an empty array.
      */
     private ErrorCategory[] getSemanticErrors(XQAnalysis analysis, int diagnoseLevel) {
+        if (this.mode.equalsIgnoreCase(XQConstants.ACTION_RUN))
+            return new ErrorCategory[0];
         if (diagnoseLevel == DIAGNOSE_MEDIUM) {
             return getMediumAnalysis(analysis);
         }
         if (diagnoseLevel == DIAGNOSE_HIGH) {
             return getDetailedAnalysis(analysis);
         }
-        return new ErrorCategory[] {};
+        return new ErrorCategory[]{};
     }
 
     /**
      * Returns a list of mistakes analyzed in the submitted query result on a medium diagnose level.
-     * 
+     *
      * @param analysis The analysis object which holds all information about the submitted query.
      * @return An array of error descriptions.
      */
     private ErrorCategory[] getMediumAnalysis(XQAnalysis analysis) {
-    	
+
         ArrayList errorList = new ArrayList();
 
         ErrorCategory wellformednessErrors = this.getWellformednessErrors(analysis);
         if (wellformednessErrors != null && !wellformednessErrors.getDescription().trim().equals("")) {
-        	errorList.add(wellformednessErrors);
+            errorList.add(wellformednessErrors);
         }
-        
+
         boolean displacedNodes = analysis.getDisplacedNodes().containsErrors();
         if (displacedNodes) {
             int category = ErrorCategory.NODES_DISPLACED;
@@ -383,13 +384,13 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
             errorList.add(incorrectValuesCategory);
         }
 
-        return (ErrorCategory[])errorList.toArray(new ErrorCategory[] {});
+        return (ErrorCategory[]) errorList.toArray(new ErrorCategory[]{});
 
     }
 
     /**
      * Returns a list of mistakes analyzed in the submitted query result on a high diagnose level.
-     * 
+     *
      * @param analysis The analysis object which holds all information about the submitted query.
      * @return An array of error descriptions.
      */
@@ -407,7 +408,7 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
         ErrorCategory redundantAttributesCategory;
 
         wellformednessError = this.getWellformednessErrors(analysis);
-        
+
         category = ErrorCategory.NODES_DISPLACED;
         title = XQResources.getString(XQResources.NODES_DISPLACED_TITLE);
         displacedNodesCategory = new ErrorCategory(category, title);
@@ -446,16 +447,16 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                 if (list.length == 1) {
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources.getString(XQResources.NODES_DISPLACED_SI));
-                    Format[] formats = new Format[] {null};
+                    Format[] formats = new Format[]{null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {getRootExcluded(xPathNode)};
+                    Object[] messageArguments = new Object[]{getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else if (list.length > 1) {
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources.getString(XQResources.NODES_DISPLACED_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance(), null};
+                    Format[] formats = new Format[]{NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
+                    Object[] messageArguments = new Object[]{Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -485,9 +486,9 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
             } else {
                 MessageFormat messageForm = new MessageFormat("");
                 messageForm.applyPattern(XQResources.getString(XQResources.NODES_REDUNDANT_PL));
-                Format[] formats = new Format[] {NumberFormat.getInstance()};
+                Format[] formats = new Format[]{NumberFormat.getInstance()};
                 messageForm.setFormats(formats);
-                Object[] messageArguments = new Object[] {Integer.valueOf(redundantNodes.size())};
+                Object[] messageArguments = new Object[]{Integer.valueOf(redundantNodes.size())};
                 result = messageForm.format(messageArguments);
             }
             // ---------- apply the message --------------- //
@@ -516,17 +517,17 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources
                             .getString(XQResources.NODES_REDUNDANT_SI));
-                    Format[] formats = new Format[] {null};
+                    Format[] formats = new Format[]{null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {getRootExcluded(xPathNode)};
+                    Object[] messageArguments = new Object[]{getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else if (list.length > 1) {
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources
                             .getString(XQResources.NODES_REDUNDANT_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance(), null};
+                    Format[] formats = new Format[]{NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
+                    Object[] messageArguments = new Object[]{Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -563,17 +564,17 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources
                             .getString(XQResources.NODES_MISSING_INSTEAD_SI));
-                    Format[] formats = new Format[] {null};
+                    Format[] formats = new Format[]{null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {getRootExcluded(xPathNode)};
+                    Object[] messageArguments = new Object[]{getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else if (list.length > 1) {
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources
                             .getString(XQResources.NODES_MISSING_INSTEAD_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance(), null};
+                    Format[] formats = new Format[]{NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
+                    Object[] messageArguments = new Object[]{Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -609,17 +610,17 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm
                             .applyPattern(XQResources.getString(XQResources.NODES_MISSING_BEFORE_SI));
-                    Format[] formats = new Format[] {null};
+                    Format[] formats = new Format[]{null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {getRootExcluded(xPathNode)};
+                    Object[] messageArguments = new Object[]{getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else if (list.length > 1) {
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm
                             .applyPattern(XQResources.getString(XQResources.NODES_MISSING_BEFORE_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance(), null};
+                    Format[] formats = new Format[]{NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
+                    Object[] messageArguments = new Object[]{Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -652,16 +653,16 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                 if (list.length == 1) {
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources.getString(XQResources.NODES_MISSING_AFTER_SI));
-                    Format[] formats = new Format[] {null};
+                    Format[] formats = new Format[]{null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {getRootExcluded(xPathNode)};
+                    Object[] messageArguments = new Object[]{getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else if (list.length > 1) {
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources.getString(XQResources.NODES_MISSING_AFTER_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance(), null};
+                    Format[] formats = new Format[]{NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
+                    Object[] messageArguments = new Object[]{Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -698,9 +699,9 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                     } else {
                         messageForm
                                 .applyPattern(XQResources.getString(XQResources.NODES_MISSING_IN_SI));
-                        Format[] formats = new Format[] {null};
+                        Format[] formats = new Format[]{null};
                         messageForm.setFormats(formats);
-                        Object[] messageArguments = new Object[] {getRootExcluded(xPathNode)};
+                        Object[] messageArguments = new Object[]{getRootExcluded(xPathNode)};
                         result = messageForm.format(messageArguments);
                     }
                 } else if (list.length > 1) {
@@ -708,16 +709,16 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                     if (analysis.isRootNode(xPathNode)) {
                         messageForm.applyPattern(XQResources
                                 .getString(XQResources.NODES_MISSING_ROOT_PL));
-                        Format[] formats = new Format[] {NumberFormat.getInstance()};
+                        Format[] formats = new Format[]{NumberFormat.getInstance()};
                         messageForm.setFormats(formats);
-                        Object[] messageArguments = new Object[] {Integer.valueOf(list.length)};
+                        Object[] messageArguments = new Object[]{Integer.valueOf(list.length)};
                         result = messageForm.format(messageArguments);
                     } else {
                         messageForm
                                 .applyPattern(XQResources.getString(XQResources.NODES_MISSING_IN_PL));
-                        Format[] formats = new Format[] {NumberFormat.getInstance(), null};
+                        Format[] formats = new Format[]{NumberFormat.getInstance(), null};
                         messageForm.setFormats(formats);
-                        Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
+                        Object[] messageArguments = new Object[]{Integer.valueOf(list.length),
                                 getRootExcluded(xPathNode)};
                         result = messageForm.format(messageArguments);
                     }
@@ -752,17 +753,17 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm
                             .applyPattern(XQResources.getString(XQResources.ATTRIBUTES_REDUNDANT_SI));
-                    Format[] formats = new Format[] {null};
+                    Format[] formats = new Format[]{null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {getRootExcluded(xPathNode)};
+                    Object[] messageArguments = new Object[]{getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else if (list.length > 1) {
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm
                             .applyPattern(XQResources.getString(XQResources.ATTRIBUTES_REDUNDANT_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance(), null};
+                    Format[] formats = new Format[]{NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
+                    Object[] messageArguments = new Object[]{Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -795,16 +796,16 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                 if (list.length == 1) {
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources.getString(XQResources.ATTRIBUTES_MISSING_SI));
-                    Format[] formats = new Format[] {null};
+                    Format[] formats = new Format[]{null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {getRootExcluded(xPathNode)};
+                    Object[] messageArguments = new Object[]{getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else if (list.length > 1) {
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources.getString(XQResources.ATTRIBUTES_MISSING_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance(), null};
+                    Format[] formats = new Format[]{NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
+                    Object[] messageArguments = new Object[]{Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -838,17 +839,17 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources
                             .getString(XQResources.VALUES_INCORRECT_SI));
-                    Format[] formats = new Format[] {null};
+                    Format[] formats = new Format[]{null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {getRootExcluded(xPathNode)};
+                    Object[] messageArguments = new Object[]{getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else if (list.length > 1) {
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources
                             .getString(XQResources.VALUES_INCORRECT_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance(), null};
+                    Format[] formats = new Format[]{NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
+                    Object[] messageArguments = new Object[]{Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -882,17 +883,17 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources
                             .getString(XQResources.VALUES_INCORRECT_SI));
-                    Format[] formats = new Format[] {null};
+                    Format[] formats = new Format[]{null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {getRootExcluded(xPathNode)};
+                    Object[] messageArguments = new Object[]{getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else if (list.length > 1) {
                     MessageFormat messageForm = new MessageFormat("");
                     messageForm.applyPattern(XQResources
                             .getString(XQResources.VALUES_INCORRECT_PL));
-                    Format[] formats = new Format[] {NumberFormat.getInstance(), null};
+                    Format[] formats = new Format[]{NumberFormat.getInstance(), null};
                     messageForm.setFormats(formats);
-                    Object[] messageArguments = new Object[] {Integer.valueOf(list.length),
+                    Object[] messageArguments = new Object[]{Integer.valueOf(list.length),
                             getRootExcluded(xPathNode)};
                     result = messageForm.format(messageArguments);
                 } else {
@@ -911,7 +912,7 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
             String description = detailedAnalyze.toString();
             incorrectValuesCategory.appendDescription(description);
         }
-        
+
         ArrayList errorList = new ArrayList();
 
         if (wellformednessError.getDescription().length() > 0) {
@@ -935,22 +936,25 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
         if (redundantAttributesCategory.getDescription().length() > 0) {
             errorList.add(redundantAttributesCategory);
         }
-        return (ErrorCategory[])errorList.toArray(new ErrorCategory[] {});
+        return (ErrorCategory[]) errorList.toArray(new ErrorCategory[]{});
 
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see etutor.modules.xquery.XQFeedback#getAnalysis(boolean)
      */
     public ErrorCategory[] getSemanticErrors(boolean rendered) {
+        if (this.mode.equalsIgnoreCase(XQConstants.ACTION_RUN))
+            return new ErrorCategory[0];
+
         if (!rendered) {
             return this.errors;
         }
         ErrorCategory[] renderedAnalyze = new ErrorCategory[this.errors.length];
         for (int i = 0; i < renderedAnalyze.length; i++) {
-            ErrorCategory clone = (ErrorCategory)errors[i].clone();
+            ErrorCategory clone = (ErrorCategory) errors[i].clone();
             String description = clone.getDescription();
             String title = clone.getTitle();
             description = this.renderText(description, true);
@@ -965,7 +969,7 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
     /**
      * Generates an overall message which summarizes single messages as returned by methods of this
      * class. By default, the messages are generated on the highest diagnose level.
-     * 
+     *
      * @param analysis The analysis whose contents are transformed into messages.
      * @return A summary of messages.
      */
@@ -991,7 +995,7 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see etutor.modules.xquery.XQFeedback#getRenderedResult()
      */
     public String getRenderedResult() {
@@ -1000,7 +1004,7 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see etutor.modules.xquery.XQFeedback#getRawResult()
      */
     public String getRawResult() {
@@ -1009,7 +1013,7 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see etutor.modules.xquery.XQFeedback#getDiagnoseLevel()
      */
     public int getDiagnoseLevel() {
@@ -1018,18 +1022,18 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see etutor.modules.xquery.XQFeedback#getMode()
      */
     public String getMode() {
         return this.mode;
     }
-    
+
     /**
      * Cuts off the first name identifier from an expression, which is interpreted as XPath
      * expression. This is used for making the first identifier of the XPath expressions invisible
      * when reporting, as this is the implicit root element of an XQuery query result.
-     * 
+     *
      * @param path The expression.
      * @return The reduced String.
      */
@@ -1049,7 +1053,7 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see etutor.modules.xquery.XQFeedback#isSupplementedResult()
      */
     public boolean isSupplementedResult() {
@@ -1058,7 +1062,7 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see etutor.modules.xquery.XQFeedback#getXMLReport()
      */
     public String getXMLReport() {
@@ -1067,8 +1071,8 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
 
     /**
      * Returns any text either unchanged or rendered for HTML compatibility.
-     * 
-     * @param text The text to transform.
+     *
+     * @param text   The text to transform.
      * @param render Indicates if the text is to be returned unchanged or rendered.
      * @return The modified or not modified text.
      */
@@ -1081,7 +1085,7 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see etutor.modules.datalog.XQFeedback#getGrading()
      */
     public String getGrading(boolean rendered) {
@@ -1090,22 +1094,22 @@ public class XQReport extends DefaultReport implements XQFeedback, Serializable 
 
     /**
      * Returns a text which was generated using the information of the grading object.
-     * 
+     *
      * @param grading An object which contains information about the maximum of points which can be
-     *            achieved for a datalog exercise, and the points actually assigned for a submitted
-     *            query.
+     *                achieved for a datalog exercise, and the points actually assigned for a submitted
+     *                query.
      * @return The text generated from the grading object or an empty String if the grading object
-     *         is <code>null</code> or if of the specified object
-     *         returns false.
+     * is <code>null</code> or if of the specified object
+     * returns false.
      */
     private String getGrading(XQGrading grading) {
         if (grading != null && this.includesGrading) {
             MessageFormat messageForm = new MessageFormat("");
             messageForm.applyPattern(XQResources.getString(XQResources.GRADING_POINTS));
-            Format[] formats = new Format[] {null, null};
+            Format[] formats = new Format[]{null, null};
             messageForm.setFormats(formats);
-            Object[] messageArguments = new Object[] {Double.valueOf(grading.getPoints()),
-                   Double.valueOf(grading.getMaxPoints())};
+            Object[] messageArguments = new Object[]{Double.valueOf(grading.getPoints()),
+                    Double.valueOf(grading.getMaxPoints())};
             String message = messageForm.format(messageArguments);
             return message;
         }
