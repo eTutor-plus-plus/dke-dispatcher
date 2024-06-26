@@ -50,6 +50,8 @@ public class DatalogAnalysis implements Analysis {
 
 	private boolean correct;
 
+	private boolean submissionSuitsSolutionOverride;
+
 	private int exerciseID;
 
 	private ArrayList<WrappedPredicate> missingPredicates;
@@ -167,6 +169,7 @@ public class DatalogAnalysis implements Analysis {
 	private void init(boolean debugMode) {
 		setDebugMode(debugMode);
 		this.correct = false;
+		this.submissionSuitsSolutionOverride = false;
 		initErrorLists();
 	}
 
@@ -465,6 +468,7 @@ public class DatalogAnalysis implements Analysis {
 	 * @see etutor.core.evaluation.Analysis#setSubmissionSuitsSolution(boolean)
 	 */
 	public void setSubmissionSuitsSolution(boolean b) {
+		this.submissionSuitsSolutionOverride = b;
 	}
 
 	/*
@@ -473,6 +477,6 @@ public class DatalogAnalysis implements Analysis {
 	 * @see etutor.core.evaluation.Analysis#submissionSuitsSolution()
 	 */
 	public boolean submissionSuitsSolution() {
-		return this.isCorrect();
+		return this.isCorrect() || this.submissionSuitsSolutionOverride;
 	}
 }
